@@ -1,0 +1,168 @@
+# Audio, VFX và animation feedback
+
+## Phạm vi và ownership
+
+Owner của feedback hierarchy, animation/VFX/audio/camera cues và cinematic choreography. Không quyết damage, phase threshold, reward hoặc encounter handoff; tham chiếu gameplay/content owners.
+
+## Feedback hierarchy
+
+Hostile shot/telegraph phải còn đọc được khi firing, pickup và explosion cùng lúc.
+Common hit nhỏ; heavy/Elite event vừa; player death/boss/transition là điểm nhấn.
+Không mọi sự kiện đều shake/flash. Durations chưa có seed là [TBD]/tune presentation,
+không tự khóa timing gameplay qua animation clip.
+
+## Animation philosophy
+
+State quan trọng cần chuyển tiếp ngắn nếu điều đó giúp đọc state tốt hơn;
+không yêu cầu animation hoàn hảo hoặc dài. Chọn kỹ thuật theo công việc nó làm,
+tránh generate spritesheet khi Transform hoặc Particle đã thể hiện được ý định.
+
+| Kỹ thuật | Trường hợp phù hợp |
+|---|---|
+| Sprite animation | Engine flame; explosion; portal/rift; pickup energy; mechanical boss parts khi cần |
+| Transform animation | Ship/enemy entry và exit; boss entrance; rotation; scale pop; UI panel; orbit turn |
+| Particle | Hit sparks; engine trail; debris; smoke; explosion particles; warp streak; shield break |
+| Damage-state presentation | Sprite swap, material flash, smoke hoặc sparks; không bắt buộc frame-by-frame |
+
+State/threshold do [enemies/bosses](../content/enemies-bosses.md) quyết;
+frame count và generation/import workflow ở [asset pipeline](../production/asset-pipeline.md).
+
+## Audio design
+
+SFX đơn giản có thể synth bằng Python; không bắt buộc synth toàn bộ BGM.
+Music có thể là free licensed music, original simple track hoặc asset hợp license.
+Workflow và attribution nằm tại [asset pipeline](../production/asset-pipeline.md).
+
+### SFX catalog
+
+| Nhóm | Sounds cần có |
+|---|---|
+| Weapons | Player laser; plasma; missile; enemy shot; sniper charge |
+| Damage | Hit; shield break; small explosion; big explosion; player death |
+| Rewards | Pickup; crate; weapon upgrade |
+| Movement/transition | Engine; boost; warp |
+| Signals/UI | Boss warning; UI click |
+
+### Spam control
+
+Nhiều hit/explosion trong cùng frame không được gây identical SFX spam hoặc clipping.
+Có thể dùng cooldown/throttle, randomized pitch nhỏ, max simultaneous voices theo
+category và volume hierarchy. Exact voice caps/cooldowns chưa có seed; không tự khóa
+chúng trong editorial pass.
+
+### Transition audio và pause
+
+Transition dùng music duck, engine pitch ramp, warp whoosh và fade-in nhạc region mới.
+Khi gameplay pause, UI audio vẫn chạy; music có thể duck nhưng loop state phải resume
+đúng. Exact mixer/pause mechanism vẫn [TBD]; simulation dừng theo
+[architecture](../systems/architecture.md#pause-và-time-management-locked).
+
+## Presentation event matrix
+
+Baseline presentation matrix:
+
+| Event | Animation | VFX | Audio | Camera |
+|---|---|---|---|---|
+| Player enter | move/ease | engine trail | engine ramp | none/light |
+| Enemy hit | flash | small spark | throttled hit | none |
+| Enemy death | scale/fade | explosion/debris | small explosion | none/tiny heavy only |
+| Player death | disable/rotate | staged explosion | player death | medium |
+| Respawn | entry ease | shield/blink | respawn cue | none |
+| Shield break | pulse | teal ring burst | shield break | tiny |
+| Supply destroyed | break | small explosion | supply hit | tiny |
+| Boss phase | mechanical/open | burst | phase stinger | small |
+| Boss death | staged | large explosions | big explosion | strong |
+| Warp | ship boost | star streak | warp | subtle |
+
+Exact timing chưa có seed giữ [TBD]; khi tune sẽ cập nhật tại owner này.
+
+## Event coverage cho player và firing
+
+Player entrance dùng transform/ease + engine trail + engine ramp; firing cue riêng
+cho Pulse/Plasma/Missile, muzzle/shot rõ nhưng không phủ vùng né.
+Player death dùng staged explosion, player-death SFX và medium shake;
+respawn entry có cue riêng, blink alpha/ring teal cho invincibility, tránh nhầm hit flash.
+Hit/death/protection resolve bởi [player combat](../gameplay/player-combat.md),
+không chờ particle để quyết có nhận damage.
+
+## Enemy, Elite, boss và hazard feedback
+
+Enemy hit: bright flash cực ngắn, spark nhỏ, throttled SFX, không shake mọi viên.
+Heavy death có debris/explosion và tiny/small shake khi cần.
+Elite accent rõ, cue reward/death nổi hơn normal nhưng dưới boss.
+Boss intro có entrance/mass, warning/stinger; phase mechanical open/burst nhỏ,
+không che attack telegraph.
+
+Vanguard death: small explosions → core glow → final explosion → shake → music duck
+→ reward → transition. Nebula Warden: node local explosion → shield flicker;
+final node → shield collapse/SFX, vulnerability do enemy mechanic quyết.
+Asteroid có stone/debris impact; golden asteroid có amber crystal burst/reward cue,
+không biến cả asteroid storm thành chuỗi full-screen flash.
+
+## Supply và pickups
+
+| Event | Feedback định hướng |
+|---|---|
+| Supply Drone xuất hiện | Nhận ra cargo/reward bằng trail/navigation cue, không warning như boss |
+| Supply Drone destroyed | Break/small explosion, supply hit, tiny shake; crate ejection thấy rõ |
+| Crate drift/pickup | Cargo drift, reward reveal + crate cue; không giấu pickup trong explosion |
+| Weapon Core | Upgrade pulse và upgrade cue, branch/level đọc qua HUD |
+| Shield Cell | Teal defensive ring/activate cue |
+| Shield break | Teal burst, distinct break SFX, tiny shake nếu phù hợp |
+| Overdrive | Firing/engine accent và timer cue; không làm projectile unreadable |
+| Support Drone | Entrance/trail ngắn và summon cue, bắn phụ dưới main weapon volume |
+| EMP | Pulse mạnh ngắn + EMP cue, nhanh trả contrast; không quyết damage bằng effect |
+| Extra Life | Green-white positive cue, ngắn và nhận ra survival reward |
+| Stellar Shard | Amber/gold glint và collect cue nhẹ, throttle khi nhiều pickup |
+
+## Camera shake và time dilation
+
+| Tier | Seed event mapping |
+|---|---|
+| Tiny | Strong hit/weapon; shield break/supply khi cần |
+| Small | Heavy enemy death, boss phase |
+| Medium | Player death, Elite event |
+| Strong | Boss explosion, major transition |
+
+Exact amplitude/duration [TUNABLE] chưa có số. Screen Shake setting được tôn trọng;
+camera zoom cue smooth theo level profile, không overshoot làm input khó.
+Hit-stop/time dilation hạn chế, không mỗi bullet; final death có slow motion ngắn.
+Exact hit-stop rules [TBD], không âm thầm pause damage timer ngoài gameplay contract.
+
+## Transition Astra → Crimson
+
+Tổng transition ~8–15 s [TUNABLE], không bắt buộc hai transition bằng nhau.
+HUD fade → center alignment → engine boost → scroll acceleration → star streak
+→ old background crossfade → Crimson reveal/deceleration → red planet orbit curve
+→ smooth rotation/movement → sector title. Small camera zoom/easing, engine pitch ramp,
+warp whoosh, music duck và new-region fade-in; không cần real 3D warp.
+Input lock, orientation và handoff do [levels](../content/levels-encounters.md#transition-astra--crimson) sở hữu.
+
+## Transition Crimson → Titan
+
+Ship acceleration → ringed planet/structure reveal → ring slingshot curve
+→ camera widen/debris scale → title. Giữ cảm giác không gian lớn hơn,
+không copy exact Hyperlane animation; âm thanh nối vùng và music fade phù hợp.
+Right → Up/handoff ở [levels](../content/levels-encounters.md#transition-crimson--titan).
+
+## Final Rift
+
+Phase shift có rift opening, cinematic rotation/reposition và resume cue rõ;
+projectile clear không được effect tự quyết.
+Final death: core crack → staged explosions → short slow motion → final flash/explosion
+→ music resolution → Ending → Campaign Result. Threshold/attacks thuộc
+[enemies/bosses](../content/enemies-bosses.md), hướng/handoff ở level owner.
+
+## Level intro, warning và dynamic audio
+
+Level intro/sector title gọn, boss/hazard warning ngắn và không spam WARNING.
+Audio categories [PROVISIONAL]: Music, player/enemy weapons, hits/explosions,
+pickup/supply, engine/transition và UI. Mixer group implementation chưa khóa.
+Dynamic audio có intensity/duck/stinger ở boss phase và transition khi cần;
+không cần adaptive-music framework phức tạp.
+
+## Haptic
+
+Vibration setting tồn tại; exact use [TBD]. Gợi ý chưa khóa: player death,
+boss explosion, shield break nhẹ. Không rung mỗi bullet hit.
+SFX synth workflow và BGM licensing/import ở [asset pipeline](../production/asset-pipeline.md).

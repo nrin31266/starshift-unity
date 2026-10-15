@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "skills": {
+    "audio-setup-mixers": {
+      "source": "unity-technologies/skills",
+      "sourceType": "github",
+      "skillPath": "skills/audio-setup-mixers/SKILL.md",
+      "computedHash": "fa8b2cf6e17c47534b055b44c62bb68555ea1ec784939d3fad687f754ab1c4f0"
+    },
+    "create-2d-physics": {
+      "source": "unity-technologies/skills",
+      "sourceType": "github",
+      "skillPath": "skills/create-2d-physics/SKILL.md",
+      "computedHash": "0c05ea91a29cb232010e339e94abf21e77a19d57785af3a049dfa590625f2906"
+    },
+    "sprite-editor": {
+      "source": "unity-technologies/skills",
+      "sourceType": "github",
+      "skillPath": "skills/sprite-editor/SKILL.md",
+      "computedHash": "5dbe2589a016c7cf47c8f106da699a57b8b9c46b90c009d359d0a5ec5692bbf9"
+    },
+    "unity-cli": {
+      "source": "unity-technologies/skills",
+      "sourceType": "github",
+      "skillPath": "skills/unity-cli/SKILL.md",
+      "computedHash": "3dc226a7f8fdb938126606c6f7ed4c97a1eee541e9f0ae1a38e8d7918f37964e"
+    },
+    "unity-pipeline": {
+      "source": "unity-technologies/skills",
+      "sourceType": "github",
+      "skillPath": "skills/unity-pipeline/SKILL.md",
+      "computedHash": "8722ed6febdd686651c8d3bbf801e403eabc27c0b3abc574789085fefaff6e7e"
+    },
+    "urp-postprocessing": {
+      "source": "unity-technologies/skills",
+      "sourceType": "github",
+      "skillPath": "skills/urp-postprocessing/SKILL.md",
+      "computedHash": "0dee1610b841f63ff8872c19c08ce74bd0a1fffa7322fb8d3fccb57106bae1ba"
+    }
+  }
+}

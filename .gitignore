@@ -1,0 +1,36 @@
+# Unity project lives in app/.
+/app/[Ll]ibrary/
+/app/[Tt]emp/
+/app/[Oo]bj/
+/app/[Ll]ogs/
+/app/[Uu]ser[Ss]ettings/
+/app/[Mm]emory[Cc]aptures/
+/app/[Rr]ecordings/
+/app/[Bb]uild/
+/app/[Bb]uilds/
+/app/.vs/
+/app/.idea/
+/app/.vscode/
+*.csproj
+*.sln
+*.slnx
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.opendb
+*.VC.db
+*.tmp
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
+
+# Offline Python utilities.
+__pycache__/
+*.pyc
+.venv/
+
+# Assets, Packages, ProjectSettings and Unity .meta files stay versioned.

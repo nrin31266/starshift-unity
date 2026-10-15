@@ -1,0 +1,242 @@
+# Enemies và bosses
+
+## Phạm vi và ownership
+
+Owner của archetype identity, HP, behavior, damage states, Elite và boss mechanics. Không chứa exact level spawn schedule; placement ở [levels/encounters](levels-encounters.md).
+
+## Enemy principles và common contract
+
+Ít archetype, tái dùng nhiều path/formation/fire sequence. Silhouette và telegraph
+phải cho biết vai trò; không chỉ recolor cả roster. Enemy runtime có HP/state/timer,
+nhưng static definition giữ balance/config theo [architecture](../systems/architecture.md).
+Movement path tách firing behavior; completion/exit policy do encounter owner quyết.
+Khi chết chỉ resolve reward/death hook một lần, sau đó release pooled state khi có pool.
+Không để presentation quyết damage hay completion.
+
+## Enemy HP và damage state
+
+### Enemy dùng HP `[LOCKED]`
+
+Enemy có HP và có thể nhận nhiều viên đạn trước khi chết. Không mặc định mọi enemy
+one-shot; survival model này khác life-based player.
+
+### Damage state
+
+Damage state giúp player đọc mức tổn thương mà không cần HP bar cho mỗi enemy.
+Enemy nhỏ SHOULD có hai state:
+
+```text
+Normal
+Damaged
+```
+
+Ví dụ enemy có HP 2: full HP dùng Normal, hit đầu chuyển sang Damaged frame/effect,
+hit tiếp chết. Không yêu cầu một frame riêng cho mỗi damage point.
+
+Enemy to SHOULD có:
+
+```text
+Normal
+Damaged
+Critical
+```
+
+Có thể dùng alternate sprite/frame, smoke, sparks và cracked emissive để biểu diễn
+state; exact presentation ở [audio/VFX](../presentation/audio-vfx.md).
+
+### Không floating HP bar cho quái thường
+
+HP bar dành cho boss. Elite đặc biệt có thể dùng nếu thực sự cần, nhưng default
+là không; enemy thường đọc state qua silhouette/damage feedback.
+
+### Hit feedback
+
+Projectile hit báo feedback và cập nhật damage state; death resolve một lần.
+Choreography flash/particle/SFX/shake thuộc [audio/VFX](../presentation/audio-vfx.md).
+
+## Enemy roster
+
+Exact HP/stats là [TUNABLE]. Bảng balance seed bên dưới là baseline prototype.
+
+### Scout Drone
+
+Basic enemy để học aim/dodge, tái dùng nhiều path với tốc độ vừa và single shot.
+Scout dùng Normal/Damaged; score thấp theo
+[economy owner](../gameplay/progression-economy.md).
+
+### Raider
+
+Raider tạo movement pressure bằng sine/arc/cross path, di chuyển nhiều và bắn burst
+ngắn. Nó có thể vừa bay vừa bắn, không bắt buộc đứng yên để attack.
+
+### Bomber
+
+Bomber là tank vừa, chậm hơn và dễ nhìn, tạo spread pressure bằng 3/5-way fire.
+Reward class và score cao hơn Scout; exact score thuộc
+[economy owner](../gameplay/progression-economy.md).
+
+### Sniper
+
+Sniper ép player reposition bằng telegraphed threat. Sequence baseline là
+`enter → hold → aim line → charge → fire beam → exit`; không được fire beam thiếu
+báo trước. Telegraph timing seed nằm ở section fire patterns bên dưới.
+
+### Interceptor
+
+Interceptor là fast threat gây pressure gần player. Tracking bị giới hạn và dash
+phải có telegraph; không dùng homing vô hạn để đuổi player.
+
+### Carrier
+
+Carrier lớn, chậm, đóng vai trò battlefield anchor và priority target. Nó spawn
+micro-drone/Scout-like units, có defensive/secondary fire nhẹ để tạo pressure trong
+lúc player quyết định ưu tiên mục tiêu.
+
+### Elite modifier
+
+Elite là modifier, không cần sprite hoàn toàn mới. Nó tăng threat và reward class
+nhưng không thay toàn bộ role của archetype gốc. Baseline modifiers:
+
+- HP multiplier theo balance seed bên dưới;
+- fire interval nhanh hơn ~15–25% `[TUNABLE]`;
+- scale ~1.10–1.15;
+- amber/gold accent hoặc distinct emissive;
+- reward class tốt hơn.
+
+Không biến mọi wave cuối thành toàn elite.
+
+## Minion
+
+Carrier sinh micro-drone/Scout-like units. HP, fire profile, cap minion, spawn cadence
+và minion có thuộc required kill set hay không [TBD] theo encounter cụ thể;
+không tự copy Scout stats thành locked minion contract.
+
+## Balance seed table
+
+Tất cả HP là [TUNABLE], không phải final balance.
+
+| Archetype | HP seed |
+|---|---:|
+| Scout | 2 |
+| Raider | 3 |
+| Bomber | 6 |
+| Sniper | 4 |
+| Interceptor | 4 |
+| Carrier | 10 |
+| Minion | [TBD] |
+| Elite modifier | ×1.6–1.9; điểm bắt đầu xấp xỉ ×1.75 |
+| Boss / shield node | [TBD] exact HP, cần tune theo weapon damage và time-to-kill |
+
+Elite fire interval nhanh hơn là seed, cần xác định biểu diễn multiplier khi implement;
+không mặc định mọi wave cuối toàn Elite. Reward selection theo
+[weapons/items/drops](weapons-items-drops.md); score values theo
+[progression/economy](../gameplay/progression-economy.md).
+
+## Fire patterns và telegraph
+
+Single shot, short burst, 3/5-way spread, charged beam, limited tracking/dash,
+secondary fire và minion summon theo role. Strong attack MUST có báo trước:
+Sniper aim line khoảng 0.6–0.9 s [TUNABLE], dash có pause/engine glow,
+boss beam có charge. Không beam one-frame, không homing vô hạn.
+Khi nhiều Sniper, stagger telegraph theo encounter, tránh unavoidable simultaneous laser.
+
+## Boss common contract và collision
+
+Boss có HP bar/name, readable hit area, armor/core/module states khi mechanic cần.
+Completion chỉ sau defeat và post-death sequence, không ngay HP chạm zero.
+Body/beam damaging hit resolve qua [player combat](../gameplay/player-combat.md).
+Exact contact hit area, node HP, invulnerability windows, damage multipliers,
+phase scheduler và duration chưa được thiết kế chốt: [TBD].
+
+## Boss 1 — Vanguard Frigate `[PROVISIONAL]`
+
+### Role
+
+Vanguard là boss giới thiệu, dùng ít mechanic để player học đọc volley và phase
+change trước khi campaign tăng target-priority pressure.
+
+### Phase structure
+
+Phase A dùng twin cannon, basic missile volley và movement ngang/arc nhẹ.
+Phase B ở khoảng 50% HP [TUNABLE] tăng fire rate vừa phải, thêm side sweep/spread
+và một attack mới rõ. Không thay challenge bằng attack one-frame bất ngờ.
+
+### Telegraph
+
+Missile/side sweep phải readable.
+
+Không có attack one-frame bất ngờ.
+
+### Death
+
+Sau defeat chạy post-death sequence, reward rồi handoff transition theo
+[levels](levels-encounters.md) và [audio/VFX](../presentation/audio-vfx.md).
+
+## Boss 2 — Nebula Warden `[PROVISIONAL]`
+
+### Identity
+
+Nebula Warden dạy target priority qua shield nodes/modules, không dựa vào complex
+lock-on UI. Player cần đọc module nào đang giữ shield trước khi tập trung core.
+
+### Shield-node mechanic
+
+Player phải phá shield nodes/modules trước khi boss vulnerable đầy đủ.
+Exact node HP và vulnerability windows chưa có seed; không tự quyết bằng effect timing.
+
+### Attack set
+
+- Beam Sweep;
+- Drone Spawn;
+- Plasma Burst.
+
+### Shield break feedback
+
+Node defeat làm shield phản hồi; final node làm shield collapse và boss vulnerable.
+Choreography thuộc [audio/VFX](../presentation/audio-vfx.md).
+
+### Phase rule
+
+Phase count 2–3 [TUNABLE]. Độ khó đến từ priority/attack interaction,
+không kéo dài encounter bằng HP sponge.
+
+## Final Boss — Rift Leviathan [PROVISIONAL]
+
+### Purpose
+
+Tổng kết signature systems, không chỉ tăng HP.
+
+### Phase 1 — Vertical
+
+HP 100% → ~65% `[TUNABLE]`.
+
+- radial/arc projectiles;
+- homing limited attack;
+- drone summon;
+- camera wide.
+
+### Phase 2 — Direction Shift
+
+Rift shift đổi combat sang horizontal; logical handoff/input lock/projectile clear
+thuộc [levels/encounters](levels-encounters.md#final-boss-direction-handoff).
+Attack set: sweeping beam, side lanes, dash/module attack.
+
+### Phase 3 — Final
+
+Below ~30% `[TUNABLE]`:
+
+- camera expands;
+- boss core exposed;
+- higher intensity;
+- không được biến thành unreadable bullet wall.
+
+### Final death
+
+Staged defeat dẫn Ending/Campaign Result; exact animation/audio thuộc
+[audio/VFX](../presentation/audio-vfx.md#final-rift).
+
+## Presentation boundary
+
+Boss 1 death chain và boss 2 shield-break chain được thể hiện theo
+[audio/VFX](../presentation/audio-vfx.md); mechanic vulnerability chỉ do gameplay
+resolve. Boss identity/phase trong file này không mang nghĩa có prefab/scene đã tạo.
