@@ -23,6 +23,22 @@ Không cần photorealism để thể hiện mass hoặc vật liệu.
 - photorealistic bắt buộc;
 - neon/glow phủ toàn màn hình.
 
+### Asset Bible
+
+Các invariant dưới đây áp dụng cho mọi nguồn asset; approved reference anchors
+là chuẩn đối chiếu cho asset production cùng visual family.
+
+| Invariant | Chuẩn thị giác |
+|---|---|
+| Shape language | Sleek/angular, stylized hard-surface sci-fi; mechanical/military/alien-tech |
+| Silhouette/proportions | Hướng thân và vai trò đọc rõ khi thu nhỏ; không cute/chubby/toy-like/mascot |
+| Material/stylization | Hard-surface nhất quán, không pastel-soft; không bắt buộc photorealism |
+| Viewing angle | Cùng góc nhìn trong family; tránh perspective drift giữa asset và state |
+| Detail density | Mechanical detail hỗ trợ hình khối, không thành noise ở gameplay scale |
+| Lighting | Cùng hướng sáng và shading language theo approved anchor |
+| Emissive/glow | Có kiểm soát, cùng logic trong family; giữ contrast cho threat |
+| Palette | Theo bảng color semantics bên dưới; không dùng màu thay cho silhouette |
+
 ### Player ship
 
 Player ship có silhouette gọn, sắc, angular và hướng thân rõ. Mechanical panels
@@ -38,6 +54,12 @@ Silhouette phải phân biệt vai trò; không chỉ recolor cùng hình cho to
 
 Boss có mass lớn, heavy/industrial/modular. Weak point và weapon modules phải nhìn
 được; armor/core states hỗ trợ việc đọc phase và target priority.
+Boss art SHOULD modular khi phù hợp: hull, cannon trái/phải, shield node, core và
+engines có thể là các phần riêng để weapon rotate, node phá riêng, core reveal,
+phase change bằng Transform/VFX và staged destruction. Đây là ngôn ngữ thị giác,
+không khóa hierarchy GameObject/class và không thay boss mechanics ở
+[enemy owner](../content/enemies-bosses.md). Ưu tiên cách này khi nó giảm nhu cầu
+spritesheet khổng lồ mà vẫn giữ silhouette.
 
 ### Background
 
@@ -49,7 +71,7 @@ không gian. Giữ contrast cho projectile; background không tranh cùng mức 
 | Nhóm | Màu định hướng |
 |---|---|
 | Player/friendly base | cyan / electric blue |
-| Enemy normal | crimson / red |
+| Enemy normal | dark gunmetal + crimson / red emissive |
 | Enemy special / dangerous telegraph | magenta |
 | Reward / currency | amber / gold |
 | Shield / defensive | teal |
@@ -85,13 +107,13 @@ amber navigation/reward accent; không hộp quà cute tự bay.
 Crate có cargo/reward silhouette rõ, nhận ra là vật cần pickup.
 Exact crate motif vẫn [TBD].
 
-## Damage visual và animation style
+## Damage visual và gameplay-scale readability
 
-Enemy Normal/Damaged/Critical phải đọc bằng sprite/frame, smoke/spark hoặc cracked
-emissive theo [enemy contract](../content/enemies-bosses.md). Boss heavy/modular có
-armor/core rõ. Hit flash ngắn, không làm mất silhouette.
-Entry/exit/orbit/respawn có easing mềm; không cần animation dài hoặc quá nhiều detail
-nhỏ. Frame count/import workflow thuộc production owner.
+Damage states phải phân biệt được bằng silhouette/state accent mà không mất identity
+của family. Readability phải được kiểm tra với player, enemy, boss, projectile,
+pickup và background cùng hiện diện ở gameplay scale; ảnh source đẹp riêng lẻ chưa đủ.
+State/HP/threshold thuộc [enemies/bosses](../content/enemies-bosses.md);
+[animation và damage feedback](audio-vfx.md#animation-philosophy) quyết cách thể hiện.
 
 ## Glow budget, background và UI
 
@@ -100,9 +122,16 @@ không tranh contrast với projectile. Tránh glow toàn màn hình, transparen
 và trails dày. UI hard-surface sci-fi gọn, icon-first/readable, không neon phủ màn hình.
 Feedback tier cụ thể thuộc [audio/VFX](audio-vfx.md).
 
-## Generated asset consistency
+## Visual family và approved anchors
 
-Giữ silhouette, lighting, scale, mechanical language và region palette nhất quán giữa
-mọi nguồn. Art review quyết kết quả visual; prompt/grid/slicing/license và reproduce
-thuộc [asset pipeline](../production/asset-pipeline.md). Không ép mọi asset qua AI
-hay PixelLab và không dùng workflow để thay art direction.
+Trước production hàng loạt, reference pack chốt viewing angle, silhouette,
+hard-surface language, material, detail density, lighting direction, glow amount,
+color semantics, proportions và mức stylization theo Asset Bible.
+Asset production sau phải tham chiếu approved anchors; quy trình tạo/duyệt pack ở
+[asset pipeline](../production/asset-pipeline.md#visual-reference-pack).
+
+AI generation phải theo family thay vì prompt từng asset độc lập. Cùng family giữ
+approved anchor, material, viewing angle, lighting, detail density và emissive logic.
+Ví dụ enemy roster Scout/Raider/Bomber/Sniper/Interceptor/Carrier dùng dark gunmetal,
+crimson emissive, angular hull và cùng shading language, nhưng vẫn phân biệt vai trò
+bằng silhouette. Không tạo lore/faction mới để giải thích một style khác.

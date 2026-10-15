@@ -38,25 +38,34 @@ Python synth, spritesheet helper, slicing/checking, batch rename và asset valid
 là offline utilities ở `tools/`. Chỉ khi tool thực sự cần chạy trong Editor mới đưa
 vào `app/Assets/StarShift/Editor/` hoặc vị trí Editor-only tương đương.
 
-## Audit baseline của scaffold
+## Unity và Android baseline
 
-Ngày 2026-10-15: ProjectVersion ghi `6000.5.9f1 (b57deb96f08d)`;
-manifest yêu cầu URP `17.6.0`, Input System `1.20.0`, AI Inference `2.6.1`,
-Pipeline `0.8.0-exp.1` (experimental), Test Framework `1.7.0`, cùng 2D toolset.
-Đây là observation, không phải yêu cầu nâng/hạ/pin version.
-URP trong `packages-lock.json`, package cache và danh sách package Editor đăng ký lại
-là `17.5.0`: conflict hiện hữu cần xử lý ở task package/setup riêng, chưa resolve.
-AI Assistant không có trong manifest/lock hoặc registered package list hiện tại;
-buffer Pipeline còn giữ hai warning AI Toolkit Account API timeout từ trước,
-không dùng log cũ để suy ra Assistant đang được cài. Không suy đoán dependency Unity MCP.
-Scene build list hiện chỉ có `Assets/Scenes/SampleScene.unity`;
-scene template tại `Assets/Settings/Scenes/URP2DSceneTemplate.unity` không phải level.
-SampleScene đang có Main Camera và Global Light 2D; không có gameplay implementation.
-Product/company đang là template `app`/`DefaultCompany`; không sửa Player Settings
-trong task scaffold. Editor API báo orientation `AutoRotation`, active build target
-`StandaloneLinux64`: chưa đáp ứng target landscape Android của thiết kế.
-Giữ nguyên trạng thái này trong scaffold; task setup sau cần cấu hình và verify.
-Target Android API/device/performance baseline còn [TBD].
+Baseline xác minh ngày 2026-10-15:
+
+| Hạng mục | Giá trị |
+|---|---|
+| Unity Editor | 6000.5.9f1, revision b57deb96f08d |
+| URP / Core / ShaderGraph / URP Config | 17.5.0, nguồn BuiltIn cho Unity 6000.5 |
+| Input System | 1.20.0, giữ action asset của template và active input handler hiện tại |
+| Product Name | StarShift |
+| Orientation | LandscapeLeft cố định; Portrait và Portrait Upside Down disabled |
+| Rendering | UniversalRP asset với Renderer2D tại mọi quality level; camera post-processing off |
+
+URP manifest, lock và Editor đã nhất quán ở version đi kèm Editor. Khi thay Editor
+hoặc render pipeline sau này, kiểm tra metadata/compatibility trước khi đổi package;
+không pin version từ một template/reference khác. AI Inference 2.6.1, Pipeline
+0.8.0-exp.1 experimental, Test Framework 1.7.0 và các package khác giữ nguyên.
+
+Android là target cần build khi Android Build Support có sẵn. Máy xác minh chưa có
+module này nên active target vẫn là StandaloneLinux64; chưa có Android APK/device
+smoke result. SDK/NDK ngoài Unity không thay thế module Editor. Smoke output sau này
+phải nằm trong ignored folder như `app/Builds/Android/`; API/device/performance
+baseline vẫn [TBD]. Không tự cài module hoặc đổi identifier cho branding.
+
+Build list vẫn chỉ có `Assets/Scenes/SampleScene.unity` với Main Camera và Global
+Light 2D; scene template không phải level. SampleScene đã chạy Play Mode với frame
+counter tăng, Renderer2D active và Input System event probe thành công trong memory.
+Các kiểm tra này không xác nhận Android runtime, touch thật hoặc gameplay.
 
 ## Scene structure `[PROVISIONAL]`
 
@@ -174,6 +183,12 @@ presentation orchestration đúng vai trò.
 Coroutine/timed sequence phù hợp với wave timing, death/respawn, boss intro,
 transition và temporary buff. Không dùng coroutine như kiến trúc chung cho mọi
 state khi state machine/config rõ hơn.
+
+Gameplay phải chạy với placeholder trước final art theo
+[placeholder-first workflow](../production/asset-pipeline.md#placeholder-first).
+Presentation có thể thay sprite/VFX mà không đổi gameplay contract; boss modular
+presentation theo [art direction](../presentation/art-direction.md#boss), không áp
+một hierarchy/class cố định hoặc để animation tự quyết damage/phase.
 
 ## State flow, camera và communication
 

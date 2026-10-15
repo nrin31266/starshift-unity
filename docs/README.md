@@ -66,7 +66,7 @@ Unity code/assets thuộc `../app/`; offline utilities thuộc `../tools/`.
 | Sửa CampaignSave | Save/profile | Player combat, progression/economy |
 | Sửa HUD | UI/UX | Owner của state được hiển thị |
 | Sửa palette | Art direction | Audio/VFX cho contrast |
-| Sửa sprite generation | Asset pipeline | Art direction |
+| Generate/import visual asset | Art direction, asset pipeline | Audio/VFX cho animation/feedback |
 | Test nhanh boss/transition | Dev/debug | Levels/encounters, enemies/bosses, audio/VFX |
 | Sửa pooling/scene model | Architecture | Domain liên quan |
 

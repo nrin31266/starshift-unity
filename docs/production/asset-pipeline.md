@@ -4,75 +4,138 @@
 
 Owner của asset sources, generation/import/slicing/naming/licensing/tooling và reproducibility. Visual target do [art direction](../presentation/art-direction.md) quyết; feedback do [audio/VFX](../presentation/audio-vfx.md) quyết.
 
-## Asset pipeline
+## Canonical production workflow
+
+`Gameplay placeholder` → `Visual reference pack` → `Style approval`
+→ `Vertical-slice asset batch` → `Normalize` → `Import`
+→ `Review at gameplay scale` → `Android check` → `Lock visual family`
+→ `Produce assets theo từng region`.
+
+Không generate toàn bộ 12 level ngay từ đầu. Style approval duyệt hướng nhìn qua
+reference pack; lock visual family chỉ sau khi batch đã qua Unity gameplay-scale
+review và Android check. Chưa kiểm tra Android thì ghi rõ chưa hoàn tất gate này.
+
+### Placeholder-first
+
+Gameplay implementation không phụ thuộc final art. Vertical slice được dùng primitive
+shape, temporary sprite, simple placeholder projectile, asteroid/background để validate
+movement, shooting, collision, death, respawn và encounter. Final art chỉ thay placeholder
+sau khi core loop hoạt động; không dùng production art làm điều kiện bắt đầu gameplay.
+
+### Visual reference pack
+
+Trước production hàng loạt, tạo pack nhỏ gồm khoảng Player Ship, Scout Drone,
+Bomber, boss silhouette/module sample, normal/resource asteroid và Region A background
+sample. Đây là baseline linh hoạt, không khóa số lượng tuyệt đối.
+Duyệt pack theo [Asset Bible và visual family](../presentation/art-direction.md#asset-bible),
+lưu các mẫu đã duyệt làm anchors; các batch sau phải đối chiếu anchors trước khi import.
+Nếu lệch style, sửa source và review lại trước khi tiếp tục batch.
 
 ### Asset source types
 
-Pipeline cho phép nhiều nguồn asset; chất lượng và độ nhất quán do art direction
-quyết, không phụ thuộc asset có được generate hay vẽ tay. Các nguồn được phép:
+Cho phép AI image generation, PixelLab/MCP, free assets, original drawing,
+Python generation và Unity procedural VFX. Mọi nguồn đều phải qua cùng review gate.
+AI generation dùng approved family anchors theo
+[art direction](../presentation/art-direction.md#visual-family-và-approved-anchors),
+không prompt từng asset độc lập. Prompt template chuẩn cho ship/enemy/boss vẫn [TBD].
 
-- AI image generation;
-- PixelLab/MCP;
-- free assets;
-- original drawing;
-- Python generation;
-- Unity procedural VFX.
+## Normalization và source review
 
-### AI sprite rules
+AI output không được import thẳng vào production chỉ vì nhìn đẹp.
+Luồng chuẩn: `source` → `cleanup if needed` → `normalize` → `review` → `Unity import`.
 
-Prompt spritesheet SHOULD mô tả layout đủ chính xác để import/slicing ổn định.
-[TBD] Prompt template chuẩn cho ship/enemy/boss chưa được chốt. Các constraint cần giữ:
-
-- transparent background;
-- fixed grid;
-- same canvas per frame;
-- same center;
-- same scale;
-- no text;
-- no border;
-- no perspective drift;
-- consistent lighting;
-- hard-surface sci-fi;
-- no cute/chubby.
-
-### Frame count philosophy
-
-Không cần animation dài nếu ít frame đã đọc được state. Frame-count examples là
-[TUNABLE], không phải yêu cầu generate mọi sheet theo cùng độ dài:
-
-| Asset | Frame-count seed |
-|---|---|
-| Engine | 3–4 |
-| Small explosion | 6–8 |
-| Portal/rift | 8–12 |
-| Damaged state | Một alternate frame có thể đủ |
-
-### Particle-first rule
-
-Nếu Transform/Particle System làm tốt hơn, không cần generate 12-frame sprite.
+Normalization kiểm tra transparent background cho sprite tách nền, consistent canvas,
+centered visible bounds, consistent scale, correct orientation, không shadow/background
+ngoài ý muốn, alpha edge và padding. Background artwork giữ nền có chủ đích theo
+art direction. Review source kiểm tra style, alignment và readiness để import;
+Unity gameplay-scale review sau import vẫn bắt buộc.
+Offline Python utility trong `tools/assets/` có thể được tạo khi có task riêng;
+workflow này không yêu cầu tool mới.
 
 ### PixelLab usage
 
-PixelLab/MCP là workflow tùy chọn khi AI frames không đều, cần pixel consistency,
-cleanup hoặc sửa grid/slicing mismatch. Không bắt buộc mọi asset đi qua PixelLab;
-chọn tool khi nó giải quyết lỗi cụ thể của asset.
+PixelLab/MCP là optional production tool cho cleanup frame, alignment/grid correction,
+pivot consistency, repaint/correction, resize và edge cleanup.
+Source đạt yêu cầu đi thẳng tới normalize; source chưa đạt có thể qua PixelLab cleanup
+rồi normalize, review và import. Không bắt mọi asset qua PixelLab.
 
-### Free asset
+## Sprite sheet contract
 
-Free asset cần license rõ, attribution được lưu và style phù hợp. Không dành hàng
-giờ tìm một generic effect có thể tạo nhanh bằng Transform/Particle; nguồn miễn phí
-không làm giảm yêu cầu art review hoặc tự bỏ nghĩa vụ credit.
+Khi cần sprite animation theo [animation strategy](../presentation/audio-vfx.md#animation-philosophy),
+sheet phải có transparent background, fixed grid, cùng canvas/frame, object center,
+object scale và orientation; không text, border hoặc perspective drift; lighting nhất quán.
 
-### Audio generation
+Exact frame count [TUNABLE]; các ví dụ sau chỉ là guideline:
 
-Python synth SFX thuộc `tools/audio/`; import generated output vào Unity Audio
-folder, không đưa công cụ offline vào runtime. Naming và BGM import ở các section dưới.
+| Asset | Frame-count guideline |
+|---|---|
+| Engine, nếu cần sprite animation | Khoảng 3–4 |
+| Small explosion | Khoảng 6–8 |
+| Portal/rift | Khoảng 8–12 |
 
-### Reproducibility
+## Asset lifecycle và Definition of Done
 
-Với generation quan trọng, giữ script cùng prompt/generation note và parameters
-cần để tái tạo. Không cần version-control mọi intermediate lớn; giữ source hữu ích
-và runtime export có mục đích rõ.
+`NEEDED` → `GENERATED` → `REVIEW` → `NORMALIZED` → `IMPORTED`
+→ `IN-GAME VERIFIED` → `DONE`.
+
+Với asset không generate, `GENERATED` được hiểu là created/acquired.
+`REVIEW` là review source ban đầu để xác định sửa gì; sau `NORMALIZED` kiểm tra lại
+source trước import theo luồng normalization. Không đánh đồng review source với
+`IN-GAME VERIFIED`; nếu không đạt, sửa source/normalization/import rồi review lại.
+
+PNG/model/audio tồn tại chưa đủ để DONE. Visual asset chỉ DONE khi đúng style,
+import hợp lệ, đúng scale, readable trong gameplay và không phá visual hierarchy.
+Batch còn phải qua Android check trước khi lock family; preview source không thay
+Unity gameplay-scale review hoặc Android check.
+
+## Art review environment `[PROVISIONAL]`
+
+Cần một scene/dev environment kiểu `ArtLab` hoặc `PresentationLab` để review tại
+actual gameplay scale; tên và cách tổ chức chưa khóa. So sánh player/enemy/boss,
+damage states, projectile, pickup, VFX và backgrounds trong cùng ngữ cảnh.
+Dev controls có thể hỗ trợ Normal, Damaged, Critical, Hit, Fire, Death, region background
+và actual gameplay scale. Đây là workflow requirement đề xuất, chưa có scene được tạo.
+Tên/cấu trúc môi trường review là provisional; yêu cầu kiểm tra trong Unity ở gameplay
+scale trước khi asset hoàn tất vẫn bắt buộc, dù dùng scene/dev environment nào.
+
+## Production batching
+
+Các batch dưới là planning guideline, không thay
+[exact level/encounter schedule](../content/levels-encounters.md).
+
+| Batch | Phạm vi ví dụ |
+|---|---|
+| Vertical Slice | Player, Pulse projectile, Scout, simple asteroid, small explosion, simple background, basic HUD icon |
+| Region A | Raider, Bomber, Elite presentation, Golden asteroid, Supply Drone, Supply Crate, Boss 1, Region A environment |
+| Region B | Sniper, Interceptor, Carrier, Boss 2, Region B environment |
+| Region C | Late-game/final presentation assets, final boss, Rift effects, Region C environment |
+
+Vertical Slice batch dùng để kiểm chứng family sau style approval, trước khi lock.
+Các batch theo region tiếp nối sau Android check và lock visual family trong canonical
+workflow; không production cả campaign một lượt. Review batch mới cùng anchors để
+phát hiện style drift.
+
+## Asset source tracking và licensing
+
+Mỗi asset cần có record tối thiểu; chưa yêu cầu database hoặc tool riêng:
+
+| Trường | Nội dung |
+|---|---|
+| Asset ID | ID ổn định để đối chiếu source và output |
+| Category / subject / variant | Loại asset, đối tượng và biến thể |
+| Source | Nguồn gốc, tác giả hoặc nơi acquire |
+| Generation method | Cách tạo/acquire, tool/script nếu có |
+| Reference/anchor | Mẫu đã duyệt dùng để đối chiếu |
+| Unity destination | Đường dẫn runtime output |
+| License | Quyền sử dụng và điều kiện áp dụng |
+| Attribution | Credit khi được yêu cầu |
+| Status | Trạng thái theo asset lifecycle |
+
+Prompt AI quan trọng SHOULD lưu cùng generation note/parameters đủ để regenerate.
+Free asset/music cần license rõ, attribution được lưu và style phù hợp; free không
+mặc định miễn credit. Không cần commit raw intermediate khổng lồ; giữ source hữu ích
+và runtime export có mục đích rõ. Audio generation/import chi tiết ở
+[Python SFX và BGM import](#python-sfx-và-bgm-import).
 
 ## Image naming examples
 
@@ -138,7 +201,10 @@ Chỉ viết generator hoặc generate output khi có task asset/audio tương �
 
 Giữ transparent padding hợp lý, kiểm tra alpha edges/atlas bleeding, texture size,
 compression/format và mip/filter phù hợp art style. Test sprite nhỏ trên mobile,
-không chỉ ảnh full-size. Budget texture/audio/particle và device baseline [TBD];
+không chỉ ảnh full-size. Review transparent overdraw, excessive particles, giant
+additive sprite, glow everywhere, trail count và sprite resolution quá lớn dưới
+mobile constraints. Source đẹp nhưng unreadable hoặc quá nặng trong gameplay thì
+không đạt. Budget texture/audio/particle và device baseline [TBD];
 profile trước khi chốt quality setting hoặc thêm package.
 
 ## Asset review checklist

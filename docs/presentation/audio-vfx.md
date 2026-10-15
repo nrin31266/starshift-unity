@@ -17,15 +17,27 @@ State quan trọng cần chuyển tiếp ngắn nếu điều đó giúp đọc 
 không yêu cầu animation hoàn hảo hoặc dài. Chọn kỹ thuật theo công việc nó làm,
 tránh generate spritesheet khi Transform hoặc Particle đã thể hiện được ý định.
 
+Không dùng sprite-sheet animation cho mọi chuyển động. Chia ba nhóm:
+
 | Kỹ thuật | Trường hợp phù hợp |
 |---|---|
-| Sprite animation | Engine flame; explosion; portal/rift; pickup energy; mechanical boss parts khi cần |
-| Transform animation | Ship/enemy entry và exit; boss entrance; rotation; scale pop; UI panel; orbit turn |
-| Particle | Hit sparks; engine trail; debris; smoke; explosion particles; warp streak; shield break |
-| Damage-state presentation | Sprite swap, material flash, smoke hoặc sparks; không bắt buộc frame-by-frame |
+| Transform/code animation | Ship entry; enemy path; arc/sine movement; rotations; asteroid spin; Supply Drone movement; pickup hover; orbit/slingshot; camera transition; boss reposition |
+| Particle / Trail / material | Engine; muzzle flash; sparks; smoke; hit flash; shield; debris; warp streak; explosion particles; glow/emissive feedback |
+| Sprite animation | Khi hình dạng thực sự đổi hoặc hiệu ứng được lợi rõ: explosion, rift/portal, special energy; engine flame nếu particle không đủ; mechanical state nếu sprite swap/module transform không đủ |
 
-State/threshold do [enemies/bosses](../content/enemies-bosses.md) quyết;
-frame count và generation/import workflow ở [asset pipeline](../production/asset-pipeline.md).
+Không tạo spritesheet dài chỉ để animate Transform movement. Entry/exit/orbit/respawn
+có easing phù hợp; không buộc state gameplay chờ một animation dài.
+Frame count và generation/import workflow ở
+[asset pipeline](../production/asset-pipeline.md#sprite-sheet-contract).
+
+### Enemy damage feedback
+
+Common enemy ưu tiên `Normal` → `Damaged`; heavy enemy có thể dùng
+`Normal` → `Damaged` → `Critical`. Kết hợp short material flash, particles,
+smoke và sprite/state swap; không cần một frame cho mỗi HP point.
+Đây là presentation mapping; state áp dụng, HP và threshold do
+[enemies/bosses](../content/enemies-bosses.md#enemy-hp-và-damage-state) quyết.
+Hit flash ngắn phải giữ silhouette và không che attack telegraph.
 
 ## Audio design
 
