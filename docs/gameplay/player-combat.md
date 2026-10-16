@@ -64,6 +64,21 @@ Input abstraction nên hỗ trợ test nhanh bằng mouse/touch simulation. Khi 
 và [Enhanced Touch](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.4/manual/Touch.html)
 với package thực tế; version trong reference không phải yêu cầu pin package.
 
+### M2 manual feel checkpoint `[PROVISIONAL]`
+
+VS-004–005 dùng mouse left-button trong Editor và một touch đang drag qua cùng
+contract delta. Press mới đặt mốc, không tạo displacement; release/cancel hoặc
+mất focus kết thúc drag. Touch thứ hai không thay pointer của drag đang chạy.
+Disable/re-enable movement yêu cầu press mới để tránh áp delta cũ.
+
+`Sensitivity = 1` là seed `[TUNABLE]`: tàu dịch chuyển cùng số pixel với pointer,
+độc lập zoom orthographic. Đây chưa phải feel đã duyệt; exact sensitivity vẫn cần
+manual playtest. Checkpoint không thêm smoothing/acceleration; nhả pointer không
+có inertia. VS-007 đã bổ sung [movement bounds](#movement-bounds-và-camera-interaction);
+UI exclusion chưa được implement. Đây là trạng thái implementation hiện tại,
+không thay các requirement ở trên.
+Component/data flow thuộc [architecture owner](../systems/architecture.md#m2-scene-và-player-baseline-provisional).
+
 ## Player survival
 
 ### Lives `[LOCKED]`
@@ -184,6 +199,20 @@ Player phải bị giới hạn trong gameplay bounds phù hợp camera/aspect r
 hướng chiến đấu hiện tại; không đi khỏi màn hình. Safe area HUD không tự đồng nghĩa
 với world bounds. Exact margin, drag sensitivity và smoothing [TBD]/cần playtest.
 Camera đổi zoom không được làm cùng delta ngón tay có cảm giác điều khiển khác hẳn.
+
+VS-007 baseline `[PROVISIONAL]` dùng footprint gameplay hình chữ nhật quanh root,
+size local **0.8 × 1.0**, đủ bao placeholder hiện tại và độc lập với artwork/damage
+hitbox. Đây là envelope cho movement bounds, không phải world rectangle cố định.
+Footprint theo scale/rotation của Player; viewport camera quyết giới hạn ở mỗi
+physics step. Không cộng margin riêng hoặc lấy HUD safe area làm bounds.
+Exact footprint/margin vẫn cần review khi đổi kích thước tàu.
+
+Delta vượt cạnh bị bỏ ở step đang xử lý; tiếp tục kéo ra ngoài không tích lũy
+displacement chờ bù. Đảo drag vào trong phải di chuyển ngay trong cùng pointer press.
+Không thêm smoothing, acceleration hoặc elastic response. Khi viewport nhỏ hơn
+footprint trên một trục, đặt giữa trục đó; không thể đảm bảo bao trọn footprint
+trong viewport nhỏ hơn chính nó. Implementation và component boundary ở
+[architecture owner](../systems/architecture.md#m2-scene-và-player-baseline-provisional).
 
 ## Collision matrix theo gameplay contract
 
