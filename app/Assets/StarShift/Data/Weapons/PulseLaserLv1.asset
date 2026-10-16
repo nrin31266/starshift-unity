@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b752b07589708d3af8684af1b8a7c796, type: 3}
+  m_Name: PulseLaserLv1
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Combat.PulseLaserDefinition
+  projectilePrefab: {fileID: 6313352160549666604, guid: 689fd7f0b61bc39b798a1aea031257f6, type: 3}
+  fireInterval: 0.2
+  projectileSpeed: 12
+  damage: 1
+  projectileLifetime: 1.5

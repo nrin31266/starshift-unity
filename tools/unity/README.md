@@ -60,3 +60,66 @@ thể cần cập nhật helper khi nâng Editor. Ảnh corner verification nằ
 
 Chọn Player và bật Gizmos ở Scene View để xem footprint vàng. Chỉnh Footprint Size
 chỉ khi muốn đổi envelope kích thước tàu; giữ seed hiện tại khi test feel.
+
+## Gate và Pulse Laser checkpoint
+
+`ConfigurePulseLaser.Configure` tạo projectile sprite/prefab, definition và nối
+gate/weapon/Muzzle vào Player qua Unity API. Có thể chạy lại ở Edit Mode; không reset
+balance values trên definition đã có hoặc transforms Player do user chỉnh.
+
+`VerifyPulseLaser.Run` chạy trong Play Mode qua MCP `run_script`; file tương ứng
+là `../tools/unity/VerifyPulseLaser.cs`. Helper tự restore gate/player/timeScale,
+dọn virtual Mouse/probes và không mutate original config. Coverage và giới hạn ở
+[dev/debug owner](../../docs/systems/dev-debug.md#m2-pulse-laser-verification).
+
+Để thử fire gate qua MCP eval, lấy PlayerGameplayGate trên Player rồi gọi
+`SetState(StarShift.Player.PlayerGameplayState.Entry)` để chặn hoặc `Active` để
+resume; không cần UI. Hold pointer để bắn. Gate resume khi còn held cho fire tiếp
+tục; dùng press mới để drag. Play Mode mặc định Active nhưng không held thì không fire. Inspector của Pulse Laser Weapon chứa reference definition và Muzzle;
+feel/balance knobs thuộc definition asset, không duplicate trên Player runtime.
+
+Input verification helpers tạm đưa input về Game View, bỏ background reset và
+suppress native Mouse/Touchscreen để virtual events không bị focus/chuột thật xen
+vào. Tất cả policy/device states được restore trong finally; không đổi project input
+asset/update mode. Input adapter tự sample, không để movement consume held intent.
+
+## Dynamic gameplay view checkpoint
+
+`ConfigureGameplayView.Configure` thêm GameplayViewController lên Main Camera qua
+Unity API ở saved gameplay scene, giữ Player/prefab và placeholder edits.
+`VerifyGameplayView.Run` nhận argument width `1600` hoặc `2000` qua `args` của
+MCP run_script (ví dụ `[1600]`); height 900. Nó đổi Game View thật, queue virtual
+Mouse events, theo dõi footprint sau movement LateUpdate và restore view/player,
+gate/time/input policies/devices/Game View trong finally. Coverage/giới hạn ở
+[dev/debug owner](../../docs/systems/dev-debug.md#dynamic-gameplay-view-verification).
+`VerifyGameplayView.InspectorRequest` kiểm tra đường chỉnh target qua SerializedObject
+trong Play Mode. `ConfigureGameplayView.Inspect` inspect scene/prefab references và
+frame Scene View cho manual inspection; không save thay đổi gameplay state.
+
+Manual: mở gameplay scene, chọn Main Camera, Play. Chỉnh `Target View` trong
+Gameplay View Controller (size và Rect), xem camera/Player chuyển dần.
+Các ô Target View commit khi nhấn Enter hoặc chuyển focus; có thể xóa số rồi gõ
+decimal như Height `0.7`. `VerifyGameplayView.InspectorDelayedFields` kiểm tra UI Toolkit
+text buffer và committed binding qua drawer thật trong Play Mode.
+Context menu `Return To Baseline (Play Mode)` trả về view mặc định. Chọn Camera trong Scene View,
+bật Gizmos để thấy vùng; chọn Player để xem footprint. Runtime caller/API thuộc
+[architecture](../../docs/systems/architecture.md#dynamic-gameplay-view-foundation).
+
+## Scout checkpoint
+
+`ConfigureScout.Configure` tạo placeholder sprite, HP definition, production prefab
+và một scene instance qua Unity API. Chạy trên saved gameplay scene ở Edit Mode;
+không overwrite prefab/definition đã có. `ConfigureScout.Inspect` đọc hierarchy,
+HP runtime, flight, collider/body binding và prefab connection; HP runtime chỉ
+khởi tạo khi Play/OnEnable.
+
+`VerifyScout.Run` nhận args `[1600]` hoặc `[2000]` qua MCP run_script trong Play Mode.
+`VerifyScout.EdgeCases` không cần args. Coverage/isolation ở
+[dev/debug](../../docs/systems/dev-debug.md#m2-scout-verification).
+Ảnh damaged-state nằm trong ignored `app/Temp/StarShiftScoutCheckpoint/`.
+
+Manual: Play gameplay scene, đợi Scout bay vào vùng trên rồi kéo Player để aim,
+giữ pointer bắn Pulse. Scout chết sẽ disable; restart Play để thử lại, chưa có
+respawn/scheduler. Chọn scene Scout để chỉnh Entry/Hold Viewport và Entry Duration;
+HP chỉnh ở definition asset, flash/tint ở Enemy Damage Presentation. Các giá trị
+là prototype seeds ở canonical owners, không phải final tuning.

@@ -10,6 +10,9 @@ namespace StarShift.Player
         private Vector2 footprintSize = new Vector2(.8f, 1f);
 
         public Vector2 ClampPosition(Vector2 proposedPosition, Camera gameplayCamera)
+            => ClampPosition(proposedPosition, gameplayCamera, new Rect(0, 0, 1, 1));
+
+        public Vector2 ClampPosition(Vector2 proposedPosition, Camera gameplayCamera, Rect playableViewport)
         {
             var worldPosition = new Vector3(proposedPosition.x, proposedPosition.y, transform.position.z);
             var viewportPosition = gameplayCamera.WorldToViewportPoint(worldPosition);
@@ -24,8 +27,8 @@ namespace StarShift.Player
                 minimumOffset = Vector2.Min(minimumOffset, projectedOffset);
                 maximumOffset = Vector2.Max(maximumOffset, projectedOffset);
             }
-            viewportPosition.x = ClampAxis(viewportPosition.x, -minimumOffset.x, 1f - maximumOffset.x);
-            viewportPosition.y = ClampAxis(viewportPosition.y, -minimumOffset.y, 1f - maximumOffset.y);
+            viewportPosition.x = ClampAxis(viewportPosition.x, playableViewport.xMin - minimumOffset.x, playableViewport.xMax - maximumOffset.x);
+            viewportPosition.y = ClampAxis(viewportPosition.y, playableViewport.yMin - minimumOffset.y, playableViewport.yMax - maximumOffset.y);
             return gameplayCamera.ViewportToWorldPoint(viewportPosition);
         }
 

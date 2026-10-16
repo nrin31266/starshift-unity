@@ -24,12 +24,25 @@ public static class VerifyPlayerDrag
         var originalSize = camera.orthographicSize;
         var originalAspect = camera.aspect;
         var originalMouse = Mouse.current;
-        var mouse = InputSystem.AddDevice<Mouse>("StarShiftVerificationMouse");
+        var inputSettings = InputSystem.settings;
+        var originalEditorPolicy = inputSettings.editorInputBehaviorInPlayMode;
+        var originalBackgroundPolicy = inputSettings.backgroundBehavior;
+        var disabledDevices = new List<InputDevice>();
+        Mouse mouse = null;
         Touchscreen touch = null;
         var results = new List<string>();
         var frame = Time.frameCount;
         try
         {
+            inputSettings.editorInputBehaviorInPlayMode = InputSettings.EditorInputBehaviorInPlayMode.AllDeviceInputAlwaysGoesToGameView;
+            inputSettings.backgroundBehavior = InputSettings.BackgroundBehavior.IgnoreFocus;
+            foreach (var device in InputSystem.devices)
+            {
+                if (!device.native || !device.enabled || (!(device is Mouse) && !(device is Touchscreen))) continue;
+                InputSystem.DisableDevice(device);
+                disabledDevices.Add(device);
+            }
+            mouse = InputSystem.AddDevice<Mouse>("StarShiftVerificationMouse");
             // Suite này đo delta input độc lập; clamp được kiểm tra trong VerifyPlayerBounds.
             if (bounds != null) bounds.enabled = false;
             await MouseEvent(mouse, new Vector2(100, 200), false);
@@ -89,7 +102,10 @@ public static class VerifyPlayerDrag
         }
         finally
         {
-            InputSystem.RemoveDevice(mouse);
+            if (mouse != null) InputSystem.RemoveDevice(mouse);
+            foreach (var device in disabledDevices) if (device.added) InputSystem.EnableDevice(device);
+            inputSettings.editorInputBehaviorInPlayMode = originalEditorPolicy;
+            inputSettings.backgroundBehavior = originalBackgroundPolicy;
             if (touch != null) InputSystem.RemoveDevice(touch);
             if (originalMouse != null && originalMouse.added) originalMouse.MakeCurrent();
             input.ResetDrag();

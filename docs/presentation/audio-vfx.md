@@ -39,6 +39,12 @@ smoke và sprite/state swap; không cần một frame cho mỗi HP point.
 [enemies/bosses](../content/enemies-bosses.md#enemy-hp-và-damage-state) quyết.
 Hit flash ngắn phải giữ silhouette và không che attack telegraph.
 
+VS-013 placeholder dùng Hull tint trắng trong 0.08 s `[TUNABLE]`, sau đó giữ
+Damaged tint khi HP dưới max. Root disable ngay khi chết; chưa có explosion,
+death fade, particles hoặc SFX. Cue reset khi object reuse; thời gian flash dùng
+scaled time. Đây là presentation tạm cho [Scout checkpoint](../content/enemies-bosses.md#scout-drone),
+không phải approved final palette/art hoặc authority cho HP/death.
+
 ## Audio design
 
 SFX đơn giản có thể synth bằng Python; không bắt buộc synth toàn bộ BGM.

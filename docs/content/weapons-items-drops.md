@@ -2,7 +2,7 @@
 
 ## Phạm vi và ownership
 
-Owner của weapon patterns/config, pickups, Weapon Core, asteroids reward classes, Supply Drone/Crate và Drop Director. Player switch/auto-fire/damage/death chỉ tham chiếu [player combat](../gameplay/player-combat.md).
+Owner của weapon patterns/config, pickups, Weapon Core, asteroids reward classes, Supply Drone/Crate và Drop Director. Player switch/hold-to-fire/damage/death chỉ tham chiếu [player combat](../gameplay/player-combat.md).
 
 ## Weapon philosophy và common config
 
@@ -40,7 +40,22 @@ Prototype seed `[TUNABLE]`:
 | Lv2 | twin shot |
 | Lv3 | twin + center shot / stronger center |
 
-Exact fire interval/damage [TBD]; khi có seed thì giữ [TUNABLE] tại file này.
+M2 Pulse Laser Lv1 seed `[TUNABLE]`, phục vụ VS-010/011 và chưa phải balance đã duyệt:
+
+| Giá trị | Seed |
+|---|---:|
+| Fire interval | 0.2 s |
+| Projectile speed | 12 world units/s |
+| Damage mỗi hit | 1 |
+| Projectile lifetime | 1.5 s |
+
+Static asset ở `app/Assets/StarShift/Data/Weapons/PulseLaserLv1.asset` giữ các seed
+và projectile prefab reference. Runtime snapshot damage/speed/lifetime khi launch;
+không mutate definition để giữ cooldown hoặc current projectile state.
+Continuous shooting bắn shot đầu ở physics step đầu tiên khi cả gate lẫn held
+intent cho phép, giữ cadence theo scaled physics time. Khi gate chặn hoặc pointer
+release thì bỏ cadence backlog, không bắn bù thành burst lúc resume. Input/fire
+contract thuộc [player owner](../gameplay/player-combat.md#hold-to-fire-continuous-shooting-locked). Exact final balance vẫn [TBD]; không suy ra DPS/HP roster từ checkpoint.
 
 ### Plasma Spread
 
@@ -229,7 +244,7 @@ Có cap active pickups để hạn chế clutter. Exact cap vẫn [TBD].
 
 ## Switch và death reference
 
-Free switching giữa unlocked weapons, auto-fire gates và active weapon penalty
+Free switching giữa unlocked weapons, hold-to-fire gates và active weapon penalty
 được sở hữu bởi [player combat](../gameplay/player-combat.md).
 Checkpoint selection/levels theo [save/profile](../systems/save-profile.md).
 

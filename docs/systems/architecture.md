@@ -119,10 +119,12 @@ Player scene instance nối tới `app/Assets/StarShift/Prefabs/Player/Player.pr
 ```text
 Player                         Transform, Rigidbody2D,
                                InputSystemPointerInput, RelativeDragMovement,
-                               PlayerMovementBounds
+                               PlayerMovementBounds, PlayerGameplayGate,
+                               PulseLaserWeapon
 ├── Visual                     Transform
 │   └── HullPlaceholder         SpriteRenderer
-└── Collision                  CircleCollider2D (trigger)
+├── Collision                  CircleCollider2D (trigger)
+└── Muzzle                     Transform (up = hướng bắn gameplay)
 ```
 
 Root giữ transform/physics của runtime entity; Visual cho phép thay presentation
@@ -130,18 +132,22 @@ mà không đổi hitbox; Collision giữ representation độc lập với artw
 Rigidbody2D Kinematic, gravity zero và freeze rotation là baseline prototype;
 collider radius/offset cũng provisional, chưa khóa movement API hay collision matrix.
 Prefab root ở origin, unit scale; spawn position thuộc scene instance.
-Chưa có combat, life state, encounter, HUD hoặc persistence.
+Chưa có lives/death/respawn sequence, encounter, HUD hoặc persistence.
 Không tạo component rỗng để giữ chỗ cho các trách nhiệm chưa implement.
 
 VS-004–005 có runtime scripts ở `Scripts/Player/`:
 `PlayerPointerInput` là abstract MonoBehaviour với `ReadDelta()` (Vector2 pixel)
-và `ResetDrag()`; `InputSystemPointerInput` là adapter duy nhất biết Input System
-Mouse/Enhanced Touch. Movement chỉ phụ thuộc abstraction, không biết device API.
+và `ResetDrag()`, thêm `FireHeld`/`FireIntentChanged` cho weapon. `ResetDrag()`
+chỉ xóa anchor/delta movement, không xóa held intent. `InputSystemPointerInput`
+là adapter duy nhất biết Input System
+Mouse/Enhanced Touch. Adapter sample trong Update trước movement và publish
+snapshot không bị consume; movement đọc delta, weapon đọc held intent độc lập.
+Không cần movement chạy để input/weapon hoạt động; weapon không đọc device API.
 Enhanced Touch enable/disable đi theo adapter lifecycle; không đổi template action
 asset, Input System update mode hay thêm input framework.
 
-`RelativeDragMovement` đọc delta một lần mỗi Update, đổi sang world displacement
-qua pixel dimensions/projection của camera và gom cho FixedUpdate. FixedUpdate
+`RelativeDragMovement` đọc delta một lần mỗi Update, gom pixel delta cho FixedUpdate,
+rồi đổi sang world displacement qua current pixel dimensions/projection của camera. FixedUpdate
 áp lên position của Rigidbody2D Kinematic ở root; không nhân deltaTime cho displacement
 và không tạo velocity/inertia. Direct body-position update chưa giải quyết blocking
 collision; physics response cần review khi có gameplay tương ứng.
@@ -151,14 +157,132 @@ feel knob; seed và behavior thuộc
 [player owner](../gameplay/player-combat.md#m2-manual-feel-checkpoint-provisional).
 
 VS-007 tách `PlayerMovementBounds` trên cùng root. Movement đưa proposed body
-position và camera hiện tại vào `ClampPosition()` trước khi áp position trong
-FixedUpdate, rồi bỏ pending delta. Bounds project các góc footprint local sang
-viewport, clamp root theo phần viewport còn lại và chuyển về world. Component
-không đọc pointer, renderer hoặc damage collider; không có Update loop thứ hai
-ghi position, tránh tranh quyền với movement. Footprint có gizmo khung vàng khi
+position, camera và current playable viewport vào `ClampPosition()` trước khi áp
+position trong FixedUpdate, rồi bỏ pending delta. Bounds project các góc footprint
+local sang viewport, clamp root theo phần region còn lại và chuyển về world.
+Component không đọc pointer, renderer hoặc damage collider và không ghi position.
+Movement là writer duy nhất: thêm LateUpdate để clamp sau view update, kể cả gate
+đóng hoặc không có physics step trong render frame. Footprint có gizmo khung vàng khi
 chọn Player; Inspector không thêm camera reference trùng với movement.
 Seed và boundary behavior thuộc
 [player owner](../gameplay/player-combat.md#movement-bounds-và-camera-interaction).
+
+### Dynamic gameplay view foundation
+
+`Scripts/Gameplay/GameplayViewSettings` là serializable value config nhỏ gồm target
+orthographic size và normalized playable Rect. `GameplayViewController` trên Main
+Camera sở hữu cả camera framing lẫn current playable region; không biết level ID,
+boss ID, player input, damage hoặc encounter completion. Chưa cần ScriptableObject,
+registry profile, tween/cinematic framework hoặc authoring system.
+
+Inspector có `Target View` và `Transition Duration`; sửa target trong Play Mode đi
+qua cùng request path với runtime caller. Gameplay code giữ direct reference tới
+controller, gọi `RequestView(new GameplayViewSettings(size, viewport))`, hoặc overload
+thêm duration tính bằng giây; `ReturnToBaseline()` request baseline full viewport.
+API và naming hiện tại là implementation `[PROVISIONAL]`; camera policy thuộc
+[content owner](../content/levels-encounters.md#master-campaign-table-và-camera-profiles).
+Editor drawer dùng delayed numeric fields: commit bằng Enter hoặc đổi focus trước
+khi validation chạy, tránh giá trị tạm rỗng/0 khi gõ decimal bị reset về full viewport.
+
+Controller Update chạy trước input/movement, interpolate size và bốn Rect edges bằng
+smoothstep không overshoot, dùng scaled deltaTime; pause đóng băng transition.
+Request mới bắt đầu từ camera size/current region đang hiển thị, không snap về source
+profile cũ. Duration 0 áp ngay, còn seed duration 0.6 s là `[TUNABLE]`. View config
+không chứa mutable elapsed/current state; state đó nằm riêng trong controller.
+Size dưới baseline được nâng lên baseline; Rect được intersect với full viewport,
+Rect rỗng/đảo ngược/non-finite fallback full. Không expose easing knob chưa cần.
+
+Movement lấy controller trên camera đã bind, đọc `CurrentPlayableViewport`; nếu
+camera không có controller thì dùng full viewport như baseline cũ. Bounds giữ
+geometry-only responsibility; camera không tự di chuyển Player. Clamp bằng current
+projection và pending **pixel** delta tránh dùng world displacement tính từ zoom cũ.
+Không có signal đổi view làm reset input/fire hoặc bypass `PlayerGameplayGate`.
+Foundation yêu cầu movement/bounds components đang enabled; gate chặn permission
+bằng state, không disable movement để làm pause/entry.
+
+Gizmo khi chọn Main Camera: full viewport trắng, current playable region cyan
+(Edit Mode hiển thị target region); footprint vàng vẫn thuộc Player bounds.
+Gizmo chỉ phục vụ development. Chưa triển khai camera rotation/dynamic direction,
+camera shake hoặc sequencer.
+
+### M2 gate và Pulse Laser baseline `[PROVISIONAL]`
+
+VS-009–011 nối gate vào movement và weapon qua component references trên Player
+root. `PlayerGameplayGate` là nguồn permission duy nhất; input adapter đọc pointer
+và giữ delta/held intent riêng. Movement xóa pending delta khi gate đóng, kiểm tra
+lại trước physics position update. Weapon chỉ spawn khi `CanFire && FireHeld`,
+bỏ cadence backlog khi gate hoặc held intent đóng; release/press mới reset cadence.
+Weapon reference trực tiếp cùng `PlayerPointerInput` với movement, không reference
+`RelativeDragMovement`. Permission/state
+contract thuộc [player combat](../gameplay/player-combat.md#player-state-model).
+
+`PulseLaserDefinition` là ScriptableObject static, còn `PulseLaserWeapon` giữ
+cooldown và local `UnityEngine.Pool.ObjectPool<PlayerProjectile>`. Không có weapon
+switch/upgrade framework. `Muzzle.up` cung cấp hướng bắn trong slice; Player facing
+hiện tại quyết Up/Right, chưa có LevelDefinition/direction handoff runtime.
+Pool instances ở runtime root `PlayerProjectiles`, không parent vào tàu đang di
+chuyển; root được dọn cùng weapon. Disable weapon chỉ ngừng spawn, projectile đã
+bắn vẫn kết thúc bình thường. Seed/config ownership thuộc
+[weapons owner](../content/weapons-items-drops.md#pulse-laser).
+
+`Prefabs/Projectiles/PlayerPulseProjectile.prefab` có root Rigidbody2D Kinematic,
+BoxCollider2D trigger và `PlayerProjectile`; child Visual chỉ có SpriteRenderer.
+Projectile snapshot config, giữ owner, sweep Rigidbody2D qua đoạn đường của mỗi
+FixedUpdate rồi xử lý trigger overlap qua cùng single-hit guard. Receiver opt-in
+được tìm trên collider/parent; projectile không chứa enemy HP hoặc reward logic.
+Hit/lifetime đi qua một completion path rồi callback trả về local pool; pool reset
+owner, timers, direction, damage, hit flag, collider/simulation và callback trước reuse.
+Global timeScale pause dừng cả cooldown lẫn projectile movement/lifetime.
+Không thay collision layer matrix hoặc tạo framework projectile chung cho enemy.
+
+`tools/unity/VerifyPulseLaser.cs` tạo probe chỉ trong memory qua MCP `run_script`;
+không có scene/prefab production tham chiếu probe. Checklist/giới hạn verification
+thuộc [dev/debug](dev-debug.md#m2-pulse-laser-verification).
+
+### M2 Scout baseline `[PROVISIONAL]`
+
+VS-012–014 tạo `Prefabs/Enemies/Scout.prefab`, đặt một instance trong `Enemies` của
+gameplay scene; không thêm scheduler, encounter runner hoặc enemy pool.
+
+```text
+Scout                      Rigidbody2D (Kinematic), EnemyHealth,
+                           EntryHoldFlight, EnemyDamagePresentation
+├── Visual
+│   ├── HullPlaceholder     SpriteRenderer
+│   └── CorePlaceholder     SpriteRenderer
+└── Collision               BoxCollider2D (trigger, attached to root body)
+```
+
+`EnemyDefinition` hiện chỉ chứa max HP static; `Data/Enemies/Scout.asset` dùng seed
+từ [enemy owner](../content/enemies-bosses.md#balance-seed-table). Không thêm field
+weapon/drop/score chưa có consumer. `EnemyHealth` giữ current HP và implement
+`IPlayerProjectileTarget`, ignore hit khi inactive/dead hoặc damage không dương.
+HP về zero khóa hit trước notification. `Damaged`/`Died` là direct events có scope
+instance; death disable root, không đợi presentation hoặc tự roll reward.
+OnEnable reset HP; không mutate definition. Đây là reuse reset contract, chưa mang
+nghĩa production enemy pooling đã có.
+
+`EnemyDamagePresentation` subscribe/unsubscribe theo lifecycle, đọc HP và flash
+timer riêng. Nó chỉ đổi Hull renderer tint; không sửa HP, collider hoặc phase.
+Normal tint lấy từ authored renderer, reset khi disable; enable giữa damaged state
+phải phản ánh HP hiện tại. Presentation seed thuộc
+[audio/VFX](../presentation/audio-vfx.md#enemy-damage-feedback).
+
+`EntryHoldFlight` là movement component nhỏ cho Entry → Hold, không phải generic
+FlightSequence framework. Normalized anchors/duration nằm trên component và có
+thể override ở instance; camera scene reference hoặc Main Camera fallback trên
+prefab. FixedUpdate advance scaled clock và kinematic pose; LateUpdate reproject
+cùng phase theo camera sau view Update. Đồng bộ Transform cùng pose để render
+không trễ một physics step khi zoom. Chỉ component này ghi Scout position.
+Hold clamp dùng BoxCollider envelope và current projection, độc lập final sprite;
+region nhỏ hơn envelope thì dùng midpoint trên trục đó. Path không đọc pointer,
+player gate, weapon hoặc completion policy. OnEnable reset clock/entry; health
+dead/inactive dừng motion. Content seed thuộc
+[flight owner](../content/levels-encounters.md#scout-entryhold-checkpoint).
+
+Production prefab chỉ reference runtime components/assets; các helpers trong
+`tools/unity/` không thuộc runtime assembly. Verification contract ở
+[dev/debug](dev-debug.md#m2-scout-verification).
 
 ## Config data và mutable runtime state
 
@@ -273,8 +397,10 @@ cleanup và reward-grace behavior theo
 [encounter lifecycle contract](../content/levels-encounters.md#encounter-lifecycle-và-handoff);
 không để từng enemy, VFX hoặc pool tự quyết một cleanup policy khác.
 
-Camera áp framing/direction từ level state; [audio/VFX](../presentation/audio-vfx.md)
-thêm zoom/shake cue. World bounds và input conversion theo camera/aspect ratio;
+Camera nhận view request từ gameplay state theo
+[foundation](#dynamic-gameplay-view-foundation); direction orchestration còn future.
+[Audio/VFX](../presentation/audio-vfx.md) sở hữu feedback cues và shake.
+World bounds và input conversion theo camera/aspect ratio/current playable region;
 camera không quyết encounter completion hoặc damage.
 
 Ưu tiên direct references hoặc event nhỏ có scope rõ để decouple UI/presentation.

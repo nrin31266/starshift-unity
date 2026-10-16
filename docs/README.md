@@ -29,7 +29,7 @@ Chỉ dùng các từ khóa này ở nơi cần phân biệt mức yêu cầu.
 | Chủ đề | Owner |
 |---|---|
 | Vision, core loop, scope, pillars, campaign high-level | [Game design](design/game-design.md) |
-| Relative drag, auto-fire, lives, damage/death/respawn, downgrade | [Player combat](gameplay/player-combat.md) |
+| Relative drag, hold-to-fire, lives, damage/death/respawn, downgrade | [Player combat](gameplay/player-combat.md) |
 | Score, Stellar Shard, unlock/progression, Mission Replay | [Progression/economy](gameplay/progression-economy.md) |
 | 12 levels, exact encounters, paths/formations, FlightSequence usage, camera, directions/transitions | [Levels/encounters](content/levels-encounters.md) |
 | Archetypes, HP, behavior, damage states, Elite, bosses | [Enemies/bosses](content/enemies-bosses.md) |

@@ -91,7 +91,8 @@ Dev override cũng không được mutate production data nếu thiếu explicit
 ## Result/statistics tracking
 
 Tracking phục vụ result hoặc đánh giá gameplay, không thu thập metric chỉ để có số.
-Accuracy bị loại vì auto-fire khiến nó không phản ánh player skill. Bảng dưới phân
+Accuracy vẫn bị loại khỏi metrics; input/fire contract ở
+[player combat](player-combat.md#hold-to-fire-continuous-shooting-locked). Bảng dưới phân
 biệt run baseline, tracking bắt buộc cho Campaign Result và phần tùy chọn;
 cách hiển thị thuộc [UI/UX](../presentation/ui-ux.md).
 
