@@ -2,7 +2,7 @@
 
 ## Phạm vi và ownership
 
-Owner của input, auto-fire, lives, shield precedence, damage/death/respawn và active weapon downgrade. Weapon patterns/items thuộc [content owner](../content/weapons-items-drops.md); serialization thuộc [save/profile](../systems/save-profile.md).
+Owner của input, hold-to-fire, lives, shield precedence, damage/death/respawn và active weapon downgrade. Weapon patterns/items thuộc [content owner](../content/weapons-items-drops.md); serialization thuộc [save/profile](../systems/save-profile.md).
 
 ## Player state model
 
@@ -10,6 +10,17 @@ Owner của input, auto-fire, lives, shield precedence, damage/death/respawn và
 Respawning → Active hoặc GameOver. Pause/Transition/Result khóa gameplay theo flow.
 Tên enum/class chưa khóa. Mỗi hit phải qua protection/state gate trước khi resolve;
 không để nhiều collider callback trong cùng death sequence trừ life lặp.
+
+VS-009 prototype dùng `PlayerGameplayGate` chung cho input, fire và damage permission.
+Gameplay scene bắt đầu `Active`; `Entry`, `Dying`, `Respawning`, `GameOver`,
+`Transition`, `Result` chặn cả ba. `PostEntryInvincibility` cho input/fire và chặn
+damage, theo survival contract bên dưới. Đây là naming implementation
+`[PROVISIONAL]`, không khóa class/enum cho các flow chưa triển khai.
+`SetState()` báo thay đổi để xóa pending input/cadence khi bị khóa; không chạy
+death/respawn sequence, tự trừ lives hoặc tự chuyển state theo timer.
+Gate cũng chặn permissions khi bị disable hoặc `Time.timeScale == 0`.
+Pause UI/time controller chưa có; đổi local state không thay thế global pause.
+Damage permission là API cho integration tiếp theo; chưa có player damage/lives receiver.
 
 ## Input và điều khiển
 
@@ -19,13 +30,25 @@ Người chơi chạm vùng gameplay và kéo ở vị trí thuận tay; delta c
 chuyển thành displacement của tàu. Tàu không teleport tới touch position, nhờ đó
 ngón tay không cần che tàu trong lúc né đạn.
 
-### Auto-fire `[LOCKED]`
+### Hold-to-fire continuous shooting `[LOCKED]`
 
-Player bắn tự động khi gameplay ở state cho phép.
+Gameplay pointer down tạo fire intent; giữ pointer tiếp tục bắn theo cadence kể
+cả không di chuyển. Drag đồng thời tạo relative displacement và giữ fire intent.
+Pointer up/cancel dừng sinh shot mới ngay khi input layer nhận release; projectile
+đã bắn vẫn kết thúc hit/lifetime như bình thường. Không có nút Fire riêng.
+Lần press sau đặt anchor mới, không teleport hoặc dùng lại delta cũ.
 
-Không cần spam nút Fire trên mobile.
+Effective fire condition là `CanFire AND gameplay fire intent held`. State gate
+là permission authority; held intent không tự vượt gate. Weapon không đọc device
+API hoặc lấy intent từ movement component.
 
-Auto-fire bị disable trong:
+Gate block hủy anchor/pending movement nhưng giữ held intent của gameplay pointer
+còn giữ. Resume trong khi pointer vẫn held cho fire tiếp tục, không bắn bù cadence;
+movement vẫn yêu cầu release/press mới theo contract tránh stale drag. Mất focus
+hoặc disable input adapter hủy cả gesture/fire intent; cần press mới sau đó.
+Disable movement chỉ hủy drag, không hủy fire intent.
+
+Fire permission bị khóa trong:
 
 - cinematic entry;
 - death;
@@ -38,7 +61,7 @@ Auto-fire bị disable trong:
 ### Weapon switch
 
 Player được switch tự do giữa các weapon đã unlock [LOCKED], cycle qua những
-branch khả dụng. Active weapon tự fire theo config khi gameplay state cho phép;
+branch khả dụng. Active weapon fire theo config khi gate cho phép và gameplay pointer held;
 selection này phải được checkpoint-save theo [save/profile](../systems/save-profile.md).
 Bố trí nút thuộc [UI/UX](../presentation/ui-ux.md); branch/pattern ở
 [weapons/items/drops](../content/weapons-items-drops.md).
@@ -151,7 +174,7 @@ Vị trí phải tránh collider enemy/hazard còn tồn tại.
 
 Baseline state contract [LOCKED]:
 
-| State | Input | Auto-fire | Nhận damage |
+| State | Input permission | Fire permission | Nhận damage |
 |---|---|---|---|
 | Death sequence | Off | Off | No |
 | Respawn entrance | Off | Off | No |
@@ -159,14 +182,14 @@ Baseline state contract [LOCKED]:
 | Normal gameplay | On | On | Yes |
 
 Respawn entrance không nhận damage trong toàn bộ animation. Khi tàu đã vào vị trí
-gameplay an toàn, bật lại input và auto-fire đồng thời bắt đầu post-entry
+gameplay an toàn, mở lại input/fire permissions đồng thời bắt đầu post-entry
 invincibility; không có khoảng trống nhận damage giữa hai state. Các giá trị On
-vẫn chịu gameplay gates như Pause/Transition; Yes ở Normal gameplay vẫn qua shield
+vẫn chịu gameplay gates như Pause/Transition; fire còn cần gameplay pointer held; Yes ở Normal gameplay vẫn qua shield
 và damage rule hiện có.
 
 ```text
 wait ngắn → xuất hiện ngoài edge phù hợp → bay vào gameplay position
-→ bật input + auto-fire và bắt đầu post-entry invincibility
+→ mở input/fire permissions và bắt đầu post-entry invincibility
 → Normal gameplay khi invincibility hết
 ```
 
@@ -195,23 +218,36 @@ serialization/restore chi tiết ở [save/profile](../systems/save-profile.md).
 
 ## Movement bounds và camera interaction
 
-Player phải bị giới hạn trong gameplay bounds phù hợp camera/aspect ratio và
-hướng chiến đấu hiện tại; không đi khỏi màn hình. Safe area HUD không tự đồng nghĩa
-với world bounds. Exact margin, drag sensitivity và smoothing [TBD]/cần playtest.
+Player phải bị giới hạn trong playable region của current gameplay camera/view,
+không đi khỏi màn hình. Default region là full normalized viewport; gameplay phase
+có thể restrict bằng region normalized nằm trong `[0, 1]`, độc lập world coordinates.
+Framing/zoom policy thuộc [camera owner](../content/levels-encounters.md#master-campaign-table-và-camera-profiles).
+Không dùng hard-coded world rectangle theo map/boss/direction. Safe area HUD không
+tự đồng nghĩa với world bounds. Exact margin, drag sensitivity và smoothing [TBD]/cần playtest.
 Camera đổi zoom không được làm cùng delta ngón tay có cảm giác điều khiển khác hẳn.
 
 VS-007 baseline `[PROVISIONAL]` dùng footprint gameplay hình chữ nhật quanh root,
 size local **0.8 × 1.0**, đủ bao placeholder hiện tại và độc lập với artwork/damage
 hitbox. Đây là envelope cho movement bounds, không phải world rectangle cố định.
-Footprint theo scale/rotation của Player; viewport camera quyết giới hạn ở mỗi
-physics step. Không cộng margin riêng hoặc lấy HUD safe area làm bounds.
+Footprint theo scale/rotation của Player. Từ current camera viewport + playable
+region, project các góc footprint để thu khoảng hợp lệ cho root, rồi chuyển root
+đã clamp về world. Tính lại theo current camera/projection, không cache world
+rectangle. Không cộng margin riêng hoặc lấy HUD safe area làm bounds.
 Exact footprint/margin vẫn cần review khi đổi kích thước tàu.
+
+Zoom/region transition co dần allowed area; Player chỉ bị đẩy vào trong khi
+footprint chạm boundary hiện tại, không teleport thẳng tới boundary cuối ngay khi
+request. Clamp ở physics step và sau view update trước render, kể cả state gate
+đang khóa input. Aspect change hoặc request duration 0 áp region mới và clamp ở
+frame hiện tại; không thêm một movement smoothing/elastic boundary riêng.
+Region giãn không kéo Player ra lại vị trí cũ. Transition không hủy pointer anchor
+hoặc held/fire intent; gate block vẫn theo [input contract](#hold-to-fire-continuous-shooting-locked).
 
 Delta vượt cạnh bị bỏ ở step đang xử lý; tiếp tục kéo ra ngoài không tích lũy
 displacement chờ bù. Đảo drag vào trong phải di chuyển ngay trong cùng pointer press.
-Không thêm smoothing, acceleration hoặc elastic response. Khi viewport nhỏ hơn
+Không thêm smoothing, acceleration hoặc elastic response. Khi playable region nhỏ hơn
 footprint trên một trục, đặt giữa trục đó; không thể đảm bảo bao trọn footprint
-trong viewport nhỏ hơn chính nó. Implementation và component boundary ở
+trong region nhỏ hơn chính nó. Implementation và component boundary ở
 [architecture owner](../systems/architecture.md#m2-scene-và-player-baseline-provisional).
 
 ## Collision matrix theo gameplay contract
@@ -231,10 +267,21 @@ Friendly fire, projectile-vs-projectile và enemy-vs-enemy chưa được thiế
 không tự thêm damage behavior. Invincibility bỏ qua damaging hit;
 chi tiết shield consumption khi các protection state overlap [TBD].
 
+VS-011 baseline chỉ resolve friendly hit với target opt-in qua
+`IPlayerProjectileTarget`; owner và collider dưới owner bị bỏ qua. Collider không
+opt-in không gây damage hoặc tiêu thụ projectile trong checkpoint này; chưa thêm
+interaction cho projectile-vs-projectile/friendly fire. Projectile kết thúc sau
+hit đầu tiên, khóa hit trước callback và chỉ release một lần; nhiều collider trên
+cùng target không được tạo nhiều hit. Target chịu trách nhiệm damage/HP state,
+không để projectile tự sửa enemy HP. VS-012/013 đã nối production
+[Scout receiver](../content/enemies-bosses.md#scout-drone); probe verification vẫn
+chỉ là test helper. Serialized shape/runtime lifecycle
+thuộc [architecture owner](../systems/architecture.md#m2-gate-và-pulse-laser-baseline-provisional).
+
 ## Combat metrics và tunables
 
 Life loss, shield breaks, no-hit streak và combat result được gửi sang
-[statistics owner](progression-economy.md); không dùng accuracy vì auto-fire.
+[statistics owner](progression-economy.md); metrics được chọn theo owner đó.
 Các duration ở trên là seed; respawn wait/entry duration, exact bullet cleanup scope,
 protection overlap và collision layer setup còn cần xác minh khi implementation.
 [Audio/VFX](../presentation/audio-vfx.md) chỉ thể hiện kết quả, không quyết damage.

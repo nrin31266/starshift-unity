@@ -64,6 +64,18 @@ Basic enemy để học aim/dodge, tái dùng nhiều path với tốc độ v�
 Scout dùng Normal/Damaged; score thấp theo
 [economy owner](../gameplay/progression-economy.md).
 
+VS-012–014 checkpoint có production Scout prefab nhận Pulse hit qua
+`IPlayerProjectileTarget`. HP lấy seed từ balance table bên dưới, mutable HP nằm
+trên instance. Hit đầu còn sống chuyển Damaged; lethal hit khóa nhận damage trước
+death hook, resolve một lần rồi disable root để dừng collider/movement. Không có
+floating HP bar, score/drop hoặc enemy firing trong checkpoint này.
+
+Presentation chỉ đọc HP/event, không quyết sống/chết. Disable/re-enable object reset
+HP, damage cue và flight state; chưa có enemy pool/spawn scheduler. Structural API
+thuộc [architecture](../systems/architecture.md#m2-scout-baseline-provisional),
+entry/hold seed thuộc [flight owner](levels-encounters.md#scout-entryhold-checkpoint),
+flash choreography thuộc [audio/VFX](../presentation/audio-vfx.md#enemy-damage-feedback).
+
 ### Raider
 
 Raider tạo movement pressure bằng sine/arc/cross path, di chuyển nhiều và bắn burst

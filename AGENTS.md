@@ -47,9 +47,16 @@
 - Không premature abstraction; không implement `[FUTURE]` khi chưa được yêu cầu.
 - Không tự thay Editor/package versions ngoài scope task.
 
+## Ponytail khi cần
+
+- Plugin: [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail), bật cho project qua `.codex/config.toml`.
+- Dùng `$ponytail:ponytail` khi cần chọn implementation nhỏ nhất đủ đúng; dùng `$ponytail:ponytail-review` khi cần review diff về bug hoặc complexity. Không tự chạy audit toàn repo ngoài scope.
+- Tái sử dụng code/component hiện có; không cắt validation hoặc verification để giảm dòng code. Yêu cầu user, canonical contracts và responsibility boundaries của StarShift vẫn là chuẩn.
+- Unity-native wiring/scene/prefab và runtime verification tiếp tục dùng Unity MCP; Ponytail không thay workflow này.
+
 ## Core invariants
 
-- Landscape mobile, Android-first; relative drag và auto-fire.
+- Landscape mobile, Android-first; relative drag và hold-to-fire.
 - Player dùng lives; enemy dùng HP.
 - Death giảm level của active weapon; chi tiết ở player combat owner.
 - Checkpoint ở đầu wave/encounter; không snapshot world giữa wave.
@@ -57,6 +64,8 @@
 - `app/` luôn là Unity root; các invariant này chỉ là summary, xem canonical owner.
 
 ## Verification
+
+- Khi user yêu cầu review PR, dùng [pr-review](.agents/skills/pr-review/SKILL.md); profile StarShift nằm trong skill, review chạy ở worktree riêng và tách rõ static checks với Unity runtime evidence.
 
 - Compile/test phù hợp khi environment cho phép; inspect Unity Console khi cần.
 - Kiểm tra canonical docs và regression liên quan khi đổi contract.

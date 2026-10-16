@@ -117,7 +117,7 @@ không tự nâng các lựa chọn này thành requirement.
 
 ## Locked và tunable decisions
 
-[LOCKED] Các invariant chính là landscape mobile, relative drag, auto-fire,
+[LOCKED] Các invariant chính là landscape mobile, relative drag, hold-to-fire,
 life-based player/enemy HP, free switching giữa unlocked weapons, data-driven
 campaign, wave-start checkpoint và replay/dev isolation. Owner từng domain giữ
 contract chi tiết; bản tóm tắt này không thay thế chúng.
@@ -141,7 +141,7 @@ leaderboard cũng chỉ là ý tưởng tương lai, không phải requirement �
 ## Trình tự phát triển
 
 Repository/docs và Unity setup đi trước vertical slice L1. Slice này cần input,
-ship/auto-fire, enemy/collision, life/death/respawn, một weapon, một encounter, HUD
+ship/hold-to-fire, enemy/collision, life/death/respawn, một weapon, một encounter, HUD
 và pause. Sau đó mới mở rộng data-driven encounters, FlightSequence/path,
 pooling và DevConfig; tiếp đến weapons/pickups/supply, Shard, save/profile và replay.
 

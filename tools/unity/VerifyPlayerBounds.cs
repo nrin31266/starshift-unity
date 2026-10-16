@@ -22,7 +22,11 @@ public static class VerifyPlayerBounds
             throw new InvalidOperationException("This checkpoint verifies the L1 camera-size baseline of 5.");
         var originalPosition = body.position;
         var originalMouse = Mouse.current;
-        var mouse = InputSystem.AddDevice<Mouse>("StarShiftBoundsVerificationMouse");
+        var inputSettings = InputSystem.settings;
+        var originalEditorPolicy = inputSettings.editorInputBehaviorInPlayMode;
+        var originalBackgroundPolicy = inputSettings.backgroundBehavior;
+        var disabledDevices = new List<InputDevice>();
+        Mouse mouse = null;
         var gameViewType = typeof(EditorWindow).Assembly.GetType("UnityEditor.GameView");
         var gameView = EditorWindow.GetWindow(gameViewType);
         var selectedSize = gameViewType.GetProperty("selectedSizeIndex");
@@ -36,6 +40,15 @@ public static class VerifyPlayerBounds
         var frameStart = Time.frameCount;
         try
         {
+            inputSettings.editorInputBehaviorInPlayMode = InputSettings.EditorInputBehaviorInPlayMode.AllDeviceInputAlwaysGoesToGameView;
+            inputSettings.backgroundBehavior = InputSettings.BackgroundBehavior.IgnoreFocus;
+            foreach (var device in InputSystem.devices)
+            {
+                if (!device.native || !device.enabled || (!(device is Mouse) && !(device is Touchscreen))) continue;
+                InputSystem.DisableDevice(device);
+                disabledDevices.Add(device);
+            }
+            mouse = InputSystem.AddDevice<Mouse>("StarShiftBoundsVerificationMouse");
             foreach (var width in new[] { 1600, 2000 })
             {
                 camera.ResetAspect();
@@ -83,7 +96,10 @@ public static class VerifyPlayerBounds
         }
         finally
         {
-            InputSystem.RemoveDevice(mouse);
+            if (mouse != null) InputSystem.RemoveDevice(mouse);
+            foreach (var device in disabledDevices) if (device.added) InputSystem.EnableDevice(device);
+            inputSettings.editorInputBehaviorInPlayMode = originalEditorPolicy;
+            inputSettings.backgroundBehavior = originalBackgroundPolicy;
             if (originalMouse != null && originalMouse.added) originalMouse.MakeCurrent();
             input.ResetDrag();
             body.position = originalPosition;
@@ -105,7 +121,7 @@ public static class VerifyPlayerBounds
             (direction.x > 0 && Mathf.Abs(maximum.x - 1) > tolerance) ||
             (direction.y < 0 && Mathf.Abs(minimum.y) > tolerance) ||
             (direction.y > 0 && Mathf.Abs(maximum.y - 1) > tolerance))
-            throw new InvalidOperationException("Player did not reach requested edge " + direction + ": " + minimum + " .. " + maximum);
+            throw new InvalidOperationException("Player did not reach requested edge " + direction + ": " + minimum + " .. " + maximum + " held=" + GameObject.Find("Player").GetComponent<InputSystemPointerInput>().FireHeld + " state=" + GameObject.Find("Player").GetComponent<PlayerGameplayGate>().State + " mouse=" + Mouse.current?.leftButton.isPressed + " focus=" + Application.isFocused);
     }
 
     static async Task MouseEvent(Mouse mouse, Vector2 position, bool down)

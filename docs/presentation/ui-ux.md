@@ -40,7 +40,7 @@ không bịa credit cho asset chưa dùng.
 
 Hướng dẫn ngắn, ưu tiên visual và tập trung vào các action/state người chơi cần nhận ra:
 
-- Relative drag và auto-fire.
+- Relative drag và hold-to-fire.
 - Weapon switch, lives và Shield.
 - Supply Drone và Pause.
 
@@ -128,7 +128,7 @@ tracking definitions/score seeds ở [progression/economy](../gameplay/progressi
 | Progress | Levels Completed |
 | Optional | New Record flags |
 
-Không dùng Accuracy vì auto-fire làm metric này không phản ánh player skill.
+Không hiển thị Accuracy theo [metrics owner](../gameplay/progression-economy.md).
 Grade S/A/B/C vẫn [TBD], không bắt buộc trước khi có scoring rubric đủ tốt;
 UI không tự thêm công thức grade.
 

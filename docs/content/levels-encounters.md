@@ -171,6 +171,22 @@ Mỗi phase có thể chứa các data sau; đây là conceptual fields, chưa k
 | target behavior | Tracking/targeting trong phase |
 | exit condition | Điều kiện kết thúc phase |
 
+### Scout entry/hold checkpoint
+
+VS-014 dùng straight entry theo normalized **full camera viewport**, rồi hold vô
+hạn cho tới death hoặc owner release; không tự exit và làm kẹt required enemy.
+Seed `[TUNABLE]`: entry `(0.5, 1.12)` → hold `(0.5, 0.78)`, duration 1.2 s, smoothstep
+không overshoot. Đây là thời lượng local flight, không phải level spawn schedule.
+Scene hiện có một Scout để manual slice test; chưa triển khai số lượng/timing của
+L1 encounters bên dưới hoặc phase Attack/Exit của FlightSequence đầy đủ.
+
+Reproject theo current camera size/aspect, không giữ world waypoint cố định.
+Hold target được đưa vào full viewport theo collision envelope; Player restricted
+region không tự giới hạn enemy. Zoom/view transition không restart entry clock.
+Scaled time pause dừng clock; re-enable bắt đầu entry mới. Direction orchestration
+vẫn future; path không gắn level ID, wave ID hoặc tự điều khiển firing/completion.
+Implementation boundary thuộc [architecture](../systems/architecture.md#m2-scout-baseline-provisional).
+
 ### Path library baseline
 
 Không bắt buộc dùng hết ngay:
@@ -225,6 +241,21 @@ Hazard lớn ngoài screen cần edge warning, shadow/indicator hoặc thời gi
 [LOCKED] 12 levels, 3 regions, boss L4/L8/L12; Up → Right → Up, final dynamic shift.
 Orthographic size và duration là [TUNABLE]. Duration gồm boss khi có.
 
+Gameplay view hiện tại lấy **Orthographic Size = 5** làm baseline normal-combat
+framing và mức zoom gần nhất cần support. Gameplay phase có thể zoom out lớn hơn
+5 cho large arena/wave/boss, rồi trả về 5. Size 6.8 và 8.2 là seed `[TUNABLE]`
+để test readability, không phải hai zoom level cố định hoặc mức trần.
+Normal gameplay size dưới 5 không thuộc foundation này; cinematic/special sequence
+cần gần hơn phải có requirement riêng.
+
+Framing và playable region là hai setting riêng: default full current viewport;
+phase có thể request normalized restricted region, ví dụ lower 70% `[TUNABLE]`.
+Direction change không mặc định tạo bounds riêng; movement đi theo current view,
+chỉ override region khi content yêu cầu. Quy tắc footprint/clamp thuộc
+[player owner](../gameplay/player-combat.md#movement-bounds-và-camera-interaction);
+runtime API/config thuộc [architecture](../systems/architecture.md#dynamic-gameplay-view-foundation).
+Foundation chưa chạy wave/boss/direction sequencing.
+
 | Level | Tên [PROVISIONAL] | Region | Combat | Ortho size | Phút mục tiêu |
 |---|---|---|---|---:|---|
 | L1 | First Contact | Astra Frontier | Up | 5.0 | 1.0–1.5 |
@@ -232,7 +263,7 @@ Orthographic size và duration là [TUNABLE]. Duration gồm boss khi có.
 | L3 | Spearhead | Astra Frontier | Up | 5.4 | 1.5–2.0 |
 | L4 | Vanguard | Astra Frontier | Up | 5.2 | 2.0–3.0 |
 | L5 | Sidewind | Crimson Nebula | Right | 5.6 | 1.5–2.0 |
-| L6 | Red Corridor | Crimson Nebula | Right | 4.9 | 1.5–2.0 |
+| L6 | Red Corridor | Crimson Nebula | Right | 5.0 | 1.5–2.0 |
 | L7 | Crossfire | Crimson Nebula | Right | 6.0 | 2.0–2.5 |
 | L8 | Nebula Warden | Crimson Nebula | Right | 5.5 | 2.0–3.0 |
 | L9 | Titan Rain | Titan Ring / Rift Approach | Up | 6.1 | 1.5–2.0 |
@@ -248,13 +279,13 @@ Camera movement ổn định, không overshoot gây khó drag; không scale tàu
 
 ## Region A — Astra Frontier `[PROVISIONAL]`
 
-Region mở đầu dạy core mechanics bằng threat dễ đọc: movement/auto-fire trước,
+Region mở đầu dạy core mechanics bằng threat dễ đọc: movement/hold-to-fire trước,
 FlightSequence/hazard tiếp theo, rồi Supply Drone và Elite. L4 tạo recovery/resource
 window trước boss giới thiệu. Visual identity thuộc [art direction](../presentation/art-direction.md).
 
 ### Level 1 — First Contact `[PROVISIONAL]`
 
-L1 giới thiệu movement, auto-fire và basic enemy trong 1–1.5 phút. Hai encounter
+L1 giới thiệu movement, hold-to-fire và basic enemy trong 1–1.5 phút. Hai encounter
 đủ cho mục tiêu này; không thêm pressure chỉ để khớp baseline ba wave.
 
 Camera:
@@ -396,7 +427,7 @@ Encounter C — `Eliminate` hoặc Timeline tùy pacing
 Camera:
 
 ```text
-4.9 close
+5.0 close (baseline)
 ```
 
 L6 dùng combat gần và corridor pressure để dạy đọc telegraph. Vì camera close,
