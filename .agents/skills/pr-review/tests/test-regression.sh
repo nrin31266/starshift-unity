@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Regression tests for /pr-review critical safety logic:
-# 1. Worktree isolation, caller workspace protection, refusal of unsafe paths, non-directory safety, orphan recovery.
+# 1. Worktree isolation, caller workspace protection, refusal of unsafe paths, non-directory safety, dirty/unowned collisions and concurrent runs.
 # 2. Review history parsing calling real collect-pr-review-history.sh via shimmed gh API.
 # 3. Posting script execution calling real post-pr-review.sh via shimmed gh API (direct file body, trailing newlines, commit_id).
 #
@@ -115,9 +115,63 @@ RC_ARBITRARY=$?
 set -e
 assert_exit 2 "$RC_ARBITRARY" "cleanup refuses arbitrary unverified directory"
 
-# Test stale recovery: target worktree already exists (simulate interrupted run)
-"$PREPARE_SCRIPT" "https://github.com/testowner/testrepo/pull/42" "$TARGET_WT" >/dev/null
-assert_eq "true" "$([ -d "$TARGET_WT" ] && echo true || echo false)" "stale linked worktree recovery successfully recreates worktree"
+# Một phiên khác không được ghi đè snapshot hoặc xóa worktree đang hoạt động.
+SNAPSHOT_BEFORE="$(cat "${TARGET_WT}.snapshot")"
+set +e
+"$PREPARE_SCRIPT" 42 "$TARGET_WT" >/dev/null 2>&1
+RC_EXISTING=$?
+set -e
+assert_exit 67 "$RC_EXISTING" "prepare refuses active clean review worktree"
+assert_eq "$SNAPSHOT_BEFORE" "$(cat "${TARGET_WT}.snapshot")" "collision preserves first run snapshot"
+
+echo "review edit" >> "$TARGET_WT/README.md"
+echo "review notes" > "$TARGET_WT/notes.txt"
+set +e
+"$PREPARE_SCRIPT" 42 "$TARGET_WT" >/dev/null 2>&1
+RC_DIRTY_PREPARE=$?
+"$CLEANUP_SCRIPT" "$TARGET_WT" "${TARGET_WT}.snapshot" >/dev/null 2>&1
+RC_DIRTY_CLEANUP=$?
+set -e
+assert_exit 67 "$RC_DIRTY_PREPARE" "prepare refuses dirty review worktree"
+assert_exit 2 "$RC_DIRTY_CLEANUP" "cleanup preserves dirty owned worktree"
+assert_eq "review edit" "$(tail -n 1 "$TARGET_WT/README.md")" "tracked review edit preserved"
+assert_eq "review notes" "$(cat "$TARGET_WT/notes.txt")" "untracked review file preserved"
+# Chỉ test fixture tự dọn dữ liệu do chính nó tạo.
+git -C "$TARGET_WT" restore README.md
+rm "$TARGET_WT/notes.txt"
+echo "ignored-review.txt" >> .git/info/exclude
+echo "ignored data" > "$TARGET_WT/ignored-review.txt"
+set +e
+"$CLEANUP_SCRIPT" "$TARGET_WT" "${TARGET_WT}.snapshot" >/dev/null 2>&1
+RC_IGNORED=$?
+set -e
+assert_exit 2 "$RC_IGNORED" "cleanup preserves ignored user data"
+assert_eq "ignored data" "$(cat "$TARGET_WT/ignored-review.txt")" "ignored file preserved"
+rm "$TARGET_WT/ignored-review.txt"
+
+USER_WT="${TEST_SANDBOX}/user-development"
+git worktree add --detach --quiet "$USER_WT" HEAD
+echo "user edit" >> "$USER_WT/README.md"
+echo "user notes" > "$USER_WT/notes.txt"
+set +e
+"$PREPARE_SCRIPT" 42 "$USER_WT" >/dev/null 2>&1
+RC_USER_PREPARE=$?
+"$CLEANUP_SCRIPT" "$USER_WT" >/dev/null 2>&1
+RC_USER_CLEANUP=$?
+"$CLEANUP_SCRIPT" "$USER_WT" "${TARGET_WT}.snapshot" >/dev/null 2>&1
+RC_OTHER_SNAPSHOT=$?
+"$CLEANUP_SCRIPT" "$USER_WT" --stale-recovery >/dev/null 2>&1
+RC_LEGACY_RECOVERY=$?
+set -e
+assert_exit 67 "$RC_USER_PREPARE" "prepare refuses unowned linked development worktree"
+assert_exit 2 "$RC_USER_CLEANUP" "cleanup requires ownership snapshot"
+assert_exit 2 "$RC_OTHER_SNAPSHOT" "cleanup rejects another worktree snapshot"
+assert_exit 2 "$RC_LEGACY_RECOVERY" "legacy stale recovery cannot bypass ownership"
+assert_eq "user edit" "$(tail -n 1 "$USER_WT/README.md")" "unowned tracked edit preserved"
+assert_eq "user notes" "$(cat "$USER_WT/notes.txt")" "unowned untracked file preserved"
+git -C "$USER_WT" restore README.md
+rm "$USER_WT/notes.txt"
+git worktree remove "$USER_WT"
 
 # Normal cleanup of worktree
 "$CLEANUP_SCRIPT" "$TARGET_WT" "${TARGET_WT}.snapshot" >/dev/null
@@ -147,19 +201,32 @@ RC_CLEANUP_STALE_FILE=$?
 set -e
 assert_exit 2 "$RC_CLEANUP_STALE_FILE" "cleanup stale-recovery safely refuses regular file"
 
-# Case B: Orphaned Git worktree registration (directory disappeared externally)
-ORPHAN_WT="${TEST_SANDBOX}/worktree-orphan"
-"$PREPARE_SCRIPT" "https://github.com/testowner/testrepo/pull/42" "$ORPHAN_WT" >/dev/null
-assert_eq "true" "$([ -d "$ORPHAN_WT" ] && echo true || echo false)" "orphan test: worktree created initially"
+# Hai prepare cùng target: chỉ một phiên được sở hữu snapshot.
+CONCURRENT_WT="${TEST_SANDBOX}/concurrent-review"
+set +e
+"$PREPARE_SCRIPT" 42 "$CONCURRENT_WT" >/dev/null 2>&1 &
+FIRST_PID=$!
+"$PREPARE_SCRIPT" 42 "$CONCURRENT_WT" >/dev/null 2>&1 &
+SECOND_PID=$!
+wait "$FIRST_PID"
+FIRST_RC=$?
+wait "$SECOND_PID"
+SECOND_RC=$?
+set -e
+assert_eq "0 67" "$(printf '%s\n' "$FIRST_RC" "$SECOND_RC" | sort -n | xargs)" "concurrent prepare has one owner and one safe refusal"
+assert_eq "$PR_HEAD" "$(git -C "$CONCURRENT_WT" rev-parse HEAD)" "concurrent winner remains usable"
+"$CLEANUP_SCRIPT" "$CONCURRENT_WT" "${CONCURRENT_WT}.snapshot" >/dev/null
 
-# Simulate external directory removal (e.g. system reboot or /tmp cleanup) leaving Git metadata
-rm -rf "$ORPHAN_WT"
-assert_eq "false" "$([ -d "$ORPHAN_WT" ] && echo true || echo false)" "orphan test: directory removed externally"
-
-# Calling prepare again must prune the orphaned registration and create the worktree afresh
-"$PREPARE_SCRIPT" "https://github.com/testowner/testrepo/pull/42" "$ORPHAN_WT" >/dev/null
-assert_eq "true" "$([ -d "$ORPHAN_WT" ] && echo true || echo false)" "prepare-pr-worktree successfully recovers when registration was orphaned"
-"$CLEANUP_SCRIPT" "$ORPHAN_WT" "${ORPHAN_WT}.snapshot" >/dev/null
+# Snapshot còn lại cũng phải được giữ nguyên nếu thư mục bị xóa từ bên ngoài.
+RESERVED_WT="${TEST_SANDBOX}/reserved-review"
+echo "existing run snapshot" > "${RESERVED_WT}.snapshot"
+set +e
+"$PREPARE_SCRIPT" 42 "$RESERVED_WT" >/dev/null 2>&1
+RC_RESERVED=$?
+set -e
+assert_exit 67 "$RC_RESERVED" "prepare refuses an existing snapshot even without target directory"
+assert_eq "existing run snapshot" "$(cat "${RESERVED_WT}.snapshot")" "existing snapshot never overwritten"
+assert_eq "$CALLER_STATUS_BEFORE" "$(git status --porcelain)" "all refusal paths preserve caller state"
 
 # ---------------------------------------------------------------------------
 # TEST SUITE 2: Review History Parsing (Calling Real collect-pr-review-history.sh)

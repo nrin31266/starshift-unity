@@ -78,28 +78,23 @@ else
   worktree_path="/tmp/pr-worktree-${root_hash}-${number}"
 fi
 
-# Harden interrupted worktree recovery:
-# If target path already exists, safely recover it if Git confirms it is a registered
-# linked worktree of this repository. Otherwise, refuse to touch unverified paths.
+# Không suy đoán worktree đang tồn tại là phiên review đã bị bỏ dở.
 if [ -e "$worktree_path" ] || [ -L "$worktree_path" ]; then
-  script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-  cleanup_script="${script_dir}/cleanup-pr-worktree.sh"
-  if [ -x "$cleanup_script" ]; then
-    if ! "$cleanup_script" "$worktree_path" --stale-recovery; then
-      printf 'SAFETY: Target worktree path "%s" exists but is not a verified linked worktree of this repository — refusing to touch.\n' "$worktree_path" >&2
-      exit 67
-    fi
-  else
-    printf 'SAFETY: Target worktree path "%s" exists and cleanup script not found — refusing to touch.\n' "$worktree_path" >&2
-    exit 67
-  fi
+  printf 'SAFETY: Target "%s" already exists; preserve it and choose another path.\n' "$worktree_path" >&2
+  exit 67
 fi
 
+worktree_path="$(realpath -m "$worktree_path")"
 snapshot_file="${worktree_path}.snapshot"
 mkdir -p "$(dirname "$worktree_path")"
 
-# Record snapshot of original workspace
+# noclobber giữ nguyên snapshot của phiên khác, kể cả hai prepare chạy đồng thời.
+if ! (set -o noclobber; : > "$snapshot_file") 2>/dev/null; then
+  printf 'SAFETY: Snapshot "%s" already exists; preserve it and choose another path.\n' "$snapshot_file" >&2
+  exit 67
+fi
 {
+  printf 'REVIEW_WORKTREE=%s\n' "$worktree_path"
   printf 'ORIGINAL_ROOT=%s\n' "$original_root"
   printf 'ORIGINAL_BRANCH=%s\n' "$original_branch"
   printf 'ORIGINAL_HEAD=%s\n' "$original_head"
@@ -107,9 +102,6 @@ mkdir -p "$(dirname "$worktree_path")"
   git -C "$original_root" status --porcelain
   printf '=== STATUS_END ===\n'
 } > "$snapshot_file"
-
-# Safely clear any orphaned worktree registrations (e.g. if worktree directory was removed externally or by reboot)
-git -C "$original_root" worktree prune --expire now 2>/dev/null || git -C "$original_root" worktree prune 2>/dev/null || true
 
 # Attempt worktree creation
 # Try `gh pr checkout --worktree` if supported by the installed gh CLI runtime,
@@ -131,6 +123,8 @@ if [ "$worktree_created" != "true" ]; then
 else
   pr_head_sha="$(git -C "$worktree_path" rev-parse HEAD)"
 fi
+
+printf 'REVIEW_HEAD=%s\n' "$pr_head_sha" >> "$snapshot_file"
 
 printf 'WORKTREE_PATH=%s\n' "$worktree_path"
 printf 'SNAPSHOT_FILE=%s\n' "$snapshot_file"

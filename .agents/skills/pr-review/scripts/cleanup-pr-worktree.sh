@@ -15,6 +15,19 @@ fi
 worktree_path="$1"
 snapshot_file="${2:-${worktree_path}.snapshot}"
 
+if [ ! -f "$snapshot_file" ] || [ -L "$snapshot_file" ]; then
+  printf '%s\n' 'WORKTREE_CLEANUP: SAFETY_ERROR (matching review snapshot required)' >&2
+  exit 2
+fi
+managed_path="$(grep '^REVIEW_WORKTREE=' "$snapshot_file" | cut -d= -f2- || true)"
+managed_head="$(grep '^REVIEW_HEAD=' "$snapshot_file" | cut -d= -f2- || true)"
+if [ -z "$managed_path" ] || [ -z "$managed_head" ] || \
+   [ "$managed_path" != "$(realpath -m "$worktree_path")" ] || \
+   [ "$managed_head" != "$(git -C "$worktree_path" rev-parse HEAD 2>/dev/null || true)" ]; then
+  printf '%s\n' 'WORKTREE_CLEANUP: SAFETY_ERROR (review snapshot path/head mismatch)' >&2
+  exit 2
+fi
+
 original_root=""
 expected_branch=""
 expected_head=""
@@ -144,11 +157,15 @@ cleanup_ok=true
 
 if [ -e "$worktree_path" ] || [ -L "$worktree_path" ]; then
   if [ -d "$worktree_path" ] && [ ! -L "$worktree_path" ] && is_registered_linked_worktree "$worktree_path" "$original_root"; then
-    # Preferred removal: let git remove and unregister the worktree
-    if git -C "$original_root" worktree remove --force "$worktree_path"; then
-      git -C "$original_root" worktree prune --expire now 2>/dev/null || git -C "$original_root" worktree prune 2>/dev/null || true
+    # Giữ cả ignored files; review không có quyền xóa dữ liệu phát sinh ngoài artifact của nó.
+    if [ -n "$(git -C "$worktree_path" status --porcelain --untracked-files=all --ignored=matching)" ]; then
+      printf '%s\n' 'WORKTREE_CLEANUP: SAFETY_ERROR (worktree has changes; preserve and inspect it)' >&2
+      exit 2
+    fi
+    if git -C "$original_root" worktree remove "$worktree_path"; then
+      :
     else
-      printf 'SAFETY_ERROR: "git worktree remove --force" failed for "%s" — preserving path and stopping cleanup.\n' \
+      printf 'SAFETY_ERROR: "git worktree remove" failed for "%s" — preserving path and stopping cleanup.\n' \
         "$worktree_path" >&2
       cleanup_ok=false
     fi
@@ -163,19 +180,6 @@ fi
 if [ "$cleanup_ok" = "false" ]; then
   printf '%s\n' "WORKTREE_CLEANUP: SAFETY_ERROR (refused to delete unverified path or removal failed — see stderr for details)" >&2
   exit 2
-fi
-
-# In stale-recovery mode (used when preparing a new worktree to clean up interrupted runs),
-# the linked worktree has been safely removed and verified; no snapshot integrity check is needed.
-if [ "$snapshot_file" = "--stale-recovery" ]; then
-  if [ -e "$worktree_path" ] || [ -L "$worktree_path" ]; then
-    printf 'SAFETY: Target path "%s" still exists after recovery attempt — refusing to continue.\n' "$worktree_path" >&2
-    printf '%s\n' "WORKTREE_CLEANUP: SAFETY_ERROR (path still exists)" >&2
-    exit 2
-  fi
-  rm -f "${worktree_path}.snapshot"
-  printf '%s\n' "WORKTREE_CLEANUP: PASS (stale linked worktree recovered)"
-  exit 0
 fi
 
 # Verify original workspace integrity

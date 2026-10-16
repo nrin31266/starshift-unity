@@ -19,6 +19,12 @@
 9. **Generic verification**: Discovers commands from CI config and repo instructions — does not hardcode project-specific commands. Distinguishes TEST/BUILD/TYPECHECK/LINT/GUARDRAIL/SYNTAX/REPRODUCTION and PASS/FAIL/NOT RUN/REPRODUCED.
 10. **Generic tracking markers**: New reviews embed a global tracking marker `<!-- agent-pr-review reviewed-head: <sha> findings: <fingerprints> -->` at the end of `CANONICAL_BODY`, and per-finding markers `<!-- agent-pr-finding fingerprint: <fp> severity: <sev> lifecycle: <lc> path: <path> line: <line> title: <title> -->` across both previous and new findings in re-reviews to guarantee complete machine-readable snapshots across multi-turn review chains. Legacy `<!-- lyreo-review ... -->` markers are recognized on read for backward compatibility; new reviews never create new `lyreo-*` markers.
 
+## StarShift Safety Patch
+
+- Existing worktree paths and snapshots are preserved; concurrent prepares cannot overwrite the first run's snapshot.
+- Cleanup requires a snapshot bound to the created path and reviewed HEAD and refuses tracked, untracked and ignored changes. Force removal and automatic stale recovery are removed.
+- The orchestrator removes only its exported, byte-matched review artifacts before normal cleanup. Regression fixtures cover dirty/unowned targets, mismatched snapshots and concurrent prepares.
+
 ## Tracking Marker
 
 New reviews:

@@ -57,7 +57,7 @@ Every subagent must return its documented status block. When a reply is missing 
 1. Require exactly one parseable GitHub PR URL, valid `POSTING_MODE` (`post-after-confirmation` [generic safe fallback], `draft-only`, or `auto-post-verified`), `REVIEW_MODE` (`normal` [default] or `strict`), `REVIEW_FOCUS` values, and a safe workspace-relative Markdown `OUTPUT_FILE` (relative, `.md`, no `..`, not under `.git/`, resolves inside the workspace).
    - Resolve `POSTING_MODE` in order: 1. explicit invocation input -> 2. project profile default (`references/project-profile.md`) -> 3. generic safe fallback (`post-after-confirmation`).
    - If multiple PR URLs are present, run `HUMAN_GATE_CHOOSE_ONE_PR`; if a valid single PR is not chosen, stop with `PR_REVIEW: NEEDS_CONTEXT`.
-2. Run `../scripts/prepare-pr-worktree.sh <PR_URL>` to create an isolated detached worktree (`WORKTREE_PATH`) and capture an immutable snapshot of the original workspace (`ORIGINAL_ROOT`, `ORIGINAL_BRANCH`, `ORIGINAL_HEAD`, `git status --porcelain`). If the worktree path already exists from an interrupted run, it safely recovers it if Git confirms it is a linked worktree of this repository; otherwise it refuses unverified paths. If worktree creation fails, stop with `PR_REVIEW: NEEDS_CONTEXT`. All subsequent file reads, diff inspections, and verification checks run inside `WORKTREE_PATH`; never modify or check out PR files in the caller's working tree.
+2. Run `../scripts/prepare-pr-worktree.sh <PR_URL>` to create an isolated detached worktree (`WORKTREE_PATH`) and capture an immutable snapshot of the original workspace (`ORIGINAL_ROOT`, `ORIGINAL_BRANCH`, `ORIGINAL_HEAD`, `git status --porcelain`). If the target path or its snapshot already exists, preserve both and choose another unused path; never assume an existing worktree is stale. Snapshot creation reserves the run atomically and binds cleanup to the created worktree path and reviewed HEAD. If worktree creation fails, stop with `PR_REVIEW: NEEDS_CONTEXT`. All subsequent file reads, diff inspections, and verification checks run inside `WORKTREE_PATH`; never modify or check out PR files in the caller's working tree.
 
 ### 2. Context
 
@@ -191,7 +191,9 @@ In a re-review:
 22. On EVERY terminal outcome (success or failure), run `../scripts/cleanup-pr-worktree.sh <WORKTREE_PATH> <SNAPSHOT_FILE>`.
     - Verifies candidate is a registered linked worktree of this repository and NOT the main repo root or caller workspace.
     - Refuses to touch main repository root, caller workspace, `/`, `$HOME`, or unmanaged paths.
-    - Uses `git worktree remove --force` followed by `git worktree prune`. If removal fails, STOP and preserve path; never fallback to `rm -rf`.
+    - Requires this run's snapshot matching the worktree path and reviewed HEAD. Missing/mismatched snapshots are safety errors; `--stale-recovery` is not supported.
+    - Before cleanup, verify this run's local Markdown artifact and metadata sidecar exactly match their persistent exports, then remove only those two known generated files. If parity/export cannot be confirmed, preserve the files and report cleanup blocked.
+    - Uses `git worktree remove` without force. Tracked, untracked or ignored changes block cleanup; preserve them for inspection. Never remove arbitrary files, retry with force, prune unrelated worktrees, or fallback to `rm -rf`.
     - Verifies original branch, HEAD, and git status match snapshot.
     - Exit codes: 0 (PASS), 1 (INTEGRITY_MISMATCH), 2 (SAFETY_ERROR), 3 (INTEGRITY_UNVERIFIED).
 
