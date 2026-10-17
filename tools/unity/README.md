@@ -134,3 +134,20 @@ giữ pointer bắn Pulse. Scout chết sẽ disable; restart Play để thử l
 respawn/scheduler. Chọn scene Scout để chỉnh Entry/Hold Viewport và Entry Duration;
 HP chỉnh ở definition asset, flash/tint ở Enemy Damage Presentation. Các giá trị
 là prototype seeds ở canonical owners, không phải final tuning.
+
+## Scout single-fire checkpoint
+
+`ConfigureScoutFire.Configure` thêm profile/projectile assets, fire/presentation
+components và Muzzle vào production Scout qua Unity API, bind scene Player target.
+Chạy trên saved gameplay scene ở Edit Mode; giữ existing asset tunables và GUID.
+`ConfigureScoutFire.Inspect` kiểm tra config/wiring/missing scripts.
+
+`VerifyScoutFire.Run(width)`, `Dodge(width)`, `Lifecycle()` và `Collision()` chạy
+trong Play Mode qua MCP. Width là 1600 hoặc 2000; coverage/isolation/giới hạn ở
+[dev/debug](../../docs/systems/dev-debug.md#m2-scout-fire-verification).
+
+Manual: Play gameplay scene, đợi Scout Hold và xem Core charge rồi shot. Giữ pointer
+và kéo Player để né; projectile không steer. Timing/speed/lifetime chỉnh trên
+`Data/Enemies/ScoutSingleFire.asset` theo
+[enemy owner](../../docs/content/enemies-bosses.md#scout-single-fire-checkpoint).
+Player contact chỉ release shot, chưa trừ lives hoặc chạy death/respawn.

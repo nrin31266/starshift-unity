@@ -284,6 +284,42 @@ Production prefab chỉ reference runtime components/assets; các helpers trong
 `tools/unity/` không thuộc runtime assembly. Verification contract ở
 [dev/debug](dev-debug.md#m2-scout-verification).
 
+### M2 Scout single fire `[PROVISIONAL]`
+
+VS-015 thêm `SingleFireAttack`, `EnemyFirePresentation` và child `Muzzle` vào Scout.
+`SingleFireDefinition` giữ prefab/timing/speed/lifetime static; attack giữ phase timer,
+đọc `EnemyHealth.IsAlive`/`EntryHoldFlight.IsHolding` và target Transform được scene
+bind vào Player. Prefab fallback tìm Player qua existing `PlayerGameplayGate` một lần
+ở Awake để lấy identity, không dùng gate đó làm authority enemy fire.
+Behavior/tunables do [enemy owner](../content/enemies-bosses.md#scout-single-fire-checkpoint) sở hữu.
+
+Attack dùng local `ObjectPool<EnemyProjectile>` theo pattern Pulse; runtime root
+`EnemyProjectiles` cùng scene, không parent vào Scout. Disable producer hủy timer
+nhưng không clear shot đã launch; destroy producer dispose pool và destroy root.
+Chưa tạo pool service, weapon framework hoặc encounter state machine chung.
+
+`EnemySingleProjectile.prefab` có Rigidbody2D Kinematic, BoxCollider2D trigger và
+`EnemyProjectile`; child Visual giữ SpriteRenderer. Typed component phân biệt hostile
+với `PlayerProjectile`, `Owner` giữ shooter; target Player root snapshot tại launch
+chỉ dùng filter contact, không đọc lại vị trí để steer. Sweep chọn contact gần nhất
+trên target hierarchy; trigger đi qua cùng completion guard. Collider của owner,
+enemy khác, friendly/hostile bullets và decoration không resolve Player contact.
+Không thay global physics layer matrix của task sau.
+
+Contact Player release shot kể cả chưa có receiver. `IEnemyProjectileTarget` là opt-in
+notification boundary không chứa damage amount/lives; nếu receiver tồn tại trên
+collider/parent, nó nhận `ReceiveEnemyHit(owner)` trước release trong `finally`.
+VS-015 không gắn receiver gameplay lên Player; probe chỉ tồn tại trong verifier.
+Protection/life/death resolve vẫn thuộc
+[player owner](../gameplay/player-combat.md#player-state-model).
+Hit/lifetime khóa completion một lần trước callback. Pool reset owner/target,
+direction/speed/lifetime, collider/body simulation, callback và hit guard trước reuse.
+Clock attack/projectile dùng scaled FixedUpdate; pause không advance simulation.
+
+Presentation chỉ đọc `IsTelegraphing`, đổi Core tint; Hull damage cue độc lập.
+Không có animation callback quyết shot hoặc damage. Verification fast path ở
+[dev/debug](dev-debug.md#m2-scout-fire-verification).
+
 ## Config data và mutable runtime state
 
 Static definitions SHOULD dùng ScriptableObject/config asset khi phù hợp:

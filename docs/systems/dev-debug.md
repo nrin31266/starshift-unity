@@ -122,6 +122,33 @@ không được xen vào probe trajectory của isolated suite. Chạy `VerifyPl
 Helpers restore native device/policy, camera/view/Game View/gate/player trong finally.
 Đây là Editor synthetic input, chưa chứng minh Android hardware/readability/FPS.
 
+## M2 Scout fire verification
+
+`tools/unity/VerifyScoutFire.cs` chạy qua MCP `run_script` trong Play Mode. `Run(width)`
+nhận width 1600 hoặc 2000, height 900; dùng production Scout/profile/projectile,
+kiểm tra Entry không fire, Hold/delay/telegraph/single/cooldown, aim vào Player sau
+khi charge đã bắt đầu, no-homing, speed, lifetime và pool reset ở Size 5/6.8.
+Đổi Game View thật và capture charge/dodge vào ignored
+`app/Temp/StarShiftScoutFireCheckpoint/`; direct-position checks không được gọi là
+relative drag verification.
+
+`Dodge(width)` queue virtual Mouse qua Input System để giữ fire và kéo 350 px né
+hostile shot thật, kiểm tra receiver probe không bị hit. Helper chờ đạn cũ hết lifetime
+trước khi bắt đầu để không lẫn contact từ producer đã disable. Đây là synthetic
+input trong Editor, không phải OS drag, Android touch hoặc manual feel approval.
+
+`Lifecycle()` kiểm tra pause giữa charge, kill trong telegraph, root/component
+disable/re-enable, flight block/re-entry, pause projectile và teardown root/pool.
+`Collision()` dùng cloned config trong memory cho sweep tốc độ cao, compound hitbox,
+owner exclusion, same projectile reuse, missed-shot lifetime và contact Player chưa
+có receiver. Probe chỉ nhận contact; không triển khai hoặc chứng minh Player lives.
+
+Helpers restore scene Scout, camera/view/Game View, Player/gate, timeScale và
+device policies trong finally; không mutate original profile. Chạy lại Scout,
+PlayerDrag, PulseLaser và GameplayView suites theo checklist phía trên, inspect
+references/missing scripts và Console sau Play exit. Global Transition/Result fire
+authority chưa có; không claim đã test session orchestration chưa implement.
+
 ## Save/profile debug và logging
 
 Cho phép inspect checkpoint/profile/settings; reset có target rõ;

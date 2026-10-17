@@ -489,6 +489,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &707720433 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7202778992839510452, guid: a82d5580647c6a958825836a390fc992, type: 3}
+  m_PrefabInstance: {fileID: 3592564819596248323}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &763435824
 GameObject:
   m_ObjectHideFlags: 0
@@ -633,6 +638,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Scout_EntryHold
       objectReference: {fileID: 0}
+    - target: {fileID: 3644258359053562883, guid: 01a518f29274925a191b17ec41cf6a99, type: 3}
+      propertyPath: target
+      value: 
+      objectReference: {fileID: 707720433}
     - target: {fileID: 7974032550739985283, guid: 01a518f29274925a191b17ec41cf6a99, type: 3}
       propertyPath: flightCamera
       value: 

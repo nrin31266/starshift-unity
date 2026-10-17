@@ -76,6 +76,38 @@ thuộc [architecture](../systems/architecture.md#m2-scout-baseline-provisional)
 entry/hold seed thuộc [flight owner](levels-encounters.md#scout-entryhold-checkpoint),
 flash choreography thuộc [audio/VFX](../presentation/audio-vfx.md#enemy-damage-feedback).
 
+#### Scout single-fire checkpoint
+
+VS-015 thêm repeated single shot sau Hold. Flight chỉ cung cấp phase; fire profile
+giữ timer riêng: initial delay → telegraph → một shot → cooldown → telegraph tiếp.
+Không fire trong Entry, khi health/flight inactive hoặc target inactive/mất reference.
+Disable attack/root hoặc chết hủy pending telegraph; re-enable bắt đầu delay mới,
+root re-enable còn chạy lại Entry. Không bắn bù backlog.
+
+Seed `[TUNABLE]` của `Data/Enemies/ScoutSingleFire.asset`:
+
+| Thông số | Seed |
+|---|---:|
+| Initial delay sau Hold | 0.6 s |
+| Telegraph trước mỗi shot | 0.4 s |
+| Cooldown từ shot đến telegraph kế tiếp | 1.8 s |
+| Projectile speed | 4 world units/s |
+| Projectile lifetime | 6 s |
+
+Shot snapshot hướng từ Muzzle tới vị trí Player **lúc fire**, không khóa aim từ lúc
+telegraph và không steer sau launch. Direction/speed không phụ thuộc camera size
+hoặc aspect. Không burst, spread, homing hoặc predictive aim. Đạn đã launch tiếp tục
+đến contact/lifetime kể cả Scout bị disable/chết; chưa có encounter cleanup runner.
+
+Pause dùng scaled time theo [architecture](../systems/architecture.md#pause-behavior).
+`PlayerGameplayGate` chỉ cấp permission cho Player; state Player Entry/invincibility
+không tự pause Scout. Slice chưa có global Transition/Result/encounter fire authority;
+owner muốn chặn producer hiện có thể disable fire component. Không tự suy ra enemy
+permission từ `CanFire`/`CanTakeDamage` của Player hoặc triển khai death/respawn ở đây.
+Projectile/contact/pool boundary thuộc
+[architecture](../systems/architecture.md#m2-scout-single-fire-provisional), core cue thuộc
+[audio/VFX](../presentation/audio-vfx.md#scout-fire-telegraph).
+
 ### Raider
 
 Raider tạo movement pressure bằng sine/arc/cross path, di chuyển nhiều và bắn burst

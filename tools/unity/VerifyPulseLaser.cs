@@ -123,12 +123,15 @@ public static class VerifyPulseLaser
             var beforeDisable = cadenceProbe.HitCount;
             movement.enabled = false;
             await Task.Delay(500);
-            Require(input.FireHeld && cadenceProbe.HitCount > beforeDisable, "Fire intent depends on movement being enabled");
+            Require(input.FireHeld && cadenceProbe.HitCount > beforeDisable,
+                "Fire intent depends on movement being enabled: held=" + input.FireHeld +
+                " hits=" + cadenceProbe.HitCount + " before=" + beforeDisable + " focused=" + Application.isFocused);
             movement.enabled = true;
             await AssertReleaseStopsSpawning(mouse, input, new Vector2(200, 200));
             var anchor = body.position;
             await MouseEvent(mouse, new Vector2(900, 350), true);
             Require(input.FireHeld && (body.position - anchor).sqrMagnitude < .0001f, "Re-press at another location reused stale delta");
+            System.IO.Directory.CreateDirectory("Temp/StarShiftFireCheckpoint");
             ScreenCapture.CaptureScreenshot("Temp/StarShiftFireCheckpoint/hold-to-fire.png");
             results.Add("movement-independent held intent, release stops new spawns, re-press elsewhere creates fresh anchor: PASS");
             gate.SetState(PlayerGameplayState.Entry);

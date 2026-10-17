@@ -45,6 +45,17 @@ death fade, particles hoặc SFX. Cue reset khi object reuse; thời gian flash 
 scaled time. Đây là presentation tạm cho [Scout checkpoint](../content/enemies-bosses.md#scout-drone),
 không phải approved final palette/art hoặc authority cho HP/death.
 
+### Scout fire telegraph
+
+VS-015 placeholder đổi Core từ red emissive sang magenta khi fire component báo
+`IsTelegraphing`, rồi trả authored tint sau shot/cancel/disable. Màu theo
+[color semantics](art-direction.md#color-semantics-locked); hostile projectile dùng
+red/pink, không dùng reward amber/gold. Hull hit flash/Damaged không ghi Core nên
+không che mất charge cue. Timing thuộc
+[fire profile](../content/enemies-bosses.md#scout-single-fire-checkpoint), không do
+presentation quyết. Cue có thể bị disable mà shot logic vẫn chạy; chưa có final
+VFX, animation clip, glow framework hoặc audio.
+
 ## Audio design
 
 SFX đơn giản có thể synth bằng Python; không bắt buộc synth toàn bộ BGM.
