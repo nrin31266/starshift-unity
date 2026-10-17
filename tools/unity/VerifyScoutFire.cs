@@ -241,7 +241,10 @@ public static class VerifyScoutFire
         var muzzle = new GameObject("EnemyFireVerificationMuzzle");
         var owner = new GameObject("EnemyFireVerificationOwner");
         var duplicate = new GameObject("EnemyFireCompoundHitbox");
-        var probe = player.AddComponent<EnemyHitProbe>();
+        var collisionRoot = player.transform.Find("Collision").gameObject;
+        var probe = collisionRoot.AddComponent<EnemyHitProbe>();
+        var productionReceiver = player.GetComponent<PlayerContactReceiver>();
+        var receiverEnabled = productionReceiver.enabled;
         EnemyProjectile shot = null;
         int releases = 0;
         try
@@ -250,7 +253,7 @@ public static class VerifyScoutFire
             gate.SetState(PlayerGameplayState.Entry);
             movement.enabled = false;
             Position(player, new Vector3(30, 30, 0));
-            duplicate.transform.SetParent(player.transform, false);
+            duplicate.transform.SetParent(collisionRoot.transform, false);
             duplicate.AddComponent<CircleCollider2D>().isTrigger = true;
             muzzle.transform.position = player.transform.position + Vector3.up * 2;
             owner.transform.position = muzzle.transform.position;
@@ -282,19 +285,21 @@ public static class VerifyScoutFire
             { expectedFailure = true; }
             Require(expectedFailure && releases == 4 && !shot.gameObject.activeSelf,
                 "Receiver exception prevented release.");
-            // Không có receiver gameplay: contact vẫn phải release mà không tự trừ lives.
+            // Receiver bị tắt: contact vẫn release, không phát damage notification.
             UnityEngine.Object.DestroyImmediate(probe);
+            productionReceiver.enabled = false;
             Position(player, new Vector3(30, 30, 0));
             shot.Launch(definition, muzzle.transform, owner, player, release);
             await Until(() => releases == 5, 700, "Player contact without receiver did not release.");
             return new { passed = true, highSpeed = 400, compoundHitCount = 2, releases,
-                reused = true, ownerIgnored = true, missingReceiverSafe = true, lifetimeMiss = true,
+                reused = true, ownerIgnored = true, disabledReceiverSafe = true, lifetimeMiss = true,
                 receiverFailureStillReleases = true };
         }
         finally
         {
             if (shot != null) UnityEngine.Object.DestroyImmediate(shot.gameObject);
             if (probe != null) UnityEngine.Object.DestroyImmediate(probe);
+            productionReceiver.enabled = receiverEnabled;
             UnityEngine.Object.DestroyImmediate(duplicate);
             UnityEngine.Object.DestroyImmediate(muzzle);
             UnityEngine.Object.DestroyImmediate(owner);
@@ -328,7 +333,7 @@ public static class VerifyScoutFire
         var oldSize = selectedSize.GetValue(gameView);
         Mouse mouse = null;
         GameObject scout = null;
-        var probe = player.AddComponent<EnemyHitProbe>();
+        var probe = player.transform.Find("Collision").gameObject.AddComponent<EnemyHitProbe>();
         try
         {
             sceneScout.SetActive(false);

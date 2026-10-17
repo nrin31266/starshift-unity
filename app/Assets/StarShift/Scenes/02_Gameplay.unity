@@ -642,6 +642,10 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 707720433}
+    - target: {fileID: 3644258359053562883, guid: 01a518f29274925a191b17ec41cf6a99, type: 3}
+      propertyPath: fireGate
+      value: 
+      objectReference: {fileID: 1954889098}
     - target: {fileID: 7974032550739985283, guid: 01a518f29274925a191b17ec41cf6a99, type: 3}
       propertyPath: flightCamera
       value: 
@@ -665,6 +669,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1954889097}
+  - component: {fileID: 1954889098}
   m_Layer: 0
   m_Name: Enemies
   m_TagString: Untagged
@@ -688,6 +693,18 @@ Transform:
   - {fileID: 1831165349}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1954889098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1954889096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b5b367a3d9d1a98d93ee692ba4a637a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Gameplay.EnemyFireGate
 --- !u!1 &1968250148
 GameObject:
   m_ObjectHideFlags: 0
@@ -729,6 +746,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3485224116064423165, guid: a82d5580647c6a958825836a390fc992, type: 3}
+      propertyPath: enemyFireGate
+      value: 
+      objectReference: {fileID: 1954889098}
     - target: {fileID: 6377972777835097908, guid: a82d5580647c6a958825836a390fc992, type: 3}
       propertyPath: movementCamera
       value: 

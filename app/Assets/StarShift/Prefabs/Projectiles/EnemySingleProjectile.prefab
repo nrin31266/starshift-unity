@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3556298985639089099}
   - component: {fileID: 6805305446950696736}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: 6401449277376781671}
   - component: {fileID: 101309525554378741}
   - component: {fileID: 7463552803728451147}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: EnemySingleProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}

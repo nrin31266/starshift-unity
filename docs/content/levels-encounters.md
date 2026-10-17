@@ -85,8 +85,10 @@ permission → controlled selection → attack. Random tạo variation trong gi�
 readability, tránh projectile wall ngẫu nhiên hoặc nhiều shot trùng do timer độc lập.
 Không dùng pure independent random timer trên từng enemy làm encounter policy.
 VS-015 vẫn là single-enemy sandbox với
-[local fire profile](enemies-bosses.md#scout-single-fire-checkpoint); reconciliation
-không thêm permission hook, encounter scheduler hoặc runtime coordination.
+[local fire profile](enemies-bosses.md#scout-single-fire-checkpoint). VS-021 thêm
+[shared safety gate](../systems/architecture.md#m2-player-damage-lifecycle) cho
+death/respawn/Game Over; không implement per-shooter permission, scheduler hoặc các
+coordination concepts bên trên.
 
 ## Encounter lifecycle và handoff
 

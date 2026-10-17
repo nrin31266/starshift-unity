@@ -132,7 +132,8 @@ mà không đổi hitbox; Collision giữ representation độc lập với artw
 Rigidbody2D Kinematic, gravity zero và freeze rotation là baseline prototype;
 collider radius/offset cũng provisional, chưa khóa movement API hay collision matrix.
 Prefab root ở origin, unit scale; spawn position thuộc scene instance.
-Chưa có lives/death/respawn sequence, encounter, HUD hoặc persistence.
+Ở checkpoint VS-001–003 chưa có lifecycle; phần hiện tại ở
+[M2 player damage lifecycle](#m2-player-damage-lifecycle). Encounter, HUD và persistence chưa implement.
 Không tạo component rỗng để giữ chỗ cho các trách nhiệm chưa implement.
 
 VS-004–005 có runtime scripts ở `Scripts/Player/`:
@@ -318,7 +319,8 @@ Không thay global physics layer matrix của task sau.
 Contact Player release shot kể cả chưa có receiver. `IEnemyProjectileTarget` là opt-in
 notification boundary không chứa damage amount/lives; nếu receiver tồn tại trên
 collider/parent, nó nhận `ReceiveEnemyHit(owner)` trước release trong `finally`.
-VS-015 không gắn receiver gameplay lên Player; probe chỉ tồn tại trong verifier.
+VS-016–021 gắn `PlayerContactReceiver` production trên Player, route notification tới
+lifecycle/protection gate. Probe của verifier vẫn chỉ tồn tại trong memory.
 Protection/life/death resolve vẫn thuộc
 [player owner](../gameplay/player-combat.md#player-state-model).
 Hit/lifetime khóa completion một lần trước callback. Pool reset owner/target,
@@ -328,6 +330,51 @@ Clock attack/projectile dùng scaled FixedUpdate; pause không advance simulatio
 Presentation chỉ đọc `IsTelegraphing`, đổi Core tint; Hull damage cue độc lập.
 Không có animation callback quyết shot hoặc damage. Verification fast path ở
 [dev/debug](dev-debug.md#m2-scout-fire-verification).
+
+### M2 player damage lifecycle
+
+VS-016–021 dùng legacy Rigidbody2D/Collider2D hiện có. Unity layers được author qua
+MCP, recursive trên prefab root/children; body Player/Scout giữ Kinematic, trigger và
+full kinematic contacts. Các cặp khác liên quan bốn combat layers bị ignore:
+
+| Layer pair | Physics2D interaction |
+|---|---|
+| Player (8) / Enemy (9) | Body contact tới Player receiver |
+| Player (8) / EnemyProjectile (11) | Hostile contact tới Player receiver |
+| Enemy (9) / PlayerProjectile (10) | Friendly hit tới enemy receiver |
+
+Chưa tạo layer/producer Pickup hoặc hazard chưa có. Sweep vẫn dùng opt-in receiver/
+target identity và owner filter, không dùng tag string quyết damage; projectile-vs-
+projectile và friendly-vs-Player không resolve hit. `PlayerContactReceiver` route cả
+projectile notification lẫn body Enter/Stay, không chứa lives hoặc death timers.
+
+`PlayerLives` giữ số lives runtime. `PlayerDamageLifecycle` điều phối accepted-hit,
+death clock, entrance, protection và terminal signal, chỉ dùng `PlayerGameplayGate`
+làm phase/permission truth. `PlayerRespawnEntrance` tính viewport-relative pose,
+kiểm tra candidate bằng overlap query với enemy blocking layer; không ghi Transform.
+`RelativeDragMovement` là writer duy nhất, bỏ pointer delta và bypass normal clamp
+khi entrance active; ghi initial pose trước khi state Respawning được publish.
+Entrance clock chạy trước movement; lifecycle mở permissions trong LateUpdate sau
+khi movement đã ghi safe final pose. Sau camera Update, cùng pose được reproject để
+view/region/aspect không làm entrance dùng stale world bounds.
+
+`EnemyFireGate` trên scene `Enemies` là shared safety authority: `Block()` hủy quyền
+fire/pending telegraph, `ResumeAfter(seconds)` đếm scaled grace, `ClearProjectiles()`
+release active hostile projectiles cùng scene qua existing pool callback. Producers
+bind scene reference hoặc fallback tìm gate một lần; không có gate thì fail closed.
+Nó không chọn shooter, không đóng băng movement và không là encounter/FireDirector.
+Lifecycle giữ block qua death/entrance, request grace khi entrance hoàn tất và block
+terminal ở Game Over. Transition/Result orchestration và spawn scheduler vẫn chưa có;
+owner sau có thể dùng cùng safety boundary, không suy từ Player `CanFire`.
+
+`PlayerDamagePresentation` chỉ đọc gate để death flash, protection blink/tint và
+hide ở Game Over; không quyết damage/phase. Active Pulse có death-penalty boundary
+nhưng slice chỉ có Lv1; không thêm branch inventory/progression framework.
+Ordering, timings, pointer behavior và cleanup/protection policy thuộc
+[player owner](../gameplay/player-combat.md#player-survival), cue thuộc
+[audio/VFX](../presentation/audio-vfx.md#player-damage-lifecycle-placeholder).
+Không ghi CampaignSave/Profile. Verification ở
+[dev/debug](dev-debug.md#m2-player-damage-lifecycle-verification).
 
 ## Config data và mutable runtime state
 

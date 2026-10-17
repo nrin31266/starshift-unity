@@ -20,7 +20,9 @@ damage, theo survival contract bên dưới. Đây là naming implementation
 death/respawn sequence, tự trừ lives hoặc tự chuyển state theo timer.
 Gate cũng chặn permissions khi bị disable hoặc `Time.timeScale == 0`.
 Pause UI/time controller chưa có; đổi local state không thay thế global pause.
-Damage permission là API cho integration tiếp theo; chưa có player damage/lives receiver.
+VS-016–021 nối `PlayerContactReceiver` vào lifecycle/lives runtime. Gate vẫn là source
+of truth của phase/permission; lifecycle điều phối timers và transitions qua gate,
+không thêm state enum hoặc HUD authority song song.
 
 ## Input và điều khiển
 
@@ -47,6 +49,10 @@ còn giữ. Resume trong khi pointer vẫn held cho fire tiếp tục, không b�
 movement vẫn yêu cầu release/press mới theo contract tránh stale drag. Mất focus
 hoặc disable input adapter hủy cả gesture/fire intent; cần press mới sau đó.
 Disable movement chỉ hủy drag, không hủy fire intent.
+
+Death/respawn giữ cùng rule: pointer còn held không tạo movement từ delta cũ; input/
+fire bị chặn suốt Dying/entrance. Sau entrance, held pointer còn hợp lệ cho fire tiếp,
+nhưng drag cần release/press mới. Root/input adapter disable hủy cả held intent.
 
 Fire permission bị khóa trong:
 
@@ -153,6 +159,12 @@ Fatal hit
 → nếu lives == 0: Game Over
 ```
 
+VS-018 khóa state Dying trước callback, rồi synchronously trừ đúng một life, áp
+active-weapon penalty và clear/block hostile combat. Dying state yêu cầu placeholder
+death cue; presentation không được quyết khi nào trừ life hoặc cho phép hit tiếp.
+Death phase trước entrance dùng 0.35 s `[TUNABLE]`; clock scaled, callback feedback
+lỗi không được bỏ qua mandatory life/cleanup work hoặc giữ sequence mắc kẹt.
+
 ### Weapon penalty on death `[LOCKED]`
 
 Chỉ weapon đang active lúc chết:
@@ -165,6 +177,10 @@ minimum = Lv1
 Weapon khác giữ level hiện tại.
 
 Shield-absorbed hit không downgrade.
+
+M2 hiện chỉ có Pulse Lv1. `ApplyDeathDowngrade()` là boundary của active weapon,
+giữ Lv1 và reset cadence; chưa tạo level state/pattern Lv2/Lv3 giả để chứng minh
+upgrade chưa implement. Rule level cao hơn vẫn giữ nguyên, chưa runtime-verified.
 
 ### Respawn `[LOCKED]`
 
@@ -193,6 +209,13 @@ wait ngắn → xuất hiện ngoài edge phù hợp → bay vào gameplay posit
 → Normal gameplay khi invincibility hết
 ```
 
+VS-019 vertical entrance dùng 0.9 s `[TUNABLE]`, bắt đầu ngoài bottom của current
+camera và ease vào target trong current playable region. Framing/aspect/restricted
+region thay đổi thì reproject; không cache world waypoint. Preferred target ở giữa
+ngang, phần dưới region; nếu enemy body chặn target thì tìm candidate an toàn khác.
+Nếu các candidate đều bị chặn, giữ protected entrance, chưa mở input/fire. Horizontal
+direction orchestration và hazard producers chưa được implement trong batch này.
+
 ### Invincibility
 
 Post-entry invincibility có baseline **2.5 s [TUNABLE]**, bắt đầu sau entrance,
@@ -207,7 +230,18 @@ xóa enemy. Enemy fire tạm dừng khoảng **1 s [TUNABLE]**; cùng entrance a
 invincibility, khoảng nghỉ này tránh tình trạng vừa respawn đã chết lại.
 Enemy-fire grace là tunable riêng, không thay thế protection của respawn entrance
 hoặc post-entry invincibility.
-Exact bullet cleanup scope vẫn cần chốt khi implementation.
+Cleanup scope của M2 được làm rõ bên dưới; hazard cleanup riêng chưa implement.
+
+VS-021 chốt scope slice: release **mọi EnemyProjectile active trong cùng gameplay
+scene** khi damage được chấp nhận và khi Game Over; không clear PlayerProjectile,
+enemy hoặc snapshot/save. Release dùng callback về pool, reset ownership/target,
+hit flag, timer, velocity/simulation và callback trước reuse.
+
+Enemy-fire permission bị block suốt Dying và entrance. Khi safe entrance kết thúc,
+bắt đầu enemy-fire grace ở trên, độc lập post-entry invincibility; enemy movement
+vẫn chạy. Block hủy pending telegraph; resume chạy local delay/charge mới, không
+bắn bù. Pause đóng băng cả hai clocks. Shared authority/API thuộc
+[architecture](../systems/architecture.md#m2-player-damage-lifecycle).
 
 ### Game Over
 
@@ -215,6 +249,12 @@ Khi lives bằng zero, dừng encounter progression và spawn mới, nhưng vẫ
 death sequence trước khi mở Game Over. Người chơi có thể Retry Wave hoặc về Main Menu.
 Retry load snapshot đầu wave/encounter checkpoint, không phục hồi world giữa wave;
 serialization/restore chi tiết ở [save/profile](../systems/save-profile.md).
+
+VS-017–021 có terminal `GameOver` state và signal sau death phase: không respawn,
+không nhận hit tiếp, input/fire off và enemy-fire gate giữ block. Chưa có encounter
+runner để stop progression/spawn; signal/state là boundary cho owner đó và UI sau.
+Disable/re-enable Player/lifecycle reset phiên runtime về starting lives/Active,
+hủy pending entrance/timers; đây không phải Retry/restore checkpoint hay save.
 
 ## Movement bounds và camera interaction
 
@@ -263,9 +303,16 @@ trong region nhỏ hơn chính nó. Implementation và component boundary ở
 | Friendly projectile / enemy hoặc destructible hazard | Damage target theo content config |
 | Player / pickup hoặc crate | Pickup interaction theo item owner |
 
-Friendly fire, projectile-vs-projectile và enemy-vs-enemy chưa được thiết kế chốt;
+VS-016 slice không resolve friendly fire, projectile-vs-projectile hoặc enemy-vs-enemy;
 không tự thêm damage behavior. Invincibility bỏ qua damaging hit;
 chi tiết shield consumption khi các protection state overlap [TBD].
+
+`PlayerContactReceiver` route hostile hit và EnemyHealth body contact qua cùng
+`TryReceiveHit()`/protection gate. Enemy projectile contact tiêu thụ shot kể cả khi
+Player protected, không giữ hit chờ invincibility hết. Body overlap được kiểm tra
+Stay: nếu còn overlap lúc Active trở lại, nhận đúng một valid hit rồi Dying khóa
+callbacks còn lại. Unity layers/matrix concrete thuộc
+[architecture](../systems/architecture.md#m2-player-damage-lifecycle).
 
 VS-011 baseline chỉ resolve friendly hit với target opt-in qua
 `IPlayerProjectileTarget`; owner và collider dưới owner bị bỏ qua. Collider không
@@ -282,7 +329,7 @@ thuộc [architecture owner](../systems/architecture.md#m2-gate-và-pulse-laser-
 
 Life loss, shield breaks, no-hit streak và combat result được gửi sang
 [statistics owner](progression-economy.md); metrics được chọn theo owner đó.
-Các duration ở trên là seed; respawn wait/entry duration, exact bullet cleanup scope,
-protection overlap và collision layer setup còn cần xác minh khi implementation.
+Các duration ở trên là seed; protection/shield overlap, horizontal entrance và
+hazard-specific routing còn cần xác minh khi domain tương ứng được implement.
 [Audio/VFX](../presentation/audio-vfx.md) chỉ thể hiện kết quả, không quyết damage.
 [Dev/debug](../systems/dev-debug.md) cung cấp đường test death, respawn và Retry Wave.

@@ -114,6 +114,16 @@ respawn entry có cue riêng, blink alpha/ring teal cho invincibility, tránh nh
 Hit/death/protection resolve bởi [player combat](../gameplay/player-combat.md),
 không chờ particle để quyết có nhận damage.
 
+### Player damage lifecycle placeholder
+
+VS-018–020 dùng Hull trắng trong Dying, entrance ease và teal blink khi post-entry
+invincible; Game Over hide Hull. Blink cycle 0.2 s, visible 60% `[TUNABLE]`, dùng
+scaled time nên pause giữ cue hiện tại. Disable presentation/root restore authored
+tint/enabled state. Đây là placeholder, chưa có explosion particles, audio, final
+VFX hoặc shield-item system. Gameplay phase/timing thuộc
+[player owner](../gameplay/player-combat.md#player-survival); tắt cue không đổi lives,
+cleanup, entrance hoặc protection permission.
+
 ## Enemy, Elite, boss và hazard feedback
 
 Enemy hit: bright flash cực ngắn, spark nhỏ, throttled SFX, không shake mọi viên.

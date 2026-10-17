@@ -156,4 +156,20 @@ Manual: Play gameplay scene, đợi Scout Hold và xem Core charge rồi shot. G
 và kéo Player để né; projectile không steer. Timing/speed/lifetime chỉnh trên
 `Data/Enemies/ScoutSingleFire.asset` theo
 [enemy owner](../../docs/content/enemies-bosses.md#scout-single-fire-checkpoint).
-Player contact chỉ release shot, chưa trừ lives hoặc chạy death/respawn.
+VS-015 chỉ release contact; VS-016–021 đã nối Player damage lifecycle bên dưới.
+
+## Player damage lifecycle checkpoint
+
+`ConfigurePlayerDamageLifecycle.Configure` author bốn combat layers, Physics2D matrix,
+recursive prefab layers, Player components/references và scene shared enemy-fire gate.
+Chạy trên saved gameplay scene ở Edit Mode; từ chối overwrite occupied layer slots.
+`Inspect` kiểm tra matrix, bindings, tunables và missing scripts.
+
+`VerifyPlayerDamageLifecycle.Run(width)` kiểm tra nguyên flow A–F cho width 1600/2000;
+`PointerAndLifecycle()` kiểm tra held/fresh input, callback failure, pause và root reuse.
+`IsolateLegacy()` chỉ dùng cho regression probes trong một Play session riêng;
+không save scene sau khi isolate. Coverage/isolation và giới hạn ở
+[dev/debug](../../docs/systems/dev-debug.md#m2-player-damage-lifecycle-verification).
+Manual: Play scene, để Scout bắn trúng hoặc body chạm Player; inspect lives/state qua
+MCP, references/tunables qua Inspector; xem entrance, blink và enemy fire resume. Game Over
+chưa có UI; restart Play để reset phiên test, không coi đây là Retry Wave.

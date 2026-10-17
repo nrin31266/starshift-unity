@@ -99,6 +99,8 @@ namespace StarShift.Combat
             }
         }
 
+        public void Release() => FinishFlight();
+
         public void ResetForPool()
         {
             flying = false;
@@ -107,6 +109,8 @@ namespace StarShift.Combat
             direction = Vector2.zero;
             speed = remainingLifetime = 0;
             sweepHits.Clear();
+            body.linearVelocity = Vector2.zero;
+            body.angularVelocity = 0;
             hitbox.enabled = false;
             body.simulated = false;
             gameObject.SetActive(false);

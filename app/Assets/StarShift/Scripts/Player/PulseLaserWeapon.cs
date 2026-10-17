@@ -22,6 +22,10 @@ namespace StarShift.Player
         private double nextShotTime;
         private bool wasAllowed;
         private bool shuttingDown;
+        public int CurrentLevel => 1;
+
+        // Slice chỉ có Lv1; giữ boundary death penalty, chưa giả lập upgrade chưa có.
+        public void ApplyDeathDowngrade() => ResetCadence();
 
         private void Awake()
         {

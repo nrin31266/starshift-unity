@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8987955269214460313}
   - component: {fileID: 1880555544973545733}
   - component: {fileID: 6313352160549666604}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: PlayerPulseProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -130,7 +130,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7534737016236288452}
   - component: {fileID: 3853459938513762912}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}

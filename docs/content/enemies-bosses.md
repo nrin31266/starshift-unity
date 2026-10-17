@@ -99,8 +99,8 @@ Seed sandbox **một enemy** `[TUNABLE]` của `Data/Enemies/ScoutSingleFire.ass
 Đây là local attack cycle khi được phép attack, không phải cadence policy cho cả
 formation. Không nhân cadence này thành mọi Scout tự fire độc lập khi có nhiều
 enemy. Coordination direction và controlled selection thuộc
-[encounter owner](levels-encounters.md#multi-enemy-attack-coordination); chưa cần thêm
-permission API hoặc sửa local fire runtime trong reconciliation này.
+[encounter owner](levels-encounters.md#multi-enemy-attack-coordination); per-shooter
+coordination API chưa implement. Shared safety gate của lifecycle không thay policy đó.
 
 Shot snapshot hướng từ Muzzle tới vị trí Player **lúc fire**, không khóa aim từ lúc
 telegraph và không steer sau launch. Direction/speed không phụ thuộc camera size
@@ -108,10 +108,12 @@ hoặc aspect. Không burst, spread, homing hoặc predictive aim. Đạn đã l
 đến contact/lifetime kể cả Scout bị disable/chết; chưa có encounter cleanup runner.
 
 Pause dùng scaled time theo [architecture](../systems/architecture.md#pause-behavior).
-`PlayerGameplayGate` chỉ cấp permission cho Player; state Player Entry/invincibility
-không tự pause Scout. Slice chưa có global Transition/Result/encounter fire authority;
-owner muốn chặn producer hiện có thể disable fire component. Không tự suy ra enemy
-permission từ `CanFire`/`CanTakeDamage` của Player hoặc triển khai death/respawn ở đây.
+`PlayerGameplayGate` chỉ cấp permission cho Player; không suy enemy permission từ
+`CanFire`/`CanTakeDamage`. VS-021 thêm shared `EnemyFireGate` cho death/respawn grace
+và Game Over; Scout reset pending telegraph khi authority block, resume với local
+delay mới. Transition/Result orchestration và per-shooter encounter coordination
+vẫn chưa có. Boundary thuộc
+[architecture](../systems/architecture.md#m2-player-damage-lifecycle).
 Projectile/contact/pool boundary thuộc
 [architecture](../systems/architecture.md#m2-scout-single-fire-provisional), core cue thuộc
 [audio/VFX](../presentation/audio-vfx.md#scout-fire-telegraph).

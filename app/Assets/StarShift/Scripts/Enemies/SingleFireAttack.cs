@@ -1,5 +1,6 @@
 using StarShift.Combat;
 using StarShift.Player;
+using StarShift.Gameplay;
 using UnityEngine;
 using UnityEngine.Pool;
 using UnityEngine.SceneManagement;
@@ -15,6 +16,7 @@ namespace StarShift.Enemies
         [SerializeField] private Transform muzzle;
         [SerializeField, Tooltip("Scene bind Player; prefab fallback tìm Player gate, không dùng tọa độ cố định.")]
         private Transform target;
+        [SerializeField] private EnemyFireGate fireGate;
 
         private EnemyHealth health;
         private EntryHoldFlight flight;
@@ -29,9 +31,10 @@ namespace StarShift.Enemies
         {
             health = GetComponent<EnemyHealth>();
             flight = GetComponent<EntryHoldFlight>();
-            if (definition == null || definition.ProjectilePrefab == null || muzzle == null)
+            if (fireGate == null) fireGate = FindAnyObjectByType<EnemyFireGate>();
+            if (definition == null || definition.ProjectilePrefab == null || muzzle == null || fireGate == null)
             {
-                Debug.LogError("SingleFireAttack requires a definition, projectile prefab and muzzle.", this);
+                Debug.LogError("SingleFireAttack requires a definition, projectile prefab, muzzle and enemy fire gate.", this);
                 enabled = false;
                 return;
             }
@@ -49,12 +52,20 @@ namespace StarShift.Enemies
                 }, true, 4, 16);
         }
 
-        private void OnEnable() => ResetSequence();
-        private void OnDisable() => ResetSequence();
+        private void OnEnable()
+        {
+            if (fireGate != null) fireGate.PermissionChanged += ResetSequence;
+            ResetSequence();
+        }
+        private void OnDisable()
+        {
+            if (fireGate != null) fireGate.PermissionChanged -= ResetSequence;
+            ResetSequence();
+        }
 
         private void FixedUpdate()
         {
-            if (!health.IsAlive || !flight.isActiveAndEnabled || !flight.IsHolding ||
+            if (!fireGate.CanFire || !health.IsAlive || !flight.isActiveAndEnabled || !flight.IsHolding ||
                 target == null || !target.gameObject.activeInHierarchy)
             {
                 ResetSequence();

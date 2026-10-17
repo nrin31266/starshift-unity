@@ -143,14 +143,56 @@ input trong Editor, không phải OS drag, Android touch hoặc manual feel appr
 `Lifecycle()` kiểm tra pause giữa charge, kill trong telegraph, root/component
 disable/re-enable, flight block/re-entry, pause projectile và teardown root/pool.
 `Collision()` dùng cloned config trong memory cho sweep tốc độ cao, compound hitbox,
-owner exclusion, same projectile reuse, missed-shot lifetime và contact Player chưa
-có receiver. Probe chỉ nhận contact; không triển khai hoặc chứng minh Player lives.
+owner exclusion, same projectile reuse, missed-shot lifetime và contact khi Player
+receiver disabled. Probe chỉ nhận contact; không chứng minh Player lives.
 
 Helpers restore scene Scout, camera/view/Game View, Player/gate, timeScale và
 device policies trong finally; không mutate original profile. Chạy lại Scout,
 PlayerDrag, PulseLaser và GameplayView suites theo checklist phía trên, inspect
 references/missing scripts và Console sau Play exit. Global Transition/Result fire
 authority chưa có; không claim đã test session orchestration chưa implement.
+
+## M2 player damage lifecycle verification
+
+`tools/unity/VerifyPlayerDamageLifecycle.Run(width)` chạy trong Play Mode qua MCP,
+width 1600/2000, height 900. Mỗi aspect chạy nguyên lifecycle ở baseline, close và
+wide framing; wide dùng lower 70% region. Không lấy các isolated VS probes thay cho
+end-to-end evidence. Scene Scout tạm disable; helper spawn production Scout, dùng
+real hostile projectiles và compound body contact, restore/dọn objects cuối test.
+
+Coverage theo scenario:
+
+- A: projectile hit, lives giảm một lần, Dying/cleanup, entrance, safe position,
+  post-entry protection và enemy fire grace độc lập rồi Active.
+- B: nhiều projectile/body callbacks gần nhau vẫn một accepted death/life loss.
+- C: starting lives tới zero qua repeated respawns, một GameOver signal, không
+  respawn hoặc nhận damage tiếp, hostile combat blocked/cleared.
+- D: projectile trong entrance/invincibility bị consume, không trừ life; body
+  overlap còn tồn tại sau protection kết thúc chỉ resolve một valid hit.
+- E: death giữa telegraph hủy pending shot; grace không phát shot; production Scout
+  resume local delay/telegraph mới. Enemy không bị xóa/freeze bởi death cleanup.
+- F: cả hai aspect, current view và restricted region; end pose nằm trong footprint
+  bounds, tránh body chặn preferred respawn candidate.
+
+`PointerAndLifecycle()` queue virtual Mouse qua input thật để verify held fire
+resume sau entrance, stale drag bị bỏ, release/re-press tạo delta mới. Cũng kiểm tra
+callback exception không chặn mandatory life/cleanup work, pause giữa entrance và
+root disable/re-enable hủy stale sequence/reset phiên. Pulse chỉ có Lv1 nên death
+penalty mới chứng minh minimum Lv1, chưa chứng minh downgrade pattern Lv2/Lv3.
+
+`HostilePool()` kiểm tra real Scout pool: clear trả shot về pool, reset đủ fields,
+reuse cùng instance, pause và root-first teardown. `Presentation()` kiểm tra death
+flash/protection tint/blink; capture ở ignored `app/Temp/StarShiftLifecycleCheckpoint/`.
+Case tất cả candidates bị chặn phải giữ protected entrance cho tới khi blocker được
+dọn; fixture chờ friendly shots cũ tự hết lifetime để chúng không giết blocker.
+
+Regression probes cũ chạy trong **Play session riêng**, gọi `IsolateLegacy()` trước:
+tạm disable damage lifecycle, mở enemy safety gate và disable scene Scout để
+fake trajectories không kích hoạt production death. Không save isolated scene;
+stop Play để restore wiring/state. Chạy View/PlayerDrag/PlayerBounds/Pulse/Scout/
+ScoutFire suites phù hợp, inspect matrix/references và Console cả sau Play exit.
+Helpers không ghi save/profile, không dùng làm runtime dependency. Đây là Editor
+physics/synthetic-input evidence, chưa phải Android hardware hoặc performance test.
 
 ## Save/profile debug và logging
 

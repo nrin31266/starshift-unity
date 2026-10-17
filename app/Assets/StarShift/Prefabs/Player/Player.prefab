@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 22604463601256805}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,7 +47,12 @@ GameObject:
   - component: {fileID: 9102051656344939247}
   - component: {fileID: 6079066907366468862}
   - component: {fileID: 3405941099186509502}
-  m_Layer: 0
+  - component: {fileID: 8481085985503670737}
+  - component: {fileID: 3555923274682179739}
+  - component: {fileID: 3485224116064423165}
+  - component: {fileID: 4678981234046310746}
+  - component: {fileID: 2203450669141462910}
+  m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -82,7 +87,7 @@ Rigidbody2D:
   m_GameObject: {fileID: 6539164650486920447}
   m_BodyType: 1
   m_Simulated: 1
-  m_UseFullKinematicContacts: 0
+  m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDamping: 0
@@ -167,6 +172,76 @@ MonoBehaviour:
   definition: {fileID: 11400000, guid: 42bc035b826932731a931af9cc006b89, type: 2}
   pointerInput: {fileID: 6454895579133572047}
   muzzle: {fileID: 5791173589521502881}
+--- !u!114 &8481085985503670737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6539164650486920447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e9c46dbab476210b8209896e99dfcb5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Player.PlayerLives
+--- !u!114 &3555923274682179739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6539164650486920447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f00f70c9ef3ec2f1a2e673d832d056f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Player.PlayerRespawnEntrance
+  duration: 0.9
+  collisionShape: {fileID: 8200030433945885795}
+  blockingLayers:
+    serializedVersion: 2
+    m_Bits: 512
+--- !u!114 &3485224116064423165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6539164650486920447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 524e619d19492c01ca7e154fb08f06d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Player.PlayerDamageLifecycle
+  enemyFireGate: {fileID: 0}
+  deathDuration: 0.35
+  invincibilityDuration: 2.5
+  enemyFireGrace: 1
+--- !u!114 &4678981234046310746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6539164650486920447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adb524d10e67aaa93ae1484c4a9e586d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Player.PlayerContactReceiver
+--- !u!114 &2203450669141462910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6539164650486920447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e42093364a47b5764a19e4c160294e61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Player.PlayerDamagePresentation
+  hull: {fileID: 6601152673651682127}
 --- !u!1 &7110117021529998660
 GameObject:
   m_ObjectHideFlags: 0
@@ -177,7 +252,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2949164328932959637}
   - component: {fileID: 8200030433945885795}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Collision
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -245,7 +320,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3729418507937065187}
   - component: {fileID: 6601152673651682127}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: HullPlaceholder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -336,7 +411,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5791173589521502881}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Muzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

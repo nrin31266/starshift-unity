@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 436768280394179446}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3504407251279459776}
   - component: {fileID: 1732351707949678760}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Collision
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -126,7 +126,7 @@ GameObject:
   - component: {fileID: 7974032550739985283}
   - component: {fileID: 3644258359053562883}
   - component: {fileID: 3048334041424835111}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Scout
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -161,7 +161,7 @@ Rigidbody2D:
   m_GameObject: {fileID: 2966396641657307375}
   m_BodyType: 1
   m_Simulated: 1
-  m_UseFullKinematicContacts: 0
+  m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDamping: 0
@@ -238,6 +238,7 @@ MonoBehaviour:
   definition: {fileID: 11400000, guid: cec3294973b19ab9584c75b98ed1eda7, type: 2}
   muzzle: {fileID: 8488514730123955512}
   target: {fileID: 0}
+  fireGate: {fileID: 0}
 --- !u!114 &3048334041424835111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,7 +263,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6080224746213414892}
   - component: {fileID: 8740881288380497585}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: CorePlaceholder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -354,7 +355,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8043905365944875486}
   - component: {fileID: 9117863417997564826}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: HullPlaceholder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -445,7 +446,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8488514730123955512}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Muzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

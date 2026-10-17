@@ -22,6 +22,7 @@ namespace StarShift.Player
         private PlayerMovementBounds movementBounds;
         private PlayerGameplayGate gameplayGate;
         private GameplayViewController gameplayView;
+        private PlayerRespawnEntrance respawnEntrance;
         private Vector2 pendingPointerDelta;
 
         private void Awake()
@@ -29,6 +30,7 @@ namespace StarShift.Player
             body = GetComponent<Rigidbody2D>();
             movementBounds = GetComponent<PlayerMovementBounds>();
             gameplayGate = GetComponent<PlayerGameplayGate>();
+            respawnEntrance = GetComponent<PlayerRespawnEntrance>();
             if (movementCamera == null) movementCamera = Camera.main;
             if (movementCamera != null) gameplayView = movementCamera.GetComponent<GameplayViewController>();
             if (pointerInput == null || movementCamera == null || !movementCamera.orthographic)
@@ -73,6 +75,12 @@ namespace StarShift.Player
 
         private void FixedUpdate()
         {
+            if (respawnEntrance != null && respawnEntrance.IsEntering)
+            {
+                ResetInput();
+                ApplyEntrancePosition();
+                return;
+            }
             if (!gameplayGate.CanInput)
             {
                 ResetInput();
@@ -103,9 +111,21 @@ namespace StarShift.Player
         {
             if (body == null || movementCamera == null || !movementCamera.isActiveAndEnabled ||
                 !movementBounds.isActiveAndEnabled) return;
+            if (respawnEntrance != null && respawnEntrance.IsEntering)
+            {
+                ApplyEntrancePosition();
+                return;
+            }
             // Framing có thể co trong render frame hoặc khi gate khóa input; movement vẫn là writer duy nhất.
             var clamped = movementBounds.ClampPosition(body.position, movementCamera, PlayableViewport);
             if (clamped != body.position) body.position = clamped;
+        }
+
+        internal void ApplyEntrancePosition()
+        {
+            if (movementCamera == null || !movementCamera.isActiveAndEnabled) return;
+            body.position = respawnEntrance.GetPosition(movementCamera, movementBounds, PlayableViewport);
+            transform.position = new Vector3(body.position.x, body.position.y, transform.position.z);
         }
 
         private void ResetInput()
