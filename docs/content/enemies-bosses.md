@@ -60,7 +60,9 @@ Exact HP/stats là [TUNABLE]. Bảng balance seed bên dưới là baseline prot
 
 ### Scout Drone
 
-Basic enemy để học aim/dodge, tái dùng nhiều path với tốc độ vừa và single shot.
+Common formation enemy để học aim/dodge và cảm nhận sức mạnh weapon: thường xuất hiện
+theo nhóm, tái dùng nhiều path với tốc độ vừa và single shot đơn giản. Movement và
+formation tạo variety; không mặc định mọi Scout visible đều là active shooter.
 Scout dùng Normal/Damaged; score thấp theo
 [economy owner](../gameplay/progression-economy.md).
 
@@ -84,7 +86,7 @@ Không fire trong Entry, khi health/flight inactive hoặc target inactive/mất
 Disable attack/root hoặc chết hủy pending telegraph; re-enable bắt đầu delay mới,
 root re-enable còn chạy lại Entry. Không bắn bù backlog.
 
-Seed `[TUNABLE]` của `Data/Enemies/ScoutSingleFire.asset`:
+Seed sandbox **một enemy** `[TUNABLE]` của `Data/Enemies/ScoutSingleFire.asset`:
 
 | Thông số | Seed |
 |---|---:|
@@ -93,6 +95,12 @@ Seed `[TUNABLE]` của `Data/Enemies/ScoutSingleFire.asset`:
 | Cooldown từ shot đến telegraph kế tiếp | 1.8 s |
 | Projectile speed | 4 world units/s |
 | Projectile lifetime | 6 s |
+
+Đây là local attack cycle khi được phép attack, không phải cadence policy cho cả
+formation. Không nhân cadence này thành mọi Scout tự fire độc lập khi có nhiều
+enemy. Coordination direction và controlled selection thuộc
+[encounter owner](levels-encounters.md#multi-enemy-attack-coordination); chưa cần thêm
+permission API hoặc sửa local fire runtime trong reconciliation này.
 
 Shot snapshot hướng từ Muzzle tới vị trí Player **lúc fire**, không khóa aim từ lúc
 telegraph và không steer sau launch. Direction/speed không phụ thuộc camera size
@@ -158,6 +166,9 @@ không tự copy Scout stats thành locked minion contract.
 ## Balance seed table
 
 Tất cả HP là [TUNABLE], không phải final balance.
+Scout HP seed hiện phục vụ vertical-slice validation: một hit chuyển Damaged, hit
+tiếp theo chết với Pulse Lv1 checkpoint. Không coi đây là HP campaign cuối cùng;
+retune theo [weapon power progression](weapons-items-drops.md#weapon-philosophy-và-common-config).
 
 | Archetype | HP seed |
 |---|---:|

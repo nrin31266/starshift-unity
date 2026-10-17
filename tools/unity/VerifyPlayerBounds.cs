@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 using StarShift.Player;
+using StarShift.Gameplay;
 
 public static class VerifyPlayerBounds
 {
@@ -18,8 +19,8 @@ public static class VerifyPlayerBounds
         var input = player.GetComponent<InputSystemPointerInput>();
         var renderer = player.GetComponentInChildren<SpriteRenderer>();
         var camera = Camera.main;
-        if (Mathf.Abs(camera.orthographicSize - 5) > .001f)
-            throw new InvalidOperationException("This checkpoint verifies the L1 camera-size baseline of 5.");
+        if (Mathf.Abs(camera.orthographicSize - GameplayViewSettings.BaselineSize) > .001f)
+            throw new InvalidOperationException("This checkpoint requires the default gameplay view baseline.");
         var originalPosition = body.position;
         var originalMouse = Mouse.current;
         var inputSettings = InputSystem.settings;
@@ -78,6 +79,7 @@ public static class VerifyPlayerBounds
                     }
                     if (direction == new Vector2(1, 1))
                     {
+                        System.IO.Directory.CreateDirectory("Temp/StarShiftBoundsCheckpoint");
                         ScreenCapture.CaptureScreenshot("Temp/StarShiftBoundsCheckpoint/" + width + "x900-corner.png");
                         await Task.Delay(150);
                     }

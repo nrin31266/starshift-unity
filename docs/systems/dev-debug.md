@@ -85,10 +85,13 @@ height 900; frames phải thực sự tiến, không lấy screenshot/Console s�
 chứng gameplay. Probe compile trong memory, quan sát sau movement LateUpdate;
 không thêm runtime debug UI hoặc production verifier.
 
-Matrix: baseline, hai larger sizes, full và restricted/offset regions; 4 cạnh,
+Matrix: baseline, close, wide và spectacle seeds theo
+[camera owner](../content/levels-encounters.md#master-campaign-table-và-camera-profiles),
+full và restricted/offset regions; 4 cạnh,
 4 góc, footprint, outward stable/reverse ngay; Player ngoài future region khi co;
 return baseline kể cả gate đóng; held intent/fresh anchor; retarget giữa transition,
-pause scaled time và invalid config. Settings/tunable contract thuộc
+pause scaled time, close request thấp hơn baseline và invalid config fallback.
+Settings/tunable contract thuộc
 [view architecture](architecture.md#dynamic-gameplay-view-foundation), không do
 test fixture quyết balance.
 
@@ -127,7 +130,7 @@ Helpers restore native device/policy, camera/view/Game View/gate/player trong fi
 `tools/unity/VerifyScoutFire.cs` chạy qua MCP `run_script` trong Play Mode. `Run(width)`
 nhận width 1600 hoặc 2000, height 900; dùng production Scout/profile/projectile,
 kiểm tra Entry không fire, Hold/delay/telegraph/single/cooldown, aim vào Player sau
-khi charge đã bắt đầu, no-homing, speed, lifetime và pool reset ở Size 5/6.8.
+khi charge đã bắt đầu, no-homing, speed, lifetime và pool reset ở baseline/wide view.
 Đổi Game View thật và capture charge/dodge vào ignored
 `app/Temp/StarShiftScoutFireCheckpoint/`; direct-position checks không được gọi là
 relative drag verification.

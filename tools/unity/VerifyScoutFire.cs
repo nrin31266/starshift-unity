@@ -68,7 +68,7 @@ public static class VerifyScoutFire
             await Task.Delay(350);
             Require(camera.pixelWidth == width && camera.pixelHeight == 900, "Incorrect Game View resolution.");
             Directory.CreateDirectory("Temp/StarShiftScoutFireCheckpoint");
-            foreach (var size in new[] { 5f, 6.8f })
+            foreach (var size in new[] { GameplayViewSettings.BaselineSize, 6.8f })
             {
                 view.RequestView(new GameplayViewSettings(size, new Rect(0, 0, 1, 1)), 0);
                 Position(player, camera.ViewportToWorldPoint(new Vector3(.5f, .18f, 10)));
@@ -344,7 +344,7 @@ public static class VerifyScoutFire
             gameViewType.GetMethod("SetCustomResolution", BindingFlags.Instance | BindingFlags.NonPublic)
                 .Invoke(gameView, new object[] { new Vector2(width, 900), "StarShift Dodge " + width + "x900" });
             Camera.main.ResetAspect();
-            view.RequestView(new GameplayViewSettings(5, new Rect(0, 0, 1, 1)), 0);
+            view.RequestView(GameplayViewSettings.Baseline, 0);
             // Đạn đã bắn vẫn sống sau disable Scout; chờ hết cả hai pool trước probe dodge.
             await Task.Delay(6250);
             Require(Camera.main.pixelWidth == width && Camera.main.pixelHeight == 900, "Wrong dodge resolution.");
@@ -368,10 +368,13 @@ public static class VerifyScoutFire
             Require(player.GetComponent<InputSystemPointerInput>().FireHeld, "Drag lost held fire intent.");
             Require(Read<Vector2>(shot, "direction") == firstDirection, "Drag steered enemy projectile.");
             scout.GetComponent<SingleFireAttack>().enabled = false;
+            var downwardSpeed = -firstDirection.y * Read<float>(shot, "speed");
+            Require(downwardSpeed > 0, "Expected downward hostile shot for dodge fixture.");
+            var travelSeconds = (shot.GetComponent<Rigidbody2D>().position.y - player.transform.position.y + 1) / downwardSpeed;
             await Until(() => shot.GetComponent<Rigidbody2D>().position.y < player.transform.position.y - 1,
-                2500, "Hostile projectile did not pass old Player location.");
+                Mathf.CeilToInt((travelSeconds + .5f) * 1000), "Hostile projectile did not pass old Player location.");
             Require(probe.Hits == 0, "Relative drag failed to dodge hostile shot.");
-            return new { passed = true, width, height = 900, size = 5, relativeDragPixels = after.x - before.x,
+            return new { passed = true, width, height = 900, size = GameplayViewSettings.BaselineSize, relativeDragPixels = after.x - before.x,
                 heldFireDuringDodge = true, hostileHits = probe.Hits, virtualInput = true };
         }
         finally

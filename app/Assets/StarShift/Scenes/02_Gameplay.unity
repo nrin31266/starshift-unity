@@ -227,7 +227,7 @@ Camera:
   far clip plane: 100
   field of view: 34
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -271,7 +271,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Gameplay.GameplayViewController
   targetView:
-    orthographicSize: 5
+    orthographicSize: 6
     playableViewport:
       serializedVersion: 2
       x: 0

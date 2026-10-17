@@ -66,6 +66,28 @@ OptionalEvent @ 7 s = Supply Drone
 
 Player vừa né asteroid vừa quyết định săn reward.
 
+## Multi-enemy attack coordination
+
+`[PROVISIONAL]` product direction; runtime coordination còn `[FUTURE]`. Local enemy
+attack biết thực hiện attack khi được phép; encounter layer về sau quyết lúc nào và
+enemy nào được attack. Phase `canShoot` chỉ tạo eligibility, không có nghĩa mọi enemy
+eligible đều tự chạy independent cooldown rồi fire cùng lúc. Enemy visible count
+không bằng active shooter count; density seed nằm ở [pacing](#pacing-và-pre-boss-rules).
+
+Concept có thể dùng: active shooter limit, shot spacing, controlled/weighted selection,
+recent-attack suppression, attack permission, threat budget và strong-attack priority.
+Common shots có thể tạm giảm khi Sniper/Bomber/boss đang có telegraph quan trọng để
+giữ đường né và readability. Chưa khóa concept nào thành class/API/algorithm, chưa
+định probability, quota hoặc thiết kế FireDirector framework.
+
+Nếu dùng random, baseline là eligible enemies → filter state/recent attack/threat/
+permission → controlled selection → attack. Random tạo variation trong giới hạn
+readability, tránh projectile wall ngẫu nhiên hoặc nhiều shot trùng do timer độc lập.
+Không dùng pure independent random timer trên từng enemy làm encounter policy.
+VS-015 vẫn là single-enemy sandbox với
+[local fire profile](enemies-bosses.md#scout-single-fire-checkpoint); reconciliation
+không thêm permission hook, encounter scheduler hoặc runtime coordination.
+
 ## Encounter lifecycle và handoff
 
 Completion xác nhận mục tiêu encounter đã xong; handoff chỉ bắt đầu encounter tiếp
@@ -135,14 +157,18 @@ framework lifecycle riêng. Animation/audio chi tiết thuộc
 
 ### Movement path ≠ combat behavior `[LOCKED]`
 
+Enemy archetype, flight path và attack behavior là ba responsibility độc lập.
 Path chỉ mô tả di chuyển. Combat behavior quyết có bắn hay không, kiểu bắn,
 hold duration, target tracking và cooldown. Cùng path có thể tạo các threat khác nhau
 khi ghép fire profile, không cần thêm enemy archetype cho từng cách bay.
+Formation/path dùng camera/viewport-relative reasoning, không hard-code world path
+cho một aspect ratio. Attack eligibility vẫn qua
+[encounter coordination](#multi-enemy-attack-coordination) khi layer đó được implement.
 
 Ví dụ cùng `ArcRight`:
 
 ```text
-Scout = ArcRight + ContinuousSingleFire
+Scout = ArcRight + SingleFire (khi được cấp attack permission)
 Bomber = ArcRight + BurstSpread
 Sniper = ArcRight + NoFire → Hold → ChargeLaser → Exit
 ```
@@ -189,7 +215,7 @@ Implementation boundary thuộc [architecture](../systems/architecture.md#m2-sco
 
 ### Path library baseline
 
-Không bắt buộc dùng hết ngay:
+`[PROVISIONAL]` vocabulary để reuse, không phải mandatory implementation checklist:
 
 - Straight;
 - Sine;
@@ -197,6 +223,10 @@ Không bắt buộc dùng hết ngay:
 - ArcRight;
 - DiagonalPass;
 - Dive;
+- DiveAndReturn;
+- Wave/Snake;
+- Flyby;
+- Reposition;
 - Loop;
 - Cross;
 - Pincer;
@@ -205,15 +235,23 @@ Không bắt buộc dùng hết ngay:
 
 ### Formation library baseline
 
+`[PROVISIONAL]` vocabulary; một Scout có thể tham gia nhiều formation/path mà không
+cần type mới. Chỉ author pattern khi encounter thật cần:
+
 - Line;
 - Column;
 - V;
 - Wedge;
 - Staggered;
+- StaggeredColumns;
 - TwinFlank;
+- ConvergingWings;
 - Cross;
 - Escort;
 - Ring/semicircle nếu cần.
+
+Large spectacle formation có thể ghép các vocabulary trên, không yêu cầu tạo system
+hoặc path asset mới ngay. Visible-count tuning thuộc [pacing](#pacing-và-pre-boss-rules).
 
 ### Spawn mode
 
@@ -241,12 +279,20 @@ Hazard lớn ngoài screen cần edge warning, shadow/indicator hoặc thời gi
 [LOCKED] 12 levels, 3 regions, boss L4/L8/L12; Up → Right → Up, final dynamic shift.
 Orthographic size và duration là [TUNABLE]. Duration gồm boss khi có.
 
-Gameplay view hiện tại lấy **Orthographic Size = 5** làm baseline normal-combat
-framing và mức zoom gần nhất cần support. Gameplay phase có thể zoom out lớn hơn
-5 cho large arena/wave/boss, rồi trả về 5. Size 6.8 và 8.2 là seed `[TUNABLE]`
-để test readability, không phải hai zoom level cố định hoặc mức trần.
-Normal gameplay size dưới 5 không thuộc foundation này; cinematic/special sequence
-cần gần hơn phải có requirement riêng.
+Gameplay view mặc định dùng **Orthographic Size = 6**, full viewport `[TUNABLE]`;
+return to baseline về profile này. Baseline không phải gameplay minimum.
+
+| Framing intent | Ortho size seed `[TUNABLE]` |
+|---|---|
+| Close / tight | khoảng 5–5.5 |
+| Normal / general campaign | khoảng 6 |
+| Wide formation | khoảng 6.5–7.5 |
+| Epic / boss / large set-piece | khoảng 7.5–8.5 |
+| Spectacle | có thể tới khoảng 9 nếu readability/performance cho phép |
+
+Các range là language/tuning direction, không phải absolute limits hoặc difficulty
+scalar. Framing không tự tăng active shooters hay projectile density. Giữ những
+level seed close có intent cụ thể; không mechanically đổi mọi level thành default.
 
 Framing và playable region là hai setting riêng: default full current viewport;
 phase có thể request normalized restricted region, ví dụ lower 70% `[TUNABLE]`.
@@ -258,7 +304,7 @@ Foundation chưa chạy wave/boss/direction sequencing.
 
 | Level | Tên [PROVISIONAL] | Region | Combat | Ortho size | Phút mục tiêu |
 |---|---|---|---|---:|---|
-| L1 | First Contact | Astra Frontier | Up | 5.0 | 1.0–1.5 |
+| L1 | First Contact | Astra Frontier | Up | 6.0 | 1.0–1.5 |
 | L2 | Broken Route | Astra Frontier | Up | 5.2 | 1.5–2.0 |
 | L3 | Spearhead | Astra Frontier | Up | 5.4 | 1.5–2.0 |
 | L4 | Vanguard | Astra Frontier | Up | 5.2 | 2.0–3.0 |
@@ -291,7 +337,7 @@ L1 giới thiệu movement, hold-to-fire và basic enemy trong 1–1.5 phút. Ha
 Camera:
 
 ```text
-5.0
+6.0 normal
 ```
 
 Encounter A — `Eliminate`
@@ -427,7 +473,7 @@ Encounter C — `Eliminate` hoặc Timeline tùy pacing
 Camera:
 
 ```text
-5.0 close (baseline)
+5.0 intentional close
 ```
 
 L6 dùng combat gần và corridor pressure để dạy đọc telegraph. Vì camera close,
@@ -454,7 +500,7 @@ Encounter C — `Eliminate`
 Camera:
 
 ```text
-6.0 wide
+6.0 normal (rộng hơn close framing của L6)
 ```
 
 L7 mở rộng chiến trường và formation để giới thiệu Carrier. Crossfire cần
@@ -547,7 +593,7 @@ Camera:
 6.8
 ```
 
-L10 là normal battlefield lớn nhất, cho tàu trông nhỏ giữa không gian và mở chỗ
+L10 là wide battlefield lớn nhất trong các non-boss level seeds hiện tại, mở chỗ
 cho V/Wedge, Carrier anchor cùng nhiều firing lanes.
 
 Encounter A — `Timeline`
@@ -626,8 +672,20 @@ thuộc [enemies/bosses](enemies-bosses.md); Final Rift feedback thuộc
 
 Không đặt ba wave dài trước boss chỉ để đủ quota. Trước boss/cao trào có recovery
 window và resource/supply opportunity theo level seed; L12 setup rất ngắn.
-Normal simultaneous enemies khoảng ≤10–12 [TUNABLE]; low-threat fly-by có thể vượt
-ngắn hạn. Strong attack cần telegraph, density không thay cho difficulty design.
+Visible common-enemy density seeds `[TUNABLE]`:
+
+| Encounter scale | Common enemies visible cùng lúc |
+|---|---|
+| Early | khoảng 4–7 |
+| Mid | khoảng 6–10 |
+| Large formation / later | khoảng 8–12 |
+
+Range large formation tiếp nối seed simultaneous 10–12, không phải hard cap/quota.
+Tutorial như L1 A có thể ít hơn; short low-threat spectacle có thể cao hơn nếu
+performance/readability cho phép. Không đổi authored encounter count chỉ để đạt
+range. Visible count không phải active shooter count; permission/shot spacing thuộc
+[coordination direction](#multi-enemy-attack-coordination). Formation/movement tạo
+spectacle; strong attack có telegraph, không thay encounter design bằng projectile spam.
 Exact spawn timestamps, count chưa nêu, formation spacing, path coordinates,
 optional-event offsets và boss attack scheduler [TBD]/tuning khi làm content.
 Không tự coi lựa chọn Eliminate/Timeline ở L5 C hay L11 D đã chốt.

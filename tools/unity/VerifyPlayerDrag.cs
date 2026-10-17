@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 using StarShift.Player;
+using StarShift.Gameplay;
 using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
 public static class VerifyPlayerDrag
@@ -58,7 +59,7 @@ public static class VerifyPlayerDrag
             foreach (var aspect in new[] { 16f / 9f, 20f / 9f })
             {
                 camera.aspect = aspect;
-                foreach (var size in new[] { 5f, 6.8f })
+                foreach (var size in new[] { 5.25f, GameplayViewSettings.BaselineSize, 6.8f })
                 {
                     camera.orthographicSize = size;
                     await Drag(mouse, body, camera, new Vector2(180, 220), new Vector2(60, 30), results,

@@ -72,7 +72,7 @@ namespace StarShift.Gameplay
 
         private void Apply(float t)
         {
-            gameplayCamera.orthographicSize = Mathf.Max(GameplayViewSettings.BaselineSize,
+            gameplayCamera.orthographicSize = Mathf.Max(GameplayViewSettings.MinimumSize,
                 Mathf.Lerp(startSize, transitionTarget.OrthographicSize, t));
             var target = transitionTarget.PlayableViewport;
             CurrentPlayableViewport = Rect.MinMaxRect(

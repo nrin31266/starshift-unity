@@ -102,7 +102,7 @@ public static class VerifyGameplayView
             target.FindPropertyRelative("playableViewport").rectValue = new Rect(0, 0, 1, .7f);
             serialized.ApplyModifiedPropertiesWithoutUndo();
             await Task.Delay(90);
-            Require(view.IsTransitioning && camera.orthographicSize > 5 && camera.orthographicSize < 7.1f,
+            Require(view.IsTransitioning && camera.orthographicSize > GameplayViewSettings.BaselineSize && camera.orthographicSize < 7.1f,
                 "Inspector edit did not request a transition.");
             await AwaitTransition(view);
             Require(Mathf.Abs(camera.orthographicSize - 7.1f) < .00001f &&
@@ -165,12 +165,14 @@ public static class VerifyGameplayView
             Require(camera.pixelWidth == width && camera.pixelHeight == 900, "Game View did not adopt requested resolution.");
             var full = new Rect(0, 0, 1, 1);
             var restricted = new Rect(0, 0, 1, .7f);
-            foreach (var target in new[] { GameplayViewSettings.Baseline,
-                new GameplayViewSettings(6.8f, full), new GameplayViewSettings(8.2f, full),
-                new GameplayViewSettings(8.2f, restricted) })
+            foreach (var target in new[] { GameplayViewSettings.Baseline, new GameplayViewSettings(5.25f, full),
+                new GameplayViewSettings(6.8f, full), new GameplayViewSettings(8.8f, full),
+                new GameplayViewSettings(8.8f, restricted) })
             {
                 view.RequestView(target, 0);
                 await Task.Delay(50);
+                Require(Mathf.Abs(camera.orthographicSize - target.OrthographicSize) < .00001f,
+                    "Camera did not apply requested framing: " + target.OrthographicSize);
                 foreach (var direction in new[] { Vector2.left, Vector2.right, Vector2.up, Vector2.down,
                     new Vector2(-1, 1), new Vector2(1, 1), new Vector2(-1, -1), new Vector2(1, -1) })
                 {
@@ -239,8 +241,8 @@ public static class VerifyGameplayView
             await AwaitTransition(view);
             Require(probe.Failure == null && !gate.CanInput && !gate.CanFire && probe.Samples > 2,
                 "Gate-blocked return did not constrain player: " + probe.Failure);
-            Require(Mathf.Abs(camera.orthographicSize - 5) < .00001f && view.CurrentPlayableViewport == full,
-                "ReturnToBaseline did not reach size 5/full.");
+            Require(Mathf.Abs(camera.orthographicSize - GameplayViewSettings.BaselineSize) < .00001f && view.CurrentPlayableViewport == full,
+                "ReturnToBaseline did not reach default size/full.");
             probe.Monitor = false;
             gate.SetState(PlayerGameplayState.Active);
             var resumedPosition = body.position;
@@ -253,13 +255,13 @@ public static class VerifyGameplayView
             await MouseEvent(mouse, new Vector2(900, 250), true);
             Require((body.position - anchor).sqrMagnitude < .0001f, "Re-press reused stale delta.");
             await MouseEvent(mouse, new Vector2(900, 250), false);
-            results.Add("return to 5/full while state gate blocks input, held resume/fresh anchor: PASS");
+            results.Add("return to baseline/full while state gate blocks input, held resume/fresh anchor: PASS");
 
             probe.Begin();
             view.RequestView(new GameplayViewSettings(8.2f, restricted), .6f);
             await Task.Delay(160);
             var intermediate = camera.orthographicSize;
-            Require(intermediate > 5 && intermediate < 8.2f, "Transition did not interpolate.");
+            Require(intermediate > GameplayViewSettings.BaselineSize && intermediate < 8.2f, "Transition did not interpolate.");
             view.RequestView(new GameplayViewSettings(6.8f, full), .3f);
             Require(Mathf.Abs(camera.orthographicSize - intermediate) < .0001f, "Retarget jumped framing.");
             Time.timeScale = 0;
@@ -286,13 +288,18 @@ public static class VerifyGameplayView
             results.Add("live aspect change while parked at right boundary: PASS");
 
             var invalid = new GameplayViewSettings(float.NaN, new Rect(2, 2, -1, 0));
-            Require(invalid.OrthographicSize == 5 && invalid.PlayableViewport == full, "Invalid settings fallback failed.");
-            Require(new GameplayViewSettings(4.9f, full).OrthographicSize == 5, "Gameplay zoom went below baseline.");
+            Require(invalid.OrthographicSize == GameplayViewSettings.BaselineSize && invalid.PlayableViewport == full,
+                "Invalid settings fallback failed.");
+            Require(new GameplayViewSettings(4.9f, full).OrthographicSize == 4.9f,
+                "Baseline must not act as a gameplay minimum.");
+            foreach (var invalidSize in new[] { 0f, -1f, float.PositiveInfinity })
+                Require(new GameplayViewSettings(invalidSize, full).OrthographicSize == GameplayViewSettings.BaselineSize,
+                    "Non-positive/non-finite size did not fall back to baseline.");
             var smallRegion = new Rect(.4f, .4f, .001f, .001f);
             var tiny = bounds.ClampPosition(body.position, camera, smallRegion);
             var projected = (Vector2)camera.WorldToViewportPoint(tiny);
             Require((projected - smallRegion.center).sqrMagnitude < 1e-8f, "Undersized region midpoint fallback failed.");
-            results.Add("invalid config, minimum size 5, undersized-region deterministic fallback: PASS");
+            results.Add("invalid config fallback, close framing below baseline, undersized-region deterministic fallback: PASS");
             return new { passed = true, gameView = width + "x900", frameStart, frameEnd = Time.frameCount, results };
         }
         finally

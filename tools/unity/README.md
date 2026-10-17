@@ -116,6 +116,12 @@ Context menu `Return To Baseline (Play Mode)` trả về view mặc định. Ch�
 bật Gizmos để thấy vùng; chọn Player để xem footprint. Runtime caller/API thuộc
 [architecture](../../docs/systems/architecture.md#dynamic-gameplay-view-foundation).
 
+Baseline hiện tại và close/normal/wide/spectacle language theo
+[camera owner](../../docs/content/levels-encounters.md#master-campaign-table-và-camera-profiles).
+Baseline không là minimum; helper lấy default từ `GameplayViewSettings.Baseline`.
+View suite kiểm tra cả close dưới baseline, wide/spectacle và lower 70% ở hai aspect;
+return phải tới default/full. Baseline builder dùng cùng constant khi tạo scene mới.
+
 ## Scout checkpoint
 
 `ConfigureScout.Configure` tạo placeholder sprite, HP definition, production prefab

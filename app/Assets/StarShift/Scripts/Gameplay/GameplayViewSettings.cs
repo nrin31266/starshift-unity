@@ -6,9 +6,11 @@ namespace StarShift.Gameplay
     [Serializable]
     public struct GameplayViewSettings
     {
-        public const float BaselineSize = 5f;
+        public const float BaselineSize = 6f;
+        // Chặn projection suy biến; đây không phải giới hạn framing của gameplay.
+        public const float MinimumSize = .01f;
 
-        [SerializeField, Min(BaselineSize)] private float orthographicSize;
+        [SerializeField, Min(MinimumSize)] private float orthographicSize;
         [SerializeField, Tooltip("Normalized viewport: full = (0, 0, 1, 1); lower 70% = (0, 0, 1, 0.7).")]
         private Rect playableViewport;
 
@@ -18,7 +20,7 @@ namespace StarShift.Gameplay
 
         public GameplayViewSettings(float size, Rect viewport)
         {
-            orthographicSize = IsFinite(size) ? Mathf.Max(BaselineSize, size) : BaselineSize;
+            orthographicSize = IsFinite(size) && size > 0 ? Mathf.Max(MinimumSize, size) : BaselineSize;
             playableViewport = new Rect(0, 0, 1, 1);
             if (!IsFinite(viewport.x) || !IsFinite(viewport.y) ||
                 !IsFinite(viewport.width) || !IsFinite(viewport.height)) return;

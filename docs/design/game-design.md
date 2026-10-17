@@ -17,6 +17,14 @@ Người chơi lái tàu qua những chiến trường có hướng, quy mô và
 đọc telegraph, né đạn, chọn vũ khí và săn reward giữa combat. Sự thay đổi này đến từ
 camera, path, formation và encounter composition, không chỉ từ số enemy trên màn hình.
 
+Combat baseline là arcade formation shooter: spectacle chủ yếu đến từ entry,
+movement và formation đông, còn hostile projectile density được kiểm soát. Common
+enemy sống đủ để đọc hit/damage; weapon upgrade phải cho cảm giác clear formation
+mạnh hơn rõ rệt. Special enemy và boss tạo các đợt pressure nổi bật, không bắt mọi
+enemy spam đạn để tăng difficulty hoặc giữ constant dodge pressure như pure bullet hell.
+Enemy visible count và active shooter count là hai đại lượng riêng; composition và
+coordination direction thuộc [levels/encounters](../content/levels-encounters.md#multi-enemy-attack-coordination).
+
 Campaign hướng tới 20–30 phút [TUNABLE], không ép các level có cùng thời lượng.
 Bảng thời lượng từng level và camera profile thuộc [levels/encounters](../content/levels-encounters.md).
 
@@ -34,8 +42,9 @@ cho encounter design. HUD gọn và touch không che tàu là một phần của
 Entry, boss intro, warp, orbit turn, respawn và region transition cần chuyển tiếp
 mềm để state và không gian được đọc rõ. Hướng chiến đấu Up → Right → Up và dynamic
 shift của final boss là điểm nhận diện; không đổi physical device orientation để
-đổi hướng gameplay. Camera close tạo pressure, wide mở formation và quy mô,
-còn dynamic framing nhấn boss phase. Không đổi ship scale để giả zoom.
+đổi hướng gameplay. Camera close nhấn combat gần, wide mở formation và quy mô,
+còn dynamic framing nhấn boss phase. Framing không phải difficulty scalar;
+pressure vẫn do encounter composition/timing quyết. Không đổi ship scale để giả zoom.
 
 ### Reusable content và controlled scope
 

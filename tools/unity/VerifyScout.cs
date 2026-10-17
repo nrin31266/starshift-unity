@@ -94,7 +94,7 @@ public static class VerifyScout
             await Task.Delay(350);
             Require(camera.pixelWidth == width && camera.pixelHeight == 900, "Incorrect Game View dimensions.");
             Directory.CreateDirectory("Temp/StarShiftScoutCheckpoint");
-            foreach (var size in new[] { 5f, 6.8f })
+            foreach (var size in new[] { GameplayViewSettings.BaselineSize, 6.8f })
             {
                 view.RequestView(new GameplayViewSettings(size, new Rect(0, 0, 1, 1)), 0);
                 target = UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath));
@@ -161,7 +161,9 @@ public static class VerifyScout
             Require(observer.Samples > 2 && observer.MaximumRenderError < .001f,
                 "Hold render lag during zoom: " + observer.MaximumRenderError);
             Require(EditorJsonUtility.ToJson(definition) == definitionBefore, "Runtime mutated Scout definition.");
-            results.Add("entry during dynamic zoom + lower-player-region, hold follows current full camera, return to 5 PASS");
+            Require(Mathf.Abs(camera.orthographicSize - GameplayViewSettings.BaselineSize) < .00001f,
+                "Scout test did not return to default gameplay baseline.");
+            results.Add("entry during dynamic zoom + lower-player-region, hold follows current full camera, return to baseline PASS");
             return new { passed = true, gameView = width + "x900", frameStart, frameEnd = Time.frameCount, results };
         }
         finally

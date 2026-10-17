@@ -189,8 +189,12 @@ smoothstep không overshoot, dùng scaled deltaTime; pause đóng băng transiti
 Request mới bắt đầu từ camera size/current region đang hiển thị, không snap về source
 profile cũ. Duration 0 áp ngay, còn seed duration 0.6 s là `[TUNABLE]`. View config
 không chứa mutable elapsed/current state; state đó nằm riêng trong controller.
-Size dưới baseline được nâng lên baseline; Rect được intersect với full viewport,
-Rect rỗng/đảo ngược/non-finite fallback full. Không expose easing knob chưa cần.
+`BaselineSize` là default framing seed, không phải gameplay minimum. Size close thấp
+hơn baseline vẫn giữ nguyên; non-finite/non-positive size fallback baseline.
+`MinimumSize = 0.01` chỉ là numerical guard tránh projection suy biến, không phải
+camera content limit; controller dùng cùng guard khi interpolate, không ép close
+request về baseline. Rect được intersect với full viewport, Rect rỗng/đảo ngược/
+non-finite fallback full. Không expose easing knob chưa cần.
 
 Movement lấy controller trên camera đã bind, đọc `CurrentPlayableViewport`; nếu
 camera không có controller thì dùng full viewport như baseline cũ. Bounds giữ
@@ -297,6 +301,11 @@ Attack dùng local `ObjectPool<EnemyProjectile>` theo pattern Pulse; runtime roo
 `EnemyProjectiles` cùng scene, không parent vào Scout. Disable producer hủy timer
 nhưng không clear shot đã launch; destroy producer dispose pool và destroy root.
 Chưa tạo pool service, weapon framework hoặc encounter state machine chung.
+
+Local timer chỉ thực thi attack trong single-enemy sandbox, không quyết multi-enemy
+shot scheduling. Future encounter authority có responsibility cấp attack permission
+theo [content direction](../content/levels-encounters.md#multi-enemy-attack-coordination);
+chưa khóa serialized/API shape và không thêm hook khi runtime hiện tại chưa cần.
 
 `EnemySingleProjectile.prefab` có Rigidbody2D Kinematic, BoxCollider2D trigger và
 `EnemyProjectile`; child Visual giữ SpriteRenderer. Typed component phân biệt hostile

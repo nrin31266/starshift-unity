@@ -9,6 +9,15 @@ Owner của weapon patterns/config, pickups, Weapon Core, asteroids reward class
 [LOCKED] Ba nhánh, mỗi nhánh ba level; precise sustained fire, coverage và tracking
 là các vai trò khác nhau. Branch level/unlock/active selection là runtime state;
 pattern/damage/cadence thuộc static weapon config.
+
+Direction tuning `[TUNABLE]`: Lv1 không cần one-shot common enemy; upgrade phải cho
+power increase rõ và clear formation nhanh/đã tay hơn. Có thể tăng damage, cadence,
+coverage/count, spread, piercing hoặc tracking/priority strength theo identity từng
+branch; đây là vocabulary tuning, không yêu cầu mỗi nhánh có mọi mechanic. Không
+tăng enemy HP song song chỉ để giữ time-to-kill không đổi khi Player mạnh lên.
+HP/DPS/clear time cần playtest cùng formation và readability, chưa chốt số final
+hoặc implement upgrade mới từ direction này.
+
 [PROVISIONAL] Common config có thể dùng các fields sau; field shape chưa khóa.
 
 | Nhóm | Fields |

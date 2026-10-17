@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using StarShift.Gameplay;
 
 public static class BuildVerticalSliceBaseline
 {
@@ -34,7 +35,7 @@ public static class BuildVerticalSliceBaseline
         var camera = Camera.main;
         camera.transform.SetPositionAndRotation(new Vector3(0, 0, -10), Quaternion.identity);
         camera.orthographic = true;
-        camera.orthographicSize = 5;
+        camera.orthographicSize = GameplayViewSettings.BaselineSize;
         camera.clearFlags = CameraClearFlags.SolidColor;
         camera.backgroundColor = new Color(.018f, .028f, .065f, 1);
         camera.nearClipPlane = .3f;
