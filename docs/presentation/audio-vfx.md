@@ -195,6 +195,15 @@ Final death: core crack → staged explosions → short slow motion → final fl
 
 ## Level intro, warning và dynamic audio
 
+Mission intro M3 dùng placeholder approach 3 s `[TUNABLE]`, authoring target 2–4 s:
+starfield tăng cảm giác tốc độ → planet disc lớn dần/đi khỏi combat view → camera
+wide settle về level baseline → mission/location announcement ngắn → control và
+encounter đầu. Seed wide là size 8 `[TUNABLE]`, không hard-code return size trong
+runner. Planet/starfield được author trong scene, không Instantiate/Destroy trong
+intro hoặc build cutscene framework. Reset/skip phải hide sạch presentation.
+Planet texture là procedural neutral disc tại placeholder folder; chưa là final art
+hoặc canonical planet identity. Location trống thì chỉ hiện mission title.
+
 Level intro/sector title gọn, boss/hazard warning ngắn và không spam WARNING.
 Audio categories [PROVISIONAL]: Music, player/enemy weapons, hits/explosions,
 pickup/supply, engine/transition và UI. Mixer group implementation chưa khóa.

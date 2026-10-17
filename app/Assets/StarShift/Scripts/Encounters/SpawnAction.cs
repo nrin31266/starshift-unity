@@ -1,0 +1,93 @@
+using System;
+using StarShift.Enemies;
+using UnityEngine;
+
+namespace StarShift.Encounters
+{
+    public enum FormationLayout { Custom, Line, Column, V, Wedge, Staggered, TwinFlank, Cross, Escort, Ring }
+
+    [Serializable]
+    public class SpawnAction
+    {
+        [Min(1)] public int Count = 3;
+        [Min(0)] public float StartTime;
+        [Min(0)] public float Stagger = .35f;
+        public GameObject EnemyPrefab;
+        public EnemyDefinition EnemyDefinition;
+        public bool Required = true;
+        public FormationLayout Formation;
+        public Vector2 Anchor;
+        public Vector2 SlotStep = new Vector2(.18f, 0);
+        [Min(0)] public float FormationRise;
+        public FlightSequence Sequence;
+
+        // Dữ liệu cũ chỉ dành cho sandbox/builders M2; asset M3 dùng Sequence.
+        [HideInInspector] public Vector2 EntryAnchor = new Vector2(.5f, 1.12f);
+        [HideInInspector] public Vector2 HoldAnchor = new Vector2(.5f, .78f);
+        [HideInInspector] public Vector2 EntryCurve;
+        [HideInInspector] public float EntryDuration = 1.2f;
+        [HideInInspector] public float HoldDuration = 3f;
+        [HideInInspector] public Vector2 ExitAnchor = new Vector2(1.18f, .3f);
+        [HideInInspector] public float ExitDuration = 3f;
+
+        public Vector2 SlotOffset(int index)
+        {
+            var slot = index - (Count - 1) * .5f;
+            var spacing = new Vector2(Mathf.Abs(SlotStep.x), Mathf.Abs(SlotStep.y));
+            if (spacing.x == 0) spacing.x = spacing.y;
+            if (spacing.y == 0) spacing.y = spacing.x;
+            switch (Formation)
+            {
+                case FormationLayout.Line: return new Vector2(slot * spacing.x, 0);
+                case FormationLayout.Column: return new Vector2(0, slot * spacing.y);
+                case FormationLayout.V: return new Vector2(slot * spacing.x, Mathf.Abs(slot) * FormationRise);
+                case FormationLayout.Wedge: return new Vector2(slot * spacing.x, -Mathf.Abs(slot) * FormationRise);
+                case FormationLayout.Staggered: return new Vector2(slot * spacing.x, ((index % 2) - .5f) * spacing.y);
+                case FormationLayout.TwinFlank:
+                    return new Vector2((index % 2 == 0 ? -1 : 1) * spacing.x * (1 + index / 2), index / 2 * spacing.y);
+                case FormationLayout.Cross:
+                    if (index == 0) return Vector2.zero;
+                    var arm = (index - 1) % 4; var distance = 1 + (index - 1) / 4;
+                    return (arm == 0 ? Vector2.right * spacing.x : arm == 1 ? Vector2.left * spacing.x :
+                        arm == 2 ? Vector2.up * spacing.y : Vector2.down * spacing.y) * distance;
+                case FormationLayout.Escort:
+                    return index == 0 ? Vector2.zero : new Vector2(((index % 2) == 0 ? 1 : -1) * spacing.x * ((index+1)/2), -FormationRise * ((index+1)/2));
+                case FormationLayout.Ring:
+                    var angle = index * Mathf.PI * 2 / Count;
+                    return new Vector2(Mathf.Cos(angle) * spacing.x, Mathf.Sin(angle) * spacing.y);
+                default: return SlotStep * slot + Vector2.up * (Mathf.Abs(slot) * FormationRise);
+            }
+        }
+
+        public bool IsValid(GameObject fallback, EncounterCompletion mode, float duration, out string error)
+        {
+            error = "Invalid spawn action.";
+            var prefab = EnemyPrefab != null ? EnemyPrefab : fallback;
+            if (Count < 1 || !ConfigValue.Nonnegative(StartTime) || !ConfigValue.Nonnegative(Stagger) ||
+                !ConfigValue.Finite(Anchor) || !ConfigValue.Finite(SlotStep) || !ConfigValue.Nonnegative(FormationRise) ||
+                !Enum.IsDefined(typeof(FormationLayout), Formation) || prefab == null ||
+                prefab.GetComponent<EnemyHealth>() == null || prefab.GetComponent<EntryHoldFlight>() == null ||
+                prefab.GetComponent<SingleFireAttack>() == null || prefab.GetComponent<EnemyHealth>().Definition == null) return false;
+            if (EnemyDefinition != null && prefab.GetComponent<EnemyHealth>().Definition != EnemyDefinition) return false;
+            if (mode != EncounterCompletion.Eliminate && mode != EncounterCompletion.Boss && StartTime + (Count - 1) * Stagger >= duration) return false;
+            if (Sequence != null)
+            {
+                if (!Sequence.IsValid(out error)) return false;
+                var end = Sequence.Phases[Sequence.Phases.Length - 1];
+                if (Required && (mode == EncounterCompletion.Eliminate || mode == EncounterCompletion.Boss) &&
+                    (!end.HoldUntilResolved || end.Kind == FlightPhaseKind.Exit)) { error = "Required targets need a terminal hold."; return false; }
+            }
+            else if (!ConfigValue.Positive(EntryDuration) || !ConfigValue.Nonnegative(HoldDuration) ||
+                !ConfigValue.Positive(ExitDuration) || !ConfigValue.Finite(EntryAnchor) || !ConfigValue.Finite(HoldAnchor) ||
+                !ConfigValue.Finite(ExitAnchor) || !ConfigValue.Finite(EntryCurve)) return false;
+            if (Count > 1)
+                for (int i = 0; i < Count; i++) for (int j = i + 1; j < Count; j++)
+                    if ((SlotOffset(i) - SlotOffset(j)).sqrMagnitude < .000001f) { error = "Duplicate formation slots."; return false; }
+            error = null;
+            return true;
+        }
+    }
+
+    [Serializable]
+    public sealed class ScoutSpawnGroup : SpawnAction { }
+}

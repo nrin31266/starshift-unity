@@ -213,8 +213,9 @@ VS-019 vertical entrance dùng 0.9 s `[TUNABLE]`, bắt đầu ngoài bottom c�
 camera và ease vào target trong current playable region. Framing/aspect/restricted
 region thay đổi thì reproject; không cache world waypoint. Preferred target ở giữa
 ngang, phần dưới region; nếu enemy body chặn target thì tìm candidate an toàn khác.
-Nếu các candidate đều bị chặn, giữ protected entrance, chưa mở input/fire. Horizontal
-direction orchestration và hazard producers chưa được implement trong batch này.
+Nếu các candidate đều bị chặn, giữ protected entrance, chưa mở input/fire. M3 áp cùng safe anchors qua PlayDirection: Right entrance từ left, preferred
+target bên trái current playable region; Player/muzzle face Right. Hazard producers
+chưa có, safe check vẫn dùng configured blocking layers.
 
 ### Invincibility
 

@@ -15,6 +15,7 @@ namespace StarShift.Gameplay
 
         private Camera gameplayCamera;
         private GameplayViewSettings transitionTarget;
+        private GameplayViewSettings baselineView = GameplayViewSettings.Baseline;
         private float startSize;
         private Rect startViewport;
         private float elapsed;
@@ -52,10 +53,12 @@ namespace StarShift.Gameplay
             if (!IsTransitioning) Apply(1);
         }
 
+        public void SetBaseline(GameplayViewSettings settings) => baselineView = settings.Validated();
+
         [ContextMenu("Return To Baseline (Play Mode)")]
         public void ReturnToBaseline()
         {
-            if (Application.isPlaying) RequestView(GameplayViewSettings.Baseline);
+            if (Application.isPlaying) RequestView(baselineView);
         }
 
         private void Update()

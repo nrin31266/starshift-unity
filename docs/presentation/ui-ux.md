@@ -189,6 +189,11 @@ anchors/offsets chỉnh trên RectTransform. Lives icon + count đọc `PlayerLi
 Pulse Laser + CẤP đọc `PulseLaserWeapon.CurrentLevel`. Score và Shard là icon + **—**
 (placeholder, không phải số zero hoặc economy giả); chưa có buff/boss/weapon cycle.
 
+M3 dùng lại announcement M2, nhận title từ LevelFlow gần cuối establishing intro
+hoặc ngay khi dev skip intro. Mission number lấy từ LevelDefinition, không
+hard-code L1 trong HUD; optional location chỉ hiện khi config có giá trị được author,
+không suy ra tên hành tinh mới.
+
 Mission start hiện “NHIỆM VỤ 01”, duration 1.6 s, fade .2 s `[TUNABLE]` ở
 `GameplayAnnouncement`. Chỉ có một announcement này; không thêm “ĐỢT 1/2” hoặc group
 announcement vì formation/handoff hiện đủ rõ. Announcement không giữ quyền gameplay;

@@ -20,16 +20,27 @@ MonoBehaviour:
   - Count: 3
     StartTime: 0
     Stagger: 0.35
-    EntryAnchor: {x: 0.5, y: 1.12}
-    HoldAnchor: {x: 0.5, y: 0.78}
+    EnemyPrefab: {fileID: 0}
+    EnemyDefinition: {fileID: 11400000, guid: 2c37a090b272d820c9642dfd8f189abe, type: 2}
+    Required: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
     SlotStep: {x: 0.18, y: 0}
     FormationRise: 0
+    Sequence: {fileID: 11400000, guid: e548f9ebb1c9b6d79b4945e3bfc702c3, type: 2}
+    EntryAnchor: {x: 0.5, y: 1.12}
+    HoldAnchor: {x: 0.5, y: 0.78}
     EntryCurve: {x: 0, y: 0}
     EntryDuration: 0.9
     HoldDuration: 3
     ExitAnchor: {x: 1.18, y: 0.3}
     ExitDuration: 3
+  OptionalEvents: []
+  CameraOverride: {fileID: 0}
+  ActiveShooterLimit: 1
   ShotSpacing: 1
   ShotsPerVolley: 1
   VolleyPause: 1
   HandoffDelay: 1
+  RewardGraceSeconds: 2
+  BossPostDeathSeconds: 1

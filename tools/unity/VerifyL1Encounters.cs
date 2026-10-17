@@ -74,7 +74,7 @@ public static class VerifyL1Encounters
             Runner.Completed += onComplete;
             try
             {
-                Runner.StartRun("LEVEL_START", false);
+                Runner.StartRun("LEVEL_START", false, true, null, null);
                 await Until(() => Runner.SpawnedCount == 3 && Enemies.All(e => e.GetComponent<EntryHoldFlight>().IsHolding), 3500, "A did not settle.");
                 Require(Runner.KilledCount == 0 && Runner.CompletionCount == 0, "A completed with live required enemies.");
                 var aIds = Enemies.Select(e => e.GetEntityId()).ToArray();
@@ -200,7 +200,7 @@ public static class VerifyL1Encounters
             await Task.Delay(600);
             Require(Enemies.Length == 0 && UnityEngine.Object.FindObjectsByType<EnemyProjectile>().Length == 0, "Runner disable left delayed fire.");
             Runner.enabled = true;
-            Runner.StartRun("LEVEL_START", false);
+            Runner.StartRun("LEVEL_START", false, true, null, null);
             await Until(() => Enemies.Length == 3, 1600, "Runner re-enable replay failed.");
             foreach (var enemy in Enemies) enemy.ReceivePlayerHit(enemy.MaxHp, rig.Player);
             await Until(() => Runner.CompletionCount == 1 && !Runner.IsRunning, 300, "Handoff fixture did not complete A.");
@@ -240,7 +240,9 @@ public static class VerifyL1Encounters
         foreach (var width in new[] { 1600, 2000 })
         using (var rig = new Rig(width, width == 1600 ? 6 : 6.8f, false))
         {
-            var original = (EncounterDefinition[])Runner.GetType().GetField("encounters", Fields).GetValue(Runner);
+            var originalLevel = Runner.Flow.Level;
+            var original = originalLevel.Encounters;
+            var probeLevel = UnityEngine.Object.Instantiate(originalLevel);
             var definition = UnityEngine.Object.Instantiate(original[1]);
             var fixture = new GameObject("OffscreenFlightFixture");
             fixture.SetActive(false);
@@ -258,7 +260,7 @@ public static class VerifyL1Encounters
             int cancelledAtEdge = 0;
             try
             {
-                Set(Runner, "encounters", new[] { definition });
+                probeLevel.Encounters = new[] { definition }; Runner.StopRun(); Runner.Flow.LoadLevel(probeLevel);
                 foreach (var exit in new[] { new Vector2(-2, .78f), new Vector2(3, .78f), new Vector2(.5f, 3), new Vector2(.5f, -2) })
                 {
                     definition.Groups = new[] { new ScoutSpawnGroup { Count = 1, EntryAnchor = new Vector2(.5f, .78f),
@@ -303,7 +305,7 @@ public static class VerifyL1Encounters
             finally
             {
                 Runner.StopRun();
-                Set(Runner, "encounters", original);
+                Runner.Flow.LoadLevel(originalLevel); UnityEngine.Object.DestroyImmediate(probeLevel);
                 foreach (var attack in Runner.GetComponentsInChildren<SingleFireAttack>(true))
                     if ((SingleFireDefinition)typeof(SingleFireAttack).GetField("definition", Fields).GetValue(attack) == profile)
                         UnityEngine.Object.DestroyImmediate(attack.gameObject);
@@ -352,7 +354,9 @@ public static class VerifyL1Encounters
     {
         using (var rig = new Rig(2000, 6.8f, false))
         {
-            var original = (EncounterDefinition[])Runner.GetType().GetField("encounters", Fields).GetValue(Runner);
+            var originalLevel = Runner.Flow.Level;
+            var original = originalLevel.Encounters;
+            var probeLevel = UnityEngine.Object.Instantiate(originalLevel);
             var definition = UnityEngine.Object.Instantiate(original[1]);
             EnemyProjectile shot = null;
             try
@@ -393,7 +397,7 @@ public static class VerifyL1Encounters
                 definition.Groups = new[] { new ScoutSpawnGroup { Count = 1,
                     EntryAnchor = new Vector2(.05f, .72f), HoldAnchor = new Vector2(.05f, .72f),
                     EntryDuration = .02f, HoldDuration = .1f, ExitAnchor = new Vector2(-.2f, .72f), ExitDuration = .2f } };
-                Set(Runner, "encounters", new[] { definition });
+                probeLevel.Encounters = new[] { definition }; Runner.StopRun(); Runner.Flow.LoadLevel(probeLevel);
                 Runner.StartRun("ENCOUNTER_2", true);
                 await Until(() => Enemies.Length == 1, 400, "Late-shot source missing.");
                 var scout = Enemies.Single();
@@ -442,7 +446,7 @@ public static class VerifyL1Encounters
             }
             finally
             {
-                Runner.StopRun(); Set(Runner, "encounters", original);
+                Runner.StopRun(); Runner.Flow.LoadLevel(originalLevel); UnityEngine.Object.DestroyImmediate(probeLevel);
                 if (shot != null) UnityEngine.Object.DestroyImmediate(shot.gameObject);
                 UnityEngine.Object.DestroyImmediate(definition);
             }
@@ -497,16 +501,18 @@ public static class VerifyL1Encounters
         using (var rig = new Rig(1600, 6, false))
         {
             Time.timeScale = 3;
-            var original = (EncounterDefinition[])Runner.GetType().GetField("encounters", Fields).GetValue(Runner);
+            var originalLevel = Runner.Flow.Level;
+            var original = originalLevel.Encounters;
+            var probeLevel = UnityEngine.Object.Instantiate(originalLevel);
             var clone = UnityEngine.Object.Instantiate(original[1]);
             int deathSignals = 0;
             Action died = () => deathSignals++;
             try
             {
                 clone.Groups[1].StartTime = 2f;
-                foreach (var group in clone.Groups) { group.EntryDuration = .2f; group.HoldDuration = 6f; }
+                foreach (var group in clone.Groups) { group.Sequence = null; group.EntryDuration = .2f; group.HoldDuration = 6f; }
                 clone.Duration = 4.6f;
-                Set(Runner, "encounters", new[] { clone });
+                probeLevel.Encounters = new[] { clone }; Runner.StopRun(); Runner.Flow.LoadLevel(probeLevel);
                 Runner.StartRun("ENCOUNTER_2", true);
                 await Until(() => Runner.SpawnedCount == clone.EnemyCount, 3200, "Boundary group not spawned.");
                 foreach (var enemy in Enemies) enemy.Died += died;
@@ -525,7 +531,7 @@ public static class VerifyL1Encounters
             {
                 Runner.StopRun();
                 foreach (var enemy in UnityEngine.Object.FindObjectsByType<EnemyHealth>(FindObjectsInactive.Include)) enemy.Died -= died;
-                Set(Runner, "encounters", original);
+                Runner.Flow.LoadLevel(originalLevel); UnityEngine.Object.DestroyImmediate(probeLevel);
                 UnityEngine.Object.DestroyImmediate(clone);
             }
         }
@@ -567,6 +573,9 @@ public static class VerifyL1Encounters
         readonly object gameView;
         readonly PropertyInfo selectedSize;
         readonly object oldSize;
+        readonly LevelDefinition originalLevel;
+        readonly LevelDefinition runtimeLevel;
+        readonly CameraProfile cameraProfile;
         readonly string[] configBefore;
         Vector2 pointer = new Vector2(300, 180);
 
@@ -575,6 +584,12 @@ public static class VerifyL1Encounters
             Require(Application.isPlaying, "Play Mode required.");
             oldScale = Time.timeScale; Time.timeScale = 1;
             Runner.StopRun();
+            originalLevel = Runner.Flow.Level;
+            runtimeLevel = UnityEngine.Object.Instantiate(originalLevel);
+            cameraProfile = ScriptableObject.CreateInstance<CameraProfile>();
+            cameraProfile.View = new GameplayViewSettings(size,new Rect(0,0,1,lower70?.7f:1));
+            runtimeLevel.Camera = cameraProfile;
+            Runner.Flow.LoadLevel(runtimeLevel);
             oldPosition = Player.transform.position;
             var gate = Player.GetComponent<PlayerGameplayGate>();
             oldState = gate.State;
@@ -637,6 +652,8 @@ public static class VerifyL1Encounters
             Player.GetComponent<PlayerGameplayGate>().SetState(oldState);
             Player.transform.position = oldPosition; Player.GetComponent<Rigidbody2D>().position = oldPosition;
             view.RequestView(oldView, 0);
+            Runner.Flow.LoadLevel(originalLevel); view.SetBaseline(originalLevel.Camera.View);
+            UnityEngine.Object.DestroyImmediate(runtimeLevel); UnityEngine.Object.DestroyImmediate(cameraProfile);
             selectedSize.SetValue(gameView, oldSize);
             Time.timeScale = oldScale;
             Require(configBefore.SequenceEqual(Definitions().Select(EditorJsonUtility.ToJson)), "Verification mutated encounter assets.");

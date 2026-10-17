@@ -6,7 +6,9 @@ Owner của 12 level, encounter composition, paths/formations, FlightSequence us
 
 ## Terminology và composition
 
+Campaign → Level/Mission → Encounter → Spawn Group/Formation → Flight Sequence.
 Level là đơn vị campaign; encounter/wave là đơn vị schedule/completion/checkpoint.
+Một encounter có nhiều spawn groups; một lần enemy bay vào không mặc định là encounter.
 MainWave quyết progress; Optional Event Layer chạy song song, không chặn completion.
 Direction là hướng combat trong app landscape, không phải xoay màn hình thiết bị.
 Exact counts/timing của các encounter dưới là [TUNABLE]; tên region/level/boss là
@@ -139,8 +141,7 @@ hazard chỉ vì còn hiển thị; ownership phải rõ khi implementation.
 ### Reward grace và chuyển encounter
 
 Nếu còn valuable pickup hoặc Supply Crate, mở reward grace sau khi reward từ final
-kill/boss death đã hiện và player có thể điều khiển để nhặt. Duration là [TUNABLE],
-chưa gán số; tại boundary, bảo đảm pickup/crate còn ít nhất khoảng grace này nếu
+kill/boss death đã hiện và player có thể điều khiển để nhặt. Duration là [TUNABLE]; tại boundary, bảo đảm pickup/crate còn ít nhất khoảng grace này nếu
 lifetime cũ sắp hết. Không spawn threat mới trong cửa sổ đó. Không có reward để
 nhặt thì bỏ qua grace.
 
@@ -161,6 +162,13 @@ Completion / boss defeat cleanup
 Chỉ mở checkpoint/start encounter tiếp theo sau handoff an toàn; không snapshot
 object trong grace. Quit giữa grace hoặc post-boss vẫn là câu hỏi resume-marker
 [TBD] tại [save/profile](../systems/save-profile.md#các-contract-còn-mở).
+M3 grace seed khi có registered reward là 2 s `[TUNABLE]`, timer scaled;
+không có reward thì bỏ qua. Hook chỉ preserve/expire qua consumer, không grant.
+Optional hooks nhận unique ID/type, offset, condition (always/player alive/no live
+enemies) và optional spawn group. Condition pending chỉ sống trong main schedule;
+optional groups không trở thành required set. Boss boundary có token và bounded
+post-death fallback seed 1 s `[TUNABLE]` cho stub; content boss thật nằm ngoài phase này.
+
 Duration exit, grace và presentation timeout là config/tuning, không cần thêm một
 framework lifecycle riêng. Animation/audio chi tiết thuộc
 [audio/VFX](../presentation/audio-vfx.md).
@@ -211,20 +219,36 @@ Mỗi phase có thể chứa các data sau; đây là conceptual fields, chưa k
 
 ### Scout entry/hold checkpoint
 
-VS-014 dùng straight entry theo normalized **full camera viewport**, rồi hold vô
-hạn cho tới death hoặc owner release; không tự exit và làm kẹt required enemy.
-Seed `[TUNABLE]`: entry `(0.5, 1.12)` → hold `(0.5, 0.78)`, duration 1.2 s, smoothstep
-không overshoot. Đây là thời lượng local flight, không phải level spawn schedule.
-Scene giữ một Scout sandbox disabled để isolated regression. VS-022/023 dùng cùng
-flight writer cho group entry, hold và finite exit của L1; chưa triển khai
-FlightSequence tổng quát hoặc phase authoring framework.
+`EntryHoldFlight` của M2 tiếp tục làm pose writer; L1 M3 dùng composable sequence.
+Existing sandbox/verification `Configure(entry,hold,...)` vẫn có đường legacy, không
+là content authoring chính. Collision envelope giữ hold target trong full viewport;
+Player restricted region không thu hẹp enemy. Zoom không restart phase clock.
 
-Reproject theo current camera size/aspect, không giữ world waypoint cố định.
-Hold target được đưa vào full viewport theo collision envelope; Player restricted
-region không tự giới hạn enemy. Zoom/view transition không restart entry clock.
-Scaled time pause dừng clock; re-enable bắt đầu entry mới. Direction orchestration
-vẫn future; path không gắn level ID, wave ID hoặc tự điều khiển firing/completion.
-Implementation boundary thuộc [architecture](../systems/architecture.md#m2-scout-baseline-provisional).
+### M3 flight và formation authoring
+
+`[PROVISIONAL]` implementation vocabulary cho ENC-004–011: ordered Entry, Move,
+Hold, Combat, Cross, Exit, không giới hạn ba phase. Phase `CanShoot` chỉ tạo
+eligibility, vẫn qua coordinator/safety gate; path không sở hữu attack timing.
+Required target trong Eliminate/Boss phải kết thúc bằng terminal Hold/Combat;
+finite sequence không được despawn required target để giả kill. Non-required hoặc
+timed enemy resolve khi sequence kết thúc/exit envelope ra khỏi view.
+
+Implemented path primitives: Straight, DiagonalPass và Cross dùng endpoints;
+ArcLeft/ArcRight và Pincer/ExitCurve dùng curve envelope về zero ở hai đầu;
+Sine dùng bounded wave envelope; Dive đi vào rồi return về endpoint;
+Loop/Orbit dùng integer cycle count, finite duration. Hold/Combat có thể giữ endpoint.
+Đây là reusable movement vocabulary, không bao gồm final threat tuning hay boss AI.
+Endpoints giữa phases phải liên tục; loop không có clock/coroutine vô hạn.
+
+Formation là offsets độc lập khỏi archetype/path: Custom (giữ L1 slots), Line,
+Column, V, Wedge, Staggered, TwinFlank, Cross, Escort và Ring. Count/spacing/rise
+là config. Cross/Pincer composition dùng nhiều nhóm/phase, không có graph editor.
+Readability của pressure trong content sau vẫn cần playtest với attacks/hazards thật.
+
+Up là local normalized viewport; Right map `(x,y)` thành `(y,1-x)` và offsets thành
+`(y,-x)`. Spawn edge, formation, flight và respawn cùng transform, không tạo hai
+bộ paths hoặc rotate Android orientation. Player/muzzle face forward tương ứng;
+screen-relative drag/bounds vẫn dùng camera hiện tại.
 
 ### Path library baseline
 
@@ -316,7 +340,7 @@ Direction change không mặc định tạo bounds riêng; movement đi theo cur
 chỉ override region khi content yêu cầu. Quy tắc footprint/clamp thuộc
 [player owner](../gameplay/player-combat.md#movement-bounds-và-camera-interaction);
 runtime API/config thuộc [architecture](../systems/architecture.md#dynamic-gameplay-view-foundation).
-Foundation chưa chạy wave/boss/direction sequencing.
+M3 apply profile/direction qua [runtime foundation](../systems/architecture.md#m3-level-và-encounter-runtime-foundation).
 
 | Level | Tên [PROVISIONAL] | Region | Combat | Ortho size | Phút mục tiêu |
 |---|---|---|---|---:|---|
@@ -338,6 +362,16 @@ range. Campaign mục tiêu 20–30 phút [TUNABLE]; các range cộng lại và
 phải được playtest, không mặc định tổng upper bound là target.
 Camera close giảm simultaneous threats; wide mở formation, không tự tăng density.
 Camera movement ổn định, không overshoot gây khó drag; không scale tàu để giả zoom.
+
+## Mission start và establishing intro
+
+`[TUNABLE]` Level start chạy short establishing approach trước encounter đầu.
+Trong intro, input/fire/damage khóa, chưa spawn formation; Pause dừng scaled intro
+và camera clock. Sau framing settle mới mở control và start encounter schedule.
+Encounter jump/standalone có thể bỏ intro, không giả checkpoint mới.
+Choreography/timing và placeholder thuộc
+[audio/VFX](../presentation/audio-vfx.md#level-intro-warning-và-dynamic-audio);
+copy/announcement thuộc [UI/UX](../presentation/ui-ux.md#vocabulary-và-announcement).
 
 ## Region A — Astra Frontier `[PROVISIONAL]`
 
@@ -402,10 +436,10 @@ A chỉ complete khi toàn bộ enemy đã schedule có HP về zero; disable/re
 được tính kill. B đóng schedule tại 14 s kể cả enemy sống hoặc đã exit hết, rồi
 đợi shot cũ còn visible ra khỏi view/contact trước completion; không xóa đạn giữa
 không trung chỉ vì nguồn bắn đã exit hoặc schedule hết giờ.
-Tại completion/reset, đóng spawn và attack, release enemy và hostile projectile
-trước notification/handoff. Cleanup không gửi damage/death để giả kill.
-Khoảng handoff A → B là 1 s `[TUNABLE]`; batch chưa có reward nên không mở reward
-grace. Death/respawn không reset encounter hoặc survivor HP; timeline/movement vẫn
+Tại normal completion sau projectile drain, đóng spawn và attack, release enemy và
+hostile projectile trước notification/handoff; explicit reset clear ngay. Cleanup không gửi damage/death để giả kill.
+Khoảng handoff A → B là 1 s `[TUNABLE]`; L1 chưa có reward nên không mở reward
+grace. M3 có bounded grace hook khi future consumer register reward, không fake pickup. Death/respawn không reset encounter hoặc survivor HP; timeline/movement vẫn
 tiến theo scaled time, safety gate chỉ chặn attack. Game Over hủy schedule/handoff.
 Sau B full mission dừng combat và hiện compact clear theo
 [UI/UX](../presentation/ui-ux.md#m2-ui-implementation-provisional); reward/save và next-level flow chưa implement.

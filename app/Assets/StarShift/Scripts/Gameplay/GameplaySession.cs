@@ -22,6 +22,7 @@ namespace StarShift.Gameplay
         public bool IsClear => playerGate.State == PlayerGameplayState.Result;
         public event Action Changed;
         public event Action MissionStarted;
+        public event Action<string> MissionTitleRequested;
 
         private void Awake()
         {
@@ -32,9 +33,12 @@ namespace StarShift.Gameplay
         private void OnEnable()
         {
             runner.RunStarted += OnRunStarted;
+            if (runner.Flow != null) runner.Flow.TitleRequested += OnMissionTitle;
             runner.MissionCompleted += OnMissionCompleted;
             lifecycle.GameOver += OnGameOver;
         }
+
+        private void OnMissionTitle(string title) => MissionTitleRequested?.Invoke(title);
 
         public void Pause()
         {
@@ -51,6 +55,7 @@ namespace StarShift.Gameplay
             RestoreClock();
             IsPaused = false;
             Changed?.Invoke();
+            if (runner.Flow != null) runner.Flow.RefreshIntroTitle();
         }
 
         private void OnRunStarted()
@@ -106,6 +111,7 @@ namespace StarShift.Gameplay
         private void OnDisable()
         {
             runner.RunStarted -= OnRunStarted;
+            if (runner.Flow != null) runner.Flow.TitleRequested -= OnMissionTitle;
             runner.MissionCompleted -= OnMissionCompleted;
             lifecycle.GameOver -= OnGameOver;
             RestoreClock();

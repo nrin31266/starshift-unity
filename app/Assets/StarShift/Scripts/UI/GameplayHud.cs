@@ -34,6 +34,7 @@ namespace StarShift.UI
         {
             session.Changed += RefreshOverlay;
             session.MissionStarted += OnMissionStarted;
+            session.MissionTitleRequested += OnMissionTitle;
             pauseButton.onClick.AddListener(session.Pause);
             resumeButton.onClick.AddListener(session.Resume);
             Label(resumeButton, GameplayCopy.Resume);
@@ -52,8 +53,10 @@ namespace StarShift.UI
         private void OnMissionStarted()
         {
             previousLives = previousLevel = -1;
-            announcement.Show(GameplayCopy.MissionStart);
+            announcement.Hide();
         }
+
+        private void OnMissionTitle(string copy) => announcement.Show(copy);
 
         private void RefreshOverlay()
         {
@@ -89,6 +92,7 @@ namespace StarShift.UI
         {
             session.Changed -= RefreshOverlay;
             session.MissionStarted -= OnMissionStarted;
+            session.MissionTitleRequested -= OnMissionTitle;
             pauseButton.onClick.RemoveListener(session.Pause);
             resumeButton.onClick.RemoveListener(session.Resume);
         }

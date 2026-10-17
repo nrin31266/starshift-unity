@@ -1,6 +1,7 @@
 using StarShift.Combat;
 using StarShift.Encounters;
 using StarShift.Player;
+using StarShift.Gameplay;
 using UnityEngine;
 
 namespace StarShift.Dev
@@ -11,6 +12,12 @@ namespace StarShift.Dev
         [SerializeField] private bool devModeEnabled;
         [SerializeField] private string startPoint = "LEVEL_START";
         [SerializeField] private bool standalone;
+
+        [SerializeField] private LevelDefinition startLevel;
+        [SerializeField] private bool skipIntro;
+        [SerializeField] private bool overrideDirection;
+        [SerializeField] private PlayDirection direction;
+        [SerializeField] private CameraProfile cameraOverride;
 
         public bool TryStart()
         {
@@ -36,7 +43,8 @@ namespace StarShift.Dev
             player.enabled = false;
             player.enabled = true;
             player.GetComponent<PlayerPointerInput>().ResetDrag();
-            runner.StartRun(startPoint, standalone);
+            if (startLevel != null) runner.Flow.LoadLevel(startLevel);
+            runner.StartRun(startPoint, standalone, skipIntro, overrideDirection ? direction : (PlayDirection?)null, cameraOverride);
 #endif
         }
     }

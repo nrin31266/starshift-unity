@@ -205,3 +205,25 @@ không chạy lại baseline builders để reset gameplay tuning.
 Ví dụ args FullRun: `[1600,6,true]`, `[2000,6,false]`, `[2000,6.8,false]`.
 Coverage/evidence và giới hạn thuộc
 [dev/debug](../../docs/systems/dev-debug.md#m2-vertical-slice-closure-verification).
+
+## M3 level và encounter foundation
+
+`ConfigureEncounterFoundation.Configure` promote saved L1 assets qua Unity API,
+không đổi GUID/tuning đã có; tạo LevelDefinition, CameraProfile/FlightSequence assets,
+bind LevelFlow/cleanup/prefab pool/debug và author placeholder mission approach.
+`Inspect` đọc config, sequence references và scene missing scripts/references.
+Dùng script này cho migration; không chạy lại M2 builders để reset tuning.
+
+`VerifyVerticalSlice.FullMissionRun` chạy full intro + migrated L1; regression probes
+và command timeouts ở [dev owner](../../docs/systems/dev-debug.md#m3-regression-entry-points).
+Ví dụ ở Unity root `app/`:
+
+```sh
+unity command run_script --file ../tools/unity/VerifyVerticalSlice.cs --entry VerifyVerticalSlice.FullMissionRun --args '[1600,6,true]' --timeout 90 --timeout_ms 85000 --format json
+unity command run_script --file ../tools/unity/VerifyEncounterFoundation.cs --entry VerifyEncounterFoundation.Boundaries --format json
+```
+
+Inspector: `Data/Levels/L1` giữ direction/intro/encounter order/default camera;
+`Data/Encounters` giữ groups/schedule/completion/fire/grace; `Data/Flights` giữ phases;
+`Data/Cameras` giữ size/region/transition. Runtime authority không nằm ở assets.
+Dev overrides/debug toggles nằm trên `L1Encounters`, default OFF.

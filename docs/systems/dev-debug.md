@@ -410,3 +410,109 @@ scripts, 0 missing references, 1 EventSystem; Unity Console ground truth **0 err
 0 warnings**. Tool capture buffer vẫn giữ lỗi cũ/compile typo đã sửa, không dùng
 historical buffer counters làm Console cuối. New UI batch để uncommitted; không
 push/merge, không đổi package versions hoặc ProjectSettings user có sẵn.
+
+## M3 encounter foundation dev controls
+
+`DevFastStart` trên `L1Encounters` giữ default OFF và compile guards
+`UNITY_EDITOR || DEVELOPMENT_BUILD`. `StartLevel` optional trỏ LevelDefinition;
+`StartPoint` resolve trong level đó. `SkipIntro`, standalone, explicit Up/Right và
+CameraProfile override chỉ áp cho runtime, không ghi asset/save/profile.
+Available L1 IDs là `LEVEL_START`, `ENCOUNTER_1`, `ENCOUNTER_2`; Boss/PostBoss/Transition
+không xuất hiện khi chưa có content. Stable ID contract thuộc
+[level owner](../content/levels-encounters.md#checkpoint-và-stable-dev-start-ids).
+
+Replay từ Pause phải restore clock/audio, cancel pointer, reset Player lifecycle và
+hard-clear run cũ trước start mới. Đây vẫn là dev reset, không Retry checkpoint.
+Chọn camera override Wide/LowerRegion để test nhanh; không sửa production baseline
+chỉ để chạy smoke. Chọn direction override Right để dùng cùng L1 path/formation
+trong horizontal context; không tạo L5 content.
+
+`EncounterDebugView` có toggles bounds/playable region, paths, spawn/formation slots,
+hitboxes và FPS; tất cả default OFF, runtime drawing chỉ trong Editor/development.
+Gizmos cần bật trong Scene/Game View. Không log mỗi frame hoặc phụ thuộc debug để
+chạy gameplay. FPS overlay là Editor/dev diagnostic, không chứng minh device FPS.
+
+Menu `StarShift/Validate Encounter Content` và trước Enter Play kiểm tra authored
+LevelDefinition assets: duplicate level/encounter/optional IDs, missing references,
+invalid sequence/duration, required target terminal hold và invalid start refs.
+Runtime StartRun validate lại content được chọn, fail rõ, không fallback Continue.
+Không có custom graph/editor framework. Authoring tools dùng Unity API; không sửa
+scene/prefab YAML hoặc tự tạo `.meta`.
+
+## M3 regression entry points
+
+Sau Edit Mode migration `ConfigureEncounterFoundation.Configure`, Play gameplay scene.
+Các helper ở `tools/unity/` chạy qua Unity Pipeline `run_script`; long suite phải đặt
+CLI `--timeout` và command `--timeout_ms` đủ dài, đọc `result.success` bên trong
+response chứ không chỉ CLI exit code.
+
+| Entry | Coverage |
+|---|---|
+| `VerifyVerticalSlice.FullMissionRun(width,size,withDeath)` | Full establishing intro → A real Pulse kills → B → Clear; Pause intro/combat/handoff, lifecycle khi withDeath; actual Game View aspect và camera override |
+| `VerifyEncounterFoundation.Validate` | Valid content, duplicate IDs, invalid refs/start, NaN/invalid required phase rejection |
+| `VerifyEncounterFoundation.Boundaries` | Four completion modes, optional hooks/group, disable not kill, hostile/reward cleanup, bounded/paused grace, stale boss token, unsorted schedule, reset cancellation |
+| `VerifyEncounterFoundation.DirectionAndCamera(width)` | Same four-phase sequence Up/Right, forward/respawn axis, override/lower region/return level camera |
+| `VerifyEncounterFoundation.PathsAndFormations(width)` | All implemented path/formation options in both directions, finite motion/exit, deterministic distinct visible slots |
+| `VerifyEncounterFoundation.FiringLimits` | Configured two-shooter cap, actual shots, pending attack cancellation |
+| `VerifyEncounterFoundation.StartHooksAndReentrancy` | Encounter start trước spawn; reset trong run/encounter/title callback không resurrect schedule |
+| `VerifyEncounterFoundation.CompositionAndDebug(width)` | Hai group Pincer/Cross theo lanes, actual collider overlap check và debug default/toggle capture |
+| `VerifyEncounterFoundation.DevAndReset` | Intro/encounter jump, Right/camera override, replay from Pause, reject nonexistent BOSS |
+| `VerifyL1Encounters.DepartureFeedback` / `Lifecycle` | Preserved HP cue, mirrored B entry, visible projectile after source exit/lifetime/schedule, kill during telegraph, reset/handoff/reuse |
+| `VerifyVerticalSlice.InputAndPause` / `GameOver` / `Pooling` | Existing UI ownership, terminal lives-zero cancellation, sustained profiler identity/churn |
+
+Helpers clone test configs, restore original LevelDefinition and view/device/clock
+state, không ghi production saves. Boundary probes fake only future participants/Boss
+completion signals; không coi đây là implemented reward content hoặc boss mechanics.
+Path/formation checks không thay manual attack-readability playtest của L2–L12.
+Measured evidence nằm ở checkpoint M3 bên dưới sau khi QA hoàn tất.
+
+### M3 QA checkpoint — 2026-10-18
+
+Editor 6000.5.9f1; saved `02_Gameplay` dùng L1 LevelDefinition, cùng GUID của Player,
+Scout và hai encounter assets M2. Test configs là runtime clones; không tạo L2–L12,
+economy, save hoặc reward content. CLI results/screenshots nằm trong ignored
+`app/Temp/StarShiftM3/` và composited Game View tại `app/Temp/StarShiftClosure/`.
+
+| Full migrated flow | Evidence |
+|---|---|
+| 1600 × 900, Size 6 | PASS intro → A real Pulse kills → B → Clear; real hostile hit/death/respawn; Pause intro/combat/handoff; final rerun 1947 frames |
+| 2000 × 900, Size 6 | PASS cùng full flow, protected regression, 1521 frames |
+| 2000 × 900, Size 6.8 | PASS wide profile override, cùng full flow, 1523 frames |
+
+Các run xác nhận đúng một mission clear, không stale spawn/fire sau terminal,
+0 enemy/hostile/friendly shots tại Result. Captures đã được xem: short planet
+approach/settle, title Việt, mirrored B và HUD ở hai aspect; không claim Android QA
+hoặc art-family approval.
+
+| Standalone/regression | Evidence |
+|---|---|
+| Four modes + optional/grace | PASS 6 completion scenarios, 2 optional events; disable không count kill; grace bounded/paused; late completion reward được preserve; stale boss/cleanup token rejected |
+| Direction/camera ở 16:9 và 20:9 | PASS same four-phase sequence Up/Right; real respawn bottom/left; camera override/lower region; return tới level baseline 6.4 thay vì global seed |
+| Paths/formations ở mỗi aspect | PASS 22 path-direction runs + 20 formation-direction runs; finite motion/exit và distinct visible slots |
+| Cross/Pincer + debug ở mỗi aspect | PASS two groups, sampled crossing collider lanes không overlap; debug default OFF, toggles/captures; future combat pressure vẫn cần content playtest |
+| Dev/reset | PASS intro/encounter jump, direction/camera override, replay từ Pause, unavailable BOSS rejected |
+| Firing config | PASS configured active-shooter limit 2, maximum 2 telegraphs, actual shots, reset hủy pending attacks; L1 giữ limit 1 |
+| Standalone/session teardown | PASS standalone B không mission clear, dev replay từ Pause, disable trả clock/audio, không duplicate spawn |
+| Start hooks/reentrancy | PASS 2 start signals trước spawn; reset trong run/encounter/title callbacks không resurrect schedule/intro |
+| DepartureFeedback | PASS mirrored error 1.19e-7; HP 4/3 Normal, 2/1 Damaged, reuse reset; visible shot tồn tại sau source exit và hơn 6 s; timeline drain; hard reset clear |
+| Lifecycle/root reuse | PASS kill/disable during telegraph, pause, reset during handoff, Game Over cancellation; root deactivate/replay reuse toàn bộ Scout, 0 errors |
+| UI/terminal | PASS mouse + synthetic multitouch ownership, fresh press sau resume, telegraph/projectile pause; Game Over đúng một signal, không spawn trong final death |
+| Sustained pools | PASS 12 s warmup + 12 s/719 frames đo; Instantiate 0, Destroy 0; 10 PlayerProjectile, 6 EnemyProjectile và 8 Scout (gồm sandbox) giữ identity |
+| Validation | PASS valid authored content và 7 invalid config scenarios; missing/duplicate IDs, fake start/Boss alias, missing camera, invalid/NaN required flight |
+
+Pooling evidence là sustained Editor encounter, không phải device FPS hoặc toàn bộ
+campaign stress. Existing projectile pools được preserve; shared scene prefab pool
+phục vụ common enemy reuse. Reward/Boss probes chứng minh runtime boundaries,
+không thay actual pickup/crate/boss-content verification của M4/M5.
+
+Tracker đọc trước/sau tại task tab `gid=1237076761`: rows 50–74 (ENC-001–025) vẫn
+Not Started. Public read thành công; connected Drive yêu cầu reauthentication nên
+không thể ghi. Status/proof/notes patch được xuất local vào
+`app/Temp/StarShiftM3/tracker-updates.tsv`, không tạo spreadsheet duplicate trong repo.
+
+Final Edit Mode inspection: compile sạch; scene đã lưu, không dirty; 0 missing
+scripts/references; Unity Console ground truth **0 errors, 0 warnings**. Unity `.meta`
+đầy đủ cho assets/folders, không duplicate GUID trong StarShift. Docs checker PASS.
+M3 local checkpoint được tạo sau QA, không push; hai ProjectSettings changes có sẵn
+được để ngoài commit. Self-review giới hạn toàn M3 diff/system; không chạy audit
+ngoài scope hoặc dùng Ponytail plugin vì skill đó không được expose trong session.

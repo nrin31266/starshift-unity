@@ -11,6 +11,7 @@ namespace StarShift.Enemies
     {
         [SerializeField] private EnemyDefinition definition;
 
+        public EnemyDefinition Definition => definition;
         public int CurrentHp { get; private set; }
         public int MaxHp => definition != null ? definition.MaxHp : 0;
         public bool IsAlive => isActiveAndEnabled && CurrentHp > 0;

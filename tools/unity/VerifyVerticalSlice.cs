@@ -136,9 +136,11 @@ public static class VerifyVerticalSlice
         Session.Resume(); Require(!Session.IsPaused && Time.timeScale == 1, "Pause did not resume prior clock.");
     }
 
-    public static async Task<object> FullRun(int width, float size, bool withDeath)
+    public static Task<object> FullRun(int width, float size, bool withDeath) => FullRunCore(width,size,withDeath,false);
+    public static Task<object> FullMissionRun(int width, float size, bool withDeath) => FullRunCore(width,size,withDeath,true);
+    static async Task<object> FullRunCore(int width, float size, bool withDeath, bool intro)
     {
-        using (var rig = new Rig(width, size))
+        using (var rig = new Rig(width, size, intro))
         {
             var order = new List<string>();
             Action<EncounterDefinition> completed = d => order.Add(d.Id);
@@ -147,11 +149,29 @@ public static class VerifyVerticalSlice
             Runner.Completed += completed; Runner.MissionCompleted += cleared;
             try
             {
-                await Task.Delay(500);
+                if (intro)
+                {
+                    Require(Runner.Stage == EncounterStage.Intro && !rig.Gate.CanInput && !rig.Gate.CanFire && Enemies.Length == 0,
+                        "Intro did not lock gameplay before first spawn.");
+                    await Task.Delay(650);
+                    await Capture("approach-"+width+"-"+size);
+                    var before = Runner.Flow.IntroElapsed;
+                    Session.Pause(); await Task.Delay(220);
+                    Require(Runner.Flow.IntroElapsed == before && Enemies.Length == 0,"Intro advanced while paused.");
+                    Session.Resume();
+                    await Until(() => Runner.Flow.IntroElapsed >= 2.35f,3000,"Intro title phase missing.");
+                }
+                else await Task.Delay(500);
                 Require(Ui<Text>("Title").text == GameplayCopy.Pause, "Hidden overlay copy invalid.");
                 var startCapture = await Capture("mission-start-" + width);
                 var announcement = UnityEngine.Object.FindAnyObjectByType<GameplayAnnouncement>();
                 Require(announcement.GetComponent<CanvasGroup>().alpha > 0, "Mission announcement did not appear.");
+                if (intro)
+                {
+                    await Until(() => Runner.Stage == EncounterStage.Running,1500,"Intro did not hand off.");
+                    rig.Protect();
+                    Require(Mathf.Abs(Camera.main.orthographicSize-size)<.01f,"Intro did not settle to level camera.");
+                }
                 await Until(() => Enemies.Length == 3 && Enemies.All(e => e.GetComponent<EntryHoldFlight>().IsHolding), 2500, "A formation not ready.");
                 Require(Runner.CompletionCount == 0, "A resolved without kills.");
                 if (withDeath)
@@ -194,7 +214,7 @@ public static class VerifyVerticalSlice
                 await Task.Delay(450);
                 Require(clearCount == 1 && Enemies.Length == 0 && !rig.Input.FireHeld, "Stale clear/spawn/input.");
                 return new { passed = true, width, height = Screen.height, size, withDeath, clearCount,
-                    realPulseKills = 3, realHostileDeath = withDeath, pauseCombatAndHandoff = true, startCapture, bCapture, clearCapture,
+                    intro, introPause = intro, realPulseKills = 3, realHostileDeath = withDeath, pauseCombatAndHandoff = true, startCapture, bCapture, clearCapture,
                     frames = Time.frameCount - rig.FirstFrame };
             }
             finally { Runner.Completed -= completed; Runner.MissionCompleted -= cleared; }
@@ -280,8 +300,8 @@ public static class VerifyVerticalSlice
             var before = EditorJsonUtility.ToJson(dev);
             try
             {
-                Set(dev, "devModeEnabled", true); Set(dev, "startPoint", "LEVEL_START"); Set(dev, "standalone", false);
-                Runner.StartRun("LEVEL_START", false);
+                Set(dev, "devModeEnabled", true); Set(dev, "startPoint", "LEVEL_START"); Set(dev, "standalone", false); Set(dev, "skipIntro", true);
+                Runner.StartRun("LEVEL_START", false, true, null, null);
                 Session.Pause(); Require(Time.timeScale == 0, "Pause fixture failed.");
                 dev.Replay();
                 Require(Time.timeScale == 1 && !Session.IsPaused && Runner.CurrentIndex == 0 && Runner.IsRunning &&
@@ -322,7 +342,8 @@ public static class VerifyVerticalSlice
         readonly bool oldAudio = AudioListener.pause;
         readonly string[] definitions;
         Vector2 pointer = new Vector2(400, 220);
-        public Rig(int width, float size)
+        readonly CameraProfile profile;
+        public Rig(int width, float size, bool intro = false)
         {
             Require(Application.isPlaying, "Play Mode required.");
             Session.enabled = false; Runner.StopRun(); Time.timeScale = 1; AudioListener.pause = false; Session.enabled = true;
@@ -341,7 +362,9 @@ public static class VerifyVerticalSlice
                 if (d.native && d.enabled && (d is Mouse || d is Touchscreen)) { disabled.Add(d); InputSystem.DisableDevice(d); }
             mouse = InputSystem.AddDevice<Mouse>(); mouse.MakeCurrent(); touch = InputSystem.AddDevice<Touchscreen>();
             definitions = Configs().Select(EditorJsonUtility.ToJson).ToArray();
-            Runner.StartRun("LEVEL_START", false);
+            profile = ScriptableObject.CreateInstance<CameraProfile>();
+            profile.View = new GameplayViewSettings(size,new Rect(0,0,1,1));
+            Runner.StartRun("LEVEL_START", false, !intro, null, profile);
         }
         public void Protect() { Player.GetComponent<PlayerDamageLifecycle>().enabled = false; Gate.SetState(PlayerGameplayState.PostEntryInvincibility); UnityEngine.Object.FindAnyObjectByType<EnemyFireGate>().ResumeAfter(0); }
         public void Unprotect() { Player.GetComponent<PlayerDamageLifecycle>().enabled = true; Gate.SetState(PlayerGameplayState.Active); }
@@ -376,7 +399,8 @@ public static class VerifyVerticalSlice
             if (oldMouse != null && oldMouse.added) oldMouse.MakeCurrent();
             InputSystem.settings.editorInputBehaviorInPlayMode = oldEditor; InputSystem.settings.backgroundBehavior = oldBackground;
             var life = Player.GetComponent<PlayerDamageLifecycle>(); life.enabled = false; life.enabled = true; Input.CancelGesture();
-            view.RequestView(oldView, 0); selectedSize.SetValue(gameView, oldSize);
+            view.SetBaseline(Runner.Flow.Level.Camera.View); view.RequestView(oldView, 0); selectedSize.SetValue(gameView, oldSize);
+            UnityEngine.Object.Destroy(profile);
             Session.enabled = true; Time.timeScale = oldScale; AudioListener.pause = oldAudio;
             Require(definitions.SequenceEqual(Configs().Select(EditorJsonUtility.ToJson)), "QA mutated encounter config assets.");
         }

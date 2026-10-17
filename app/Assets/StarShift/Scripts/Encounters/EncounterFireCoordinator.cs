@@ -11,7 +11,7 @@ namespace StarShift.Encounters
         private readonly List<SingleFireAttack> shooters = new List<SingleFireAttack>();
         private EnemyFireGate safetyGate;
         private EncounterDefinition definition;
-        private SingleFireAttack selected;
+        private readonly List<SingleFireAttack> selected = new List<SingleFireAttack>();
         private int next;
         private int volleyShots;
         private float remaining;
@@ -33,9 +33,8 @@ namespace StarShift.Encounters
         {
             attack.SetEncounterControlled();
             shooters.Remove(attack);
-            if (selected == attack)
+            if (selected.Remove(attack))
             {
-                selected = null;
                 remaining = definition != null ? definition.ShotSpacing : 0;
             }
             next = shooters.Count == 0 ? 0 : next % shooters.Count;
@@ -45,7 +44,7 @@ namespace StarShift.Encounters
         {
             foreach (var attack in shooters) if (attack != null) attack.SetEncounterControlled();
             shooters.Clear();
-            selected = null;
+            selected.Clear();
             definition = null;
             next = volleyShots = 0;
             remaining = 0;
@@ -56,26 +55,29 @@ namespace StarShift.Encounters
             if (definition == null) return;
             if (!safetyGate.CanFire)
             {
-                selected = null;
+                selected.Clear();
                 volleyShots = 0;
                 remaining = definition.ShotSpacing;
                 return;
             }
-            if (selected != null)
+            for (int i = selected.Count - 1; i >= 0; i--)
             {
-                if (selected.isActiveAndEnabled && selected.IsTelegraphing) return;
-                selected = null;
+                var attack = selected[i];
+                if (attack != null && attack.isActiveAndEnabled && attack.IsTelegraphing) continue;
+                selected.RemoveAt(i);
                 volleyShots++;
                 remaining = volleyShots >= definition.ShotsPerVolley ? definition.VolleyPause : definition.ShotSpacing;
                 if (volleyShots >= definition.ShotsPerVolley) volleyShots = 0;
             }
+            if (selected.Count >= definition.ActiveShooterLimit) return;
             remaining -= Time.fixedDeltaTime;
             if (remaining > 0 || shooters.Count == 0) return;
             for (int i = 0; i < shooters.Count; i++)
             {
                 var index = (next + i) % shooters.Count;
-                if (shooters[index] == null || !shooters[index].TryRequestAttack()) continue;
-                selected = shooters[index];
+                if (shooters[index] == null || selected.Contains(shooters[index]) || !shooters[index].TryRequestAttack()) continue;
+                selected.Add(shooters[index]);
+                remaining = definition.ShotSpacing;
                 next = (index + 1) % shooters.Count;
                 return;
             }
