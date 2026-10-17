@@ -139,6 +139,9 @@ public static class VerifyGameplayView
         var gameView = EditorWindow.GetWindow(gameViewType);
         var selectedSize = gameViewType.GetProperty("selectedSizeIndex");
         var oldSize = selectedSize.GetValue(gameView);
+        var gameViewZoom = gameView.GetType().GetField("m_ZoomArea", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(gameView);
+        var oldGameViewZoom = (Vector2)gameViewZoom.GetType().GetProperty("scale").GetValue(gameViewZoom);
+        var oldGameViewPan = (Vector2)gameViewZoom.GetType().GetProperty("translation").GetValue(gameViewZoom);
         var setResolution = gameViewType.GetMethod("SetCustomResolution", BindingFlags.Instance | BindingFlags.NonPublic);
         Require(setResolution != null, "Expected Game View resolution API not available.");
         var observer = new GameObject("GameplayViewVerification") { hideFlags = HideFlags.DontSave };
@@ -316,7 +319,8 @@ public static class VerifyGameplayView
             if (oldMouse != null && oldMouse.added) oldMouse.MakeCurrent();
             input.ResetDrag();
             body.position = oldPosition;
-            selectedSize.SetValue(gameView, oldSize);
+            gameView.GetType().GetMethod("SizeSelectionCallback").Invoke(gameView, new object[] { oldSize, null });
+            gameViewZoom.GetType().GetMethod("SetTransform").Invoke(gameViewZoom, new object[] { oldGameViewPan, oldGameViewZoom });
             gameView.Repaint(); camera.ResetAspect();
             Application.runInBackground = oldRunInBackground;
         }

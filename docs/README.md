@@ -31,7 +31,7 @@ Chỉ dùng các từ khóa này ở nơi cần phân biệt mức yêu cầu.
 | Vision, core loop, scope, pillars, campaign high-level | [Game design](design/game-design.md) |
 | Relative drag, hold-to-fire, lives, damage/death/respawn, downgrade | [Player combat](gameplay/player-combat.md) |
 | Score, Stellar Shard, unlock/progression, Mission Replay | [Progression/economy](gameplay/progression-economy.md) |
-| 12 levels, exact encounters, paths/formations, FlightSequence usage, camera, directions/transitions | [Levels/encounters](content/levels-encounters.md) |
+| Content taxonomy, 12 levels, exact encounters, paths/formations, FlightSequence usage, camera, directions/transitions | [Levels/encounters](content/levels-encounters.md) |
 | Archetypes, HP, behavior, damage states, Elite, bosses | [Enemies/bosses](content/enemies-bosses.md) |
 | Weapons, pickups/core, asteroids reward, supply, drops/Director/pity | [Weapons/items/drops](content/weapons-items-drops.md) |
 | Unity runtime/config boundaries, scene model, pooling, pause/time | [Architecture](systems/architecture.md) |

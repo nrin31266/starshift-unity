@@ -16,12 +16,15 @@ MonoBehaviour:
   DisplayName: First Contact
   MissionNumber: 1
   RegionId: astra-frontier
-  LocationName: 
+  LocationName:
+  MissionBriefing:
   Direction: 0
   Camera: {fileID: 11400000, guid: f15e6f16905e5380b9f1a05f63962ceb, type: 2}
   Intro:
     Enabled: 1
-    Duration: 3
+    ContinueDelaySeconds: 1.8
+    ArrivalTitle: Mission 01
+    MissionTitleSeconds: 2.8
     ApproachView:
       orthographicSize: 8
       playableViewport:
@@ -30,7 +33,17 @@ MonoBehaviour:
         y: 0
         width: 1
         height: 1
-    AnnounceBeforeEnd: 0.8
+    TravelView:
+      orthographicSize: 9
+      playableViewport:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1
+        height: 1
+    ApproachSeconds: 0.7
+    TravelSeconds: 1.8
+    BrakeSeconds: 0.8
   Encounters:
   - {fileID: 11400000, guid: 4ba754d9865477110b1604b8e9a11136, type: 2}
   - {fileID: 11400000, guid: 496c8abd1c1857ea7a1cd78ccabf0b9a, type: 2}

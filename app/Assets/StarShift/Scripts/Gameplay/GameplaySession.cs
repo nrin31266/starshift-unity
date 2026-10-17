@@ -17,12 +17,15 @@ namespace StarShift.Gameplay
         private float previousScale;
         private bool previousAudioPause;
         private bool ownsClock;
+        public LevelFlow Flow => runner.Flow;
+        public bool HasActiveRun => runner.HasActiveRun;
+        public bool CanPause => !IsTerminal && runner.HasActiveRun && (Flow == null || !Flow.IsCinematic);
         public bool IsPaused { get; private set; }
         public bool IsTerminal => playerGate.State == PlayerGameplayState.Result || playerGate.State == PlayerGameplayState.GameOver;
         public bool IsClear => playerGate.State == PlayerGameplayState.Result;
         public event Action Changed;
         public event Action MissionStarted;
-        public event Action<string> MissionTitleRequested;
+        public event Action<string, string, float> MissionTitleRequested;
 
         private void Awake()
         {
@@ -33,16 +36,25 @@ namespace StarShift.Gameplay
         private void OnEnable()
         {
             runner.RunStarted += OnRunStarted;
-            if (runner.Flow != null) runner.Flow.TitleRequested += OnMissionTitle;
+            runner.EncounterStarted += OnEncounterStarted;
+            if (runner.Flow != null)
+            {
+                runner.Flow.TitleRequested += OnMissionTitle;
+                runner.Flow.PresentationChanged += OnPresentationChanged;
+            }
             runner.MissionCompleted += OnMissionCompleted;
             lifecycle.GameOver += OnGameOver;
         }
 
-        private void OnMissionTitle(string title) => MissionTitleRequested?.Invoke(title);
+        private void OnMissionTitle(string title, string description, float seconds) => MissionTitleRequested?.Invoke(title, description, seconds);
+
+        private void OnEncounterStarted(EncounterDefinition definition, int token) => Changed?.Invoke();
+        private void OnPresentationChanged() => Changed?.Invoke();
+        public void BeginMission() { if (!IsPaused && Flow != null) Flow.BeginApproach(); }
 
         public void Pause()
         {
-            if (IsPaused || IsTerminal || !runner.HasActiveRun) return;
+            if (IsPaused || !CanPause) return;
             IsPaused = true;
             Freeze();
             Changed?.Invoke();
@@ -55,7 +67,7 @@ namespace StarShift.Gameplay
             RestoreClock();
             IsPaused = false;
             Changed?.Invoke();
-            if (runner.Flow != null) runner.Flow.RefreshIntroTitle();
+            if (Flow != null) Flow.RefreshMissionTitle();
         }
 
         private void OnRunStarted()
@@ -111,7 +123,12 @@ namespace StarShift.Gameplay
         private void OnDisable()
         {
             runner.RunStarted -= OnRunStarted;
-            if (runner.Flow != null) runner.Flow.TitleRequested -= OnMissionTitle;
+            runner.EncounterStarted -= OnEncounterStarted;
+            if (runner.Flow != null)
+            {
+                runner.Flow.TitleRequested -= OnMissionTitle;
+                runner.Flow.PresentationChanged -= OnPresentationChanged;
+            }
             runner.MissionCompleted -= OnMissionCompleted;
             lifecycle.GameOver -= OnGameOver;
             RestoreClock();

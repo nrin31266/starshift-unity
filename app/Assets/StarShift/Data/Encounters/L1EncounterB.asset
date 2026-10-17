@@ -60,5 +60,8 @@ MonoBehaviour:
   ShotsPerVolley: 2
   VolleyPause: 1.8
   HandoffDelay: 1
+  TransitionTitle: Encounter 02
+  TransitionDescription: "T\xEDn hi\u1EC7u m\u1EDBi \u0111ang ti\u1EBFn v\xE0o khu
+    v\u1EF1c."
   RewardGraceSeconds: 2
   BossPostDeathSeconds: 1

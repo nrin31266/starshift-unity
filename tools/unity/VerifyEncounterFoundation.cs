@@ -50,6 +50,17 @@ public static class VerifyEncounterFoundation
             Check(!copy.IsValid(out _),"Boss alias to ordinary encounter accepted.");rejected++;
             copy.AdditionalStarts=Array.Empty<LevelStartPoint>(); copy.Camera=null;
             Check(!copy.IsValid(out _),"Missing camera accepted."); rejected++;
+            copy.Camera=level.Camera;
+            var titleSeconds=copy.Intro.MissionTitleSeconds;
+            var titleWindow=copy.Intro.ApproachSeconds+copy.Intro.TravelSeconds+copy.Intro.BrakeSeconds;
+            foreach(var invalid in new[] {0f,float.NaN,float.PositiveInfinity,-1f})
+            {
+                copy.Intro.MissionTitleSeconds=invalid;
+                Check(!copy.IsValid(out _),"Invalid Mission card duration accepted.");rejected++;
+            }
+            copy.Intro.MissionTitleSeconds=titleWindow+1;
+            Check(copy.IsValid(out _),"Gameplay Mission card duration still constrained by cinematic window.");
+            copy.Intro.MissionTitleSeconds=titleSeconds;
             encounter.Groups[0].Sequence=sequence;
             sequence.Phases[0].Duration=float.NaN;
             Check(!encounter.IsValid(out _),"NaN phase accepted."); rejected++;
@@ -258,12 +269,13 @@ public static class VerifyEncounterFoundation
                 new FlightPhase {Kind=FlightPhaseKind.Cross,Path=FlightPath.Cross,From=new Vector2(.7f,.8f),To=new Vector2(.2f,1),Duration=.7f},
                 new FlightPhase {Kind=FlightPhaseKind.Exit,Path=FlightPath.ExitCurve,From=new Vector2(.2f,1),To=new Vector2(-.4f,1.1f),Duration=.3f}
             });
+            left.name="DebugLeftSequence";right.name="DebugRightSequence";
             d.Groups=new[] {new SpawnAction {Count=3,Stagger=0,SlotStep=new Vector2(.12f,0),Sequence=left},
                 new SpawnAction {Count=3,Stagger=0,SlotStep=new Vector2(.12f,0),Sequence=right}};
             var debug=Runner.GetComponent<StarShift.Dev.EncounterDebugView>();var json=EditorJsonUtility.ToJson(debug);
             try
             {
-                var fields=new[] {"showBounds","showPaths","showSpawnPoints","showHitboxes","showFps"};
+                var fields=new[] {"showBounds","showPaths","showSpawnPoints","showHitboxes","showFps","showContentLabels"};
                 Check(fields.All(f=>!(bool)debug.GetType().GetField(f,Fields).GetValue(debug)),"Debug not default OFF.");
                 foreach(var f in fields)Set(debug,f,true);
                 var captures=new List<string>();
@@ -271,6 +283,7 @@ public static class VerifyEncounterFoundation
                 {
                     rig.Start(d,direction);await Task.Delay(420);
                     Check(Enemies.Length==6,"Pincer groups missing.");
+                    Check(new[] {"Region / Planet:","Mission 01:","Encounter 01:","Spawn Group 01:","Spawn Group 02:","Formation:","Flight Sequence / Path:",left.name,right.name}.All(label=>debug.ContentLabels.Contains(label)),"Debug content taxonomy/IDs missing.");
                     captures.Add(await Capture("composition-"+width+"-"+direction));
                     var until=Time.realtimeSinceStartup+.55f;
                     while(Time.realtimeSinceStartup<until)
@@ -319,7 +332,7 @@ public static class VerifyEncounterFoundation
             Action stopAtRun=()=>Runner.StopRun();Runner.RunStarted+=stopAtRun;
             Runner.StartRun("LEVEL_START",false);Runner.RunStarted-=stopAtRun;
             Check(!Runner.HasActiveRun && !Runner.Flow.IsIntroducing,"Reset in run-start callback restarted intro.");
-            Action<string> stopAtTitle=_=>Runner.StopRun();Runner.Flow.TitleRequested+=stopAtTitle;
+            Action<string,string,float> stopAtTitle=(_,__,___)=>Runner.StopRun();Runner.Flow.TitleRequested+=stopAtTitle;
             Runner.StartRun("LEVEL_START",false);
             await Until(()=>!Runner.HasActiveRun,3500,"Title callback reset resurrected encounter.");
             Runner.StartRun("ENCOUNTER_1",true,true,null,null);
@@ -359,6 +372,75 @@ public static class VerifyEncounterFoundation
         }
     }
 
+    public static async Task<object> PresentationBoundaries()
+    {
+        using(var rig=new Rig())
+        {
+            var flow=Runner.Flow;
+            var intro=rig.Level.Intro;intro.ContinueDelaySeconds=.04f;
+            intro.ApproachSeconds=intro.TravelSeconds=intro.BrakeSeconds=.12f;
+            intro.MissionTitleSeconds=.24f;
+            rig.Level.Encounters=new[] {rig.Definition(EncounterCompletion.Eliminate)};
+            var stages=new[] {MissionIntroPhase.Briefing,MissionIntroPhase.Travel,MissionIntroPhase.Brake,MissionIntroPhase.MissionTitle};
+            foreach(var stage in stages)
+            {
+                Runner.StartRun("LEVEL_START",true);
+                if(stage!=MissionIntroPhase.Briefing)
+                {
+                    await Until(()=>flow.CanContinue,500,"Reset fixture never armed.");
+                    Check(flow.BeginApproach(),"Reset fixture could not launch.");
+                    await Until(()=>flow.IntroPhase==stage,1800,"Reset fixture phase missing: "+stage);
+                }
+                var cinematic=stage!=MissionIntroPhase.MissionTitle;
+                Check(rig.Player.transform.Find("Visual").gameObject.activeSelf==!cinematic && (GameObject.Find("EnvironmentPlaceholders")!=null)==!cinematic,
+                    "Cinematic/gameplay title did not restore the correct visuals.");
+                if(!cinematic)
+                {
+                    bool rejected=false;
+                    try {flow.LoadLevel(rig.Level);}catch(InvalidOperationException){rejected=true;}
+                    Check(rejected,"Level load replaced an active Mission card without cancellation.");
+                }
+                Runner.StopRun();
+                rig.Session.BeginMission();await Task.Delay(180);
+                Check(!Runner.HasActiveRun && !flow.IsCinematic && !flow.BeginApproach() && Enemies.Length==0,"Reset/continue resurrected intro.");
+                var announcement=UnityEngine.Object.FindAnyObjectByType<StarShift.UI.GameplayAnnouncement>();
+                var hint=UnityEngine.Object.FindObjectsByType<UnityEngine.UI.Text>(FindObjectsInactive.Include).Single(t=>t.name=="ContinueHint");
+                Check(!hint.gameObject.activeSelf && !announcement.IsPersistent && announcement.GetComponent<CanvasGroup>().alpha==0,
+                    "Reset retained establishing UI/title.");
+                Check(rig.Player.transform.Find("Visual").gameObject.activeSelf && GameObject.Find("EnvironmentPlaceholders")!=null,"Reset failed to restore visuals.");
+            }
+            Action<string,string,float> stopAtCard=(_,__,___)=>{if(flow.IntroPhase==MissionIntroPhase.MissionTitle)Runner.StopRun();};
+            flow.TitleRequested+=stopAtCard;
+            try
+            {
+                Runner.StartRun("LEVEL_START",true);
+                await Until(()=>flow.CanContinue,500,"Title reset fixture never armed.");flow.BeginApproach();
+                await Until(()=>!Runner.HasActiveRun,1800,"Reset in gameplay title callback resurrected first encounter.");
+                Check(!flow.IsIntroducing && Enemies.Length==0,"Gameplay title reset retained presentation/spawn.");
+            }
+            finally {flow.TitleRequested-=stopAtCard;}
+            var a=rig.Definition(EncounterCompletion.Eliminate);a.HandoffDelay=1.5f;
+            var b=rig.Definition(EncounterCompletion.Timeline);b.Id="ENCOUNTER_2";b.Duration=5;
+            rig.Level.Encounters=new[] {a,b};
+            var life=rig.Player.GetComponent<PlayerDamageLifecycle>();life.enabled=true;
+            Runner.StartRun("ENCOUNTER_1",false,true,null,null);
+            await Until(()=>Enemies.Length==1,500,"Lifecycle/handoff fixture missing.");
+            Check(life.TryReceiveHit(null),"Handoff lifecycle damage rejected.");
+            Enemies.Single().ReceivePlayerHit(100,null);
+            await Until(()=>Runner.Stage==EncounterStage.Handoff,500,"Handoff did not start during death.");
+            rig.Session.Pause();Check(rig.Session.IsPaused && Time.timeScale==0,"Minor handoff rejected Pause.");
+            await Task.Delay(120);rig.Session.Resume();
+            await Until(()=>rig.Player.GetComponent<PlayerGameplayGate>().State==PlayerGameplayState.Respawning,900,"Handoff overwrote Dying timer/state.");
+            await Until(()=>rig.Player.GetComponent<PlayerGameplayGate>().State==PlayerGameplayState.PostEntryInvincibility,1800,"Handoff lost respawn/protection.");
+            Check(rig.Player.GetComponent<PlayerGameplayGate>().CanInput,"Minor handoff retained cinematic lock.");
+            await Until(()=>Runner.CurrentIndex==1,900,"Handoff did not release into B.");
+            Check(rig.Player.GetComponent<PlayerLives>().CurrentLives==2 && rig.Player.GetComponent<PlayerGameplayGate>().CanInput,
+                "Handoff reset lives or retained cinematic lock.");
+            return new {passed=true,resetPhases=stages.Select(s=>s.ToString()).ToArray(),staleContinueRejected=true,visualRestore=true,
+                deathRespawnContinues=true,handoffPauseAllowed=true,lifePreserved=true};
+        }
+    }
+
     public static async Task<object> DevAndReset()
     {
         using(var rig=new Rig())
@@ -373,6 +455,8 @@ public static class VerifyEncounterFoundation
                 var view=rig.NewCamera(7.2f,new Rect(0,0,1,1));Set(dev,"cameraOverride",view);
                 dev.Replay();await Until(()=>Runner.SpawnedCount==1,500,"Dev jump did not spawn.");
                 Check(Runner.CurrentIndex==1 && Runner.Flow.Direction==PlayDirection.Right && Camera.main.orthographicSize==7.2f,"Dev overrides failed.");
+                Check(UnityEngine.Object.FindAnyObjectByType<StarShift.UI.GameplayAnnouncement>().transform.Find("Description").GetComponent<UnityEngine.UI.Text>().text=="Encounter 02",
+                    "Dev encounter jump displayed wrong Mission subtitle.");
                 rig.Session.Pause();dev.Replay();
                 Check(!rig.Session.IsPaused && Time.timeScale==1,"Dev replay retained pause.");
                 Set(dev,"startPoint","BOSS");bool rejected=false;
@@ -408,7 +492,9 @@ public static class VerifyEncounterFoundation
         readonly GameplayViewSettings oldView;
         readonly float scale=Time.timeScale;
         readonly bool audio=AudioListener.pause;
-        readonly object gameView;readonly PropertyInfo selected;readonly object oldSize;
+        readonly object gameView;
+        readonly object gameViewZoom;
+        readonly Vector2 oldGameViewZoom, oldGameViewPan;readonly PropertyInfo selected;readonly object oldSize;
         readonly List<UnityEngine.Object> objects=new List<UnityEngine.Object>();
         readonly string originalJson;
         public Rig(int width=1600)
@@ -419,7 +505,10 @@ public static class VerifyEncounterFoundation
             Runner.Flow.LoadLevel(Level);oldView=View.TargetView;
             var type=typeof(EditorWindow).Assembly.GetType("UnityEditor.GameView");gameView=EditorWindow.GetWindow(type);
             selected=type.GetProperty("selectedSizeIndex");oldSize=selected.GetValue(gameView);
-            type.GetMethod("SetCustomResolution",Fields).Invoke(gameView,new object[]{new Vector2(width,900),"StarShift M3 QA"});
+            gameViewZoom = gameView.GetType().GetField("m_ZoomArea", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(gameView);
+            oldGameViewZoom = (Vector2)gameViewZoom.GetType().GetProperty("scale").GetValue(gameViewZoom);
+            oldGameViewPan = (Vector2)gameViewZoom.GetType().GetProperty("translation").GetValue(gameViewZoom);
+            type.GetMethod("SetCustomResolution",Fields).Invoke(gameView,new object[]{new Vector2(width,900),"StarShift M3 QA " + width + "x900"});
             ResetPlayer();Session.enabled=true;
             HoldSequence=NewSequence(new[] {new FlightPhase {Kind=FlightPhaseKind.Entry,From=new Vector2(.5f,.8f),To=new Vector2(.5f,.7f),Duration=.04f},
                 new FlightPhase {Kind=FlightPhaseKind.Hold,From=new Vector2(.5f,.7f),To=new Vector2(.5f,.7f),Duration=1,HoldUntilResolved=true,ClampToView=true}});
@@ -450,7 +539,8 @@ public static class VerifyEncounterFoundation
             Runner.Flow.LoadLevel(original);Player.transform.rotation=Quaternion.identity;
             Player.GetComponent<PlayerRespawnEntrance>().Direction=PlayDirection.Up;
             var life=Player.GetComponent<PlayerDamageLifecycle>();life.enabled=false;life.enabled=true;
-            View.SetBaseline(original.Camera.View);View.RequestView(oldView,0);selected.SetValue(gameView,oldSize);
+            View.SetBaseline(original.Camera.View);View.RequestView(oldView,0);gameView.GetType().GetMethod("SizeSelectionCallback").Invoke(gameView, new object[] { oldSize, null });
+            gameViewZoom.GetType().GetMethod("SetTransform").Invoke(gameViewZoom, new object[] { oldGameViewPan, oldGameViewZoom });
             foreach(var o in objects)UnityEngine.Object.Destroy(o);
             Session.enabled=true;Time.timeScale=scale;AudioListener.pause=audio;
             Check(EditorJsonUtility.ToJson(original)==originalJson,"Probe mutated authored level config.");

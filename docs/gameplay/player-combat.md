@@ -20,11 +20,22 @@ damage, theo survival contract bên dưới. Đây là naming implementation
 death/respawn sequence, tự trừ lives hoặc tự chuyển state theo timer.
 Gate cũng chặn permissions khi bị disable hoặc `Time.timeScale == 0`.
 Global Pause do gameplay session điều phối; đổi local state không thay thế global pause.
+Major establishing intro không nhận manual Pause. Ordinary handoff giữ HUD/Pause
+và permissions theo gameplay/lifecycle, không bật cinematic lock. Major cinematic lock
+chặn input/fire/damage độc lập state; unlock
+không reset lives/protection hoặc mở sớm enemy-fire safety gate.
 VS-016–021 nối `PlayerContactReceiver` vào lifecycle/lives runtime. Gate vẫn là source
 of truth của phase/permission; lifecycle điều phối timers và transitions qua gate,
 không thêm state enum hoặc HUD authority song song.
 
 ## Input và điều khiển
+
+Establishing continue tap dùng uGUI trên Canvas hiện có: sau reading delay, fresh
+left-mouse/touch down + up trong màn hình, không drag/cancel/hold dài (tap tối đa
+.6 s `[TUNABLE]` trên HUD). Press bắt đầu
+trước prompt không được tái nhận khi prompt xuất hiện. Tap này và pointer còn giữ
+trong intro không trở thành gameplay ownership; clear gesture khi launch và khi trả
+control, sau đó đòi fresh gameplay press. Không thay relative drag/hold-to-fire contract.
 
 ### Relative drag `[LOCKED]`
 
@@ -348,5 +359,6 @@ click nút. Multitouch có thể dùng ngón thứ hai để Pause trong khi ng�
 
 Pause/Resume là boundary hủy **cả gesture và fire intent**, yêu cầu press mới sau
 Resume. Đây là ngoại lệ có chủ ý cho generic gate block giữ held intent ở trên;
-death/respawn/transition vẫn giữ contract cũ. Full mission start/reset và terminal
+death/respawn và ordinary handoff giữ contract cũ. Major establishing intro consume
+continue tap và gesture còn giữ, yêu cầu press mới khi trả gameplay. Full mission start/reset và terminal
 cũng cancel gesture. Không dùng lại drag delta hoặc cadence từ trước overlay.

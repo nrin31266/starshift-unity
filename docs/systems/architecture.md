@@ -393,13 +393,16 @@ Không chạy lại baseline builders để reset content đã migrate.
 ### M2 gameplay session và UI boundary
 
 `GameplaySession` trên `L1Encounters` nhận direct `RunStarted`, `MissionCompleted`
-của runner và `GameOver` sau death phase của lifecycle. Title request riêng từ
-LevelFlow được forward tới HUD; run reset không tự hiện title trước establishing intro. `MissionCompleted` chỉ phát
+của runner và `GameOver` sau death phase của lifecycle. Title/presentation request từ
+LevelFlow được forward tới HUD với title + subtitle và optional duration override; establishing copy persistent
+tới valid tap sau reading delay. `MissionCompleted` chỉ phát
 ở cuối full sequence, không phải mỗi group hoặc standalone encounter. Runner kiểm
 tra lives zero trước schedule/handoff trong physics tick để không spawn trong final
 death sequence; completion và lives-zero cùng tick ưu tiên Game Over.
 
-Session sở hữu Pause clock và terminal combat boundary; UI chỉ gửi Pause/Resume và
+Session sở hữu Pause clock/CanPause và terminal combat boundary; CanPause chặn major intro
+ở authority; ordinary handoff vẫn nhận Pause và giữ HUD. Flow.PresentationChanged và encounter
+start refresh HUD visibility; UI gửi consumed continue tap/Pause/Resume và
 đọc state. Pause giữ lifecycle phase, lưu/restore `Time.timeScale` và
 `AudioListener.pause`; không thay state Dying/Respawning bằng enum Pause. UI vẫn dùng
 unscaled time. Disable/teardown session trả clock/audio đã mượn, không giữ pause rò
@@ -412,8 +415,23 @@ Không chờ presentation delay mới khóa damage/input/fire. Game Over dùng c
 sau signal của lifecycle; session không sở hữu lives/death/respawn timers.
 Dev replay vẫn reset runtime qua lifecycle trước `StartRun`, không giả checkpoint.
 
-`GameplayHud` chỉ render lives/weapon và overlay, `GameplayAnnouncement` giữ fade/
-duration, `SafeAreaLayout` chỉ cập nhật anchors khi safe area/resolution đổi.
+`PlayerGameplayGate.SetCinematicLock` tạm chặn input/fire/damage, không thay lifecycle
+state/timers. Chỉ major intro dùng lock; ordinary handoff không bật nó. Gate
+notification cancel pending drag/cadence; unlock
+không Resume enemy safety gate để tránh bỏ qua death/respawn grace. Intro visual
+proxy không ghi Player pose; presentation restore authored Visual/backdrop khi
+kết thúc hoặc reset. Không tạo writer thứ hai trên Player Rigidbody.
+
+`GameplayHud` render lives/weapon/overlay và nhận valid establishing tap qua cùng
+Canvas/uGUI pointer handlers; transparent raycast area chỉ bật trong intro. Tap
+chỉ arm khi prompt sẵn sàng; drag/cancel/hold dài không launch. Không poll input
+thứ hai hoặc tạo menu mới. `GameplayAnnouncement` giữ title/description và fade/
+duration; cùng một component đổi anchor/alignment cho major establishing và centered
+minor title. Loại title không suy từ HUD lock. LevelFlow giữ phase MissionTitle sau
+Brake: cinematic đã hide, HUD/control/Pause mở, runner vẫn chờ trước first spawn.
+Phase này dùng scaled timer; Resume refresh card với thời gian còn lại. Mission card dùng duration từ Intro config, subtitle lấy từ
+starting encounter index do runner truyền vào; không có ArrivalDescription hoặc một
+first-Encounter announcement riêng. `SafeAreaLayout` chỉ cập nhật anchors khi safe area/resolution đổi.
 Canvas/RectTransform/buttons/EventSystem được author bằng `ConfigureGameplayUi` qua
 Unity; không dựng UI runtime từng frame. Default execution order đặt session trước
 HUD để đọc dependency sau Awake; announcement cũng initialize trước HUD. Không thêm
@@ -430,6 +448,11 @@ hiện tại hoặc enemy current HP trở lại definition asset. Tham khảo
 khi triển khai, không coi version trong URL là version project bắt buộc.
 
 ### LevelDefinition
+
+Tên class/asset hiện có được giữ để bảo toàn references: Mission tương ứng
+`LevelDefinition`, Spawn Group tương ứng `SpawnAction`, Formation là `FormationLayout`,
+Flight Sequence / Path là `FlightSequence` / `FlightPhase.Path`. Đây không phải các
+cấp thay thế cho [taxonomy canonical](../content/levels-encounters.md#terminology-và-composition).
 
 `LevelDefinition` là static ScriptableObject: stable ID, display metadata, mission
 number, region ID, optional location name, PlayDirection, default CameraProfile,
@@ -458,7 +481,7 @@ L1 production assets đã trỏ sequence. Detailed phase/path behavior ở
 
 | Component | Runtime responsibility |
 |---|---|
-| LevelFlow | Bind LevelDefinition, apply direction/camera; scaled intro clock được runner tick; gửi title request; không render UI hoặc quản lives |
+| LevelFlow | Bind LevelDefinition, apply direction/camera; intro phase/clock và establishing tap readiness được runner tick; gửi title/presentation changes; không render UI hoặc quản lives |
 | EncounterRunner | Schedule groups theo timestamp/stable tie order; mode completion; stages Intro/Running/ProjectileDrain/BossPostDeath/RewardGrace/Handoff; generation token và exactly-once notification |
 | EntryHoldFlight | Writer duy nhất của enemy pose; runtime elapsed/phase; reproject theo current camera; không quyết kill/completion/drop |
 | EncounterFireCoordinator | Eligible round-robin permissions; configurable active shooter limit, spacing/volley; local attack giữ telegraph/projectile pool |
@@ -466,8 +489,10 @@ L1 production assets đã trỏ sequence. Detailed phase/path behavior ở
 | ScenePrefabPool | Shared scene-scoped prefab storage cho common enemies; rent inactive, configure rồi activate; không chứa gameplay completion policy |
 | MissionIntroPresentation | Placeholder planet/starfield nhận progress, không giữ gameplay authority |
 
-`StartRun` validate level và start ID trước schedule. `LEVEL_START` chạy intro;
-encounter IDs bỏ intro. Explicit dev overload nhận skip/direction/camera override,
+`StartRun` validate level và start ID trước schedule. `LEVEL_START` chờ establishing
+tap; readiness do LevelFlow.CanContinue kiểm tra theo scaled reading clock. Valid tap
+qua session → LevelFlow.BeginApproach; phase durations/arrival copy nằm trong
+MissionIntroSettings. Encounter IDs bỏ intro. Explicit dev overload nhận skip/direction/camera override,
 không sửa asset hoặc persistence. Runtime counters/lists/timers luôn ở component.
 Không tạo scene-per-level, event bus, DI, FireDirector hoặc cutscene framework.
 

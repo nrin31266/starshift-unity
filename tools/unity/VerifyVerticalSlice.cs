@@ -121,6 +121,7 @@ public static class VerifyVerticalSlice
         Session.Pause(); Require(Session.IsPaused, "Pause rejected current encounter phase.");
         await Task.Delay(45);
         var elapsed = Runner.Elapsed;
+        var handoffRemaining = Timer(Runner, "remaining");
         var enemies = Enemies.ToDictionary(e => e, e => e.transform.position);
         var timers = Enemies.ToDictionary(e => e, e => Timer(e.GetComponent<SingleFireAttack>(), "remaining"));
         var projectiles = UnityEngine.Object.FindObjectsByType<EnemyProjectile>().ToDictionary(p => p, p => p.transform.position);
@@ -128,7 +129,7 @@ public static class VerifyVerticalSlice
         var lifeTimer = Timer(lifecycle, "remaining");
         var grace = Timer(UnityEngine.Object.FindAnyObjectByType<EnemyFireGate>(), "graceRemaining");
         await Task.Delay(220);
-        Require(Runner.Elapsed == elapsed && enemies.All(e => e.Key != null && e.Key.transform.position == e.Value) &&
+        Require(Runner.Elapsed == elapsed && Timer(Runner, "remaining") == handoffRemaining && enemies.All(e => e.Key != null && e.Key.transform.position == e.Value) &&
             projectiles.All(p => p.Key != null && p.Key.transform.position == p.Value) &&
             timers.All(e => Timer(e.Key.GetComponent<SingleFireAttack>(), "remaining") == e.Value) &&
             Timer(lifecycle, "remaining") == lifeTimer && Timer(UnityEngine.Object.FindAnyObjectByType<EnemyFireGate>(), "graceRemaining") == grace,
@@ -149,29 +150,83 @@ public static class VerifyVerticalSlice
             Runner.Completed += completed; Runner.MissionCompleted += cleared;
             try
             {
+                string startCapture;
                 if (intro)
                 {
-                    Require(Runner.Stage == EncounterStage.Intro && !rig.Gate.CanInput && !rig.Gate.CanFire && Enemies.Length == 0,
-                        "Intro did not lock gameplay before first spawn.");
+                    Require(Runner.Stage == EncounterStage.Intro && Runner.Flow.IsAwaitingStart && !rig.Gate.CanInput && !rig.Gate.CanFire && Enemies.Length == 0,
+                        "Briefing did not gate first spawn.");
                     await Task.Delay(650);
-                    await Capture("approach-"+width+"-"+size);
+                    var announcement = UnityEngine.Object.FindAnyObjectByType<GameplayAnnouncement>();
+                    Require(announcement.GetComponent<CanvasGroup>().alpha == 1,"Briefing title not persistent.");
+                    Require(Ui<CanvasGroup>("CombatHud").alpha==0 && !Ui<Button>("Pause").gameObject.activeSelf,"HUD visible during briefing.");
                     var before = Runner.Flow.IntroElapsed;
-                    Session.Pause(); await Task.Delay(220);
-                    Require(Runner.Flow.IntroElapsed == before && Enemies.Length == 0,"Intro advanced while paused.");
-                    Session.Resume();
-                    await Until(() => Runner.Flow.IntroElapsed >= 2.35f,3000,"Intro title phase missing.");
-                }
-                else await Task.Delay(500);
-                Require(Ui<Text>("Title").text == GameplayCopy.Pause, "Hidden overlay copy invalid.");
-                var startCapture = await Capture("mission-start-" + width);
-                var announcement = UnityEngine.Object.FindAnyObjectByType<GameplayAnnouncement>();
-                Require(announcement.GetComponent<CanvasGroup>().alpha > 0, "Mission announcement did not appear.");
-                if (intro)
-                {
-                    await Until(() => Runner.Stage == EncounterStage.Running,1500,"Intro did not hand off.");
+                    Session.Pause();await Task.Delay(220);
+                    Require(!Session.IsPaused && Time.timeScale==1 && Runner.Flow.IntroElapsed==before,"Briefing accepted Pause/advanced without input.");
+                    Require(!Ui<Text>("ContinueHint").gameObject.activeSelf,"Continue hint appeared before reading delay.");
+                    await rig.MouseEvent(new Vector2(width*.86f,450),true);await rig.MouseEvent(new Vector2(width*.86f,450),false);
+                    Require(Runner.Flow.IsAwaitingStart,"Early tap skipped reading delay.");
+                    await Until(()=>Runner.Flow.CanContinue,2200,"Continue prompt never armed.");await Task.Delay(450);
+                    Require(Ui<Text>("ContinueHint").gameObject.activeSelf,"Continue hint missing.");
+                    var headline=announcement.transform.Find("Title").GetComponent<Text>().text;
+                    Require(headline==Runner.Flow.EstablishingTitle && !headline.Contains("NHIỆM VỤ"),"Mission number used as establishing hero.");
+                    Require(announcement.transform.Find("Title").GetComponent<Text>().alignment==TextAnchor.MiddleLeft,"Major establishing lost its distinct layout.");
+                    Require(!UnityEngine.Object.FindObjectsByType<Button>(FindObjectsInactive.Include).Any(b=>b.name=="BeginMission"),"Menu button survived migration.");
+                    startCapture=await Capture("establishing-"+width+"-"+size);
+                    await rig.MouseEvent(new Vector2(width*.86f,450),true);
+                    Require(!rig.Input.FireHeld && Runner.Flow.IsAwaitingStart,"Tap down launched or entered gameplay: phase="+Runner.Flow.IntroPhase+" held="+rig.Input.FireHeld+" screen="+Screen.width+"x"+Screen.height);
+                    await rig.MouseEvent(new Vector2(width*.86f,450),false);
+                    Require(!Runner.Flow.IsAwaitingStart && !rig.Input.FireHeld && !Runner.Flow.BeginApproach(),"Anywhere tap failed or launched twice.");
+                    await Capture("approach-"+width+"-"+size);
+                    await Until(()=>Runner.Flow.IntroPhase==MissionIntroPhase.Travel,1500,"Travel phase missing.");
+                    var travelStarted=Runner.Flow.IntroElapsed;
+                    await Task.Delay(450);await Capture("travel-"+width+"-"+size);
+                    Require(Mathf.Abs(Camera.main.orthographicSize-9)<.01f,"Travel did not open framing to 9.");
+                    await rig.MouseEvent(new Vector2(width*.2f,200),true);
+                    Session.Pause();Require(!Session.IsPaused && Time.timeScale==1,"Travel accepted Pause.");
+                    await Until(()=>Runner.Flow.IntroPhase==MissionIntroPhase.Brake,3000,"Brake phase missing.");
+                    Require(Mathf.Abs(Runner.Flow.IntroElapsed-travelStarted-Runner.Flow.Level.Intro.TravelSeconds)<.08f,"Travel duration did not honor configured timing.");
+                    Require(!announcement.IsPersistent && announcement.GetComponent<CanvasGroup>().alpha==0,
+                        "Mission card appeared before gameplay framing/HUD/control returned.");
+                    var brakingAt=Time.realtimeSinceStartup;
+                    while(Runner.Flow.IsCinematic && Time.realtimeSinceStartup-brakingAt<2)
+                    {
+                        Require(Runner.Flow.IntroPhase==MissionIntroPhase.Brake,"A stationary phase delayed gameplay after braking.");
+                        await Task.Delay(10);
+                    }
+                    Require(!Runner.Flow.IsCinematic,"Braking did not hand straight to gameplay.");
+                    await Task.Delay(80);
+                    Require(Runner.Stage==EncounterStage.Intro && Enemies.Length==0 && rig.Gate.CanInput && rig.Gate.CanFire && Session.CanPause &&
+                        Ui<CanvasGroup>("CombatHud").alpha>.99f && Ui<Button>("Pause").gameObject.activeSelf && Mathf.Abs(Camera.main.orthographicSize-size)<.01f,
+                        "Mission card did not wait on the controllable gameplay screen before first spawn.");
+                    Require(announcement.transform.Find("Title").GetComponent<Text>().text=="Mission 01" && announcement.transform.Find("Title").GetComponent<Text>().alignment==TextAnchor.MiddleCenter,"Mission arrival label not structural/centered.");
+                    Require(announcement.transform.Find("Description").GetComponent<Text>().text=="Encounter 01","Mission card did not include first Encounter or retained descriptive copy.");
+                    await FreezeCheck();
+                    await Task.Delay(1200);
+                    Require(announcement.GetComponent<CanvasGroup>().alpha>.99f && Runner.Stage==EncounterStage.Intro && Enemies.Length==0,
+                        "Mission card disappeared too soon or first combat started before reading.");
+                    await Capture("mission-card-"+width+"-"+size);
+                    Require(!rig.Input.FireHeld,"Held cinematic press survived into gameplay Mission card.");
+                    var cardPoint=new Vector2(width*.2f,200);
+                    await rig.MouseEvent(cardPoint,false);
+                    var cardPosition=rig.Player.transform.position;
+                    await rig.MouseEvent(cardPoint,true);await rig.MouseEvent(cardPoint+new Vector2(65,20),true);
+                    Require(rig.Input.FireHeld && rig.Player.transform.position.x>cardPosition.x && UnityEngine.Object.FindObjectsByType<PlayerProjectile>().Length>0 && Enemies.Length==0,
+                        "Mission card blocked fresh gameplay drag/fire or spawned enemies before reading completed.");
+                    await rig.MouseEvent(cardPoint+new Vector2(65,20),false);
+                    foreach(var shot in UnityEngine.Object.FindObjectsByType<PlayerProjectile>())shot.Release();
+                    await Until(()=>Runner.Stage==EncounterStage.Running,3200,"Intro did not hand off.");
                     rig.Protect();
-                    Require(Mathf.Abs(Camera.main.orthographicSize-size)<.01f,"Intro did not settle to level camera.");
+                    Require(!rig.Input.FireHeld && UnityEngine.Object.FindObjectsByType<PlayerProjectile>().Length==0 && Mathf.Abs(Camera.main.orthographicSize-size)<.01f,"Intro camera/input did not settle or held input fired.");
+                    await rig.MouseEvent(new Vector2(width*.2f,200),false);
+                    Require(Ui<CanvasGroup>("CombatHud").alpha>.99f && Ui<Button>("Pause").gameObject.activeSelf,"HUD did not return.");
                 }
+                else
+                {
+                    await Task.Delay(500);
+                    startCapture=await Capture("mission-start-"+width);
+                    Require(UnityEngine.Object.FindAnyObjectByType<GameplayAnnouncement>().GetComponent<CanvasGroup>().alpha>0,"Mission title missing.");
+                }
+                Require(Ui<Text>("Title").text == GameplayCopy.Pause,"Hidden overlay copy invalid.");
                 await Until(() => Enemies.Length == 3 && Enemies.All(e => e.GetComponent<EntryHoldFlight>().IsHolding), 2500, "A formation not ready.");
                 Require(Runner.CompletionCount == 0, "A resolved without kills.");
                 if (withDeath)
@@ -197,6 +252,13 @@ public static class VerifyVerticalSlice
                 foreach (var enemy in Enemies.OrderBy(e => e.transform.position.x).ToArray()) await rig.KillWithPulse(enemy);
                 await Until(() => Runner.CompletionCount == 1, 700, "A did not complete.");
                 Require(Runner.HasActiveRun && !Runner.IsRunning, "A/B handoff boundary missing.");
+                await Task.Delay(300);
+                Require(Ui<CanvasGroup>("CombatHud").alpha==1 && Ui<Button>("Pause").gameObject.activeSelf && Ui<Button>("Pause").interactable && rig.Gate.CanInput,
+                    "Minor handoff hid HUD/Pause or locked controls.");
+                Require(!Ui<Text>("ContinueHint").gameObject.activeSelf,"Minor transition demanded confirmation.");
+                var handoffAnnouncement=UnityEngine.Object.FindAnyObjectByType<GameplayAnnouncement>();
+                Require(handoffAnnouncement.transform.Find("Title").GetComponent<Text>().text=="Encounter 02" && handoffAnnouncement.transform.Find("Title").GetComponent<Text>().alignment==TextAnchor.MiddleCenter && ((RectTransform)handoffAnnouncement.transform).anchorMin==new Vector2(.5f,.5f),"Minor transition title not centered/structural.");
+                await Capture("handoff-"+width+"-"+size);
                 await FreezeCheck();
                 await Until(() => Runner.CurrentIndex == 1 && Runner.SpawnedCount == 6, 3200, "B mirrored spawn failed.");
                 await Until(() => Enemies.Length == 6 && Enemies.All(e => e.GetComponent<EntryHoldFlight>().IsHolding), 4500, "B hold formation missing.");
@@ -214,11 +276,102 @@ public static class VerifyVerticalSlice
                 await Task.Delay(450);
                 Require(clearCount == 1 && Enemies.Length == 0 && !rig.Input.FireHeld, "Stale clear/spawn/input.");
                 return new { passed = true, width, height = Screen.height, size, withDeath, clearCount,
-                    intro, introPause = intro, realPulseKills = 3, realHostileDeath = withDeath, pauseCombatAndHandoff = true, startCapture, bCapture, clearCapture,
+                    intro, anywhereTap = intro, gameplayCardControls = intro, directGameplayAfterBrake = intro, travelSeconds = Runner.Flow.Level.Intro.TravelSeconds,
+                    cinematicPauseBlocked = true, minorTransitionHudPreserved = true, realPulseKills = 3, realHostileDeath = withDeath, pauseCombat = true, handoffBreathingRoom = true, startCapture, bCapture, clearCapture,
                     frames = Time.frameCount - rig.FirstFrame };
             }
             finally { Runner.Completed -= completed; Runner.MissionCompleted -= cleared; }
         }
+    }
+
+    public static async Task<object> EstablishingInput()
+    {
+        using(var rig=new Rig(2000,6,true))
+        {
+            var point=new Vector2(280,650);
+            await rig.MouseEvent(point,true);
+            await Until(()=>Runner.Flow.CanContinue,2400,"Prompt never armed.");
+            await rig.MouseEvent(point,false);
+            Require(Runner.Flow.IsAwaitingStart,"Press begun before prompt became a continue tap.");
+            await rig.MouseEvent(point,true);await rig.MouseEvent(point+new Vector2(90,0),true);await rig.MouseEvent(point,false);
+            Require(Runner.Flow.IsAwaitingStart,"Drag counted as tap.");
+            await rig.MouseEvent(point,true);await Task.Delay(650);await rig.MouseEvent(point,false);
+            Require(Runner.Flow.IsAwaitingStart,"Long hold counted as tap.");
+            InputSystem.QueueStateEvent(Mouse.current,new MouseState {position=point}.WithButton(MouseButton.Right));await Task.Delay(80);
+            InputSystem.QueueStateEvent(Mouse.current,new MouseState {position=point});await Task.Delay(80);
+            Require(Runner.Flow.IsAwaitingStart,"Right click counted as continue.");
+            await rig.TouchEvent(1,TouchPhase.Began,point);await rig.TouchEvent(1,TouchPhase.Canceled,point);
+            Require(Runner.Flow.IsAwaitingStart,"Canceled touch counted as continue.");
+            await rig.TouchEvent(2,TouchPhase.Began,new Vector2(1700,300));await rig.TouchEvent(2,TouchPhase.Ended,new Vector2(1700,300));
+            Require(!Runner.Flow.IsAwaitingStart && !rig.Input.FireHeld,"Valid touch failed or leaked fire.");
+            await rig.TouchEvent(3,TouchPhase.Began,point);
+            await Until(()=>Runner.Stage==EncounterStage.Running,9500,"Touch intro never completed.");rig.Protect();
+            var position=rig.Player.transform.position;
+            await rig.TouchEvent(3,TouchPhase.Moved,point+new Vector2(100,0));
+            Require(!rig.Input.FireHeld && Vector3.Distance(position,rig.Player.transform.position)<.001f && UnityEngine.Object.FindObjectsByType<PlayerProjectile>().Length==0,
+                "Held cinematic finger moved/fired after unlock.");
+            await rig.TouchEvent(3,TouchPhase.Ended,point+new Vector2(100,0));
+            await rig.TouchEvent(4,TouchPhase.Began,point);
+            Require(rig.Input.FireHeld,"Fresh gameplay touch did not restore fire.");
+            await rig.TouchEvent(4,TouchPhase.Ended,point);
+            return new {passed=true,earlyHoldRejected=true,dragRejected=true,longHoldRejected=true,rightClickRejected=true,canceledTouchRejected=true,
+                anywhereTouch=true,heldFingerConsumed=true,freshGameplayPress=true};
+        }
+    }
+
+    public static async Task<object> CaptureIntroPreview()
+    {
+        using(var rig=new Rig(1600,6,true))
+        {
+            var folder=System.IO.Path.GetFullPath("Temp/StarShiftIntroReview/ux-preview-frames");System.IO.Directory.CreateDirectory(folder);
+            int frame=0;
+            float capturedAt=Time.realtimeSinceStartup;
+            async Task Frame()
+            {
+                ScreenCapture.CaptureScreenshot(System.IO.Path.Combine(folder,$"{frame++:0000}.png"));
+                await Task.Delay(100);
+            }
+            while(!Runner.Flow.CanContinue)await Frame();
+            for(int i=0;i<7;i++)await Frame();
+            await rig.MouseEvent(new Vector2(1400,500),true);
+            await rig.MouseEvent(new Vector2(1400,500),false);
+            var deadline=Time.realtimeSinceStartup+12;
+            while(Runner.Stage==EncounterStage.Intro && Time.realtimeSinceStartup<deadline)await Frame();
+            Require(Runner.Stage==EncounterStage.Running,"Preview never reached gameplay.");rig.Protect();
+            for(int i=0;i<10;i++)await Frame();
+            float duration=Time.realtimeSinceStartup-capturedAt;
+            return new {passed=true,folder,frames=frame,durationSeconds=duration,framesPerSecond=frame/duration};
+        }
+    }
+
+    public static async Task<object> EditorViewRestoration()
+    {
+        Require(Application.isPlaying,"Play Mode required.");
+        var type=typeof(EditorWindow).Assembly.GetType("UnityEditor.GameView");
+        var window=EditorWindow.GetWindow(type);
+        var selected=type.GetProperty("selectedSizeIndex");var originalIndex=selected.GetValue(window);
+        var size=type.GetProperty("currentGameViewSize",Fields).GetValue(window);var originalSize=JsonUtility.ToJson(size);
+        var zoom=type.GetField("m_ZoomArea",Fields).GetValue(window);
+        var scaleProperty=zoom.GetType().GetProperty("scale");var panProperty=zoom.GetType().GetProperty("translation");
+        var originalZoom=(Vector2)scaleProperty.GetValue(zoom);var originalPan=(Vector2)panProperty.GetValue(zoom);
+        for(int i=0;i<2;i++)
+        {
+            try
+            {
+                using(var rig=new Rig(i==0?1600:2000,6,true))
+                {
+                    await Task.Delay(150);
+                    if(i==1)throw new OperationCanceledException("Expected verification interruption.");
+                }
+            }
+            catch(OperationCanceledException) { }
+            await Task.Delay(200);
+            Require(Equals(selected.GetValue(window),originalIndex) && JsonUtility.ToJson(size)==originalSize &&
+                Vector2.Distance((Vector2)scaleProperty.GetValue(zoom),originalZoom)<.0001f &&
+                Vector2.Distance((Vector2)panProperty.GetValue(zoom),originalPan)<.001f,
+                "Verification changed the original Game View preset, resolution, zoom or pan.");
+        }
+        return new {passed=true,successAndExceptionCleanup=true,originalIndex,zoom=originalZoom.x,panX=originalPan.x,panY=originalPan.y};
     }
 
     public static async Task<object> GameOver()
@@ -256,37 +409,45 @@ public static class VerifyVerticalSlice
 
     public static async Task<object> Pooling()
     {
-        using (var rig = new Rig(1600, 6))
+        var selection = Selection.objects;
+        try
         {
-            await Task.Delay(1800);
-            var edge = Camera.main.ViewportToWorldPoint(new Vector3(.06f, .16f, 10));
-            rig.Place(edge);
-            await rig.MouseEvent(new Vector2(280, 180), false);
-            await rig.MouseEvent(new Vector2(280, 180), true);
-            await Task.Delay(12000);
-            var playerIds = All<PlayerProjectile>().Select(p => p.GetEntityId()).OrderBy(v => v).ToArray();
-            var hostileIds = All<EnemyProjectile>().Select(p => p.GetEntityId()).OrderBy(v => v).ToArray();
-            var scoutIds = All<EnemyHealth>().Select(p => p.GetEntityId()).OrderBy(v => v).ToArray();
-            using (var instantiate = Unity.Profiling.ProfilerRecorder.StartNew(Unity.Profiling.ProfilerCategory.Loading, "Instantiate", 2048))
-            using (var destroy = Unity.Profiling.ProfilerRecorder.StartNew(new Unity.Profiling.ProfilerCategory("Other"), "Destroy", 2048))
+            // Inspector preview có thể Destroy object Editor, gây nhiễu marker toàn cục.
+            Selection.objects = Array.Empty<UnityEngine.Object>();
+            using (var rig = new Rig(1600, 6))
             {
-                Require(instantiate.Valid && destroy.Valid, "Profiler markers unavailable.");
-                var frame = Time.frameCount;
+                await Task.Delay(1800);
+                var edge = Camera.main.ViewportToWorldPoint(new Vector3(.06f, .16f, 10));
+                rig.Place(edge);
+                await rig.MouseEvent(new Vector2(280, 180), false);
+                await rig.MouseEvent(new Vector2(280, 180), true);
                 await Task.Delay(12000);
-                instantiate.Stop(); destroy.Stop();
-                var instantiates = new List<Unity.Profiling.ProfilerRecorderSample>(); instantiate.CopyTo(instantiates);
-                var destroys = new List<Unity.Profiling.ProfilerRecorderSample>(); destroy.CopyTo(destroys);
-                var createCalls = instantiates.Sum(sample => sample.Count);
-                var destroyCalls = destroys.Sum(sample => sample.Count);
-                Require(playerIds.SequenceEqual(All<PlayerProjectile>().Select(p => p.GetEntityId()).OrderBy(v => v)) &&
-                    hostileIds.SequenceEqual(All<EnemyProjectile>().Select(p => p.GetEntityId()).OrderBy(v => v)) &&
-                    scoutIds.SequenceEqual(All<EnemyHealth>().Select(p => p.GetEntityId()).OrderBy(v => v)), "Pooled hierarchy grew after warmup.");
-                Require(createCalls == 0 && destroyCalls == 0, "Profiler saw Instantiate/Destroy after warmup: " + createCalls + "/" + destroyCalls);
-                return new { passed = true, warmupSeconds = 12, measuredSeconds = 12, frames = Time.frameCount - frame,
-                    playerPool = playerIds.Length, hostilePool = hostileIds.Length, scouts = scoutIds.Length,
-                    instantiateCalls = createCalls, destroyCalls, pooledIdentityStable = true };
+                var playerIds = All<PlayerProjectile>().Select(p => p.GetEntityId()).OrderBy(v => v).ToArray();
+                var hostileIds = All<EnemyProjectile>().Select(p => p.GetEntityId()).OrderBy(v => v).ToArray();
+                var scoutIds = All<EnemyHealth>().Select(p => p.GetEntityId()).OrderBy(v => v).ToArray();
+                using (var instantiate = Unity.Profiling.ProfilerRecorder.StartNew(Unity.Profiling.ProfilerCategory.Loading, "Instantiate", 2048))
+                using (var destroy = Unity.Profiling.ProfilerRecorder.StartNew(new Unity.Profiling.ProfilerCategory("Other"), "Destroy", 2048))
+                {
+                    Require(instantiate.Valid && destroy.Valid, "Profiler markers unavailable.");
+                    var frame = Time.frameCount;
+                    await Task.Delay(12000);
+                    instantiate.Stop(); destroy.Stop();
+                    var instantiates = new List<Unity.Profiling.ProfilerRecorderSample>(); instantiate.CopyTo(instantiates);
+                    var destroys = new List<Unity.Profiling.ProfilerRecorderSample>(); destroy.CopyTo(destroys);
+                    var createCalls = instantiates.Sum(sample => sample.Count);
+                    var destroyCalls = destroys.Sum(sample => sample.Count);
+                    Require(playerIds.SequenceEqual(All<PlayerProjectile>().Select(p => p.GetEntityId()).OrderBy(v => v)) &&
+                        hostileIds.SequenceEqual(All<EnemyProjectile>().Select(p => p.GetEntityId()).OrderBy(v => v)) &&
+                        scoutIds.SequenceEqual(All<EnemyHealth>().Select(p => p.GetEntityId()).OrderBy(v => v)), "Pooled hierarchy grew after warmup.");
+                    Require(createCalls == 0 && destroyCalls == 0, "Profiler saw Instantiate/Destroy after warmup: " + createCalls + "/" + destroyCalls +
+                        "; Destroy sample counts=" + string.Join(",", destroys.Where(sample => sample.Count > 0).Select(sample => sample.Count)));
+                    return new { passed = true, warmupSeconds = 12, measuredSeconds = 12, frames = Time.frameCount - frame,
+                        playerPool = playerIds.Length, hostilePool = hostileIds.Length, scouts = scoutIds.Length,
+                        instantiateCalls = createCalls, destroyCalls, pooledIdentityStable = true };
+                }
             }
         }
+        finally { Selection.objects = selection; }
     }
 
     public static async Task<object> ResetAndStandalone()
@@ -334,6 +495,8 @@ public static class VerifyVerticalSlice
         readonly InputSettings.EditorInputBehaviorInPlayMode oldEditor = InputSystem.settings.editorInputBehaviorInPlayMode;
         readonly InputSettings.BackgroundBehavior oldBackground = InputSystem.settings.backgroundBehavior;
         readonly object gameView;
+        readonly object gameViewZoom;
+        readonly Vector2 oldGameViewZoom, oldGameViewPan;
         readonly PropertyInfo selectedSize;
         readonly object oldSize;
         readonly GameplayViewController view;
@@ -354,7 +517,10 @@ public static class VerifyVerticalSlice
             view.RequestView(new GameplayViewSettings(size, new Rect(0, 0, 1, 1)), 0);
             var type = typeof(EditorWindow).Assembly.GetType("UnityEditor.GameView"); gameView = EditorWindow.GetWindow(type);
             selectedSize = type.GetProperty("selectedSizeIndex"); oldSize = selectedSize.GetValue(gameView);
-            type.GetMethod("SetCustomResolution", Fields).Invoke(gameView, new object[] { new Vector2(width, 900), "StarShift Closure QA" });
+            gameViewZoom = gameView.GetType().GetField("m_ZoomArea", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(gameView);
+            oldGameViewZoom = (Vector2)gameViewZoom.GetType().GetProperty("scale").GetValue(gameViewZoom);
+            oldGameViewPan = (Vector2)gameViewZoom.GetType().GetProperty("translation").GetValue(gameViewZoom);
+            type.GetMethod("SetCustomResolution", Fields).Invoke(gameView, new object[] { new Vector2(width, 900), "StarShift Closure QA " + width + "x900" });
             InputSystem.settings.editorInputBehaviorInPlayMode = InputSettings.EditorInputBehaviorInPlayMode.AllDeviceInputAlwaysGoesToGameView;
             InputSystem.settings.backgroundBehavior = InputSettings.BackgroundBehavior.IgnoreFocus;
             oldMouse = Mouse.current;
@@ -387,7 +553,17 @@ public static class VerifyVerticalSlice
             var wanted = Camera.main.WorldToScreenPoint(target.transform.position);
             pointer += new Vector2(wanted.x - current.x, 0);
             await MouseEvent(pointer, true);
-            await Until(() => !target.IsAlive, 2500, "Real held Pulse did not kill Scout.");
+            try { await Until(() => !target.IsAlive, 2500, "Real held Pulse did not kill Scout."); }
+            catch
+            {
+                await Capture("pulse-failure");
+                var hitList=new List<RaycastResult>();EventSystem.current.RaycastAll(new PointerEventData(EventSystem.current) {position=pointer},hitList);
+                throw new InvalidOperationException("Pulse failure: held="+Input.FireHeld+" canFire="+Gate.CanFire+" state="+Gate.State+
+                    " player="+Player.transform.position+" target="+target.transform.position+" hp="+target.CurrentHp+
+                    " pointer="+pointer+" hits="+string.Join(",",hitList.Select(h=>h.gameObject.name))+
+                    " shots="+UnityEngine.Object.FindObjectsByType<PlayerProjectile>().Length+" mouse="+mouse.deviceId+" pressed="+mouse.leftButton.isPressed+
+                    " current="+Mouse.current?.deviceId+" focused="+Application.isFocused);
+            }
             await MouseEvent(pointer, false);
         }
         static EncounterDefinition[] Configs() => new[] { "A", "B" }.Select(id => AssetDatabase.LoadAssetAtPath<EncounterDefinition>("Assets/StarShift/Data/Encounters/L1Encounter" + id + ".asset")).ToArray();
@@ -399,7 +575,8 @@ public static class VerifyVerticalSlice
             if (oldMouse != null && oldMouse.added) oldMouse.MakeCurrent();
             InputSystem.settings.editorInputBehaviorInPlayMode = oldEditor; InputSystem.settings.backgroundBehavior = oldBackground;
             var life = Player.GetComponent<PlayerDamageLifecycle>(); life.enabled = false; life.enabled = true; Input.CancelGesture();
-            view.SetBaseline(Runner.Flow.Level.Camera.View); view.RequestView(oldView, 0); selectedSize.SetValue(gameView, oldSize);
+            view.SetBaseline(Runner.Flow.Level.Camera.View); view.RequestView(oldView, 0); gameView.GetType().GetMethod("SizeSelectionCallback").Invoke(gameView, new object[] { oldSize, null });
+            gameViewZoom.GetType().GetMethod("SetTransform").Invoke(gameViewZoom, new object[] { oldGameViewPan, oldGameViewZoom });
             UnityEngine.Object.Destroy(profile);
             Session.enabled = true; Time.timeScale = oldScale; AudioListener.pause = oldAudio;
             Require(definitions.SequenceEqual(Configs().Select(EditorJsonUtility.ToJson)), "QA mutated encounter config assets.");

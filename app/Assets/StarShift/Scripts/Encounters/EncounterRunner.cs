@@ -108,7 +108,7 @@ namespace StarShift.Encounters
             if (token != generation) return;
             if (levelFlow != null)
             {
-                levelFlow.Begin(startPoint == "LEVEL_START" && !skipIntro, directionOverride, cameraOverride);
+                levelFlow.Begin(startPoint == "LEVEL_START" && !skipIntro, directionOverride, cameraOverride, index);
                 if (token != generation) return;
                 if (levelFlow.IsIntroducing) { Stage = EncounterStage.Intro; return; }
             }
@@ -145,8 +145,14 @@ namespace StarShift.Encounters
             }
             if (Stage == EncounterStage.Handoff)
             {
+                var handoffToken = generation;
+                if (levelFlow != null) levelFlow.TickHandoff(Time.fixedDeltaTime);
                 remaining -= Time.fixedDeltaTime;
-                if (remaining <= 0) BeginEncounter(CurrentIndex + 1);
+                if (remaining <= 0)
+                {
+                    if (levelFlow != null) levelFlow.EndHandoff();
+                    if (handoffToken == generation) BeginEncounter(CurrentIndex + 1);
+                }
                 return;
             }
             if (Stage == EncounterStage.RewardGrace)
@@ -299,7 +305,11 @@ namespace StarShift.Encounters
             cleanup.ReleaseAll();
             if (token != generation) return;
             if (!standalone && CurrentIndex + 1 < Definitions.Length)
-            { Stage = EncounterStage.Handoff; remaining = Current.HandoffDelay; }
+            {
+                Stage = EncounterStage.Handoff;
+                remaining = Current.HandoffDelay;
+                if (levelFlow != null) levelFlow.BeginHandoff(remaining, Definitions[CurrentIndex + 1]);
+            }
             else
             {
                 Stage = EncounterStage.Idle;

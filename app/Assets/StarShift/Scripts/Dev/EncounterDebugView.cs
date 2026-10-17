@@ -1,3 +1,4 @@
+using System.Text;
 using StarShift.Encounters;
 using StarShift.Gameplay;
 using UnityEngine;
@@ -12,12 +13,46 @@ namespace StarShift.Dev
         [SerializeField] private bool showSpawnPoints;
         [SerializeField] private bool showHitboxes;
         [SerializeField] private bool showFps;
+        [SerializeField] private bool showContentLabels;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private float averageDelta;
+        private GUIStyle contentStyle;
+        public string ContentLabels
+        {
+            get
+            {
+                var flow = GetComponent<LevelFlow>();
+                var runner = GetComponent<EncounterRunner>();
+                if (flow == null || flow.Level == null) return "";
+                var level = flow.Level;
+                var text = new StringBuilder($"Region / Planet: {level.RegionId} / {(string.IsNullOrWhiteSpace(level.LocationName) ? "TBD" : level.LocationName)}\nMission {level.MissionNumber:00}: {level.Id}");
+                var index = runner.HasActiveRun ? runner.CurrentIndex : 0;
+                if (runner.Stage == EncounterStage.Handoff) index++;
+                if (index >= level.Encounters.Length) return text.ToString();
+                var encounter = level.Encounters[index];
+                text.Append($"\nEncounter {index+1:00}: {encounter.Id}");
+                for (int i = 0; i < encounter.Groups.Length; i++)
+                {
+                    var group = encounter.Groups[i];
+                    text.Append($"\nSpawn Group {i+1:00}: {group.Count} enemies | Formation: {group.Formation}\nFlight Sequence / Path: ");
+                    if (group.Sequence == null) { text.Append("legacy"); continue; }
+                    text.Append(group.Sequence.name);
+                    foreach (var phase in group.Sequence.Phases) text.Append($" | {phase.Kind}:{phase.Path}");
+                }
+                return text.ToString();
+            }
+        }
         private void Update() => averageDelta = Mathf.Lerp(averageDelta, Time.unscaledDeltaTime, .05f);
         private void OnGUI()
         {
             if (showFps && averageDelta > 0) GUI.Label(new Rect(12,70,220,30), $"FPS {1/averageDelta:0}");
+            if (showContentLabels)
+            {
+                contentStyle ??= new GUIStyle(GUI.skin.box) {fontSize=18,alignment=TextAnchor.UpperLeft,wordWrap=true,padding=new RectOffset(12,12,8,8)};
+                var labels = ContentLabels;
+                var width = Mathf.Min(900, Screen.width-24);
+                GUI.Box(new Rect(12,110,width,contentStyle.CalcHeight(new GUIContent(labels),width)),labels,contentStyle);
+            }
         }
         private void OnDrawGizmos()
         {

@@ -6,9 +6,27 @@ Owner của 12 level, encounter composition, paths/formations, FlightSequence us
 
 ## Terminology và composition
 
-Campaign → Level/Mission → Encounter → Spawn Group/Formation → Flight Sequence.
-Level là đơn vị campaign; encounter/wave là đơn vị schedule/completion/checkpoint.
-Một encounter có nhiều spawn groups; một lần enemy bay vào không mặc định là encounter.
+Taxonomy `[LOCKED]` theo cách gọi đã chốt; Campaign chứa các Region / Planet và
+Mission, không tính là một cấp trong bảng này.
+
+| Cấp | Tên dùng | Ý nghĩa |
+|---|---|---|
+| 1 | **Region / Planet** | Hành tinh / khu vực lớn. Region có thể là không gian lớn hơn một hành tinh; không mặc định hai khái niệm là một-một. |
+| 2 | **Mission** | Một level hoàn chỉnh. “Level” là alias kỹ thuật hiện có, không phải cấp khác. |
+| 3 | **Encounter** | Một đoạn combat có điều kiện kết thúc riêng. |
+| 4 | **Spawn Group** | Một nhóm quái được gọi ra cùng logic/thời điểm. |
+| 5 | **Formation** | Cách Spawn Group đó xếp đội hình. |
+| 6 | **Flight Sequence / Path** | Cách nhóm/quái bay vào, giữ vị trí, di chuyển, bay ra. Sequence chứa các phase; Path là hình đường bay trong phase. |
+
+Không gộp Spawn Group và Formation thành một tên. Các cấp 4–6 mô tả composition
+của cùng nội dung, không tạo thêm completion/checkpoint gate: một Encounter có nhiều
+Spawn Group; mỗi group chọn Formation và Flight Sequence / Path. Một lần quái bay
+vào hoặc đổi Formation không mặc định là Encounter mới. “Wave” trong tài liệu cũ là
+alias Encounter, không thêm cấp riêng. Tên hiển thị tạm dùng taxonomy + số/ID để debug;
+chưa cần fiction name hoa mỹ. Tên Region/Planet thực tế còn `[TBD]` thì giữ config
+trống, không tự đặt tên. Mapping runtime và field serialization thuộc
+[architecture](../systems/architecture.md#config-data-và-mutable-runtime-state).
+
 MainWave quyết progress; Optional Event Layer chạy song song, không chặn completion.
 Direction là hướng combat trong app landscape, không phải xoay màn hình thiết bị.
 Exact counts/timing của các encounter dưới là [TUNABLE]; tên region/level/boss là
@@ -366,8 +384,16 @@ Camera movement ổn định, không overshoot gây khó drag; không scale tàu
 ## Mission start và establishing intro
 
 `[TUNABLE]` Level start chạy short establishing approach trước encounter đầu.
-Trong intro, input/fire/damage khóa, chưa spawn formation; Pause dừng scaled intro
-và camera clock. Sau framing settle mới mở control và start encounter schedule.
+Major establishing (thường khi vào/đổi Region / Planet) dùng title/location và mô tả,
+chờ một valid tap sau reading delay rồi approach/travel/brake. Đây là major
+cinematic: input/fire/damage khóa, chưa spawn formation, không manual Pause. Timers
+dùng scaled simulation; không freeze global clock khi chờ tap. Sau
+camera/HUD blend trong Brake, mở control ngay khi Brake kết thúc rồi mới hiện Mission card trên gameplay.
+Mission label và Encounter đầu nằm cùng card căn giữa; Mission không có mô tả,
+không chèn thêm một announcement Encounter đầu riêng. Card cần hoàn tất trước first
+spawn; card không khóa control/Pause. Timing/copy theo presentation owners bên dưới. Encounter tiếp theo trong cùng
+khu vực là minor announcement, không thêm confirmation hoặc cinematic lớn. Handoff lớn/nhỏ phân biệt theo
+thay đổi không gian và choreography, không theo số Spawn Group/Formation.
 Encounter jump/standalone có thể bỏ intro, không giả checkpoint mới.
 Choreography/timing và placeholder thuộc
 [audio/VFX](../presentation/audio-vfx.md#level-intro-warning-và-dynamic-audio);
@@ -438,7 +464,13 @@ A chỉ complete khi toàn bộ enemy đã schedule có HP về zero; disable/re
 không trung chỉ vì nguồn bắn đã exit hoặc schedule hết giờ.
 Tại normal completion sau projectile drain, đóng spawn và attack, release enemy và
 hostile projectile trước notification/handoff; explicit reset clear ngay. Cleanup không gửi damage/death để giả kill.
-Khoảng handoff A → B là 1 s `[TUNABLE]`; L1 chưa có reward nên không mở reward
+Khoảng handoff A → B là 1.25 s `[TUNABLE]`; đây là minor gameplay transition,
+giữ HUD/Pause và permissions theo gameplay/lifecycle bình thường. Cue nền nhẹ và
+optional contextual title/description tự fade; không menu hoặc chờ confirmation.
+Incoming encounter giữ optional TransitionTitle/TransitionDescription; để trống thì
+không announcement. Lifecycle death/respawn vẫn tiến theo state/timers cũ, không bị
+reset/ghi đè bởi handoff. HUD chỉ ẩn cho major cinematic, theo
+[UI owner](../presentation/ui-ux.md#m2-ui-implementation-provisional). L1 chưa có reward nên không mở reward
 grace. M3 có bounded grace hook khi future consumer register reward, không fake pickup. Death/respawn không reset encounter hoặc survivor HP; timeline/movement vẫn
 tiến theo scaled time, safety gate chỉ chặn attack. Game Over hủy schedule/handoff.
 Sau B full mission dừng combat và hiện compact clear theo

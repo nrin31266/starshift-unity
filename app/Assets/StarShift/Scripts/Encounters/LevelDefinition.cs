@@ -9,9 +9,17 @@ namespace StarShift.Encounters
     public sealed class MissionIntroSettings
     {
         public bool Enabled = true;
-        [Range(2,4)] public float Duration = 3;
+        [Min(.01f)] public float ContinueDelaySeconds = 1.8f;
+        public string ArrivalTitle;
+        [Min(.01f)] public float MissionTitleSeconds = 2.8f;
         public GameplayViewSettings ApproachView = new GameplayViewSettings(8, new Rect(0,0,1,1));
-        [Min(0)] public float AnnounceBeforeEnd = .8f;
+        public GameplayViewSettings TravelView = new GameplayViewSettings(9, new Rect(0,0,1,1));
+        [Min(.01f)] public float ApproachSeconds = .7f;
+        [Min(.01f)] public float TravelSeconds = 1.8f;
+        [Min(.01f)] public float BrakeSeconds = .8f;
+        public bool IsValid => ConfigValue.Positive(MissionTitleSeconds) &&
+            ConfigValue.Positive(ContinueDelaySeconds) && ConfigValue.Positive(ApproachSeconds) && ConfigValue.Positive(TravelSeconds) &&
+            ConfigValue.Positive(BrakeSeconds) && ConfigValue.Positive(ApproachView.OrthographicSize) && ConfigValue.Positive(TravelView.OrthographicSize);
     }
 
     [Serializable]
@@ -30,6 +38,7 @@ namespace StarShift.Encounters
         public string RegionId = "astra-frontier";
         [Tooltip("Để trống khi chưa có tên location canonical; không suy diễn từ RegionId.")]
         public string LocationName;
+        [TextArea] public string MissionBriefing;
         public PlayDirection Direction;
         public CameraProfile Camera;
         public MissionIntroSettings Intro = new MissionIntroSettings();
@@ -51,8 +60,7 @@ namespace StarShift.Encounters
             error = "Invalid level config: " + name;
             if (string.IsNullOrWhiteSpace(Id) || string.IsNullOrWhiteSpace(RegionId) || MissionNumber < 1 ||
                 !Enum.IsDefined(typeof(PlayDirection), Direction) || Camera == null || !Camera.IsValid ||
-                Intro == null || !ConfigValue.Positive(Intro.Duration) || !ConfigValue.Nonnegative(Intro.AnnounceBeforeEnd) ||
-                Intro.AnnounceBeforeEnd > Intro.Duration || !ConfigValue.Positive(Intro.ApproachView.OrthographicSize) ||
+                Intro == null || !Intro.IsValid ||
                 Encounters == null || Encounters.Length == 0 || AdditionalStarts == null) return false;
             var ids = new HashSet<string> { "LEVEL_START" };
             foreach (var e in Encounters)

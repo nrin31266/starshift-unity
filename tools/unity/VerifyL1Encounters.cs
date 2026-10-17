@@ -571,6 +571,8 @@ public static class VerifyL1Encounters
         readonly Mouse mouse;
         readonly List<InputDevice> disabled = new List<InputDevice>();
         readonly object gameView;
+        readonly object gameViewZoom;
+        readonly Vector2 oldGameViewZoom, oldGameViewPan;
         readonly PropertyInfo selectedSize;
         readonly object oldSize;
         readonly LevelDefinition originalLevel;
@@ -605,7 +607,10 @@ public static class VerifyL1Encounters
             var gameViewType = typeof(EditorWindow).Assembly.GetType("UnityEditor.GameView");
             gameView = EditorWindow.GetWindow(gameViewType);
             selectedSize = gameViewType.GetProperty("selectedSizeIndex"); oldSize = selectedSize.GetValue(gameView);
-            gameViewType.GetMethod("SetCustomResolution", Fields).Invoke(gameView, new object[] { new Vector2(width, 900), "StarShift Encounter Verification" });
+            gameViewZoom = gameView.GetType().GetField("m_ZoomArea", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(gameView);
+            oldGameViewZoom = (Vector2)gameViewZoom.GetType().GetProperty("scale").GetValue(gameViewZoom);
+            oldGameViewPan = (Vector2)gameViewZoom.GetType().GetProperty("translation").GetValue(gameViewZoom);
+            gameViewType.GetMethod("SetCustomResolution", Fields).Invoke(gameView, new object[] { new Vector2(width, 900), "StarShift Encounter Verification " + width + "x900" });
             oldEditorPolicy = InputSystem.settings.editorInputBehaviorInPlayMode;
             oldBackgroundPolicy = InputSystem.settings.backgroundBehavior;
             InputSystem.settings.editorInputBehaviorInPlayMode = InputSettings.EditorInputBehaviorInPlayMode.AllDeviceInputAlwaysGoesToGameView;
@@ -654,7 +659,8 @@ public static class VerifyL1Encounters
             view.RequestView(oldView, 0);
             Runner.Flow.LoadLevel(originalLevel); view.SetBaseline(originalLevel.Camera.View);
             UnityEngine.Object.DestroyImmediate(runtimeLevel); UnityEngine.Object.DestroyImmediate(cameraProfile);
-            selectedSize.SetValue(gameView, oldSize);
+            gameView.GetType().GetMethod("SizeSelectionCallback").Invoke(gameView, new object[] { oldSize, null });
+            gameViewZoom.GetType().GetMethod("SetTransform").Invoke(gameViewZoom, new object[] { oldGameViewPan, oldGameViewZoom });
             Time.timeScale = oldScale;
             Require(configBefore.SequenceEqual(Definitions().Select(EditorJsonUtility.ToJson)), "Verification mutated encounter assets.");
         }

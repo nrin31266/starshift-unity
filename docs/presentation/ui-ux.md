@@ -171,10 +171,13 @@ thể giữ English. Technical identifiers dùng English. Font strategy shipping
 
 ## Vocabulary và announcement
 
-Taxonomy nội bộ: Level/Mission → Encounter → Spawn Group/Formation → Flight Sequence.
-Player thấy “NHIỆM VỤ”; Encounter có thể trình bày là “ĐỢT” khi announcement giúp
-nhịp chơi. Một Spawn Group/lần enemy bay vào không phải một Đợt. Không hiện debug ID,
-class name hoặc boss phase số nếu không có nhu cầu UX rõ.
+Taxonomy duy nhất ở [level owner](../content/levels-encounters.md#terminology-và-composition).
+Trong bản debug hiện tại, dùng tên cấu trúc + số/ID: Region / Planet, Mission,
+Encounter; các cấp composition hiện trong existing debug view. Đây là chủ ý để đọc
+flow, chưa cần copy hoa mỹ. Không gộp Spawn Group với Formation, không tự đổi một
+lần spawn thành Encounter mới. Technical taxonomy được giữ English trong nhãn tạm.
+“NHIỆM VỤ 01” không làm hero title của Region / Planet establishing; Mission numbering
+có thể là secondary metadata ở HUD/results/mission UI hoặc short Mission label.
 
 HUD thường trực ưu tiên icon + number; text lớn chỉ dành cho moment quan trọng,
 ngắn và không chặn gameplay. Mission start, clear và future danger warning dùng
@@ -189,15 +192,48 @@ anchors/offsets chỉnh trên RectTransform. Lives icon + count đọc `PlayerLi
 Pulse Laser + CẤP đọc `PulseLaserWeapon.CurrentLevel`. Score và Shard là icon + **—**
 (placeholder, không phải số zero hoặc economy giả); chưa có buff/boss/weapon cycle.
 
-M3 dùng lại announcement M2, nhận title từ LevelFlow gần cuối establishing intro
-hoặc ngay khi dev skip intro. Mission number lấy từ LevelDefinition, không
-hard-code L1 trong HUD; optional location chỉ hiện khi config có giá trị được author,
-không suy ra tên hành tinh mới.
+Establishing scene dùng lại `GameplayAnnouncement` với location/space title và một
+câu mô tả ngắn, không tạo menu hoặc cinematic framework khác. `LocationName` chỉ
+được dùng khi đã author; tên hành tinh/location chưa quyết vẫn để trống `[TBD]`,
+không suy từ RegionId, DisplayName hoặc tự đặt fiction name. Fallback trung tính:
+“Region / Planet · TBD” / “Một hành tinh hiện ra ở phía xa.”, không phải tên riêng.
+Major establishing dùng layout giới thiệu lệch trái ở phần dưới; thường dành cho
+vào/đổi hành tinh/khu vực lớn. Không dùng layout này cho mọi lần đổi combat segment.
 
-Mission start hiện “NHIỆM VỤ 01”, duration 1.6 s, fade .2 s `[TUNABLE]` ở
-`GameplayAnnouncement`. Chỉ có một announcement này; không thêm “ĐỢT 1/2” hoặc group
-announcement vì formation/handoff hiện đủ rõ. Announcement không giữ quyền gameplay;
-Pause/terminal ẩn announcement; future warning có thể gọi lại cùng `Show(copy)`.
+Text có thời gian xuất hiện/đọc trước khi fade in lời nhắc nhỏ “Chạm để tiếp tục”.
+Không nút chữ nhật BẮT ĐẦU. Tap trái chuột hoặc touch hợp lệ ở bất kỳ điểm trong
+Game View tiếp tục; drag, cancel, right-click, hold dài và press bắt đầu trước lời
+nhắc không được tính. Không auto-launch khi hết thời gian đọc. Toàn bộ input của
+cinematic được consume; khi trả gameplay phải có press mới để move/fire. Detailed
+ownership thuộc [player owner](../gameplay/player-combat.md#m2-ui-pointer-ownership).
+
+Ẩn combat HUD/Pause ở **major cinematic**: establishing intro hiện tại; future
+major boss reveal, major direction-shift cinematic và ending áp dụng cùng rule.
+Không mặc định mọi transition là major cinematic. Sau continue, giữ approach /
+acceleration / deceleration; camera và HUD trở về đồng thời với deceleration,
+không nhịp đứng chờ riêng hoặc menu/confirmation nữa.
+Khi camera đã về khung gameplay, HUD hiện đủ và điều khiển mở, mới hiện Mission card.
+Mission card **căn giữa**, gồm hai dòng: “Mission 01” và “Encounter 01” nhỏ hơn ngay
+bên dưới. Mission không có câu mô tả. Encounter đầu được gộp vào card này để có
+thời gian đọc, không phát thêm announcement đầu tiên cạnh tranh với Mission card.
+Title Mission từ Intro config, subtitle Encounter lấy từ index đang vào trong Mission;
+normal start là 01, dev encounter jump phải phản ánh đúng index đã chọn.
+Card giữ lâu hơn minor handoff; nhịp dừng/hiển thị theo
+[audio/VFX](audio-vfx.md#level-intro-warning-và-dynamic-audio). Không trở thành hero
+location title hoặc yêu cầu tap lần nữa. Pause không nhận lệnh trong
+major intro; simulation vẫn chạy. HUD fade về trong Brake; hết Brake mở control rồi
+hiện card trên gameplay. Người chơi có thể kéo/bắn/Pause trong nhịp đọc, nhưng first
+spawn đợi card hoàn tất. Resume từ Pause hiện lại card với thời gian còn lại.
+
+Sau khi gameplay bắt đầu, HUD luôn hiện xuyên suốt ordinary A → B / formation
+transitions. Pause và gameplay permissions vẫn theo gameplay/lifecycle bình thường;
+minor handoff không tự khóa input hoặc ẩn Pause. Không Continue/forced confirmation.
+Minor title + một câu mô tả nằm **giữa màn hình**, dùng cùng announcement với layout
+căn giữa rồi auto fade; không chung vị trí/layout với major establishing. Incoming
+encounter config có thể để trống cả hai. L1 B dùng “Encounter 02” / “Tín hiệu mới đang
+tiến vào khu vực.” để debug đúng cấp, chưa dùng nhãn hoa mỹ.
+Minor announcement seed 1.6 s, fade .2 s `[TUNABLE]`; Pause/terminal/reset ẩn nó.
+Announcement chỉ render copy, không sở hữu gameplay authority.
 
 Pause hiện “TẠM DỪNG”; “TIẾP TỤC” hoạt động. “CHƠI LẠI ĐỢT”, “CÀI ĐẶT”,
 “VỀ MENU CHÍNH” disabled, kèm “Chưa có trong bản thử nghiệm”. Slice chưa có

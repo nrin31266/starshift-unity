@@ -8,7 +8,6 @@ namespace StarShift.Gameplay
     {
         private Transform storage;
         private readonly List<(GameObject Root, GameObject Prefab)> entries = new List<(GameObject, GameObject)>();
-        public int CreatedCount => entries.Count;
         private void EnsureStorage()
         {
             if (storage != null) return;

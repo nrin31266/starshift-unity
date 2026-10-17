@@ -202,6 +202,8 @@ không chạy lại baseline builders để reset gameplay tuning.
 
 `VerifyVerticalSlice.InputAndPause`, `FullRun(width,size,withDeath)`, `GameOver`,
 `Pooling`, `ResetAndStandalone` chạy bằng MCP run_script trong Play Mode.
+`EditorViewRestoration` kiểm tra cleanup preset/resolution/preview zoom/pan cả khi
+test bị ngắt; [Editor state contract](../../docs/systems/dev-debug.md#game-view-và-trạng-thái-editor).
 Ví dụ args FullRun: `[1600,6,true]`, `[2000,6,false]`, `[2000,6.8,false]`.
 Coverage/evidence và giới hạn thuộc
 [dev/debug](../../docs/systems/dev-debug.md#m2-vertical-slice-closure-verification).
@@ -227,3 +229,34 @@ Inspector: `Data/Levels/L1` giữ direction/intro/encounter order/default camera
 `Data/Encounters` giữ groups/schedule/completion/fire/grace; `Data/Flights` giữ phases;
 `Data/Cameras` giữ size/region/transition. Runtime authority không nằm ở assets.
 Dev overrides/debug toggles nằm trên `L1Encounters`, default OFF.
+
+
+## Mission establishing và cinematic revision
+
+`ConfigureMissionPresentation.Configure` chạy ở Edit Mode sau M3 foundation để author
+CombatHud CanvasGroup, location/space announcement + description, subtle ContinueHint,
+transparent establishing tap area, visual-only approach ship và backdrop. Migration
+bỏ nút menu cũ; rerun giữ timing/copy đã tune. Không tạo Canvas, EventSystem, menu
+hoặc gameplay scene thứ hai. LocationName chưa quyết vẫn trống trong Level config.
+
+Play: đọc establishing text → prompt xuất hiện → valid tap bất kỳ → approach / space
+travel → brake đồng thời framing/HUD → gameplay card → combat. Intro không Pause; minor A→B
+giữ HUD và gameplay Pause, optional copy tự fade và không confirmation. Dev Skip Intro
+hoặc encounter start bỏ qua establishing tap. Test qua FullMissionRun, EstablishingInput
+và VerifyEncounterFoundation.PresentationBoundaries; evidence thuộc
+[dev owner](../../docs/systems/dev-debug.md#mission-presentation-revision).
+
+`VerifyVerticalSlice.CaptureIntroPreview` sample PNG sequence khoảng 10 fps vào ignored
+`app/Temp/StarShiftIntroReview/ux-preview-frames/` để review từ establishing tới gameplay;
+helper trả thời lượng thực để encode, dùng real virtual Mouse, không đo performance.
+
+Major establishing giữ layout giới thiệu; timed Mission/Encounter titles căn giữa
+trong cùng GameplayAnnouncement. Tên tạm dùng taxonomy để debug; tên planet chưa
+chốt giữ TBD. Bật Content Labels trên EncounterDebugView để xem từng Spawn Group,
+Formation và Flight Sequence / Path theo IDs thực; default OFF.
+
+Mission card gộp Mission title + starting Encounter ở dòng dưới, không mô tả Mission
+hoặc announcement đầu riêng; chỉ hiện khi HUD/control đã trở lại. Timing và Pause
+theo [presentation owner](../../docs/presentation/audio-vfx.md#level-intro-warning-và-dynamic-audio).
+FullMissionRun kiểm tra fresh drag/fire và Pause trong card trước first spawn.
+Dev jump lấy đúng Encounter index đã chọn.

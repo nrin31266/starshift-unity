@@ -35,6 +35,8 @@ namespace StarShift.Encounters
         [Min(1)] public int ShotsPerVolley = 1;
         [Min(.02f)] public float VolleyPause = 1f;
         [Min(0)] public float HandoffDelay = 1f;
+        public string TransitionTitle;
+        [TextArea] public string TransitionDescription;
         [Min(.01f)] public float RewardGraceSeconds = 2f;
         [Min(0)] public float BossPostDeathSeconds = 1f;
 

@@ -22,13 +22,21 @@ namespace StarShift.Player
         [SerializeField, Tooltip("State prototype hiện tại; không tự chạy death/respawn sequence.")]
         private PlayerGameplayState state = PlayerGameplayState.Active;
 
+        private bool cinematicLocked;
         public PlayerGameplayState State => state;
         public bool CanInput => IsRunning && (state == PlayerGameplayState.Active || state == PlayerGameplayState.PostEntryInvincibility);
         public bool CanFire => CanInput;
         public bool CanTakeDamage => IsRunning && state == PlayerGameplayState.Active;
-        private bool IsRunning => isActiveAndEnabled && Time.timeScale > 0f;
+        private bool IsRunning => isActiveAndEnabled && !cinematicLocked && Time.timeScale > 0f;
 
         public event Action StateChanged;
+
+        public void SetCinematicLock(bool locked)
+        {
+            if (cinematicLocked == locked) return;
+            cinematicLocked = locked;
+            StateChanged?.Invoke();
+        }
 
         public void SetState(PlayerGameplayState nextState)
         {

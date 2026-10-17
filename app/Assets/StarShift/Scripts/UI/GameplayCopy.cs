@@ -2,7 +2,9 @@ namespace StarShift.UI
 {
     public static class GameplayCopy
     {
-        public const string MissionStart = "NHIỆM VỤ 01";
+        public const string SpaceTitle = "Region / Planet · TBD";
+        public const string EstablishingDescription = "Một hành tinh hiện ra ở phía xa.";
+        public const string TapToContinue = "Chạm để tiếp tục";
         public const string Pause = "TẠM DỪNG";
         public const string Resume = "TIẾP TỤC";
         public const string RestartEncounter = "CHƠI LẠI ĐỢT";
@@ -14,7 +16,7 @@ namespace StarShift.UI
         public const string Unavailable = "Chưa có trong bản thử nghiệm";
         public const string Placeholder = "—";
         public const string PulseLaser = "Pulse Laser";
-        public static string Mission(int number) => $"NHIỆM VỤ {number:00}";
+        public static string Encounter(int number) => $"Encounter {number:00}";
         public static string Weapon(int level) => $"{PulseLaser} · CẤP {level}";
         public static string Lives(int count) => $"×{count}";
     }

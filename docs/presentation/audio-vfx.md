@@ -195,14 +195,37 @@ Final death: core crack → staged explosions → short slow motion → final fl
 
 ## Level intro, warning và dynamic audio
 
-Mission intro M3 dùng placeholder approach 3 s `[TUNABLE]`, authoring target 2–4 s:
-starfield tăng cảm giác tốc độ → planet disc lớn dần/đi khỏi combat view → camera
-wide settle về level baseline → mission/location announcement ngắn → control và
-encounter đầu. Seed wide là size 8 `[TUNABLE]`, không hard-code return size trong
-runner. Planet/starfield được author trong scene, không Instantiate/Destroy trong
-intro hoặc build cutscene framework. Reset/skip phải hide sạch presentation.
-Planet texture là procedural neutral disc tại placeholder folder; chưa là final art
-hoặc canonical planet identity. Location trống thì chỉ hiện mission title.
+Mission intro dùng các nhịp riêng `[TUNABLE]`:
+
+| Nhịp | Seed | Presentation |
+|---|---|---|
+| Establishing | Reading delay 1.8 s, sau đó chờ tap | Planet làm mốc đích, starfield trôi rất nhẹ; framing 8, Region / Planet title + một câu theo major layout. Lời nhắc fade .4 s sau reading delay. |
+| Approach | .7 s | Tàu trình diễn tiến nhẹ, planet/parallax thay đổi vừa phải; framing 8 → 9. |
+| Travel | 1.8 s | Planet fade sang không gian, starfield tăng tốc; giữ framing 9 lâu hơn. |
+| Brake và gameplay blend | .8 s | Giảm tốc đồng thời camera 9 → baseline, tàu về pose thật, backdrop/HUD fade về; hết giảm tốc mở control ngay. Không có nhịp đứng chờ riêng. |
+| Mission card | 2.8 s | Trên màn hình gameplay đã có HUD/control, hiện Mission + Encounter đầu căn giữa; hết nhịp đọc mới start formation. |
+
+Mission card duration 2.8 s `[TUNABLE]` (gồm fade .2 s ở mỗi đầu), độc lập default
+minor announcement duration. Card bắt đầu sau Brake và camera settle về baseline;
+người chơi đã có thể kéo/bắn và Pause trong lúc đọc. Pause dừng countdown tới first
+spawn; Resume hiện lại card với thời gian còn lại. Không rút khoảng đọc chỉ để vào combat sớm.
+
+Tổng cinematic seed khoảng 3.3 s, tiếp theo là nhịp đọc card trên gameplay, không gồm thời gian chờ tap. Camera size
+8 → 9 là mở rộng framing; cảm giác tiếp cận đến từ relative ship/planet/parallax,
+không dùng camera zoom một mình để giả tiến tới. Planet giữ vị trí mốc đích thay
+vì lao qua toàn màn hình. Tên location còn TBD dùng nhãn cấu trúc theo
+[UI owner](ui-ux.md#m2-ui-implementation-provisional), không thay bằng mission number.
+
+Dùng cùng gameplay scene; sprites/background layers chuyển trạng thái trình diễn,
+không load scene riêng hoặc thêm cutscene framework. Sprite tàu intro chỉ là visual
+proxy; Player movement/Rigidbody vẫn giữ writer cũ. Hide/reset restore Player Visual
+và backdrop đã có; không mutate Player tint/physics hoặc instantiate theo từng phase.
+Planet vẫn là procedural placeholder, không final art hoặc canonical planet identity.
+
+A → B có starfield cue mờ, nhẹ, fade in/out trong khoảng nghỉ do encounter owner
+quyết; giữ HUD, optional short contextual copy auto fade, không confirmation. Không
+bắt đầu cue khi còn shot cũ cần
+resolve. UI/control rules thuộc [UI/UX](ui-ux.md#vocabulary-và-announcement).
 
 Level intro/sector title gọn, boss/hazard warning ngắn và không spam WARNING.
 Audio categories [PROVISIONAL]: Music, player/enemy weapons, hits/explosions,

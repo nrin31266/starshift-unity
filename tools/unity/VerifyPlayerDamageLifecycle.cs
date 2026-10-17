@@ -121,6 +121,9 @@ public static class VerifyPlayerDamageLifecycle
         var gameView = EditorWindow.GetWindow(gameViewType);
         var selectedSize = gameViewType.GetProperty("selectedSizeIndex");
         var oldSize = selectedSize.GetValue(gameView);
+        var gameViewZoom = gameView.GetType().GetField("m_ZoomArea", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(gameView);
+        var oldGameViewZoom = (Vector2)gameViewZoom.GetType().GetProperty("scale").GetValue(gameViewZoom);
+        var oldGameViewPan = (Vector2)gameViewZoom.GetType().GetProperty("translation").GetValue(gameViewZoom);
         var profile = AssetDatabase.LoadAssetAtPath<SingleFireDefinition>(FirePath);
         var configBefore = EditorJsonUtility.ToJson(profile);
         var projectiles = new List<EnemyProjectile>();
@@ -262,7 +265,8 @@ public static class VerifyPlayerDamageLifecycle
             view.RequestView(oldView, 0);
             Position(player, oldPosition);
             sceneScout.SetActive(wasActive);
-            selectedSize.SetValue(gameView, oldSize);
+            gameView.GetType().GetMethod("SizeSelectionCallback").Invoke(gameView, new object[] { oldSize, null });
+            gameViewZoom.GetType().GetMethod("SetTransform").Invoke(gameViewZoom, new object[] { oldGameViewPan, oldGameViewZoom });
             camera.ResetAspect();
         }
     }
