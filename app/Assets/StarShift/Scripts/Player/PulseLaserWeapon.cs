@@ -22,10 +22,21 @@ namespace StarShift.Player
         private double nextShotTime;
         private bool wasAllowed;
         private bool shuttingDown;
+        private readonly WeaponHeatState heat = new WeaponHeatState();
         public int CurrentLevel => 1;
+        public float Heat => heat.Heat;
+        public float HeatFraction => definition != null && definition.ThermalProfile != null ? heat.Heat / definition.ThermalProfile.Capacity : 0;
+        public bool IsOverheated => heat.IsOverheated;
+        public bool CanFire => gameplayGate != null && gameplayGate.CanFire && !heat.IsOverheated;
 
         // Slice chỉ có Lv1; giữ boundary death penalty, chưa giả lập upgrade chưa có.
-        public void ApplyDeathDowngrade() => ResetCadence();
+        public void ApplyDeathDowngrade() => heat.Reset();
+
+        public void ResetForSession()
+        {
+            heat.Reset();
+            ResetCadence();
+        }
 
         private void Awake()
         {
@@ -63,7 +74,15 @@ namespace StarShift.Player
 
         private void FixedUpdate()
         {
-            if (!gameplayGate.CanFire || !pointerInput.FireHeld)
+            // CanFire gồm cả Pause/timeScale: gate khóa thì không tick thermal simulation.
+            if (!gameplayGate.CanFire)
+            {
+                ResetCadence();
+                return;
+            }
+            if (definition.ThermalProfile != null)
+                heat.Tick(definition.ThermalProfile, pointerInput.FireHeld, Time.fixedDeltaTime);
+            if (!CanFire || !pointerInput.FireHeld)
             {
                 ResetCadence();
                 return;

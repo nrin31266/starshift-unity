@@ -17,3 +17,4 @@ MonoBehaviour:
   projectileSpeed: 12
   damage: 1
   projectileLifetime: 1.5
+  thermalProfile: {fileID: 11400000, guid: 87d50349d68b520a698ad6010cd8fca5, type: 2}

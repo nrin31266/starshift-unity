@@ -16,8 +16,10 @@ namespace StarShift.UI
         public const string Unavailable = "Chưa có trong bản thử nghiệm";
         public const string Placeholder = "—";
         public const string PulseLaser = "Pulse Laser";
+        public const string HeatOverheated = "NÓNG";
         public static string Encounter(int number) => $"Encounter {number:00}";
         public static string Weapon(int level) => $"{PulseLaser} · CẤP {level}";
+        public static string WeaponStatus(int level) => $"T1 L{level}";
         public static string Lives(int count) => $"×{count}";
     }
 }

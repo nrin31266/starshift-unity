@@ -1,5 +1,43 @@
 # Dev và debug
 
+## M3.5 thermal HUD verification
+
+HUD correction hiện tại theo feedback user: functional placeholder vuông góc,
+nền mờ, padding sát nội dung và dùng viết tắt khi chưa có icon; contract ở
+[UI owner](../presentation/ui-ux.md#gameplay-hud). Custom plate/icon tự dựng đã bỏ.
+`PlainHud(1600)`/`PlainHud(2000)` chụp Game View và smoke bar/Pause/Resume; không
+đổi heat tuning hoặc chạy lại full L1 cho correction presentation này.
+Revision trước đã chạy sáu thermal state mỗi aspect; hai attempt 20:9 timeout
+khi warm-up, lượt sau pass, root cause chưa xác định. Không ghi thành bug thermal
+đã fixed; ảnh revision trước không là style hiện tại.
+
+Checkpoint 2026-10-18, trên main sau PR #2 merge, trước M4. Thermal mechanic/seed
+thuộc [weapons](../content/weapons-items-drops.md#primary-weapon-heat--m35), lifecycle
+thuộc [player](../gameplay/player-combat.md#thermal-lifecycle), visual contract thuộc
+[UI](../presentation/ui-ux.md#gameplay-hud). Không mở rộng rewards/save/content.
+
+Grouped Play Mode evidence: sustained tới overheat khoảng 5.56–5.60 s; recovery
+khoảng 1.18–1.20 s với seed hiện tại. Targeted PASS gồm MAX-only lock, movement
+độc lập, held auto resume, release trước MAX, repeated burst, Pause freeze,
+death/respawn reset, Encounter retention, mission replay reset, terminal freeze và
+HUD fill/state. UI click Pause/Resume không leak drag/fire intent. Đây là Input
+System virtual-device test qua loop thật, không là Android hardware test.
+
+Một full `VerifyVerticalSlice.FullMissionRun(1600, 6, false)` PASS: 1886 frames,
+đúng một Clear; major intro hide và minor handoff HUD visible vẫn đúng. Death đã
+kiểm ở targeted nên không lặp trong full smoke. Compile PASS; final Editor Console
+0 error/0 warning; scene saved, 0 missing script/reference. MCP retained buffer có
+log cũ trước checkpoint, không có entry mới trong lượt M3.5.
+
+`ThermalHud(1600, true)` là grouped targeted; `ThermalHud(2000, false)` là visual
+aspect pass. Một refinement chỉ đổi weapon symbol và normal capture timing, rồi
+chụp lại sáu state cho mỗi aspect; không lặp historical suites. Entry points ở
+[tool README](../../tools/unity/README.md#m35-thermal-hud-checkpoint).
+Design/script review và ảnh/JSON giữ local trong ignored
+`.design/m3-5-thermal-hud/`; summary ở đây và regression entry points được version
+để có thể chạy lại. Evidence local không thay canonical ownership. Không chạy Android, full
+camera/input/aspect gameplay matrix, benchmark pooling hoặc claim device FPS.
+
 ## Phạm vi và ownership
 
 Owner của DevConfig, debug controls và đường test nhanh. Không yêu cầu custom editor/debug framework. Persistence isolation chi tiết ở [save/profile](save-profile.md).
@@ -479,6 +517,8 @@ response chứ không chỉ CLI exit code.
 | `VerifyEncounterFoundation.CompositionAndDebug(width)` | Hai group Pincer/Cross theo lanes, actual collider overlap check và debug default/toggle capture |
 | `VerifyEncounterFoundation.DevAndReset` | Intro/encounter jump, Right/camera override, replay from Pause, reject nonexistent BOSS |
 | `VerifyL1Encounters.DepartureFeedback` / `Lifecycle` | Preserved HP cue, mirrored B entry, visible projectile after source exit/lifetime/schedule, kill during telegraph, reset/handoff/reuse |
+| `VerifyVerticalSlice.MinorProjectileCleanup` | Late shot qua minor boundary: grace flight/damage, safe fade và trigger/sweep lock, viewport exit, pool reuse, Pause freeze, HUD/drag và extended centered handoff |
+| `VerifyVerticalSlice.ThermalReviewFixes` | Missing heat HUD bindings; death reset chỉ thermal; gameplay gate và mission reset giữ authority cadence; real death/respawn smoke |
 | `VerifyVerticalSlice.InputAndPause` / `GameOver` / `Pooling` | Existing UI ownership, terminal lives-zero cancellation, sustained profiler identity/churn |
 
 Helpers clone test configs, restore original LevelDefinition and view/device/clock
@@ -716,3 +756,35 @@ scene không dirty, 0 missing scripts/references; preview Fit 0.5505x được g
 Evidence ignored tại `app/Temp/StarShiftM3Finalization/`. Đây là QA trên author
 checkout với hai ProjectSettings có sẵn giữ ngoài commit; không thay thế verification
 trong worktree PR hoặc Android/device QA.
+
+### Minor encounter cleanup QA — 2026-10-18
+
+`VerifyVerticalSlice.MinorProjectileCleanup` PASS: late shot còn bay/visible trong
+grace, fade tắt collider và từ chối queued trigger/swept target; alpha giảm trước
+pool release. Measured grace .64 s và fade .32 s (physics tick tolerance), reuse
+restore alpha/damage, viewport exit recycle sớm. Pause freeze flight/fade; HUD/drag
+active; next Encounter không nhận shot cũ. Config/timing policy thuộc
+[cleanup owner](../content/levels-encounters.md#minor-handoff-projectile-cleanup).
+
+Nearby `FullRun(1600,6,false)` PASS 1433 frames, 3 real Pulse kills và đúng một Clear;
+bao gồm combat → minor handoff → B → terminal cleanup, không chạy lại historical matrix.
+Timeout chờ A completion của helper đã lấy theo cleanup config thay vì giả định
+hard-clear dưới .7 s. Full intro probe dừng ở assertion reading-delay vì local dev
+config của user là .01 s; không thay config đó để chạy test. Smoke này chủ ý dùng
+intro bypass, không claim re-verify cinematic ở lượt này.
+
+Compile PASS; final Editor Console ground truth 0 errors/0 warnings, scene không
+dirty, 0 missing scripts/references. Buffer vẫn giữ logs từ trước lượt này, không
+clear Console để che history. Evidence local tại `.design/minor-handoff-cleanup/`;
+chưa có Android/device QA hoặc commit/push.
+
+### PR #3 targeted thermal fixes — 2026-10-18
+
+`ThermalReviewFixes` tái hiện thiếu heatFrame/heatStatus và death downgrade reset
+cadence trên code trước fix; sau fix PASS ba missing-binding cases, thermal-only
+death boundary, gate-owned cadence, real death/respawn và full mission reset.
+`PlainHud(1600)` nearby smoke PASS binding/Pause/Resume và input exclusion. Compile,
+docs/diff checks PASS; final Console ground truth 0 errors/0 warnings, scene không
+dirty và 0 missing scripts/references. Logs retained đều từ trước lượt fix này.
+Không chạy lại historical matrix hoặc `pr-review`; verification theo phạm vi hai
+findings. Thermal/lifecycle contract không thay đổi.

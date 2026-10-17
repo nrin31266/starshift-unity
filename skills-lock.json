@@ -13,6 +13,12 @@
       "skillPath": "skills/create-2d-physics/SKILL.md",
       "computedHash": "0c05ea91a29cb232010e339e94abf21e77a19d57785af3a049dfa590625f2906"
     },
+    "design-review": {
+      "source": "julianoczkowski/designer-skills",
+      "sourceType": "github",
+      "skillPath": "design-review/SKILL.md",
+      "computedHash": "8d4bbee4f6eb3fc19896064307b8a267c0bddf8dc7800a36a6573e0430815798"
+    },
     "sprite-editor": {
       "source": "unity-technologies/skills",
       "sourceType": "github",
@@ -30,6 +36,12 @@
       "sourceType": "github",
       "skillPath": "skills/unity-pipeline/SKILL.md",
       "computedHash": "8722ed6febdd686651c8d3bbf801e403eabc27c0b3abc574789085fefaff6e7e"
+    },
+    "unity-scriptdesign": {
+      "source": "besty0728/unity-skills",
+      "sourceType": "github",
+      "skillPath": "SkillsForUnity/unity-skills~/skills/scriptdesign/SKILL.md",
+      "computedHash": "453ea26428937416062e20796072c000b2c5d2733ea127870e46e9707b5d0466"
     },
     "urp-postprocessing": {
       "source": "unity-technologies/skills",

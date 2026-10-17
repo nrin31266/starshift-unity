@@ -112,8 +112,8 @@ telegraph và không steer sau launch. Direction/speed không phụ thuộc came
 hoặc aspect. Không burst, spread, homing hoặc predictive aim. Đạn đã launch tiếp tục
 đến contact/lifetime kể cả Scout bị disable/chết. Lifetime là fallback khi ngoài
 view; nếu hết lifetime mà shot vẫn visible thì tiếp tục tới view exit hoặc contact,
-không đổi hướng/tốc độ để ép kịp timer. Encounter cleanup release hostile
-projectiles khi complete/reset theo [handoff contract](levels-encounters.md#encounter-lifecycle-và-handoff).
+không đổi hướng/tốc độ để ép kịp timer. Minor handoff áp grace/safe fade trước
+completion; cleanup/reset theo [handoff contract](levels-encounters.md#encounter-lifecycle-và-handoff).
 
 Pause dùng scaled time theo [architecture](../systems/architecture.md#pause-behavior).
 `PlayerGameplayGate` chỉ cấp permission cho Player; không suy enemy permission từ

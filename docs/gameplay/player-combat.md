@@ -51,7 +51,7 @@ Pointer up/cancel dừng sinh shot mới ngay khi input layer nhận release; pr
 đã bắn vẫn kết thúc hit/lifetime như bình thường. Không có nút Fire riêng.
 Lần press sau đặt anchor mới, không teleport hoặc dùng lại delta cũ.
 
-Effective fire condition là `CanFire AND gameplay fire intent held`. State gate
+Effective fire condition là `CanFire AND gameplay fire intent held AND thermal ready`. State gate
 là permission authority; held intent không tự vượt gate. Weapon không đọc device
 API hoặc lấy intent từ movement component.
 
@@ -74,6 +74,23 @@ Fire permission bị khóa trong:
 - pause;
 - game over;
 - result.
+
+### Thermal lifecycle
+
+Primary thermal mechanic/config thuộc [weapons owner](../content/weapons-items-drops.md#primary-weapon-heat--m35).
+Overheated không thay Player state hoặc movement permission; chỉ primary fire
+chờ thermal ready. Held pointer hợp lệ tự fire khi recovery đủ, giữ cadence rule
+không bắn bù. Không thêm input/action mới.
+
+| Boundary | Heat/latch behavior |
+|---|---|
+| Pause | Đứng yên theo gameplay time |
+| Dying/death | Reset heat về 0, xóa Overheated ngay khi nhận damaging hit |
+| Respawn | Trở lại với weapon thermal ready |
+| Encounter A → B / minor transition | Giữ heat và latch, không reset |
+| Entry/major cinematic hoặc gameplay gate block | Giữ state, không tick thermal simulation |
+| Mission reset/replay | Reset heat/latch/cooling delay/cadence |
+| Game Over / Clear | Không tiếp tục thermal simulation |
 
 ### Weapon switch
 

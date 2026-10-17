@@ -1,5 +1,27 @@
 # Unity baseline authoring
 
+## M3.5 thermal HUD checkpoint
+
+`ConfigureThermalHud.Configure` chạy ở saved Gameplay scene/Edit Mode qua
+`run_script` (`../tools/unity/ConfigureThermalHud.cs`). Helper tạo type-owned
+thermal profile nếu chưa có, bind definition và bố cục compact lên CombatHud
+hiện có bằng Unity API; giữ thermal seed đã được author trên asset tồn tại.
+
+`VerifyVerticalSlice.ThermalHud` chạy Play Mode với args `[1600,true]` cho targeted
+thermal/lifecycle checks; `[2000,false]` cho visual aspect thứ hai. Height 900.
+Boolean false bỏ release/burst/death checks đã chạy ở lượt targeted, không biểu
+diễn test fail. Fixture restore devices/input policies/view/configs qua Rig.Dispose.
+Ảnh/evidence nằm ở `.design/m3-5-thermal-hud/`; helper chụp sáu state ở Game View thật.
+Một refinement visual có thể dùng `[1600,false]` và `[2000,false]` mà không mở lại
+historical suites. Runtime semantics thuộc [player](../../docs/gameplay/player-combat.md#thermal-lifecycle),
+tuning thuộc [weapons](../../docs/content/weapons-items-drops.md#primary-weapon-heat--m35).
+Sau targeted pass, chạy đúng một full L1 smoke phù hợp; không tự chạy Android hoặc
+full aspect/camera/input matrix cho phase này.
+
+Correction vuông/nền mờ/ít chữ: `VerifyVerticalSlice.PlainHud` với args `[1600]`
+hoặc `[2000]` chỉ capture HUD/Pause và smoke binding/click exclusion. Dùng entry
+này cho chỉnh padding/copy/placeholder; không cần lặp thermal lifecycle/full L1.
+
 ## Frame rate verification
 
 Ở Play Mode, chạy `VerifyFrameRateLimit.Measure` bằng MCP `run_script`, file
@@ -238,6 +260,15 @@ CombatHud CanvasGroup, location/space announcement + description, subtle Continu
 transparent establishing tap area, visual-only approach ship và backdrop. Migration
 bỏ nút menu cũ; rerun giữ timing/copy đã tune. Không tạo Canvas, EventSystem, menu
 hoặc gameplay scene thứ hai. LocationName chưa quyết vẫn trống trong Level config.
+
+`ConfigureMissionPresentation.TuneMinorHandoff` author L1 A→B timing và incoming copy
+qua Unity API, giữ nguyên intro tuning. Outgoing Encounter có `ProjectileGraceSeconds`
+và `ProjectileFadeSeconds`; cleanup policy thuộc
+[level owner](../../docs/content/levels-encounters.md#minor-handoff-projectile-cleanup).
+`VerifyVerticalSlice.MinorProjectileCleanup` là targeted Play Mode regression: shot
+phát sát final kill còn visible/bay trong grace, tắt trigger/sweep damage ở fade,
+pool reset/reuse, viewport-exit recycling, Pause freeze, HUD/drag và longer centered
+handoff trước Encounter tiếp. Không cần chạy full historical matrix cho tuning này.
 
 Play: đọc establishing text → prompt xuất hiện → valid tap bất kỳ → approach / space
 travel → brake đồng thời framing/HUD → gameplay card → combat. Intro không Pause; minor A→B

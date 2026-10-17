@@ -146,7 +146,7 @@ namespace StarShift.Gameplay
             phaseElapsed = 0;
             presentation.PresentHandoff(0, Direction);
             PresentationChanged?.Invoke();
-            if (handoff) TitleRequested?.Invoke(next.TransitionTitle, next.TransitionDescription, 0);
+            if (handoff) TitleRequested?.Invoke(next.TransitionTitle, next.TransitionDescription, handoffDuration);
         }
         public void TickHandoff(float delta)
         {

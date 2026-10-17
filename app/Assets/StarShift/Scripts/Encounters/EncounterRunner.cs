@@ -176,13 +176,7 @@ namespace StarShift.Encounters
             }
             if ((Current.Completion == EncounterCompletion.Timeline || Current.Completion == EncounterCompletion.Survive) && Elapsed >= Current.Duration)
             {
-                CloseProducers();
-                if (Current.Completion == EncounterCompletion.Timeline && safetyGate.VisibleProjectileTimeLimit > 0)
-                {
-                    Stage = EncounterStage.ProjectileDrain;
-                    remaining = safetyGate.VisibleProjectileTimeLimit + Time.fixedDeltaTime;
-                }
-                else CompleteEncounter();
+                ResolveEncounter();
                 return;
             }
             var token = generation;
@@ -225,7 +219,7 @@ namespace StarShift.Encounters
                     if (slot.Flight != null && (slot.Flight.HasExited || (slot.Flight.IsExiting && slot.Flight.IsOutsideView))) Release(slot);
                 }
             }
-            if (Current.Completion == EncounterCompletion.Eliminate && requiredKilled == Current.RequiredCount) CompleteEncounter();
+            if (Current.Completion == EncounterCompletion.Eliminate && requiredKilled == Current.RequiredCount) ResolveEncounter();
             else if (Current.Completion == EncounterCompletion.Boss && Current.RequiredCount > 0 && requiredKilled == Current.RequiredCount)
                 NotifyBossDefeated(token);
         }
@@ -267,6 +261,25 @@ namespace StarShift.Encounters
             coordinator.Stop();
             foreach (var slot in spawned) if (!slot.Resolved) Release(slot);
             cleanup.CloseHostiles();
+        }
+        private void ResolveEncounter()
+        {
+            var token = generation;
+            CloseProducers();
+            if (token != generation) return;
+            var visibleTime = safetyGate.VisibleProjectileTimeLimit;
+            if (Current.Completion != EncounterCompletion.Boss && CurrentIndex + 1 < Definitions.Length && visibleTime > 0)
+            {
+                Stage = EncounterStage.ProjectileDrain;
+                safetyGate.BeginProjectileCleanup(Current.ProjectileGraceSeconds, Current.ProjectileFadeSeconds);
+                remaining = Current.ProjectileGraceSeconds + Current.ProjectileFadeSeconds + Time.fixedDeltaTime * 2;
+            }
+            else if (Current.Completion == EncounterCompletion.Timeline && visibleTime > 0)
+            {
+                Stage = EncounterStage.ProjectileDrain;
+                remaining = visibleTime + Time.fixedDeltaTime;
+            }
+            else CompleteEncounter();
         }
         public bool NotifyBossDefeated(int token)
         {
