@@ -31,6 +31,39 @@ Exact damage, interval, projectile speed/angles/range vẫn [TBD]; balance sau n
 
 ## Weapon system
 
+### Primary weapon heat — M3.5
+
+Heat là continuous runtime state của active weapon. Giữ primary fire tăng heat
+liên tục; chỉ khi chạm capacity/MAX mới latch `Overheated`. Warning/near-hot không
+chặn fire. Release trước MAX không lock: sau cooling delay heat giảm và press lại
+bắn ngay. Đây là burst management, không có reload, input mới hoặc timing minigame.
+
+Khi Overheated, chỉ primary fire bị chặn; movement và các gameplay permissions khác
+không đổi. Heat giảm bằng overheat cool rate; tới recovery threshold thì mở fire,
+không cần về zero. Held intent còn hợp lệ tự bắn tiếp, không yêu cầu release/press.
+State/time/reset semantics thuộc [player combat](../gameplay/player-combat.md#thermal-lifecycle).
+
+Thermal profile thuộc **weapon type**, tách khỏi progression level. Các Pulse Lv
+definition sau này cùng tham chiếu profile Pulse; không tạo thermal profile riêng
+cho Lv1/Lv2/Lv3. Plasma/Homing có thể author profile khác khi được implement;
+không mở thêm content/tuning của chúng trong M3.5.
+
+Pulse seed `[TUNABLE]`, không là balance cuối:
+
+| Field | Giá trị |
+|---|---:|
+| Capacity | 100 |
+| Heat per second | 18 |
+| Cooling delay sau release | 0.2 s |
+| Normal cool rate | 30/s |
+| Overheat cool rate | 50/s |
+| Recovery threshold | 40% capacity |
+
+Target từ cold: khoảng 5.56 s sustained tới MAX và khoảng 1.2 s overheat recovery,
+sai số một physics step. Burst/tap dưới MAX không có lockout. Config asset
+`app/Assets/StarShift/Data/Weapons/PulseLaserThermal.asset` được tham chiếu từ Pulse
+definition; asset không giữ current heat, overheat latch hoặc cooling timer.
+
 ### Weapon count `[LOCKED]`
 
 Ba weapon branches, mỗi branch có Lv1, Lv2 và Lv3. Branch identity quyết vai trò

@@ -18,6 +18,9 @@ namespace StarShift.UI
         [SerializeField] private PulseLaserWeapon weapon;
         [SerializeField] private Text livesLabel;
         [SerializeField] private Text weaponLabel;
+        [SerializeField] private Image heatFill;
+        [SerializeField] private Image heatFrame;
+        [SerializeField] private Text heatStatus;
         [SerializeField] private Text scoreLabel;
         [SerializeField] private Text shardLabel;
         [SerializeField] private Button pauseButton;
@@ -39,6 +42,8 @@ namespace StarShift.UI
         private float clearRemaining;
         private int previousLives = -1;
         private int previousLevel = -1;
+        private float previousHeat = -1;
+        private bool previousOverheated;
         private readonly Dictionary<int, float> tapStarts = new Dictionary<int, float>();
 
         private void OnEnable()
@@ -114,11 +119,28 @@ namespace StarShift.UI
             if (previousLevel != weapon.CurrentLevel)
             {
                 previousLevel = weapon.CurrentLevel;
-                weaponLabel.text = GameplayCopy.Weapon(previousLevel);
+                weaponLabel.text = GameplayCopy.WeaponStatus(previousLevel);
             }
+            RefreshHeat();
             if (!session.IsClear || overlay.activeSelf) return;
             clearRemaining -= Time.unscaledDeltaTime;
             if (clearRemaining <= 0) overlay.SetActive(true);
+        }
+
+        private void RefreshHeat()
+        {
+            if (heatFill == null) return;
+            var fraction = weapon.HeatFraction;
+            var overheated = weapon.IsOverheated;
+            if (Mathf.Approximately(previousHeat, fraction) && previousOverheated == overheated) return;
+            previousHeat = fraction;
+            previousOverheated = overheated;
+            heatFill.rectTransform.anchorMax = new Vector2(fraction, 1);
+            var color = overheated ? new Color(1, .34f, .2f) : fraction >= .8f ? new Color(1, .72f, .25f) : new Color(.3f, .9f, 1);
+            heatFill.color = color;
+            heatFrame.color = overheated ? color : new Color(.3f, .9f, 1, .65f);
+            heatStatus.text = overheated ? GameplayCopy.HeatOverheated : "";
+            heatStatus.color = color;
         }
 
         public void OnPointerDown(PointerEventData data)

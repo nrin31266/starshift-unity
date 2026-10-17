@@ -10,12 +10,14 @@ namespace StarShift.Combat
         [SerializeField, Min(.01f)] private float projectileSpeed = 12f;
         [SerializeField, Min(1)] private int damage = 1;
         [SerializeField, Min(.02f)] private float projectileLifetime = 1.5f;
+        [SerializeField] private WeaponThermalProfile thermalProfile;
 
         public PlayerProjectile ProjectilePrefab => projectilePrefab;
         public float FireInterval => fireInterval;
         public float ProjectileSpeed => projectileSpeed;
         public int Damage => damage;
         public float ProjectileLifetime => projectileLifetime;
+        public WeaponThermalProfile ThermalProfile => thermalProfile;
 
         private void OnValidate()
         {

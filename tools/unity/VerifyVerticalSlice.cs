@@ -17,6 +17,12 @@ using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.UI;
 using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
+public sealed class MinorCleanupHitProbe : MonoBehaviour, IEnemyProjectileTarget
+{
+    public int Hits;
+    public void ReceiveEnemyHit(GameObject owner) => Hits++;
+}
+
 public static class VerifyVerticalSlice
 {
     static readonly BindingFlags Fields = BindingFlags.Instance | BindingFlags.NonPublic;
@@ -42,6 +48,312 @@ public static class VerifyVerticalSlice
         await Task.Delay(100);
         Require(System.IO.File.Exists(path), "Screenshot missing.");
         return path;
+    }
+
+    static async Task<string> CaptureThermal(string state, int width)
+    {
+        var path = System.IO.Path.GetFullPath("../.design/m3-5-thermal-hud/screenshots/" + state + "-" + width + "x900.png");
+        System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(path));
+        ScreenCapture.CaptureScreenshot(path);
+        await Task.Delay(150);
+        Require(System.IO.File.Exists(path), "Thermal screenshot missing: " + path);
+        return path;
+    }
+
+    public static async Task<object> MinorProjectileCleanup()
+    {
+        using (var rig = new Rig(1600, 6))
+        {
+            var originalLevel = Runner.Flow.Level;
+            var profile = UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<SingleFireDefinition>(
+                "Assets/StarShift/Data/Enemies/ScoutSingleFire.asset"));
+            Set(profile, "projectileSpeed", 1f);
+            Set(profile, "projectileLifetime", .1f);
+            var target = new GameObject("MinorCleanupTarget", typeof(BoxCollider2D), typeof(MinorCleanupHitProbe));
+            var hitbox = target.GetComponent<BoxCollider2D>(); hitbox.isTrigger = true; hitbox.size = Vector2.one * .2f;
+            var probe = target.GetComponent<MinorCleanupHitProbe>();
+            var muzzle = new GameObject("MinorCleanupMuzzle");
+            int releases = 0;
+            var pool = new UnityEngine.Pool.ObjectPool<EnemyProjectile>(
+                () => UnityEngine.Object.Instantiate(profile.ProjectilePrefab), null,
+                p => { releases++; p.ResetForPool(); }, p => UnityEngine.Object.DestroyImmediate(p.gameObject));
+            EnemyProjectile shot = null;
+            Action<EnemyProjectile> recycle = p => pool.Release(p);
+            string title = null, detail = null; float titleDuration = 0;
+            Action<string, string, float> onTitle = (copy, description, duration) => { title = copy; detail = description; titleDuration = duration; };
+            Runner.Flow.TitleRequested += onTitle;
+            try
+            {
+                Runner.StartRun("ENCOUNTER_1", false, true, null, null);
+                await Until(() => Enemies.Length == 3, 2500, "Minor cleanup fixture did not spawn.");
+                target.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(.5f, .1f, 10));
+                muzzle.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(.5f, .65f, 10));
+                shot = pool.Get();
+                shot.Launch(profile, muzzle.transform, Enemies[0].gameObject, target, recycle);
+                var visual = shot.GetComponentInChildren<SpriteRenderer>(); var color = visual.color;
+                var collider = shot.GetComponent<BoxCollider2D>();
+                foreach (var enemy in Enemies) enemy.ReceivePlayerHit(enemy.CurrentHp, rig.Player);
+                await Until(() => Runner.Stage == EncounterStage.ProjectileDrain, 500, "Minor completion hard-cleared the shot.");
+                var drainStart = Time.fixedTime; var initialPosition = shot.transform.position;
+                Require(shot.gameObject.activeSelf && collider.enabled && visual.color == color && Runner.CompletionCount == 0,
+                    "Shot did not retain normal flight/damage during grace.");
+                await rig.MouseEvent(new Vector2(400, 220), true);
+                var playerPosition = rig.Player.transform.position;
+                await rig.MouseEvent(new Vector2(455, 220), true);
+                await rig.MouseEvent(new Vector2(455, 220), false);
+                Require(rig.Player.transform.position.x > playerPosition.x && rig.Gate.CanInput &&
+                    Runner.Flow.HudOpacity == 1 && Ui<Button>("Pause").interactable && Enemies.Length == 0 &&
+                    !UnityEngine.Object.FindObjectsByType<SingleFireAttack>().Any(a => a.IsTelegraphing),
+                    "Minor cleanup locked HUD/movement or retained hostile producers.");
+                Require(shot.gameObject.activeSelf && collider.enabled && shot.transform.position != initialPosition,
+                    "Grace did not preserve a moving visible shot.");
+                await Until(() => !collider.enabled, 1200, "Visible shot never entered safe fade.");
+                var graceElapsed = Time.fixedTime - drainStart;
+                Require(shot.gameObject.activeSelf && shot.VisibleFlightTimeLimit > 0 &&
+                    Mathf.Abs(graceElapsed - Runner.Current.ProjectileGraceSeconds) < .08f,
+                    "Fade started outside the configured visible-shot grace.");
+                var fadeStart = Time.fixedTime;
+                Session.Pause(); var frozen = shot.transform.position; var frozenColor = visual.color;
+                await Task.Delay(100);
+                Require(shot.transform.position == frozen && visual.color == frozenColor, "Pause advanced cleanup flight/fade.");
+                Session.Resume();
+                target.transform.position = shot.transform.position;
+                Physics2D.SyncTransforms();
+                typeof(EnemyProjectile).GetMethod("OnTriggerEnter2D", Fields).Invoke(shot, new object[] { hitbox });
+                await Until(() => visual.color.a < color.a * .8f, 500, "Projectile alpha did not fade.");
+                Require(shot.gameObject.activeSelf && visual.color.a > 0 && probe.Hits == 0,
+                    "Fading projectile damaged the target or vanished abruptly.");
+                await Until(() => !shot.gameObject.activeSelf, 1000, "Faded projectile was not recycled.");
+                var fadeElapsed = Time.fixedTime - fadeStart;
+                Require(probe.Hits == 0 && releases == 1 && pool.CountInactive == 1 && shot.Owner == null &&
+                    visual.color == color && !collider.enabled &&
+                    Mathf.Abs(fadeElapsed - Runner.Current.ProjectileFadeSeconds) < .08f,
+                    "Fade timing, pool reset or damage suppression failed.");
+                await Until(() => Runner.Stage == EncounterStage.Handoff, 500, "Cleanup did not finish before handoff.");
+                var handoffStart = Time.fixedTime;
+                var announcement = UnityEngine.Object.FindAnyObjectByType<GameplayAnnouncement>();
+                Require(title == originalLevel.Encounters[1].TransitionTitle && detail == originalLevel.Encounters[1].TransitionDescription &&
+                    Mathf.Approximately(titleDuration, Runner.Current.HandoffDelay) &&
+                    announcement.transform.Find("Title").GetComponent<Text>().alignment == TextAnchor.MiddleCenter,
+                    "Minor title/copy/duration was not synchronized to handoff.");
+                var reused = pool.Get(); Require(reused == shot, "Pool did not reuse the cleaned projectile.");
+                target.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(.8f, .5f, 10));
+                muzzle.transform.position = target.transform.position + Vector3.up * .05f;
+                reused.Launch(profile, muzzle.transform, rig.Player, target, recycle);
+                Require(collider.enabled && visual.color == color, "Reuse retained fade/damage state.");
+                Physics2D.SyncTransforms();
+                await Until(() => probe.Hits == 1 && releases == 2, 500, "Reused projectile could not damage/recycle normally.");
+                var edgeShot = pool.Get();
+                target.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(1.5f, .5f, 10));
+                muzzle.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(.999f, .5f, 10));
+                edgeShot.Launch(profile, muzzle.transform, rig.Player, target, recycle);
+                var edgeStart = Time.fixedTime;
+                edgeShot.BeginCleanup(.65f, .3f);
+                await Until(() => !edgeShot.gameObject.activeSelf, 400, "Offscreen shot waited for fade instead of recycling.");
+                Require(Time.fixedTime - edgeStart < .3f && releases == 3 && probe.Hits == 1,
+                    "Viewport exit did not recycle early and cleanly.");
+                await Until(() => Time.fixedTime - handoffStart >= 1.5f, 2200, "Extended handoff stalled.");
+                Require(Runner.CurrentIndex == 0 && Runner.Stage == EncounterStage.Handoff &&
+                    announcement.GetComponent<CanvasGroup>().alpha > .5f, "Cue/title did not remain readable for the longer handoff.");
+                var screenshot = await Capture("minor-handoff-cleanup");
+                await Until(() => Runner.CurrentIndex == 1, 1000, "Next encounter never started.");
+                Require(!shot.gameObject.activeSelf && Runner.CompletionCount == 1,
+                    "Old projectile or duplicate completion crossed the encounter boundary.");
+                return new { passed = true, graceElapsed, fadeElapsed, handoffDuration = titleDuration, title, detail,
+                    damageDisabledAtFade = true, poolReuseRestoredDamage = true, pauseFrozen = true,
+                    viewportExitRecyclesEarly = true, movementAndHudActive = true, noOldShotInNextEncounter = true, screenshot };
+            }
+            finally
+            {
+                Runner.Flow.TitleRequested -= onTitle;
+                Runner.StopRun();
+                if (shot != null && shot.gameObject.activeSelf) shot.Release();
+                pool.Dispose();
+                UnityEngine.Object.DestroyImmediate(profile);
+                UnityEngine.Object.DestroyImmediate(target); UnityEngine.Object.DestroyImmediate(muzzle);
+            }
+        }
+    }
+
+    public static async Task<object> PlainHud(int width)
+    {
+        using (var rig = new Rig(width, 6))
+        {
+            var weapon = rig.Player.GetComponent<PulseLaserWeapon>();
+            rig.Place(new Vector2(-5.5f, -3.8f));
+            await rig.MouseEvent(new Vector2(300, 200), false);
+            await Until(() => UnityEngine.Object.FindAnyObjectByType<GameplayAnnouncement>().GetComponent<CanvasGroup>().alpha < .01f,
+                5000, "Mission card did not fade.");
+            await rig.MouseEvent(new Vector2(300, 200), true);
+            await Until(() => weapon.HeatFraction >= .35f, 4000, "HUD smoke did not warm weapon.");
+            Require(Mathf.Abs(Ui<Image>("HeatFill").rectTransform.anchorMax.x - weapon.HeatFraction) < .04f, "Plain meter does not match runtime.");
+            var screenshot = await CaptureThermal("plain-hud", width);
+            await rig.MouseEvent(new Vector2(300, 200), false);
+            await rig.MouseEvent(Center(Ui<Button>("Pause")), true); await rig.MouseEvent(Center(Ui<Button>("Pause")), false);
+            Require(Session.IsPaused && !rig.Input.FireHeld, "Plain Pause leaked fire intent.");
+            var pausedHeat = weapon.Heat;
+            await Task.Delay(100); Require(weapon.Heat == pausedHeat, "Pause did not freeze heat.");
+            var pauseScreenshot = await CaptureThermal("plain-pause", width);
+            await rig.MouseEvent(Center(Ui<Button>("Resume")), true); await rig.MouseEvent(Center(Ui<Button>("Resume")), false);
+            Require(!Session.IsPaused && !rig.Input.FireHeld, "Resume retained UI press.");
+            return new { passed = true, width, height = Screen.height, screenshot, pauseScreenshot,
+                weaponCopy = Ui<Text>("WeaponLabel").text, heatCopy = Ui<Text>("Caption").text, pauseExclusion = true };
+        }
+    }
+
+    public static async Task<object> ThermalHud(int width, bool lifecycleChecks)
+    {
+        using (var rig = new Rig(width, 6))
+        {
+            var weapon = rig.Player.GetComponent<PulseLaserWeapon>();
+            var profile = AssetDatabase.LoadAssetAtPath<WeaponThermalProfile>("Assets/StarShift/Data/Weapons/PulseLaserThermal.asset");
+            Require(profile != null, "Missing type-owned thermal profile.");
+            var shots = new List<string>();
+            rig.Place(new Vector2(-5.5f, -3.8f));
+            await rig.MouseEvent(new Vector2(300, 200), false);
+            weapon.ResetForSession();
+            await Until(() => UnityEngine.Object.FindAnyObjectByType<GameplayAnnouncement>().GetComponent<CanvasGroup>().alpha < .01f,
+                5000, "Mission announcement did not auto fade before normal HUD capture.");
+            await Task.Delay(150);
+            shots.Add(await CaptureThermal("normal", width));
+            var start = Time.fixedTime;
+            await rig.MouseEvent(new Vector2(300, 200), true);
+            try { await Until(() => weapon.HeatFraction >= .5f, 4500, "Heat did not reach 50%."); }
+            catch (InvalidOperationException error)
+            {
+                var hits = new List<RaycastResult>();
+                EventSystem.current.RaycastAll(new PointerEventData(EventSystem.current) { position = new Vector2(300, 200) }, hits);
+                throw new InvalidOperationException(error.Message + " held=" + rig.Input.FireHeld + " gate=" + rig.Gate.State +
+                    " canFire=" + rig.Gate.CanFire + " heat=" + weapon.Heat + " scale=" + Time.timeScale +
+                    " pointerHits=" + string.Join(",", hits.Select(hit => hit.gameObject.name)) +
+                    " resolution=" + Screen.width + "x" + Screen.height + " focused=" + Application.isFocused);
+            }
+            Require(!weapon.IsOverheated && weapon.CanFire, "Warning threshold locked fire.");
+            Require(UnityEngine.Object.FindObjectsByType<PlayerProjectile>().Length > 0, "Hold did not produce real shots.");
+            shots.Add(await CaptureThermal("heat-50", width));
+            try { await Until(() => weapon.HeatFraction >= .9f, 3500, "Heat did not approach MAX."); }
+            catch (InvalidOperationException error)
+            {
+                throw new InvalidOperationException(error.Message + " held=" + rig.Input.FireHeld + " gate=" + rig.Gate.State +
+                    " canFire=" + rig.Gate.CanFire + " heat=" + weapon.Heat + " scale=" + Time.timeScale +
+                    " fixedTime=" + Time.fixedTime + " start=" + start + " focused=" + Application.isFocused);
+            }
+            Require(!weapon.IsOverheated && weapon.CanFire, "Near-MAX fire was locked.");
+            shots.Add(await CaptureThermal("near-max", width));
+            await Until(() => weapon.IsOverheated, 1500, "MAX did not latch Overheated.");
+            var overheatSeconds = Time.fixedTime - start;
+            Require(overheatSeconds >= 5.4f && overheatSeconds <= 5.8f, "Unexpected sustained fire timing: " + overheatSeconds);
+            Require(!weapon.CanFire && rig.Gate.CanInput && rig.Gate.CanFire, "Overheat changed Player permissions.");
+            var recoveryStart = Time.fixedTime;
+            shots.Add(await CaptureThermal("overheated", width));
+            Require(Ui<Text>("HeatStatus").text == GameplayCopy.HeatOverheated, "Overheat state cue missing.");
+            foreach (var shot in UnityEngine.Object.FindObjectsByType<PlayerProjectile>()) shot.Release();
+            var position = rig.Player.transform.position;
+            await rig.MouseEvent(new Vector2(380, 220), true);
+            Require(rig.Player.transform.position.x > position.x && rig.Player.transform.position.y > position.y,
+                "Overheat blocked relative movement.");
+            await Task.Delay(150);
+            Require(weapon.IsOverheated && UnityEngine.Object.FindObjectsByType<PlayerProjectile>().Length == 0,
+                "Overheated weapon spawned a new shot.");
+            await Until(() => !weapon.IsOverheated, 1700, "Recovery never enabled fire.");
+            var recoverySeconds = Time.fixedTime - recoveryStart;
+            Require(recoverySeconds >= 1.15f && recoverySeconds <= 1.35f && weapon.HeatFraction <= .43f,
+                "Unexpected recovery threshold/timing: " + recoverySeconds + "/" + weapon.HeatFraction);
+            await Until(() => UnityEngine.Object.FindObjectsByType<PlayerProjectile>().Length > 0, 500, "Held fire did not resume automatically.");
+            Require(rig.Input.FireHeld, "Hold-through fixture lost intent.");
+            Require(Mathf.Abs(Ui<Image>("HeatFill").rectTransform.anchorMax.x - weapon.HeatFraction) < .04f,
+                "HUD heat differs from runtime.");
+
+            await rig.MouseEvent(new Vector2(380, 220), false);
+            var beforePause = rig.Player.transform.position;
+            await rig.MouseEvent(Center(Ui<Button>("Pause")), true);
+            await rig.MouseEvent(Center(Ui<Button>("Pause")), false);
+            Require(Session.IsPaused, "Pause rejected.");
+            Require(!rig.Input.FireHeld && rig.Player.transform.position == beforePause, "Compact Pause hit area entered gameplay.");
+            var frozen = weapon.Heat;
+            shots.Add(await CaptureThermal("pause", width));
+            await Task.Delay(200);
+            Require(weapon.Heat == frozen, "Pause advanced thermal time.");
+            await rig.MouseEvent(Center(Ui<Button>("Resume")), true);
+            await rig.MouseEvent(Center(Ui<Button>("Resume")), false);
+            Require(!Session.IsPaused && !rig.Input.FireHeld, "Resume retained UI fire intent.");
+
+            if (lifecycleChecks)
+            {
+                weapon.ResetForSession();
+                await rig.MouseEvent(new Vector2(300, 200), true);
+                await Until(() => weapon.HeatFraction >= .8f, 5500, "Release fixture failed to warm.");
+                await rig.MouseEvent(new Vector2(300, 200), false);
+                var released = weapon.Heat;
+                Require(!weapon.IsOverheated && weapon.CanFire, "Release before MAX locked weapon.");
+                await Task.Delay(100);
+                Require(Mathf.Abs(weapon.Heat - released) < .01f, "Cooling delay missing.");
+                await Task.Delay(300);
+                Require(weapon.Heat < released && !weapon.IsOverheated, "Release did not cool normally.");
+                var cooled = weapon.Heat;
+                await rig.MouseEvent(new Vector2(300, 200), true);
+                Require(weapon.Heat > cooled && weapon.CanFire, "Fresh burst could not fire immediately.");
+                await rig.MouseEvent(new Vector2(300, 200), false);
+                weapon.ResetForSession();
+                for (var burst = 0; burst < 4; burst++)
+                {
+                    await rig.MouseEvent(new Vector2(300, 200), true); await Task.Delay(150);
+                    var peak = weapon.Heat;
+                    await rig.MouseEvent(new Vector2(300, 200), false); await Task.Delay(400);
+                    Require(weapon.Heat < peak && !weapon.IsOverheated && weapon.CanFire, "Tap/burst accidentally locked.");
+                }
+                await rig.MouseEvent(new Vector2(300, 200), true); await Task.Delay(400);
+                await rig.MouseEvent(new Vector2(300, 200), false);
+                rig.Unprotect();
+                Require(weapon.Heat > 0 && rig.Player.GetComponent<PlayerDamageLifecycle>().TryReceiveHit(null), "Death fixture failed.");
+                Require(weapon.Heat == 0 && !weapon.IsOverheated, "Death retained heat/latch.");
+                await Until(() => rig.Gate.State == PlayerGameplayState.PostEntryInvincibility, 2500, "Respawn failed.");
+                Require(weapon.Heat == 0 && weapon.CanFire, "Respawn not thermal-ready.");
+                rig.Protect();
+            }
+
+            await rig.MouseEvent(new Vector2(300, 200), false);
+            Runner.StartRun("LEVEL_START", false, true, null, null);
+            rig.Protect(); rig.Place(new Vector2(-5.5f, -3.8f));
+            Require(weapon.Heat == 0 && !weapon.IsOverheated, "Mission replay retained thermal state.");
+            await rig.MouseEvent(new Vector2(300, 200), true);
+            await Until(() => Runner.SpawnedCount == 3 && weapon.HeatFraction >= .25f, 4000, "Handoff fixture failed.");
+            var beforeHandoff = weapon.Heat;
+            float heatAtNextEncounter = -1;
+            Action<EncounterDefinition, int> next = (definition, token) => { if (Runner.CurrentIndex == 1) heatAtNextEncounter = weapon.Heat; };
+            Runner.EncounterStarted += next;
+            try
+            {
+                foreach (var enemy in Enemies) enemy.ReceivePlayerHit(int.MaxValue, rig.Player);
+                await Until(() => Runner.Stage == EncounterStage.Handoff, 2000, "No minor handoff.");
+                await Task.Delay(150);
+                Require(Ui<CanvasGroup>("CombatHud").alpha == 1 && Ui<Button>("Pause").gameObject.activeSelf,
+                    "Minor transition hid compact HUD.");
+                shots.Add(await CaptureThermal("encounter-transition", width));
+                await Until(() => heatAtNextEncounter >= 0, 2500, "Next Encounter did not start.");
+                Require(heatAtNextEncounter >= beforeHandoff && weapon.Heat > 0, "Encounter reset heat.");
+            }
+            finally { Runner.EncounterStarted -= next; }
+            await rig.MouseEvent(new Vector2(300, 200), false);
+            foreach (var state in new[] { PlayerGameplayState.GameOver, PlayerGameplayState.Result })
+            {
+                rig.Gate.SetState(state);
+                var terminalHeat = weapon.Heat;
+                await Task.Delay(150);
+                Require(weapon.Heat == terminalHeat, "Terminal state advanced heat: " + state);
+            }
+            Runner.StartRun("LEVEL_START", false, true, null, null);
+            Require(weapon.Heat == 0 && !weapon.IsOverheated, "Terminal replay retained heat.");
+            var result = new { passed = true, width, height = Screen.height, lifecycleChecks, overheatSeconds, recoverySeconds,
+                capacity = profile.Capacity, heatPerSecond = profile.HeatPerSecond, coolingDelay = profile.CoolingDelay,
+                coolRate = profile.CoolRate, overheatCoolRate = profile.OverheatCoolRate, recoveryFraction = profile.RecoveryFraction,
+                maxOnlyLock = true, movementIndependent = true, holdAutoResume = true, pauseFrozen = true, handoffRetainsHeat = true,
+                deathRespawnReset = lifecycleChecks, releaseBeforeMax = lifecycleChecks, tapBurst = lifecycleChecks, missionReset = true,
+                terminalFrozen = true, hudMatchesRuntime = true, screenshots = shots.ToArray() };
+            var evidence = System.IO.Path.GetFullPath("../.design/m3-5-thermal-hud/verification-" + width + (lifecycleChecks ? "-targeted" : "-visual") + ".json");
+            System.IO.File.WriteAllText(evidence, Newtonsoft.Json.JsonConvert.SerializeObject(result, Newtonsoft.Json.Formatting.Indented));
+            return result;
+        }
     }
 
     public static async Task<object> InputAndPause()
@@ -250,7 +562,9 @@ public static class VerifyVerticalSlice
                 }
                 await FreezeCheck();
                 foreach (var enemy in Enemies.OrderBy(e => e.transform.position.x).ToArray()) await rig.KillWithPulse(enemy);
-                await Until(() => Runner.CompletionCount == 1, 700, "A did not complete.");
+                await Until(() => Runner.CompletionCount == 1,
+                    700 + Mathf.CeilToInt((Runner.Current.ProjectileGraceSeconds + Runner.Current.ProjectileFadeSeconds) * 1000),
+                    "A did not complete after bounded projectile cleanup.");
                 Require(Runner.HasActiveRun && !Runner.IsRunning, "A/B handoff boundary missing.");
                 await Task.Delay(300);
                 Require(Ui<CanvasGroup>("CombatHud").alpha==1 && Ui<Button>("Pause").gameObject.activeSelf && Ui<Button>("Pause").interactable && rig.Gate.CanInput,

@@ -41,6 +41,10 @@ MonoBehaviour:
   ShotSpacing: 1
   ShotsPerVolley: 1
   VolleyPause: 1
-  HandoffDelay: 1.25
+  HandoffDelay: 1.7
+  ProjectileGraceSeconds: 0.65
+  ProjectileFadeSeconds: 0.3
+  TransitionTitle:
+  TransitionDescription:
   RewardGraceSeconds: 2
   BossPostDeathSeconds: 1

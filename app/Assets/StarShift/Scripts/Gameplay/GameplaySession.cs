@@ -14,6 +14,7 @@ namespace StarShift.Gameplay
         [SerializeField] private EnemyFireGate enemyFireGate;
         private PlayerGameplayGate playerGate;
         private InputSystemPointerInput pointer;
+        private PulseLaserWeapon weapon;
         private float previousScale;
         private bool previousAudioPause;
         private bool ownsClock;
@@ -31,6 +32,7 @@ namespace StarShift.Gameplay
         {
             playerGate = lifecycle.GetComponent<PlayerGameplayGate>();
             pointer = lifecycle.GetComponent<InputSystemPointerInput>();
+            weapon = lifecycle.GetComponent<PulseLaserWeapon>();
         }
 
         private void OnEnable()
@@ -72,6 +74,7 @@ namespace StarShift.Gameplay
 
         private void OnRunStarted()
         {
+            weapon.ResetForSession();
             RestoreClock();
             IsPaused = false;
             pointer.CancelGesture();

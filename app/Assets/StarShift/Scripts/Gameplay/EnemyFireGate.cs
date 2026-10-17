@@ -44,6 +44,12 @@ namespace StarShift.Gameplay
                 if (projectile != null && projectile.gameObject.scene == gameObject.scene) projectile.Release();
         }
 
+        public void BeginProjectileCleanup(float graceSeconds, float fadeSeconds)
+        {
+            foreach (var projectile in FindObjectsByType<EnemyProjectile>())
+                if (projectile.gameObject.scene == gameObject.scene) projectile.BeginCleanup(graceSeconds, fadeSeconds);
+        }
+
         private void FixedUpdate()
         {
             if (graceRemaining <= 0) return;

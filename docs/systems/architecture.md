@@ -223,8 +223,18 @@ Weapon reference trực tiếp cùng `PlayerPointerInput` với movement, không
 `RelativeDragMovement`. Permission/state
 contract thuộc [player combat](../gameplay/player-combat.md#player-state-model).
 
-`PulseLaserDefinition` là ScriptableObject static, còn `PulseLaserWeapon` giữ
-cooldown và local `UnityEngine.Pool.ObjectPool<PlayerProjectile>`. Không có weapon
+`PulseLaserDefinition` là ScriptableObject static, tham chiếu `WeaponThermalProfile`
+theo weapon type. `PulseLaserWeapon` giữ cadence, một plain C# `WeaponHeatState`
+riêng cho instance và local `UnityEngine.Pool.ObjectPool<PlayerProjectile>`.
+Thermal simulation chỉ tick bằng scaled physics delta khi gameplay gate cho phép;
+weapon kết hợp thermal ready với gate/held intent trước khi spawn. Không ghi state
+vào definition/profile, không sửa Player gate để biểu diễn Overheated, không
+couple movement với thermal. `GameplaySession.RunStarted` reset weapon cho mission;
+death dùng boundary downgrade/reset hiện có. HUD chỉ đọc heat/latch và cập nhật
+bar khi giá trị đổi; không Find/allocate hoặc tạo UI trong heat hot path.
+Semantics do [player](../gameplay/player-combat.md#thermal-lifecycle), mechanic và
+seed do [weapons](../content/weapons-items-drops.md#primary-weapon-heat--m35) sở hữu.
+Không có weapon
 switch/upgrade framework. `Muzzle.up` cung cấp hướng bắn trong slice; Player facing
 do LevelFlow apply Up/Right từ LevelDefinition/dev override; không đổi input axes.
 Pool instances ở runtime root `PlayerProjectiles`, không parent vào tàu đang di
@@ -509,6 +519,11 @@ Direct callbacks có thể reset run: runner kiểm tra generation trước khi 
 Hard reset/disable hủy intro/schedule/handoff/grace, attack permissions và boundary
 participants. Normal handoff behavior thuộc
 [cleanup owner](../content/levels-encounters.md#encounter-lifecycle-và-handoff).
+
+Minor projectile cleanup được `EncounterRunner` chọn từ outgoing Encounter config,
+gửi qua `EnemyFireGate` tới các shot đã launch. `EnemyProjectile` giữ runtime grace/
+fade, khóa cả trigger/sweep damage trước fade và reset khi về pool. UI/announcement
+không điều khiển damage hoặc thời điểm completion; policy thuộc cleanup owner ở trên.
 
 `IEncounterBoundaryObject` phân loại Hostile/Temporary/Reward, có stop-hostility,
 preserve-for-grace và idempotent release hooks. Consumer register/unregister với

@@ -20,6 +20,13 @@ namespace StarShift.Combat
         private float remainingLifetime;
         private bool flying;
         private Camera gameplayCamera;
+        private SpriteRenderer visual;
+        private Color launchColor;
+        private bool cleaningUp;
+        private bool fading;
+        private float cleanupRemaining;
+        private float fadeSeconds;
+        private float fadeRemaining;
 
         public GameObject Owner { get; private set; }
         public float VisibleFlightTimeLimit
@@ -39,6 +46,8 @@ namespace StarShift.Combat
         {
             body = GetComponent<Rigidbody2D>();
             hitbox = GetComponent<BoxCollider2D>();
+            visual = GetComponentInChildren<SpriteRenderer>();
+            launchColor = visual.color;
         }
 
         public void Launch(SingleFireDefinition definition, Transform muzzle, GameObject owner,
@@ -51,6 +60,9 @@ namespace StarShift.Combat
             speed = definition.ProjectileSpeed;
             remainingLifetime = definition.ProjectileLifetime;
             gameplayCamera = Camera.main;
+            cleaningUp = fading = false;
+            cleanupRemaining = fadeRemaining = fadeSeconds = 0;
+            visual.color = launchColor;
             onReleased = release;
             var rotation = Quaternion.FromToRotation(Vector3.up, direction);
             transform.SetPositionAndRotation(muzzle.position, rotation);
@@ -66,6 +78,23 @@ namespace StarShift.Combat
         private void FixedUpdate()
         {
             if (!flying || Time.timeScale <= 0) return;
+            if (cleaningUp)
+            {
+                if (VisibleFlightTimeLimit <= 0) { FinishFlight(); return; }
+                if (!fading)
+                {
+                    cleanupRemaining -= Time.fixedDeltaTime;
+                    if (cleanupRemaining <= 0) BeginFade();
+                }
+                else
+                {
+                    fadeRemaining = Mathf.Max(0, fadeRemaining - Time.fixedDeltaTime);
+                    var color = launchColor;
+                    color.a *= fadeRemaining / fadeSeconds;
+                    visual.color = color;
+                    if (fadeRemaining <= 0) { FinishFlight(); return; }
+                }
+            }
             var step = remainingLifetime > 0 ? Mathf.Min(Time.fixedDeltaTime, remainingLifetime) : Time.fixedDeltaTime;
             var distance = speed * step;
             body.Cast(direction, new ContactFilter2D { useTriggers = true }, sweepHits, distance);
@@ -89,7 +118,7 @@ namespace StarShift.Combat
         }
 
         private bool IsTarget(Collider2D other)
-            => other != null && target != null && other.transform.IsChildOf(target.transform) &&
+            => !fading && other != null && target != null && other.transform.IsChildOf(target.transform) &&
                 (Owner == null || !other.transform.IsChildOf(Owner.transform));
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -116,6 +145,23 @@ namespace StarShift.Combat
 
         public void Release() => FinishFlight();
 
+        public void BeginCleanup(float graceSeconds, float duration)
+        {
+            if (!flying || cleaningUp) return;
+            cleaningUp = true;
+            cleanupRemaining = Mathf.Max(0, graceSeconds);
+            fadeSeconds = Mathf.Max(.01f, duration);
+            if (cleanupRemaining <= 0) BeginFade();
+        }
+
+        private void BeginFade()
+        {
+            fading = true;
+            fadeRemaining = fadeSeconds;
+            // Khóa cả trigger lẫn sweep trước khi visual bắt đầu fade.
+            hitbox.enabled = false;
+        }
+
         public void ResetForPool()
         {
             flying = false;
@@ -124,6 +170,9 @@ namespace StarShift.Combat
             gameplayCamera = null;
             direction = Vector2.zero;
             speed = remainingLifetime = 0;
+            cleaningUp = fading = false;
+            cleanupRemaining = fadeRemaining = fadeSeconds = 0;
+            visual.color = launchColor;
             sweepHits.Clear();
             body.linearVelocity = Vector2.zero;
             body.angularVelocity = 0;

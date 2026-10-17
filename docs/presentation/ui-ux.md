@@ -57,23 +57,52 @@ HUD cho biết survival, performance, currency và active weapon mà không che 
 
 ```text
 ┌─────────────────────────────────────────────┐
-│ 🚀 3       ★ 012450          ✦ 284      ⏸ │
+│ H ▰▰▰▱▱          S —       SS —        ⏸ │
 │                                             │
 │                                             │
 │                                             │
-│                                         ◉ 2 │
+│ 🚀 ×3                                 T1 L1 │
 └─────────────────────────────────────────────┘
 ```
 
 | Thành phần | Cách trình bày |
 |---|---|
-| Lives | Icon + count; không dùng player HP bar |
+| Lives | Icon + count, bottom-left; không dùng player HP bar |
 | Score | Nhẹ trong HUD, không che combat |
 | Stellar Shard | Currency riêng với score |
 | Pause | Action trong HUD, touch không kéo tàu |
-| Weapon | Icon + level, ưu tiên bottom-right; cycle giữa unlocked branches |
+| Weapon | Type + level viết tắt khi chưa có icon, bottom-right; cycle giữa unlocked branches |
+| Heat | Meter riêng ở top-left, ưu tiên đọc nhanh; không thu vào ô weapon |
 | Buffs | Shield icon; Overdrive và Support Drone có icon + timer nhỏ, không paragraph text |
 | Boss | Boss name + HP bar ở top center; phase indicator chỉ khi thực sự cần |
+
+M3.5 HUD là functional placeholder: Lives dùng sprite hiện có + count; phần chưa
+có icon thật dùng chữ viết tắt (`S` score, `SS` Stellar Shard, `H` heat) + value/state.
+Không tự vẽ icon thay thế ở phase này. Chưa có economy
+runtime thì giữ `—`, không giả score/currency. Full weapon name không cần hiển thị
+trong combat: bottom-right dùng `T1 L1` (type 1, level 1); `T1` là nhãn tạm cho
+Pulse trong slice hiện tại, không phải config/save ID hoặc weapon unlock mới. Tên đầy đủ có
+thể xuất hiện ở Pause/loadout/pickup/upgrade UI khi những consumer đó được làm.
+
+Compact không đồng nghĩa thu nhỏ thông tin gameplay quan trọng. Heat có cụm riêng
+ở top-left, nhãn `H` và notch ở recovery threshold; phải đọc được bằng
+mắt liếc trong combat. Lives ở bottom-left, weapon ở bottom-right, counter ở top
+center và Pause ở top-right. Placeholder dùng khối chữ nhật vuông góc, nền dark
+translucent đơn giản; chưa đến phase thiết kế visual nên không cắt góc, viền accent
+hoặc dựng icon trang trí. Padding bám sát nội dung, giữ cỡ chữ đọc được.
+
+Layout dùng chung spacing scale 8, outer safe margin 8, inner padding 4, row height
+44, text chính 28–32; weapon 88×44 và heat gauge 264×56, track 256×18 theo
+reference 1600×900 `[TUNABLE]`. Caption/state ngắn dùng 22–24. Pause có graphic
+44 nhưng hit area 56; decorative panel/text/bar không raycast. Không thêm final
+art/shader/VFX framework.
+
+Heat bar đọc trực tiếp weapon runtime: cyan ở normal, amber khi near-hot và
+orange-red + cue ngắn `NÓNG` khi Overheated. Bar tiếp tục cho thấy recovery, cue không chỉ
+dựa vào hue; không spam warning giữa combat hoặc thêm Continue. Warning threshold
+chỉ là visual `[TUNABLE]`, không thay [weapon fire rules](../content/weapons-items-drops.md#primary-weapon-heat--m35).
+Major/minor cinematic visibility vẫn theo contract phía dưới; ordinary Encounter
+handoff giữ HUD visible. Không mở rộng UI sang economy/rewards trong M3.5.
 
 Boss/hazard warning ngắn, chỉ dùng khi có thông tin cần báo; không spam WARNING.
 [Player combat](../gameplay/player-combat.md) sở hữu touch exclusion và weapon switch;
@@ -230,9 +259,13 @@ transitions. Pause và gameplay permissions vẫn theo gameplay/lifecycle bình 
 minor handoff không tự khóa input hoặc ẩn Pause. Không Continue/forced confirmation.
 Minor title + một câu mô tả nằm **giữa màn hình**, dùng cùng announcement với layout
 căn giữa rồi auto fade; không chung vị trí/layout với major establishing. Incoming
-encounter config có thể để trống cả hai. L1 B dùng “Encounter 02” / “Tín hiệu mới đang
-tiến vào khu vực.” để debug đúng cấp, chưa dùng nhãn hoa mỹ.
-Minor announcement seed 1.6 s, fade .2 s `[TUNABLE]`; Pause/terminal/reset ẩn nó.
+encounter config có thể để trống cả hai. L1 B dùng “Encounter 02” / “Tín hiệu địch đang
+tiến vào khu vực.” để debug đúng cấp, chưa dùng nhãn hoa mỹ. Nhãn cấp thống nhất
+`Mission NN` / `Encounter NN`; câu mô tả tiếng Việt, không dùng lại “đợt” làm title.
+Minor announcement nhận duration bằng toàn bộ handoff do
+[level owner](../content/levels-encounters.md#level-1--first-contact-provisional) quy định,
+để chữ và cue bay kết thúc cùng nhịp. Fallback cho announcement không truyền duration
+là 1.6 s, fade .2 s `[TUNABLE]`; Pause/terminal/reset ẩn nó.
 Announcement chỉ render copy, không sở hữu gameplay authority.
 
 Pause hiện “TẠM DỪNG”; “TIẾP TỤC” hoạt động. “CHƠI LẠI ĐỢT”, “CÀI ĐẶT”,
