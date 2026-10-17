@@ -334,3 +334,79 @@ New Game không xóa Profile, replay/dev isolation, pause/restart checkpoint,
 loadout downgrade/restore và reward duplication qua Retry.
 Device kiểm tra 16:9, 18:9/19.5:9, tablet landscape, safe area và gameplay bounds.
 Không claim build/device FPS hoặc runtime verified từ Console sạch.
+
+## M2 vertical-slice closure verification
+
+`tools/unity/VerifyVerticalSlice.cs` chạy trong Play Mode qua Unity MCP run_script;
+không cài test framework hoặc thêm test MonoBehaviour vào production assets.
+
+- `InputAndPause()`: mouse click/drag qua button, UI-start touch rời button,
+  gameplay finger + second Pause finger, Resume khi gameplay finger còn held,
+  fresh press, telegraph/projectile pause và snapshot timer/pose.
+- `FullRun(width,size,withDeath)`: mission announcement → A (real held Pulse kills)
+  → scaled handoff → B mirrored formation/timeline → clear một lần. Khi withDeath,
+  nhận real hostile projectile, death/entrance/protection/grace, pause invincibility
+  rồi tiếp tục. Pause combat/handoff/B kiểm timer và pose không đổi.
+- `GameOver()`: ba accepted hits qua lifecycle (không sửa lives), reject duplicate,
+  lives zero khóa schedule trong final death, một Game Over signal/overlay.
+- `Pooling()`: sustained player/enemy firing, warmup 12 s rồi đo 12 s bằng
+  ProfilerRecorder markers Instantiate/Destroy và so sánh identity pool hierarchy.
+- `ResetAndStandalone()`: standalone B không phát full mission clear; dev replay
+  từ Pause reset clocks/lives/input; disable session trả clock/audio; không spawn đôi.
+
+Helpers restore Game View resolution, camera/view, Input System settings/devices,
+clock/audio và lifecycle; không save runtime state hoặc mutate encounter definitions.
+Capture dùng ScreenCapture (có overlay UI) vào ignored `app/Temp/StarShiftClosure/`.
+Khi chạy probe sau một Play session cũ đã terminal, nên stop/start Play để trả toàn
+bộ authored state; không save scene trong Play Mode.
+
+### Closure QA checkpoint — 2026-10-18
+
+Editor 6000.5.9f1, Unity CLI 1.0.0-beta.13. Frame counter thực sự advance trước QA.
+Năm full L1 runs dùng runtime config giữ nguyên, không ép completion timer:
+
+| Run | Game View | Size | Death/respawn | Kết quả |
+|---|---|---|---|---|
+| 1 | 1600 × 900 (16:9) | 6 | Real hostile hit | PASS, 1770 frames |
+| 2 | 2000 × 900 (20:9) | 6 | Protected regression | PASS, 1341 frames |
+| 3 | 2000 × 900 (20:9) | 6.8 | Alternate framing smoke | PASS, 1336 frames |
+| 4 | 1600 × 900 (16:9) | 6 | Protected regression | PASS, 1342 frames |
+| 5 | 2000 × 900 (20:9) | 6 | Real hostile hit | PASS, 1767 frames |
+
+Mỗi run có real Pulse collision/kill ở A, B hold/exit/timeline, Pause combat/handoff,
+cleanup/Result permissions, đúng một mission clear và không stale spawn/fire sau đó.
+Các run protected là automated integration regression; không thay thế người chơi
+manual feel review. Không kết luận Android touch latency/safe area/device FPS.
+
+Technical UI copy/layout contract ở [UI/UX](../presentation/ui-ux.md#m2-ui-implementation-provisional);
+QA không định nghĩa một copy source thứ hai. Ảnh mission-start, formation, pause,
+clear và Game Over lưu tại capture folder trên; review bằng composited Game View.
+
+Supplemental checks cùng checkpoint:
+
+| Check | Evidence |
+|---|---|
+| InputAndPause | PASS mouse + synthetic multitouch; UI re-press cùng frame hủy press gameplay cũ; 222 frames ở lượt cuối sau khi dùng project InputActions |
+| GameOver | PASS 3 accepted hits, lives 0, đúng 1 signal, không spawn trong final death |
+| ResetAndStandalone | PASS standalone B không mission clear; dev replay từ Pause; disable restore clock/audio; không duplicate spawn |
+| Pooling | PASS 12 s warmup + 12 s/718 frames đo; Instantiate 0, Destroy 0; 10 PlayerProjectile + 6 EnemyProjectile giữ identity; 7 Scout gồm sandbox inactive và pool |
+| DepartureFeedback | PASS HP 4/3 Normal, 2/1 Damaged; mirrored error 1.79e-7; source exit/visible >6 s/timeline drain; reset/replay không stale drain |
+| Scene inspect | PASS 1 EventSystem, 0 missing scripts/references, font đủ glyph Việt |
+
+UX review ảnh 16:9/20:9: HUD không che B formation; announcement đầu mission ngắn,
+Pause/Clear đọc rõ và không thêm “ĐỢT” để tránh thông tin thừa. Player tint override
+có sẵn trong scene được giữ; batch không đổi Scout/Pulse/L1 tuning. Checkpoint đầu
+batch `0ffb5a69` giữ implementation/tuning trước UI; không include ProjectSettings.
+
+Tracker snapshot task sheet `gid=1237076761` còn Not Started cho VS-006/024/025/026/
+028/029 và cả nhiều dependency đã implement. Sáu task trên đủ Editor evidence để
+chuyển Done; **chưa ghi lên tracker** vì Google Sheets session chỉ có quyền “Chỉ xem”
+và không có connected editor session. Bản patch status/proof/notes nằm ở ignored
+`app/Temp/StarShiftClosure/tracker-updates.tsv`; không sửa các dependency chỉ dựa
+vào tracker cũ. VS-030/Android và M3 không thuộc batch.
+
+Final inspection sau Play exit: compile sạch, saved scene không dirty, 0 missing
+scripts, 0 missing references, 1 EventSystem; Unity Console ground truth **0 errors,
+0 warnings**. Tool capture buffer vẫn giữ lỗi cũ/compile typo đã sửa, không dùng
+historical buffer counters làm Console cuối. New UI batch để uncommitted; không
+push/merge, không đổi package versions hoặc ProjectSettings user có sẵn.

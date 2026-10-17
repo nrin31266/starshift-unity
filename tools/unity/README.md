@@ -189,4 +189,19 @@ không save scene sau khi isolate. Coverage/isolation và giới hạn ở
 [dev/debug](../../docs/systems/dev-debug.md#m2-player-damage-lifecycle-verification).
 Manual: Play scene, để Scout bắn trúng hoặc body chạm Player; inspect lives/state qua
 MCP, references/tunables qua Inspector; xem entrance, blink và enemy fire resume. Game Over
-chưa có UI; restart Play để reset phiên test, không coi đây là Retry Wave.
+đã có minimal overlay; restart Play/dev replay để reset phiên test, không coi đây là Retry Wave.
+
+
+## M2 UI closure
+
+`ConfigureGameplayUi.Configure` chạy qua Unity MCP ở saved gameplay scene trong
+Edit Mode; tạo authored Canvas/HUD/overlay/EventSystem/session, dùng lại project
+InputSystem actions và giữ UI đã có. `Inspect` kiểm tra scene references/scripts,
+font glyphs và EventSystem. Presentation chỉnh trực tiếp RectTransform/components;
+không chạy lại baseline builders để reset gameplay tuning.
+
+`VerifyVerticalSlice.InputAndPause`, `FullRun(width,size,withDeath)`, `GameOver`,
+`Pooling`, `ResetAndStandalone` chạy bằng MCP run_script trong Play Mode.
+Ví dụ args FullRun: `[1600,6,true]`, `[2000,6,false]`, `[2000,6.8,false]`.
+Coverage/evidence và giới hạn thuộc
+[dev/debug](../../docs/systems/dev-debug.md#m2-vertical-slice-closure-verification).

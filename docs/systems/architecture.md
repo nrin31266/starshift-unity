@@ -134,7 +134,7 @@ collider radius/offset cũng provisional, chưa khóa movement API hay collision
 Prefab root ở origin, unit scale; spawn position thuộc scene instance.
 Ở checkpoint VS-001–003 chưa có lifecycle; phần hiện tại ở
 [M2 player damage lifecycle](#m2-player-damage-lifecycle) và
-[M2 L1 encounters](#m2-l1-encounter-runtime). HUD và persistence chưa implement.
+[M2 L1 encounters](#m2-l1-encounter-runtime). HUD hiện có ở [M2 UI boundary](#m2-gameplay-session-và-ui-boundary); persistence chưa implement.
 Không tạo component rỗng để giữ chỗ cho các trách nhiệm chưa implement.
 
 VS-004–005 có runtime scripts ở `Scripts/Player/`:
@@ -368,7 +368,7 @@ release active hostile projectiles cùng scene qua existing pool callback. Produ
 bind scene reference hoặc fallback tìm gate một lần; không có gate thì fail closed.
 Nó không chọn shooter, không đóng băng movement và không là encounter/FireDirector.
 Lifecycle giữ block qua death/entrance, request grace khi entrance hoàn tất và block
-terminal ở Game Over. Transition/Result orchestration vẫn chưa có;
+terminal ở Game Over. M2 session nối Result sau full L1; general transition chưa có;
 owner sau có thể dùng cùng safety boundary, không suy từ Player `CanFire`.
 
 `PlayerDamagePresentation` chỉ đọc gate để death flash, protection blink/tint và
@@ -416,14 +416,43 @@ visible; khi đã hết timer thì release ngay lúc ra khỏi view. Reset pool 
 camera binding. Death/Game Over/explicit reset vẫn clear ngay theo safety contract.
 Completion đóng runner/coordinator, disable/release mọi enemy và clear hostile
 projectile trước direct `Completed` event; sau scaled delay mới bắt đầu encounter
-tiếp. Một completion chỉ phát một lần. Disable/reset/Game Over hủy cả pending
+tiếp. Một completion chỉ phát một lần. Disable/reset và lives zero/Game Over hủy cả pending
 handoff; Player death thường không restart schedule. Không thêm event bus, Fire
 Director, generic spawn service hoặc reward/save/UI dependency.
 
 `PlayerProjectile.Release()` đi qua existing completion/pool callback để explicit
-dev replay dọn friendly shots cũ. Handoff và Player death thường vẫn giữ friendly
+dev replay và mission terminal dọn friendly shots cũ. Handoff và Player death thường vẫn giữ friendly
 projectiles theo lifecycle hiện có. Dev access/limits thuộc
 [dev/debug](dev-debug.md#m2-l1-fast-start-và-encounter-verification).
+
+### M2 gameplay session và UI boundary
+
+`GameplaySession` trên `L1Encounters` nhận direct `RunStarted`, `MissionCompleted`
+của runner và `GameOver` sau death phase của lifecycle. `MissionCompleted` chỉ phát
+ở cuối full sequence, không phải mỗi group hoặc standalone encounter. Runner kiểm
+tra lives zero trước schedule/handoff trong physics tick để không spawn trong final
+death sequence; completion và lives-zero cùng tick ưu tiên Game Over.
+
+Session sở hữu Pause clock và terminal combat boundary; UI chỉ gửi Pause/Resume và
+đọc state. Pause giữ lifecycle phase, lưu/restore `Time.timeScale` và
+`AudioListener.pause`; không thay state Dying/Respawning bằng enum Pause. UI vẫn dùng
+unscaled time. Disable/teardown session trả clock/audio đã mượn, không giữ pause rò
+sang lượt Play sau. Input cancel tại Pause/Resume theo
+[player owner](../gameplay/player-combat.md#m2-ui-pointer-ownership).
+
+Full mission completion đặt gate `Result` ngay, stop runner/coordinator, block enemy
+fire, release hostile/friendly projectiles về existing pools và freeze simulation.
+Không chờ presentation delay mới khóa damage/input/fire. Game Over dùng cùng cleanup
+sau signal của lifecycle; session không sở hữu lives/death/respawn timers.
+Dev replay vẫn reset runtime qua lifecycle trước `StartRun`, không giả checkpoint.
+
+`GameplayHud` chỉ render lives/weapon và overlay, `GameplayAnnouncement` giữ fade/
+duration, `SafeAreaLayout` chỉ cập nhật anchors khi safe area/resolution đổi.
+Canvas/RectTransform/buttons/EventSystem được author bằng `ConfigureGameplayUi` qua
+Unity; không dựng UI runtime từng frame. Default execution order đặt session trước
+HUD để đọc dependency sau Awake; announcement cũng initialize trước HUD. Không thêm
+UI state machine/event bus hoặc pool service. Copy/layout thuộc
+[UI/UX](../presentation/ui-ux.md#m2-ui-implementation-provisional).
 
 ## Config data và mutable runtime state
 

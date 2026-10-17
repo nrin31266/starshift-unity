@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
@@ -24,18 +26,18 @@ namespace StarShift.Player
         private void OnEnable()
         {
             EnhancedTouchSupport.Enable();
-            CancelPointer();
+            CancelGesture();
         }
 
         private void OnDisable()
         {
-            CancelPointer();
+            CancelGesture();
             EnhancedTouchSupport.Disable();
         }
 
         private void OnApplicationFocus(bool hasFocus)
         {
-            if (!hasFocus) CancelPointer();
+            if (!hasFocus) CancelGesture();
         }
 
         private void Update() => frameDelta = SamplePointer();
@@ -53,21 +55,21 @@ namespace StarShift.Player
                     if (touch.finger != activeFinger || touch.touchId != activeTouchId) continue;
                     if (!touch.isInProgress)
                     {
-                        CancelPointer();
+                        CancelGesture();
                         return Vector2.zero;
                     }
                     return DeltaFrom(touch.screenPosition);
                 }
-                CancelPointer();
+                CancelGesture();
                 return Vector2.zero;
             }
 
             if (touches.Count > 0)
             {
-                if (activeMouse != null) CancelPointer();
+                if (activeMouse != null) CancelGesture();
                 foreach (var touch in touches)
                 {
-                    if (touch.phase != TouchPhase.Began) continue;
+                    if (touch.phase != TouchPhase.Began || StartsOnUi(touch.screenPosition)) continue;
                     activeFinger = touch.finger;
                     activeTouchId = touch.touchId;
                     previousPosition = touch.screenPosition;
@@ -82,15 +84,16 @@ namespace StarShift.Player
             var mouse = Mouse.current;
             if (mouse == null || !mouse.leftButton.isPressed)
             {
-                CancelPointer();
+                CancelGesture();
                 return Vector2.zero;
             }
             if (activeMouse != mouse || mouse.leftButton.wasPressedThisFrame)
             {
                 // Sau disable/focus loss phải có press mới, không nhận lại drag đang giữ.
                 if (!mouse.leftButton.wasPressedThisFrame) return Vector2.zero;
-                // Release/re-press trong cùng frame cũng phải tạo intent/anchor mới.
-                SetFireHeld(false);
+                // Re-press trên UI cùng frame phải hủy cả ownership của press gameplay cũ.
+                CancelGesture();
+                if (StartsOnUi(mouse.position.ReadValue())) return Vector2.zero;
                 activeMouse = mouse;
                 previousPosition = mouse.position.ReadValue();
                 movementTracking = true;
@@ -107,13 +110,24 @@ namespace StarShift.Player
             previousPosition = Vector2.zero;
         }
 
-        private void CancelPointer()
+        public void CancelGesture()
         {
             activeFinger = null;
             activeMouse = null;
             activeTouchId = 0;
             ResetDrag();
             SetFireHeld(false);
+        }
+
+        private readonly List<RaycastResult> uiHits = new List<RaycastResult>();
+
+        private bool StartsOnUi(Vector2 position)
+        {
+            var events = EventSystem.current;
+            if (events == null) return false;
+            uiHits.Clear();
+            events.RaycastAll(new PointerEventData(events) { position = position }, uiHits);
+            return uiHits.Count > 0;
         }
 
         private void SetFireHeld(bool held)

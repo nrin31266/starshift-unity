@@ -12,12 +12,12 @@ HUD/button tránh giữa combat và cần touch target đủ lớn.
 Menu có các action sau; mobile không cần Quit button:
 
 ```text
-CONTINUE
-NEW GAME
-MISSIONS
-HOW TO PLAY
-SETTINGS
-CREDITS
+TIẾP TỤC
+CHƠI MỚI
+NHIỆM VỤ
+CÁCH CHƠI
+CÀI ĐẶT
+GIỚI THIỆU
 ```
 
 Continue chỉ enabled/visible khi CampaignSave hợp lệ. Action này load checkpoint
@@ -57,7 +57,7 @@ HUD cho biết survival, performance, currency và active weapon mà không che 
 
 ```text
 ┌─────────────────────────────────────────────┐
-│ 🚀 3      SCORE 012450       ✦ 284      ⏸ │
+│ 🚀 3       ★ 012450          ✦ 284      ⏸ │
 │                                             │
 │                                             │
 │                                             │
@@ -84,10 +84,10 @@ UI không tự tính lives hoặc chọn reward.
 Pause là overlay, không cần scene riêng. Các action:
 
 ```text
-RESUME
-RESTART WAVE
-SETTINGS
-MAIN MENU
+TIẾP TỤC
+CHƠI LẠI ĐỢT
+CÀI ĐẶT
+VỀ MENU CHÍNH
 ```
 
 Pause simulation/time contract ở [architecture](../systems/architecture.md#pause-và-time-management-locked).
@@ -101,13 +101,13 @@ Sau khi death sequence hoàn tất, mở Game Over overlay với selected stats 
 [player combat](../gameplay/player-combat.md) quyết.
 
 ```text
-MISSION FAILED
-Score
-Level / Wave
-Lives lost / selected stats
+THẤT BẠI
+Điểm
+Nhiệm vụ / Đợt
+Số mạng đã mất / thống kê chọn lọc
 
-RETRY WAVE
-MAIN MENU
+CHƠI LẠI ĐỢT
+VỀ MENU CHÍNH
 ```
 
 ## Level Clear và Campaign Result
@@ -164,4 +164,51 @@ cần kiểm tra trên mobile thay vì chỉ desktop Game view.
 ## Localization readiness
 
 Text/button không bake vào sprite; layout chừa chỗ cho text dài hơn khi localize.
-Ngôn ngữ shipping và font strategy vẫn [TBD]; không tự thêm localization package.
+Player-facing copy dùng **tiếng Việt**; proper sci-fi names (ví dụ Pulse Laser) có
+thể giữ English. Technical identifiers dùng English. Font strategy shipping vẫn
+[TBD]; không tự thêm localization package.
+
+
+## Vocabulary và announcement
+
+Taxonomy nội bộ: Level/Mission → Encounter → Spawn Group/Formation → Flight Sequence.
+Player thấy “NHIỆM VỤ”; Encounter có thể trình bày là “ĐỢT” khi announcement giúp
+nhịp chơi. Một Spawn Group/lần enemy bay vào không phải một Đợt. Không hiện debug ID,
+class name hoặc boss phase số nếu không có nhu cầu UX rõ.
+
+HUD thường trực ưu tiên icon + number; text lớn chỉ dành cho moment quan trọng,
+ngắn và không chặn gameplay. Mission start, clear và future danger warning dùng
+presentation tách khỏi gameplay authority; timing/fade có thể tune.
+
+## M2 UI implementation `[PROVISIONAL]`
+
+VS-006/024–026 dùng uGUI trong `02_Gameplay`, không thêm scene hay localization
+framework. Copy tập trung ở `GameplayCopy`; font runtime hiện có đủ glyph Việt.
+HUD nằm trong `Screen.safeArea`, scale theo chiều cao với reference 1600 × 900;
+anchors/offsets chỉnh trên RectTransform. Lives icon + count đọc `PlayerLives`;
+Pulse Laser + CẤP đọc `PulseLaserWeapon.CurrentLevel`. Score và Shard là icon + **—**
+(placeholder, không phải số zero hoặc economy giả); chưa có buff/boss/weapon cycle.
+
+Mission start hiện “NHIỆM VỤ 01”, duration 1.6 s, fade .2 s `[TUNABLE]` ở
+`GameplayAnnouncement`. Chỉ có một announcement này; không thêm “ĐỢT 1/2” hoặc group
+announcement vì formation/handoff hiện đủ rõ. Announcement không giữ quyền gameplay;
+Pause/terminal ẩn announcement; future warning có thể gọi lại cùng `Show(copy)`.
+
+Pause hiện “TẠM DỪNG”; “TIẾP TỤC” hoạt động. “CHƠI LẠI ĐỢT”, “CÀI ĐẶT”,
+“VỀ MENU CHÍNH” disabled, kèm “Chưa có trong bản thử nghiệm”. Slice chưa có
+checkpoint restore/Settings/Main Menu backend; dev replay không được giả làm Retry.
+Gameplay pause/resume và terminal authority ở
+[architecture](../systems/architecture.md#m2-gameplay-session-và-ui-boundary).
+
+Sau full L1 A → B, compact panel hiện một lần “NHIỆM VỤ HOÀN THÀNH” sau .45 s
+unscaled `[TUNABLE]`. “TIẾP THEO” và “VỀ MENU CHÍNH” disabled cùng note trên;
+chưa có L2/results navigation hoặc stats giả. Combat đã khóa ngay trước clear delay.
+Standalone dev encounter không phát mission-clear panel.
+
+Game Over minimal thuộc batch UI slice: sau death sequence với lives 0 hiện
+“THẤT BẠI”, “CHƠI LẠI ĐỢT” và “VỀ MENU CHÍNH” disabled cùng note. Không hiển thị
+selected stats chưa track. Lưu/restore checkpoint và full navigation vẫn là task sau.
+
+Overlay chặn raycast toàn màn; HUD decoration không bắt pointer. Nút Pause/Resume
+và modal có target đủ lớn theo reference layout; chưa xác nhận dp/cutout trên Android.
+Input ownership chi tiết thuộc [player owner](../gameplay/player-combat.md#m2-ui-pointer-ownership).

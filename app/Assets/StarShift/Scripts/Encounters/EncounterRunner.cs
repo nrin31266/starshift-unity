@@ -15,6 +15,7 @@ namespace StarShift.Encounters
         [SerializeField] private EnemyFireGate safetyGate;
         [SerializeField] private PlayerGameplayGate playerGate;
         private EncounterFireCoordinator coordinator;
+        private PlayerLives playerLives;
         private Transform poolRoot;
         private readonly List<(GameObject Root, GameObject Prefab)> pool = new List<(GameObject, GameObject)>();
         private readonly List<ScoutSlot> spawned = new List<ScoutSlot>();
@@ -28,11 +29,14 @@ namespace StarShift.Encounters
         public EncounterDefinition Current => encounters[CurrentIndex];
         public int CurrentIndex { get; private set; }
         public bool IsRunning { get; private set; }
+        public bool HasActiveRun => IsRunning || handoff;
         public float Elapsed { get; private set; }
         public int SpawnedCount => spawned.Count;
         public int KilledCount => killed;
         public int CompletionCount { get; private set; }
         public event Action<EncounterDefinition> Completed;
+        public event Action RunStarted;
+        public event Action MissionCompleted;
 
         private sealed class ScoutSlot
         {
@@ -45,6 +49,7 @@ namespace StarShift.Encounters
         private void Awake()
         {
             coordinator = GetComponent<EncounterFireCoordinator>();
+            if (playerGate != null) playerLives = playerGate.GetComponent<PlayerLives>();
             poolRoot = new GameObject("ScoutPool").transform;
             poolRoot.SetParent(transform, false);
             poolRoot.gameObject.SetActive(false);
@@ -78,6 +83,7 @@ namespace StarShift.Encounters
             standalone = singleEncounter;
             CompletionCount = 0;
             BeginEncounter(index);
+            RunStarted?.Invoke();
         }
 
         private void BeginEncounter(int index)
@@ -95,7 +101,7 @@ namespace StarShift.Encounters
         private void FixedUpdate()
         {
             if (!IsRunning && !handoff) return;
-            if (playerGate.State == PlayerGameplayState.GameOver)
+            if (playerGate.State == PlayerGameplayState.GameOver || (playerLives != null && playerLives.CurrentLives == 0))
             {
                 if (IsRunning || handoff) StopRun();
                 return;
@@ -190,6 +196,7 @@ namespace StarShift.Encounters
             handoff = !standalone && CurrentIndex + 1 < encounters.Length;
             handoffRemaining = completed.HandoffDelay;
             Completed?.Invoke(completed);
+            if (!standalone && CurrentIndex == encounters.Length - 1) MissionCompleted?.Invoke();
         }
 
         public void StopRun()

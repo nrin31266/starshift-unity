@@ -407,7 +407,8 @@ trước notification/handoff. Cleanup không gửi damage/death để giả kil
 Khoảng handoff A → B là 1 s `[TUNABLE]`; batch chưa có reward nên không mở reward
 grace. Death/respawn không reset encounter hoặc survivor HP; timeline/movement vẫn
 tiến theo scaled time, safety gate chỉ chặn attack. Game Over hủy schedule/handoff.
-Sau B chỉ dừng combat, chưa triển khai clear UI/result/reward của task sau.
+Sau B full mission dừng combat và hiện compact clear theo
+[UI/UX](../presentation/ui-ux.md#m2-ui-implementation-provisional); reward/save và next-level flow chưa implement.
 
 Ownership/runtime và pooling ở
 [architecture](../systems/architecture.md#m2-l1-encounter-runtime);
