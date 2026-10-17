@@ -107,7 +107,8 @@ public static class VerifyScout
                 var hitColors = new List<Color>();
                 health.Damaged += () => { damageEvents++; hitHp.Add(health.CurrentHp); hitColors.Add(renderer.color); };
                 health.Died += () => deaths++;
-                Require(health.CurrentHp == 2 && health.MaxHp == 2 && health.IsAlive, "Scout HP seed/runtime initialization failed.");
+                var maxHp = definition.MaxHp;
+                Require(health.CurrentHp == maxHp && health.IsAlive, "Scout HP seed/runtime initialization failed.");
                 await Task.Delay(40);
                 var entry = camera.WorldToViewportPoint(target.transform.position);
                 Require(entry.y > 1 && !flight.IsHolding, "Scout did not start outside at entry: " + entry + " holding=" + flight.IsHolding);
@@ -124,25 +125,30 @@ public static class VerifyScout
                 await MouseEvent(mouse, false);
                 await MouseEvent(mouse, true);
                 await Until(() => damageEvents > 0, 1600, "Real Pulse weapon did not hit production Scout.");
-                Require(damageEvents == 1 && health.CurrentHp == 1 && health.IsAlive && hitHp[0] == 1,
+                Require(damageEvents == 1 && health.CurrentHp == maxHp - 1 && health.IsAlive && hitHp[0] == maxHp - 1,
                     "First projectile must cause exactly one damage and leave Scout alive.");
                 Require(hitColors[0] == Color.white, "First hit flash missing.");
                 await Task.Delay(105);
                 var damagedTint = new SerializedObject(target.GetComponent<EnemyDamagePresentation>()).FindProperty("damagedTint").colorValue;
+                var damagedHp = Mathf.FloorToInt(maxHp * .5f);
+                Require(health.IsAlive && renderer.color == (health.CurrentHp <= damagedHp ? damagedTint : normal),
+                    "HP above damage threshold showed persistent Damaged state.");
+                await Until(() => health.CurrentHp <= damagedHp, maxHp * 250, "Damage threshold not reached.");
+                await Task.Delay(105);
                 Require(health.IsAlive && renderer.color == damagedTint && renderer.color != normal, "Persistent Damaged presentation missing.");
                 ScreenCapture.CaptureScreenshot("Temp/StarShiftScoutCheckpoint/" + width + "-size-" + size + "-damaged.png");
-                await Until(() => !target.activeSelf, 700, "Second hit did not release Scout.");
-                Require(health.CurrentHp == 0 && !health.IsAlive && damageEvents == 2 && deaths == 1 && hitHp[1] == 0,
-                    "Second hit/death count failed.");
+                await Until(() => !target.activeSelf, maxHp * 250 + 700, "Held Pulse did not release Scout.");
+                Require(health.CurrentHp == 0 && !health.IsAlive && damageEvents == maxHp && deaths == 1 && hitHp[maxHp - 1] == 0,
+                    "Hit/death count failed.");
                 for (int i = 0; i < 5; i++) health.ReceivePlayerHit(1, player);
-                Require(damageEvents == 2 && deaths == 1, "Dead Scout accepted damage or resolved death twice.");
+                Require(damageEvents == maxHp && deaths == 1, "Dead Scout accepted damage or resolved death twice.");
                 await MouseEvent(mouse, false);
                 Require(!input.FireHeld, "Release left fire intent held.");
                 gate.SetState(PlayerGameplayState.Entry);
                 await Task.Delay(1650);
                 UnityEngine.Object.DestroyImmediate(target);
                 target = null;
-                results.Add("size=" + size + ": production prefab entry/hold, real held Pulse 2->1 flash/Damaged ->0 disabled, one death PASS");
+                results.Add("size=" + size + ": production prefab entry/hold, real held Pulse HP=" + maxHp + " ->0, flash/Damaged, one death PASS");
             }
 
             target = UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath));
@@ -192,6 +198,15 @@ public static class VerifyScout
         var oldState = gate.State;
         var clone = UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath));
         var health = clone.GetComponent<EnemyHealth>();
+        // Collision probe giữ fixture hai hit độc lập HP tuning của production Scout.
+        var healthFixture = UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<EnemyDefinition>(DefinitionPath));
+        var fixtureSettings = new SerializedObject(healthFixture);
+        fixtureSettings.FindProperty("maxHp").intValue = 2;
+        fixtureSettings.ApplyModifiedPropertiesWithoutUndo();
+        fixtureSettings = new SerializedObject(health);
+        fixtureSettings.FindProperty("definition").objectReferenceValue = healthFixture;
+        fixtureSettings.ApplyModifiedPropertiesWithoutUndo();
+        clone.SetActive(false); clone.SetActive(true);
         var flight = clone.GetComponent<EntryHoldFlight>();
         var presentation = clone.GetComponent<EnemyDamagePresentation>();
         var renderer = clone.transform.Find("Visual/HullPlaceholder").GetComponent<SpriteRenderer>();
@@ -280,6 +295,7 @@ public static class VerifyScout
             foreach (var p in projectiles) if (p != null) UnityEngine.Object.DestroyImmediate(p.gameObject);
             pool.Dispose();
             UnityEngine.Object.DestroyImmediate(clone);
+            UnityEngine.Object.DestroyImmediate(healthFixture);
             UnityEngine.Object.DestroyImmediate(muzzle);
             sceneScout.gameObject.SetActive(wasActive);
             gate.SetState(oldState);

@@ -194,6 +194,75 @@ ScoutFire suites phù hợp, inspect matrix/references và Console cả sau Play
 Helpers không ghi save/profile, không dùng làm runtime dependency. Đây là Editor
 physics/synthetic-input evidence, chưa phải Android hardware hoặc performance test.
 
+## M2 L1 fast start và encounter verification
+
+VS-027 dùng `DevFastStart` trên `L1Encounters`, không tạo menu hoặc fake campaign.
+Mặc định `Dev Mode Enabled = false`: Play gameplay scene chạy A → B. Trong Editor
+hoặc Development Build, bật flag rồi chọn `Start Point`:
+
+- `LEVEL_START`: bắt đầu L1 tại A;
+- `ENCOUNTER_1`: bắt đầu A;
+- `ENCOUNTER_2`: bắt đầu B.
+
+`Standalone = true` dừng sau encounter đã chọn; false cho phép handoff tới encounter
+tiếp nếu có. Trong Play Mode, component context menu **Replay Configured Start**
+dọn enemy và hostile/friendly shots, reset Player lives/lifecycle và schedule rồi
+chạy lại entry đã chọn. Player giữ vị trí hiện tại trong bounds; replay hủy stale
+drag, vẫn theo held-intent contract của input. Stop/Play cũng replay từ config.
+Invalid/missing/duplicate config ID báo lỗi rõ, không fallback Continue. Flag mặc
+định off và dev override không hoạt động ở normal release build. Không gọi save,
+PlayerPrefs hoặc sửa definition assets; persistence contract ở
+[save/profile](save-profile.md#replay-và-dev-isolation).
+
+Inspector: chọn `L1Encounters` để xem definition references/dev start; chỉnh formation,
+counts, spawn/entry timing, fire coordination và handoff tại hai assets được link
+trong runner. Giữ numeric seeds tại
+[level owner](../content/levels-encounters.md#m2-l1-playable-checkpoint), HP tại
+[enemy owner](../content/enemies-bosses.md#balance-seed-table), view controls tại
+[view architecture](architecture.md#dynamic-gameplay-view-foundation).
+Đổi config rồi Play lại để demo; không expose mutable counters/state làm knobs.
+
+`tools/unity/VerifyL1Encounters.cs` chạy qua Unity MCP `run_script` trong Play Mode:
+
+- `Run(width, size, lower70)`: actual hold/relative pointer/Pulse kills A, không count
+  disable là death, handoff, pooled reset, hai cánh B ghép formation, fire trong exit,
+  timeline completion một lần và cleanup trước callback. Observer đo maximum
+  simultaneous telegraphs và shot spacing; frames phải tiến thật.
+- `Death()`: hostile projectile thật gây death trong A sau một Pulse kill, giữ
+  survivors/counters, clear/grace, entrance/protection, pause và finish bằng Pulse.
+- `Lifecycle()`: kill trong telegraph, pool reset/replay, pause entry, disable runner
+  giữa telegraph, reset giữa handoff, Game Over stop, dev jump/replay A/B và reject invalid start.
+- `Boundary()`: timeline cắt khi enemy còn sống; release/cancel/clear trước notification,
+  không gửi death/kill và không còn delayed fire.
+- `Offscreen()`: gom 4 cạnh ở 16:9/Size 6 và 20:9/Size 6.8, exit release trước hết
+  duration, cancel telegraph ở mép, pooled reuse, root còn visible nhưng muzzle
+  ngoài view không được fire. Không chạy lại full gameplay matrix cho mỗi tuning pass.
+- `RootToggle()`: tắt/bật toàn bộ encounter root rồi replay, không lỗi reparent
+  trong activation traversal và vẫn reuse đủ pooled Scouts.
+- `QuickTuning()`: một smoke gộp cho tuning pass: production Scout nhận đủ real Pulse
+  hits theo HP, đo hit cadence, inspect projectile width và chạy B hết timeline với
+  hold ngắn/exit chậm; không lặp full baseline regression.
+- `DepartureFeedback()`: gom Normal/Damaged tại các mốc HP, mirrored entry theo
+  từng cặp, shot cuối còn sống sau source exit/timeline cutoff và sau fallback
+  lifetime khi vẫn visible; chỉ complete khi shot ra khỏi view. Explicit reset
+  phải tiếp tục clear và reset camera binding.
+- `Validate()`: invalid count, non-finite timing/path và timeline trước scheduled
+  group bị reject; chỉ sửa cloned config trong memory.
+- `Capture(startPoint, elapsed)`: capture Game View tại thời điểm encounter vào ignored
+  `app/Temp/StarShiftL1Checkpoint/`, không lưu test state vào scene.
+
+Matrix width 1600/2000, height 900; size 6, 5.25 và 6.8; wide smoke dùng lower 70%.
+Đây là baseline khi thay core; tuning pass gom check bị ảnh hưởng và một lượt
+end-to-end thay vì lặp lại toàn matrix cho mỗi thay đổi nhỏ.
+Helpers restore camera/view/Game View/input policies/devices/lifecycle/timeScale,
+stop test run, không save scene hoặc mutate definitions. Runtime state reset/replay
+không chứng minh future save integration. Để isolated regression cũ, gọi
+`VerifyL1Encounters.Isolate()` rồi `VerifyPlayerDamageLifecycle.IsolateLegacy()`
+trong Play session riêng; không save và stop Play để restore authored scene.
+Chạy lại PlayerDrag/Bounds/View/Pulse/Scout/ScoutFire/PlayerDamageLifecycle liên quan,
+inspect missing references/scripts và Console sau Play exit. Đây là Editor synthetic
+input/physics evidence; manual gameplay feel và Android hardware/FPS còn cần test.
+
 ## Save/profile debug và logging
 
 Cho phép inspect checkpoint/profile/settings; reset có target rõ;

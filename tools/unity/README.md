@@ -135,11 +135,28 @@ khởi tạo khi Play/OnEnable.
 [dev/debug](../../docs/systems/dev-debug.md#m2-scout-verification).
 Ảnh damaged-state nằm trong ignored `app/Temp/StarShiftScoutCheckpoint/`.
 
-Manual: Play gameplay scene, đợi Scout bay vào vùng trên rồi kéo Player để aim,
-giữ pointer bắn Pulse. Scout chết sẽ disable; restart Play để thử lại, chưa có
-respawn/scheduler. Chọn scene Scout để chỉnh Entry/Hold Viewport và Entry Duration;
+Manual hiện chạy encounter A → B theo [L1 checkpoint](#l1-encounters-và-fast-start).
+Scout sandbox ở scene được giữ disabled cho isolated probes. Chọn prefab Scout để
+chỉnh default Entry/Hold Viewport và Entry Duration cho sandbox;
 HP chỉnh ở definition asset, flash/tint ở Enemy Damage Presentation. Các giá trị
 là prototype seeds ở canonical owners, không phải final tuning.
+
+## L1 encounters và fast start
+
+`ConfigureL1Encounters.Configure` chạy ở saved gameplay scene trong Edit Mode qua
+MCP, tạo hai encounter assets nếu chưa có, giữ existing tunables, nối runner/gates
+và disable sandbox Scout. `Inspect` đọc configs, wiring, missing references/scripts.
+Không raw-edit YAML hoặc reset config user đã chỉnh.
+`ApplyPlaytestFeedback` áp entry đồng bộ hiện tại và damage threshold vào existing
+encounter assets/Scout prefab; giữ các anchor, HP và weapon tuning đang có.
+`VerifyL1Encounters.DepartureFeedback` gom kiểm tra damage state, mirrored entry và
+shot còn visible qua source exit/timeline/lifetime. `QuickTuning` smoke HP/Pulse/B.
+
+`VerifyL1Encounters.Run` nhận ví dụ `[1600,6,false]` hoặc `[2000,6.8,true]`;
+`Death`, `Lifecycle`, `Boundary`, `Offscreen`, `Validate`, `Isolate` không cần args. Tất cả qua
+`../tools/unity/VerifyL1Encounters.cs`. Coverage, fast-start controls và regression
+isolation thuộc [dev/debug owner](../../docs/systems/dev-debug.md#m2-l1-fast-start-và-encounter-verification).
+Scene mở sẵn để Play A → B; chọn `L1Encounters` để tới config/dev component.
 
 ## Scout single-fire checkpoint
 

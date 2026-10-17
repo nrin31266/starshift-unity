@@ -133,7 +133,8 @@ Rigidbody2D Kinematic, gravity zero và freeze rotation là baseline prototype;
 collider radius/offset cũng provisional, chưa khóa movement API hay collision matrix.
 Prefab root ở origin, unit scale; spawn position thuộc scene instance.
 Ở checkpoint VS-001–003 chưa có lifecycle; phần hiện tại ở
-[M2 player damage lifecycle](#m2-player-damage-lifecycle). Encounter, HUD và persistence chưa implement.
+[M2 player damage lifecycle](#m2-player-damage-lifecycle) và
+[M2 L1 encounters](#m2-l1-encounter-runtime). HUD và persistence chưa implement.
 Không tạo component rỗng để giữ chỗ cho các trách nhiệm chưa implement.
 
 VS-004–005 có runtime scripts ở `Scripts/Player/`:
@@ -247,7 +248,8 @@ thuộc [dev/debug](dev-debug.md#m2-pulse-laser-verification).
 ### M2 Scout baseline `[PROVISIONAL]`
 
 VS-012–014 tạo `Prefabs/Enemies/Scout.prefab`, đặt một instance trong `Enemies` của
-gameplay scene; không thêm scheduler, encounter runner hoặc enemy pool.
+gameplay scene. Instance sandbox hiện disabled; encounter runtime bên dưới dùng
+cùng prefab và flight/attack components.
 
 ```text
 Scout                      Rigidbody2D (Kinematic), EnemyHealth,
@@ -268,7 +270,8 @@ OnEnable reset HP; không mutate definition. Đây là reuse reset contract, ch�
 nghĩa production enemy pooling đã có.
 
 `EnemyDamagePresentation` subscribe/unsubscribe theo lifecycle, đọc HP và flash
-timer riêng. Nó chỉ đổi Hull renderer tint; không sửa HP, collider hoặc phase.
+timer riêng, dùng serialized HP fraction cho persistent damage cue. Nó chỉ đổi
+Hull renderer tint; không sửa HP, collider hoặc phase.
 Normal tint lấy từ authored renderer, reset khi disable; enable giữa damaged state
 phải phản ánh HP hiện tại. Presentation seed thuộc
 [audio/VFX](../presentation/audio-vfx.md#enemy-damage-feedback).
@@ -303,10 +306,11 @@ Attack dùng local `ObjectPool<EnemyProjectile>` theo pattern Pulse; runtime roo
 nhưng không clear shot đã launch; destroy producer dispose pool và destroy root.
 Chưa tạo pool service, weapon framework hoặc encounter state machine chung.
 
-Local timer chỉ thực thi attack trong single-enemy sandbox, không quyết multi-enemy
-shot scheduling. Future encounter authority có responsibility cấp attack permission
-theo [content direction](../content/levels-encounters.md#multi-enemy-attack-coordination);
-chưa khóa serialized/API shape và không thêm hook khi runtime hiện tại chưa cần.
+Local timer thực thi attack, không quyết multi-enemy shot scheduling. Prefab dùng
+autonomous cycle cho isolated sandbox; encounter runner gọi `SetEncounterControlled()`
+trước khi activate. Chế độ này chỉ bắt đầu telegraph qua `TryRequestAttack()`, vẫn
+giữ health/flight/target/safety checks và local cooldown. Coordination policy thuộc
+[content owner](../content/levels-encounters.md#multi-enemy-attack-coordination).
 
 `EnemySingleProjectile.prefab` có Rigidbody2D Kinematic, BoxCollider2D trigger và
 `EnemyProjectile`; child Visual giữ SpriteRenderer. Typed component phân biệt hostile
@@ -364,7 +368,7 @@ release active hostile projectiles cùng scene qua existing pool callback. Produ
 bind scene reference hoặc fallback tìm gate một lần; không có gate thì fail closed.
 Nó không chọn shooter, không đóng băng movement và không là encounter/FireDirector.
 Lifecycle giữ block qua death/entrance, request grace khi entrance hoàn tất và block
-terminal ở Game Over. Transition/Result orchestration và spawn scheduler vẫn chưa có;
+terminal ở Game Over. Transition/Result orchestration vẫn chưa có;
 owner sau có thể dùng cùng safety boundary, không suy từ Player `CanFire`.
 
 `PlayerDamagePresentation` chỉ đọc gate để death flash, protection blink/tint và
@@ -375,6 +379,51 @@ Ordering, timings, pointer behavior và cleanup/protection policy thuộc
 [audio/VFX](../presentation/audio-vfx.md#player-damage-lifecycle-placeholder).
 Không ghi CampaignSave/Profile. Verification ở
 [dev/debug](dev-debug.md#m2-player-damage-lifecycle-verification).
+
+### M2 L1 encounter runtime
+
+`[PROVISIONAL]` VS-022/023 thêm scene object `L1Encounters` với `EncounterRunner`,
+`EncounterFireCoordinator` và `DevFastStart`. Hai `EncounterDefinition` assets giữ
+static completion mode, Scout prefab, spawn groups, normalized flight parameters,
+fire timing và handoff delay. Không lưu mutable HP, spawn counters hoặc elapsed vào
+asset; schema chỉ có các consumers hiện tại, chưa phải full LevelDefinition/DSL.
+Content/timing do [level owner](../content/levels-encounters.md#m2-l1-playable-checkpoint) sở hữu.
+
+Runner sở hữu schedule/completion và local Scout pool; pool phân biệt prefab source,
+spawn configure khi inactive rồi activate để HP/flight/presentation/attack reset.
+Khi root đang deactivate, chỉ disable enemy; hoãn reparent về pool tới lượt start
+tiếp theo vì Unity không cho đổi parent giữa activation traversal.
+Flight vẫn là writer duy nhất của enemy pose, không đọc encounter ID hoặc quyết
+completion. Runner poll HP zero để count death; root disable không trở thành kill.
+Flight cung cấp camera visibility bằng projection hiện tại; attack kiểm tra cả
+root lẫn muzzle trước request và mỗi tick của telegraph. Runner release Timeline
+enemy khi đang exit và collision envelope đã hoàn toàn ra khỏi full camera, hoặc
+khi exit duration kết thúc; không áp early release lên entry/required hold.
+Timeline exit/release không gửi death notification. Died event không giữ pooled
+instance qua callback/coroutine của encounter cũ.
+
+Coordinator giữ danh sách attack đang đăng ký, chọn shooter đủ điều kiện và cấp
+một telegraph tại một thời điểm; local attack sở hữu telegraph/aim/projectile pool.
+Unregister/stop hủy pending sequence trước release. Shared `EnemyFireGate` giữ quyền
+chặn trên mọi request, kể cả khi respawn grace đang chạy. Runner không gọi Resume
+trong handoff để vô tình mở gate do Player lifecycle đang block.
+
+Timeline kết thúc schedule thì đóng coordinator/release enemy trước, giữ các
+shot đã bắn còn visible tới contact/view exit. `EnemyProjectile` dùng current camera
+projection và đường chéo view/speed làm upper bound cho cửa sổ này; runner đếm
+scaled timeout với một physics-step margin. Lifetime không cắt projectile đang
+visible; khi đã hết timer thì release ngay lúc ra khỏi view. Reset pool xóa cả
+camera binding. Death/Game Over/explicit reset vẫn clear ngay theo safety contract.
+Completion đóng runner/coordinator, disable/release mọi enemy và clear hostile
+projectile trước direct `Completed` event; sau scaled delay mới bắt đầu encounter
+tiếp. Một completion chỉ phát một lần. Disable/reset/Game Over hủy cả pending
+handoff; Player death thường không restart schedule. Không thêm event bus, Fire
+Director, generic spawn service hoặc reward/save/UI dependency.
+
+`PlayerProjectile.Release()` đi qua existing completion/pool callback để explicit
+dev replay dọn friendly shots cũ. Handoff và Player death thường vẫn giữ friendly
+projectiles theo lifecycle hiện có. Dev access/limits thuộc
+[dev/debug](dev-debug.md#m2-l1-fast-start-và-encounter-verification).
 
 ## Config data và mutable runtime state
 

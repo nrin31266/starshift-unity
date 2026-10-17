@@ -24,8 +24,27 @@ namespace StarShift.Enemies
         private Transform projectileRoot;
         private float remaining;
         private bool shuttingDown;
+        private bool encounterControlled;
 
         public bool IsTelegraphing { get; private set; }
+        private bool CanRequestAttack => isActiveAndEnabled && Eligible && !IsTelegraphing && remaining <= .000001f;
+        private bool Eligible => fireGate != null && fireGate.CanFire && health.IsAlive &&
+            flight.isActiveAndEnabled && flight.CanShoot && flight.IsPointVisible(muzzle.position) &&
+            target != null && target.gameObject.activeInHierarchy;
+
+        public void SetEncounterControlled()
+        {
+            encounterControlled = true;
+            ResetSequence();
+        }
+
+        public bool TryRequestAttack()
+        {
+            if (!CanRequestAttack) return false;
+            IsTelegraphing = true;
+            remaining = definition.TelegraphDuration;
+            return true;
+        }
 
         private void Awake()
         {
@@ -65,8 +84,7 @@ namespace StarShift.Enemies
 
         private void FixedUpdate()
         {
-            if (!fireGate.CanFire || !health.IsAlive || !flight.isActiveAndEnabled || !flight.IsHolding ||
-                target == null || !target.gameObject.activeInHierarchy)
+            if (!Eligible)
             {
                 ResetSequence();
                 return;
@@ -76,8 +94,7 @@ namespace StarShift.Enemies
             if (remaining > .000001f) return;
             if (!IsTelegraphing)
             {
-                IsTelegraphing = true;
-                remaining = definition.TelegraphDuration;
+                if (!encounterControlled) TryRequestAttack();
                 return;
             }
             var projectile = projectiles.Get();

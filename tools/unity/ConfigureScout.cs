@@ -24,6 +24,9 @@ public static class ConfigureScout
         if (definition == null)
         {
             definition = ScriptableObject.CreateInstance<EnemyDefinition>();
+            var seed = new SerializedObject(definition);
+            seed.FindProperty("maxHp").intValue = 4;
+            seed.ApplyModifiedPropertiesWithoutUndo();
             AssetDatabase.CreateAsset(definition, DefinitionPath);
         }
         var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);

@@ -40,7 +40,8 @@ smoke và sprite/state swap; không cần một frame cho mỗi HP point.
 Hit flash ngắn phải giữ silhouette và không che attack telegraph.
 
 VS-013 placeholder dùng Hull tint trắng trong 0.08 s `[TUNABLE]`, sau đó giữ
-Damaged tint khi HP dưới max. Root disable ngay khi chết; chưa có explosion,
+Damaged tint theo threshold của [enemy owner](../content/enemies-bosses.md#damage-state).
+Root disable ngay khi chết; chưa có explosion,
 death fade, particles hoặc SFX. Cue reset khi object reuse; thời gian flash dùng
 scaled time. Đây là presentation tạm cho [Scout checkpoint](../content/enemies-bosses.md#scout-drone),
 không phải approved final palette/art hoặc authority cho HP/death.

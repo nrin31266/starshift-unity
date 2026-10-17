@@ -228,8 +228,16 @@ public static class VerifyPulseLaser
             await Drain(definition);
             results.Add("synthetic touch stationary hold/release: PASS; same abstraction as mouse");
 
+            // Probe pool không được block shared fire gate khi clone Player bị hủy.
+            var fireGate = UnityEngine.Object.FindAnyObjectByType<StarShift.Gameplay.EnemyFireGate>();
+            var fireWasOpen = fireGate != null && fireGate.CanFire;
+            var fixtureRoot = new GameObject("PulseTeardownFixture");
+            fixtureRoot.SetActive(false);
+            temporaryObjects.Add(fixtureRoot);
             var clone = UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(
-                "Assets/StarShift/Prefabs/Player/Player.prefab"));
+                "Assets/StarShift/Prefabs/Player/Player.prefab"), fixtureRoot.transform);
+            clone.GetComponent<PlayerDamageLifecycle>().enabled = false;
+            fixtureRoot.SetActive(true);
             clone.name = "PoolTeardownVerificationPlayer";
             temporaryObjects.Add(clone);
             await MouseEvent(mouse, new Vector2(600, 300), true);
@@ -255,6 +263,7 @@ public static class VerifyPulseLaser
             }
             finally { Application.logMessageReceived -= onLog; }
             Require(teardownError == null, "Pool teardown error: " + teardownError);
+            Require(!fireWasOpen || fireGate.CanFire, "Pulse-only fixture blocked the scene enemy fire gate.");
             results.Add("projectile root destroyed before weapon/pool disposal: PASS");
             return new { passed = true, frameStart, frameEnd = Time.frameCount, results };
         }

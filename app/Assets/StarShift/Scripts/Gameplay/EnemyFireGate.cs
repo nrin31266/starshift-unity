@@ -12,6 +12,17 @@ namespace StarShift.Gameplay
         private float graceRemaining;
         public bool CanFire => isActiveAndEnabled && !blocked && graceRemaining <= 0 && Time.timeScale > 0;
         public event Action PermissionChanged;
+        public float VisibleProjectileTimeLimit
+        {
+            get
+            {
+                float maximum = 0;
+                foreach (var projectile in FindObjectsByType<EnemyProjectile>())
+                    if (projectile.gameObject.scene == gameObject.scene)
+                        maximum = Mathf.Max(maximum, projectile.VisibleFlightTimeLimit);
+                return maximum;
+            }
+        }
 
         public void Block()
         {

@@ -19,8 +19,21 @@ namespace StarShift.Combat
         private float speed;
         private float remainingLifetime;
         private bool flying;
+        private Camera gameplayCamera;
 
         public GameObject Owner { get; private set; }
+        public float VisibleFlightTimeLimit
+        {
+            get
+            {
+                if (gameplayCamera == null || !gameplayCamera.isActiveAndEnabled || !gameplayCamera.orthographic || speed <= 0) return 0;
+                var point = gameplayCamera.WorldToViewportPoint(new Vector3(body.position.x, body.position.y, transform.position.z));
+                if (point.x < 0 || point.x > 1 || point.y < 0 || point.y > 1 ||
+                    point.z < gameplayCamera.nearClipPlane || point.z > gameplayCamera.farClipPlane) return 0;
+                // Đường chéo view là upper bound thời gian bay ra ngoài theo đường thẳng.
+                return 2 * gameplayCamera.orthographicSize * Mathf.Sqrt(1 + gameplayCamera.aspect * gameplayCamera.aspect) / speed;
+            }
+        }
 
         private void Awake()
         {
@@ -37,6 +50,7 @@ namespace StarShift.Combat
             direction = aim.sqrMagnitude > .000001f ? aim.normalized : (Vector2)muzzle.up;
             speed = definition.ProjectileSpeed;
             remainingLifetime = definition.ProjectileLifetime;
+            gameplayCamera = Camera.main;
             onReleased = release;
             var rotation = Quaternion.FromToRotation(Vector3.up, direction);
             transform.SetPositionAndRotation(muzzle.position, rotation);
@@ -52,7 +66,7 @@ namespace StarShift.Combat
         private void FixedUpdate()
         {
             if (!flying || Time.timeScale <= 0) return;
-            var step = Mathf.Min(Time.fixedDeltaTime, remainingLifetime);
+            var step = remainingLifetime > 0 ? Mathf.Min(Time.fixedDeltaTime, remainingLifetime) : Time.fixedDeltaTime;
             var distance = speed * step;
             body.Cast(direction, new ContactFilter2D { useTriggers = true }, sweepHits, distance);
             Collider2D nearest = null;
@@ -69,8 +83,9 @@ namespace StarShift.Combat
                 return;
             }
             body.position += direction * distance;
-            remainingLifetime -= step;
-            if (remainingLifetime <= 0) FinishFlight();
+            remainingLifetime = Mathf.Max(0, remainingLifetime - step);
+            // Lifetime không được cắt viên đạn còn visible giữa đường.
+            if (remainingLifetime <= 0 && VisibleFlightTimeLimit <= 0) FinishFlight();
         }
 
         private bool IsTarget(Collider2D other)
@@ -106,6 +121,7 @@ namespace StarShift.Combat
             flying = false;
             onReleased = null;
             Owner = target = null;
+            gameplayCamera = null;
             direction = Vector2.zero;
             speed = remainingLifetime = 0;
             sweepHits.Clear();

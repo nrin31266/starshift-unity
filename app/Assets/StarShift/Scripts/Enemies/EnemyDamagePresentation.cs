@@ -9,6 +9,7 @@ namespace StarShift.Enemies
     {
         [SerializeField] private SpriteRenderer hull;
         [SerializeField] private Color damagedTint = new Color(.9f, .28f, .3f, 1);
+        [SerializeField, Range(0, 1)] private float damagedHealthFraction = .5f;
         [SerializeField, Min(0)] private float flashDuration = .08f;
 
         private EnemyHealth health;
@@ -57,7 +58,7 @@ namespace StarShift.Enemies
         private void Refresh()
         {
             hull.color = flashRemaining > 0 ? Color.white
-                : health.CurrentHp < health.MaxHp ? damagedTint : normalTint;
+                : health.CurrentHp <= health.MaxHp * damagedHealthFraction ? damagedTint : normalTint;
         }
 
         private void OnValidate() => flashDuration = Mathf.Max(0, flashDuration);
