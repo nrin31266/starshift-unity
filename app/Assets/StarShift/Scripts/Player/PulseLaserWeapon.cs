@@ -30,7 +30,7 @@ namespace StarShift.Player
         public bool CanFire => gameplayGate != null && gameplayGate.CanFire && !heat.IsOverheated;
 
         // Slice chỉ có Lv1; giữ boundary death penalty, chưa giả lập upgrade chưa có.
-        public void ApplyDeathDowngrade() => ResetForSession();
+        public void ApplyDeathDowngrade() => heat.Reset();
 
         public void ResetForSession()
         {
@@ -74,6 +74,7 @@ namespace StarShift.Player
 
         private void FixedUpdate()
         {
+            // CanFire gồm cả Pause/timeScale: gate khóa thì không tick thermal simulation.
             if (!gameplayGate.CanFire)
             {
                 ResetCadence();

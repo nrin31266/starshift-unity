@@ -175,6 +175,58 @@ public static class VerifyVerticalSlice
         }
     }
 
+    public static async Task<object> ThermalReviewFixes()
+    {
+        using (var rig = new Rig(1600, 6))
+        {
+            var failures = new List<string>();
+            var hud = UnityEngine.Object.FindAnyObjectByType<GameplayHud>();
+            var refresh = typeof(GameplayHud).GetMethod("RefreshHeat", Fields);
+            foreach (var name in new[] { "heatFill", "heatFrame", "heatStatus" })
+            {
+                var field = typeof(GameplayHud).GetField(name, Fields);
+                var original = field.GetValue(hud);
+                try
+                {
+                    field.SetValue(hud, null); Set(hud, "previousHeat", -1f);
+                    try { refresh.Invoke(hud, null); }
+                    catch (TargetInvocationException error) { failures.Add(name + ": " + error.InnerException.GetType().Name); }
+                }
+                finally { field.SetValue(hud, original); }
+            }
+            Set(hud, "previousHeat", -1f); refresh.Invoke(hud, null);
+            var weapon = rig.Player.GetComponent<PulseLaserWeapon>();
+            await rig.MouseEvent(new Vector2(300, 200), false);
+            await rig.MouseEvent(new Vector2(300, 200), true);
+            await Until(() => weapon.Heat > 0 && UnityEngine.Object.FindObjectsByType<PlayerProjectile>().Length > 0,
+                1500, "No real held shot for death-boundary cadence probe.");
+            var cadence = typeof(PulseLaserWeapon).GetField("nextShotTime", Fields);
+            var allowed = typeof(PulseLaserWeapon).GetField("wasAllowed", Fields);
+            var shotTime = (double)cadence.GetValue(weapon); var wasAllowed = (bool)allowed.GetValue(weapon);
+            var state = (WeaponHeatState)typeof(PulseLaserWeapon).GetField("heat", Fields).GetValue(weapon);
+            var profile = AssetDatabase.LoadAssetAtPath<WeaponThermalProfile>("Assets/StarShift/Data/Weapons/PulseLaserThermal.asset");
+            state.Tick(profile, true, profile.Capacity / profile.HeatPerSecond + 1);
+            Require(weapon.IsOverheated, "Death-boundary fixture did not latch overheat.");
+            weapon.ApplyDeathDowngrade();
+            if (weapon.Heat != 0 || weapon.IsOverheated) failures.Add("Death retained heat/latch.");
+            if ((double)cadence.GetValue(weapon) != shotTime || (bool)allowed.GetValue(weapon) != wasAllowed)
+                failures.Add("Death downgrade reset cadence outside the gameplay gate.");
+            await rig.MouseEvent(new Vector2(300, 200), false);
+            rig.Unprotect();
+            Require(rig.Player.GetComponent<PlayerDamageLifecycle>().TryReceiveHit(null), "Real death was rejected.");
+            Require(weapon.Heat == 0 && !weapon.IsOverheated && (double)cadence.GetValue(weapon) == 0 &&
+                !(bool)allowed.GetValue(weapon), "Dying gate did not reset thermal/cadence permissions.");
+            await Until(() => rig.Gate.State == PlayerGameplayState.PostEntryInvincibility, 2500, "Respawn did not finish.");
+            Require(weapon.Heat == 0 && weapon.CanFire, "Respawn did not return thermal-ready.");
+            Runner.StartRun("LEVEL_START", false, true, null, null);
+            Require(weapon.Heat == 0 && !weapon.IsOverheated && (double)cadence.GetValue(weapon) == 0 &&
+                !(bool)allowed.GetValue(weapon), "Mission reset did not reset full weapon session state.");
+            Require(failures.Count == 0, string.Join("; ", failures));
+            return new { passed = true, missingHeatBindingsSafe = 3, deathOnlyResetsThermal = true,
+                gateResetsCadence = true, deathRespawn = true, missionResetsCadence = true };
+        }
+    }
+
     public static async Task<object> PlainHud(int width)
     {
         using (var rig = new Rig(width, 6))

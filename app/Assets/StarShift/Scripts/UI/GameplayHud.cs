@@ -129,7 +129,7 @@ namespace StarShift.UI
 
         private void RefreshHeat()
         {
-            if (heatFill == null) return;
+            if (heatFill == null || heatFrame == null || heatStatus == null) return;
             var fraction = weapon.HeatFraction;
             var overheated = weapon.IsOverheated;
             if (Mathf.Approximately(previousHeat, fraction) && previousOverheated == overheated) return;

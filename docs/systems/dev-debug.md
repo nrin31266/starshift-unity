@@ -518,6 +518,7 @@ response chứ không chỉ CLI exit code.
 | `VerifyEncounterFoundation.DevAndReset` | Intro/encounter jump, Right/camera override, replay from Pause, reject nonexistent BOSS |
 | `VerifyL1Encounters.DepartureFeedback` / `Lifecycle` | Preserved HP cue, mirrored B entry, visible projectile after source exit/lifetime/schedule, kill during telegraph, reset/handoff/reuse |
 | `VerifyVerticalSlice.MinorProjectileCleanup` | Late shot qua minor boundary: grace flight/damage, safe fade và trigger/sweep lock, viewport exit, pool reuse, Pause freeze, HUD/drag và extended centered handoff |
+| `VerifyVerticalSlice.ThermalReviewFixes` | Missing heat HUD bindings; death reset chỉ thermal; gameplay gate và mission reset giữ authority cadence; real death/respawn smoke |
 | `VerifyVerticalSlice.InputAndPause` / `GameOver` / `Pooling` | Existing UI ownership, terminal lives-zero cancellation, sustained profiler identity/churn |
 
 Helpers clone test configs, restore original LevelDefinition and view/device/clock
@@ -776,3 +777,14 @@ Compile PASS; final Editor Console ground truth 0 errors/0 warnings, scene khôn
 dirty, 0 missing scripts/references. Buffer vẫn giữ logs từ trước lượt này, không
 clear Console để che history. Evidence local tại `.design/minor-handoff-cleanup/`;
 chưa có Android/device QA hoặc commit/push.
+
+### PR #3 targeted thermal fixes — 2026-10-18
+
+`ThermalReviewFixes` tái hiện thiếu heatFrame/heatStatus và death downgrade reset
+cadence trên code trước fix; sau fix PASS ba missing-binding cases, thermal-only
+death boundary, gate-owned cadence, real death/respawn và full mission reset.
+`PlainHud(1600)` nearby smoke PASS binding/Pause/Resume và input exclusion. Compile,
+docs/diff checks PASS; final Console ground truth 0 errors/0 warnings, scene không
+dirty và 0 missing scripts/references. Logs retained đều từ trước lượt fix này.
+Không chạy lại historical matrix hoặc `pr-review`; verification theo phạm vi hai
+findings. Thermal/lifecycle contract không thay đổi.
