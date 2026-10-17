@@ -247,7 +247,7 @@ namespace StarShift.Encounters
                 slot.Flight.Configure(PlayDirectionSpace.Point(group.EntryAnchor + offset, direction),
                     PlayDirectionSpace.Point(group.HoldAnchor + offset, direction), PlayDirectionSpace.Offset(group.EntryCurve,direction),
                     group.EntryDuration, PlayDirectionSpace.Point(group.ExitAnchor + offset,direction), group.HoldDuration,
-                    Current.Completion == EncounterCompletion.Eliminate && required ? 0 : group.ExitDuration);
+                    required && (Current.Completion == EncounterCompletion.Eliminate || Current.Completion == EncounterCompletion.Boss) ? 0 : group.ExitDuration);
             }
             coordinator.Register(slot.Attack);
             root.transform.SetParent(transform, false);

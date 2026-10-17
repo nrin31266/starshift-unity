@@ -172,7 +172,9 @@ public static class VerifyL1Encounters
         }
     }
 
-    public static async Task<object> Lifecycle()
+    public static Task<object> Lifecycle() => RunLifecycle(false);
+
+    static async Task<object> RunLifecycle(bool failAfterDevMutation)
     {
         using (var rig = new Rig(2000, 6.8f, false))
         {
@@ -212,26 +214,56 @@ public static class VerifyL1Encounters
             await Task.Delay(100);
             Require(!Runner.IsRunning && Enemies.Length == 0, "GameOver left schedule active.");
             var dev = Runner.GetComponent<DevFastStart>();
-            Set(dev, "devModeEnabled", true); Set(dev, "startPoint", "ENCOUNTER_2"); Set(dev, "standalone", true);
-            dev.Replay();
-            Require(Runner.CurrentIndex == 1 && Runner.IsRunning && rig.Player.GetComponent<PlayerLives>().CurrentLives == 3,
-                "Dev B jump did not reset runtime session.");
-            await Task.Delay(500);
-            dev.Replay();
-            Require(Runner.Elapsed == 0 && Runner.SpawnedCount == 0 && Enemies.Length == 0, "Dev replay retained schedule/enemies.");
-            await Task.Delay(120);
-            Require(Enemies.Length == 2 && Runner.SpawnedCount == 2, "Dev replay did not spawn one mirrored pair.");
-            Set(dev, "startPoint", "ENCOUNTER_1"); dev.Replay();
-            Require(Runner.CurrentIndex == 0 && Runner.IsRunning, "Dev A jump failed.");
-            Set(dev, "startPoint", "NOT_A_REAL_START");
-            bool rejected = false;
-            try { dev.Replay(); } catch (ArgumentException) { rejected = true; }
-            Require(rejected && !Runner.IsRunning && Enemies.Length == 0, "Invalid dev start silently fell back.");
-            Set(dev, "devModeEnabled", false); Set(dev, "startPoint", "LEVEL_START"); Set(dev, "standalone", false);
-            return new { passed = true, killTelegraph = true, pooling = true, pause = true,
-                disableDuringTelegraph = true, resetDuringHandoff = true, gameOverStops = true,
-                devJumpReplay = true, invalidStartRejected = true };
+            var devBefore = EditorJsonUtility.ToJson(dev);
+            try
+            {
+                Set(dev, "devModeEnabled", true); Set(dev, "startPoint", "ENCOUNTER_2"); Set(dev, "standalone", true);
+                Set(dev, "skipIntro", true); Set(dev, "startLevel", null);
+                Set(dev, "overrideDirection", false); Set(dev, "cameraOverride", null);
+                if (failAfterDevMutation) throw new InvalidOperationException("Intentional dev restoration probe.");
+                dev.Replay();
+                Require(Runner.CurrentIndex == 1 && Runner.IsRunning && rig.Player.GetComponent<PlayerLives>().CurrentLives == 3,
+                    "Dev B jump did not reset runtime session.");
+                await Task.Delay(500);
+                dev.Replay();
+                Require(Runner.Elapsed == 0 && Runner.SpawnedCount == 0 && Enemies.Length == 0, "Dev replay retained schedule/enemies.");
+                await Task.Delay(120);
+                Require(Enemies.Length == 2 && Runner.SpawnedCount == 2, "Dev replay did not spawn one mirrored pair.");
+                Set(dev, "startPoint", "ENCOUNTER_1"); dev.Replay();
+                Require(Runner.CurrentIndex == 0 && Runner.IsRunning, "Dev A jump failed.");
+                Set(dev, "startPoint", "NOT_A_REAL_START");
+                bool rejected = false;
+                try { dev.Replay(); } catch (ArgumentException) { rejected = true; }
+                Require(rejected && !Runner.IsRunning && Enemies.Length == 0, "Invalid dev start silently fell back.");
+                return new { passed = true, killTelegraph = true, pooling = true, pause = true,
+                    disableDuringTelegraph = true, resetDuringHandoff = true, gameOverStops = true,
+                    devJumpReplay = true, invalidStartRejected = true };
+            }
+            finally { EditorJsonUtility.FromJsonOverwrite(devBefore, dev); }
         }
+    }
+
+    public static async Task<object> LifecycleRestoration()
+    {
+        var dev = Runner.GetComponent<DevFastStart>();
+        var original = EditorJsonUtility.ToJson(dev);
+        try
+        {
+            Set(dev, "devModeEnabled", false); Set(dev, "startPoint", "ENCOUNTER_2");
+            Set(dev, "standalone", true); Set(dev, "skipIntro", false);
+            var before = EditorJsonUtility.ToJson(dev);
+            for (int i = 0; i < 2; i++)
+            {
+                await Lifecycle();
+                Require(EditorJsonUtility.ToJson(dev) == before, "Lifecycle pass changed dev configuration.");
+            }
+            bool threw = false;
+            try { await RunLifecycle(true); }
+            catch (InvalidOperationException error) when (error.Message == "Intentional dev restoration probe.") { threw = true; }
+            Require(threw && EditorJsonUtility.ToJson(dev) == before, "Lifecycle exception changed dev configuration.");
+            return new { passed = true, normalPasses = 2, exceptionRestored = true, originalValuesPreserved = true };
+        }
+        finally { EditorJsonUtility.FromJsonOverwrite(original, dev); }
     }
 
     public static async Task<object> Offscreen()
@@ -547,7 +579,9 @@ public static class VerifyL1Encounters
             clone.Groups[0].Count = 0; Require(!clone.IsValid(out _), "Zero group count accepted.");
             clone.Groups[0].Count = 3; clone.ShotSpacing = float.NaN; Require(!clone.IsValid(out _), "NaN spacing accepted.");
             clone.ShotSpacing = .55f; clone.Duration = .1f; Require(!clone.IsValid(out _), "Timeline ended before scheduled group accepted.");
-            clone.Duration = 16; clone.Groups[0].EntryAnchor = new Vector2(float.PositiveInfinity, 1);
+            clone.Duration = 16; clone.Groups[0].Sequence = null;
+            Require(clone.IsValid(out _), "Legacy path fixture invalid before negative case.");
+            clone.Groups[0].EntryAnchor = new Vector2(float.PositiveInfinity, 1);
             Require(!clone.IsValid(out _), "Infinite path accepted.");
             return new { passed = true, invalidConfigsRejected = 4 };
         }

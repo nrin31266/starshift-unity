@@ -160,6 +160,51 @@ public static class VerifyEncounterFoundation
             SpawnAction Group(float start,float x)=>new SpawnAction {Count=1,Stagger=0,StartTime=start,Anchor=new Vector2(x,0),Sequence=rig.HoldSequence};
         }
     }
+    public static async Task<object> LegacyRequiredTargets()
+    {
+        using (var rig = new Rig())
+        {
+            int completed = 0;
+            Action<EncounterDefinition> done = _ => completed++;
+            Runner.Completed += done;
+            try
+            {
+                foreach (var mode in new[] { EncounterCompletion.Eliminate, EncounterCompletion.Boss })
+                {
+                    var definition = rig.Definition(mode);
+                    definition.BossPostDeathSeconds = .04f;
+                    definition.Groups = new[] { LegacyGroup(true) };
+                    Check(definition.IsValid(out var error), error);
+                    rig.Start(definition);
+                    await Until(() => Enemies.Length == 1 && Runner.Elapsed >= .3f, 1000, "Legacy required target did not settle.");
+                    var enemy = Enemies.Single();
+                    var flight = enemy.GetComponent<EntryHoldFlight>();
+                    Check(flight.IsHolding && !flight.IsExiting && !flight.HasExited && !flight.IsOutsideView &&
+                        Runner.CompletionCount == 0, "Legacy required target exited or completed without death: " + mode);
+                    enemy.ReceivePlayerHit(enemy.MaxHp, rig.Player);
+                    await Until(() => !Runner.HasActiveRun, 700, "Legacy required death did not complete: " + mode);
+                    Check(Runner.CompletionCount == 1, "Legacy required completion not once-only.");
+                }
+                Check(completed == 2, "Required completion signal count wrong.");
+                foreach (var mode in new[] { EncounterCompletion.Timeline, EncounterCompletion.Boss })
+                {
+                    var definition = rig.Definition(mode);
+                    definition.Duration = 1;
+                    definition.Groups = new[] { LegacyGroup(mode == EncounterCompletion.Timeline) };
+                    rig.Start(definition);
+                    await Until(() => Runner.SpawnedCount == 1 && Enemies.Length == 0, 1000, "Timed/non-required legacy target did not exit.");
+                    Check(Runner.CompletionCount == 0, "Legacy exit incorrectly counted as completion.");
+                }
+                return new { passed = true, requiredBossAndEliminateHold = true, deathCompletesOnce = true,
+                    timelineAndNonRequiredStillExit = true, completions = completed };
+            }
+            finally { Runner.Completed -= done; }
+        }
+        SpawnAction LegacyGroup(bool required) => new SpawnAction { Count = 1, Stagger = 0, Required = required,
+            Sequence = null, EntryAnchor = new Vector2(.5f, .8f), HoldAnchor = new Vector2(.5f, .7f),
+            ExitAnchor = new Vector2(.5f, -1), EntryDuration = .04f, HoldDuration = .06f, ExitDuration = .08f };
+    }
+
     public static async Task<object> DirectionAndCamera(int width)
     {
         using(var rig=new Rig(width))

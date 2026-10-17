@@ -480,6 +480,18 @@ public static class VerifyVerticalSlice
         }
     }
 
+    public static async Task<object> TerminalReplaySequence()
+    {
+        var results = new List<object>();
+        for (int i = 0; i < 3; i++)
+        {
+            var gameOver = await GameOver();
+            var replay = await ResetAndStandalone();
+            results.Add(new { iteration = i + 1, gameOver, replay });
+        }
+        return new { passed = true, samePlaySession = true, iterations = 3, results };
+    }
+
     static T[] All<T>() where T : UnityEngine.Object => UnityEngine.Object.FindObjectsByType<T>(FindObjectsInactive.Include);
     sealed class Rig : IDisposable
     {
