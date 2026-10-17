@@ -33,9 +33,9 @@ log cũ trước checkpoint, không có entry mới trong lượt M3.5.
 aspect pass. Một refinement chỉ đổi weapon symbol và normal capture timing, rồi
 chụp lại sáu state cho mỗi aspect; không lặp historical suites. Entry points ở
 [tool README](../../tools/unity/README.md#m35-thermal-hud-checkpoint).
-[Design review](../../.design/m3-5-thermal-hud/DESIGN_REVIEW.md) và
-[script review](../../.design/m3-5-thermal-hud/SCRIPT_DESIGN_REVIEW.md) giữ evidence
-riêng của checkpoint; không thay canonical ownership. Không chạy Android, full
+Design/script review và ảnh/JSON giữ local trong ignored
+`.design/m3-5-thermal-hud/`; summary ở đây và regression entry points được version
+để có thể chạy lại. Evidence local không thay canonical ownership. Không chạy Android, full
 camera/input/aspect gameplay matrix, benchmark pooling hoặc claim device FPS.
 
 ## Phạm vi và ownership

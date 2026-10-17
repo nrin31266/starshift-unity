@@ -40,4 +40,10 @@ __pycache__/
 *.pyc
 .venv/
 
-# Assets, Packages, ProjectSettings and Unity .meta files stay versioned.
+# Báo cáo/ảnh QA cục bộ; summary và regression entry points nằm trong docs/tools.
+/.design/
+
+# Defaults Scene Template do Editor sinh, không chứa thay đổi được author cho project.
+/app/ProjectSettings/SceneTemplateSettings.json
+
+# Assets, Packages, other ProjectSettings and Unity .meta files stay versioned.
