@@ -1,5 +1,16 @@
 # Unity baseline authoring
 
+## Frame rate verification
+
+Ở Play Mode, chạy `VerifyFrameRateLimit.Measure` bằng MCP `run_script`, file
+`../tools/unity/VerifyFrameRateLimit.cs`, args `[60]`. Helper đo 3 giây, kiểm tra
+target/VSync và FPS không vượt giới hạn quá 15%; CPU trả về theo phần trăm một lõi
+(có thể trên 100%), không phải tổng phần trăm CPU của máy. Kết quả Editor không
+thay thế profile Android. Cách chỉnh nằm ở
+[architecture owner](../../docs/systems/architecture.md#gameplay-frame-rate-tunable).
+
+## Baseline authoring
+
 `BuildVerticalSliceBaseline.cs` là authoring script chạy trong Unity Editor qua
 Pipeline `run_script`; nằm ngoài Assets để không trở thành runtime assembly.
 Scene/prefab/importer và metadata được Unity tạo, không sửa YAML.

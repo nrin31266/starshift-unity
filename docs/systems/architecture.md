@@ -430,6 +430,16 @@ tầm trung. Không claim 60 FPS khi chưa profile thiết bị thật.
 
 ## Pause và time management `[LOCKED]`
 
+### Gameplay frame rate `[TUNABLE]`
+
+`FrameRateLimit` trên Main Camera của `02_Gameplay` giới hạn mặc định 60 FPS để
+tránh chạy không giới hạn khi Play. Component tắt VSync ở runtime để
+`Application.targetFrameRate` có hiệu lực trên desktop. Chỉnh Target Frame Rate
+trong Inspector trước khi Play: 30 tiết kiệm hơn, 90/120 cho màn hình tần số cao.
+Đây là giới hạn yêu cầu, không bảo đảm thiết bị đạt FPS đó; chưa profile Android.
+
+### Pause behavior
+
 HUD có pause button. Khi pause, gameplay simulation, enemy spawn, projectiles và
 gameplay timers dừng; pause UI vẫn responsive và audio transition/loop không hỏng.
 `Time.timeScale = 0` là một lựa chọn, nhưng UI animation cần unscaled time và coroutine
