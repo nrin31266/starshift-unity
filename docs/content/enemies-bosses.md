@@ -33,6 +33,11 @@ Damaged
 Ví dụ enemy có HP 2: full HP dùng Normal, hit đầu chuyển sang Damaged frame/effect,
 hit tiếp chết. Không yêu cầu một frame riêng cho mỗi damage point.
 
+Scout checkpoint dùng ngưỡng `HP / max HP <= 50%` `[TUNABLE]` cho persistent
+Damaged: với seed hiện tại, 4/3 HP còn Normal, 2/1 HP là Damaged. Mỗi hit vẫn có
+flash ngắn độc lập; flash kết thúc mới đọc state này. Threshold nằm trên
+`EnemyDamagePresentation`, không thay HP/death authority.
+
 Enemy to SHOULD có:
 
 ```text
@@ -68,7 +73,7 @@ Scout dùng Normal/Damaged; score thấp theo
 
 VS-012–014 checkpoint có production Scout prefab nhận Pulse hit qua
 `IPlayerProjectileTarget`. HP lấy seed từ balance table bên dưới, mutable HP nằm
-trên instance. Hit đầu còn sống chuyển Damaged; lethal hit khóa nhận damage trước
+trên instance. Persistent Damaged theo threshold bên trên; lethal hit khóa nhận damage trước
 death hook, resolve một lần rồi disable root để dừng collider/movement. Không có
 floating HP bar, score/drop hoặc enemy firing trong checkpoint này.
 
@@ -100,18 +105,22 @@ Seed sandbox **một enemy** `[TUNABLE]` của `Data/Enemies/ScoutSingleFire.ass
 formation. Không nhân cadence này thành mọi Scout tự fire độc lập khi có nhiều
 enemy. Coordination direction và controlled selection thuộc
 [encounter owner](levels-encounters.md#multi-enemy-attack-coordination); per-shooter
-coordination API chưa implement. Shared safety gate của lifecycle không thay policy đó.
+coordination được implement tối thiểu ở VS-022/023. Shared safety gate của lifecycle không thay policy đó.
 
 Shot snapshot hướng từ Muzzle tới vị trí Player **lúc fire**, không khóa aim từ lúc
 telegraph và không steer sau launch. Direction/speed không phụ thuộc camera size
 hoặc aspect. Không burst, spread, homing hoặc predictive aim. Đạn đã launch tiếp tục
-đến contact/lifetime kể cả Scout bị disable/chết; chưa có encounter cleanup runner.
+đến contact/lifetime kể cả Scout bị disable/chết. Lifetime là fallback khi ngoài
+view; nếu hết lifetime mà shot vẫn visible thì tiếp tục tới view exit hoặc contact,
+không đổi hướng/tốc độ để ép kịp timer. Encounter cleanup release hostile
+projectiles khi complete/reset theo [handoff contract](levels-encounters.md#encounter-lifecycle-và-handoff).
 
 Pause dùng scaled time theo [architecture](../systems/architecture.md#pause-behavior).
 `PlayerGameplayGate` chỉ cấp permission cho Player; không suy enemy permission từ
 `CanFire`/`CanTakeDamage`. VS-021 thêm shared `EnemyFireGate` cho death/respawn grace
 và Game Over; Scout reset pending telegraph khi authority block, resume với local
-delay mới. Transition/Result orchestration và per-shooter encounter coordination
+delay mới. Encounter-controlled Scout chỉ bắt đầu telegraph khi coordinator cấp
+quyền, có thể single fire trong finite exit của L1 B. Transition/Result orchestration
 vẫn chưa có. Boundary thuộc
 [architecture](../systems/architecture.md#m2-player-damage-lifecycle).
 Projectile/contact/pool boundary thuộc
@@ -168,13 +177,13 @@ không tự copy Scout stats thành locked minion contract.
 ## Balance seed table
 
 Tất cả HP là [TUNABLE], không phải final balance.
-Scout HP seed hiện phục vụ vertical-slice validation: một hit chuyển Damaged, hit
-tiếp theo chết với Pulse Lv1 checkpoint. Không coi đây là HP campaign cuối cùng;
+Scout HP seed hiện phục vụ vertical-slice playtest, cần bốn hit Pulse Lv1 để kill.
+Damage state theo [threshold](#damage-state), không coi đây là HP campaign cuối cùng;
 retune theo [weapon power progression](weapons-items-drops.md#weapon-philosophy-và-common-config).
 
 | Archetype | HP seed |
 |---|---:|
-| Scout | 2 |
+| Scout | 4 |
 | Raider | 3 |
 | Bomber | 6 |
 | Sniper | 4 |

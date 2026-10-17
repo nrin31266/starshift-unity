@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PulseLaserLv1
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Combat.PulseLaserDefinition
   projectilePrefab: {fileID: 6313352160549666604, guid: 689fd7f0b61bc39b798a1aea031257f6, type: 3}
-  fireInterval: 0.2
+  fireInterval: 0.17
   projectileSpeed: 12
   damage: 1
   projectileLifetime: 1.5

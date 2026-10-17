@@ -205,6 +205,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EnemyDamagePresentation
   hull: {fileID: 9117863417997564826}
   damagedTint: {r: 0.9, g: 0.28, b: 0.3, a: 1}
+  damagedHealthFraction: 0.5
   flashDuration: 0.08
 --- !u!114 &7974032550739985283
 MonoBehaviour:

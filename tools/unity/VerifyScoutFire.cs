@@ -52,6 +52,9 @@ public static class VerifyScoutFire
         var gameView = EditorWindow.GetWindow(gameViewType);
         var selectedSize = gameViewType.GetProperty("selectedSizeIndex");
         var oldSize = selectedSize.GetValue(gameView);
+        var gameViewZoom = gameView.GetType().GetField("m_ZoomArea", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(gameView);
+        var oldGameViewZoom = (Vector2)gameViewZoom.GetType().GetProperty("scale").GetValue(gameViewZoom);
+        var oldGameViewPan = (Vector2)gameViewZoom.GetType().GetProperty("translation").GetValue(gameViewZoom);
         var setResolution = gameViewType.GetMethod("SetCustomResolution", BindingFlags.Instance | BindingFlags.NonPublic);
         GameObject scout = null;
         var results = new List<string>();
@@ -139,7 +142,8 @@ public static class VerifyScoutFire
             movement.enabled = movementEnabled;
             gate.SetState(oldState);
             sceneScout.SetActive(wasActive);
-            selectedSize.SetValue(gameView, oldSize);
+            gameView.GetType().GetMethod("SizeSelectionCallback").Invoke(gameView, new object[] { oldSize, null });
+            gameViewZoom.GetType().GetMethod("SetTransform").Invoke(gameViewZoom, new object[] { oldGameViewPan, oldGameViewZoom });
             camera.ResetAspect();
         }
     }
@@ -331,6 +335,9 @@ public static class VerifyScoutFire
         var gameView = EditorWindow.GetWindow(gameViewType);
         var selectedSize = gameViewType.GetProperty("selectedSizeIndex");
         var oldSize = selectedSize.GetValue(gameView);
+        var gameViewZoom = gameView.GetType().GetField("m_ZoomArea", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(gameView);
+        var oldGameViewZoom = (Vector2)gameViewZoom.GetType().GetProperty("scale").GetValue(gameViewZoom);
+        var oldGameViewPan = (Vector2)gameViewZoom.GetType().GetProperty("translation").GetValue(gameViewZoom);
         Mouse mouse = null;
         GameObject scout = null;
         var probe = player.transform.Find("Collision").gameObject.AddComponent<EnemyHitProbe>();
@@ -395,7 +402,8 @@ public static class VerifyScoutFire
             Position(player, oldPosition);
             gate.SetState(oldState);
             sceneScout.SetActive(wasActive);
-            selectedSize.SetValue(gameView, oldSize);
+            gameView.GetType().GetMethod("SizeSelectionCallback").Invoke(gameView, new object[] { oldSize, null });
+            gameViewZoom.GetType().GetMethod("SetTransform").Invoke(gameViewZoom, new object[] { oldGameViewPan, oldGameViewZoom });
             Camera.main.ResetAspect();
         }
     }

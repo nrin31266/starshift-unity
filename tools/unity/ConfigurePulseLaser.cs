@@ -33,10 +33,11 @@ public static class ConfigurePulseLaser
                 body.constraints = RigidbodyConstraints2D.FreezeRotation;
                 var collider = root.AddComponent<BoxCollider2D>();
                 collider.isTrigger = true;
-                collider.size = new Vector2(.1f, .4f);
+                collider.size = new Vector2(.08f, .4f);
                 root.AddComponent<PlayerProjectile>();
                 var visual = new GameObject("Visual");
                 visual.transform.SetParent(root.transform, false);
+                visual.transform.localScale = new Vector3(.8f, 1, 1);
                 var renderer = visual.AddComponent<SpriteRenderer>();
                 renderer.sprite = PlaceholderSprite();
                 renderer.color = new Color(.1f, .85f, 1f, 1f);
@@ -50,6 +51,9 @@ public static class ConfigurePulseLaser
         if (definition == null)
         {
             definition = ScriptableObject.CreateInstance<PulseLaserDefinition>();
+            var seed = new SerializedObject(definition);
+            seed.FindProperty("fireInterval").floatValue = .17f;
+            seed.ApplyModifiedPropertiesWithoutUndo();
             AssetDatabase.CreateAsset(definition, DefinitionPath);
         }
         var definitionSettings = new SerializedObject(definition);

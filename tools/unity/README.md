@@ -135,11 +135,28 @@ khởi tạo khi Play/OnEnable.
 [dev/debug](../../docs/systems/dev-debug.md#m2-scout-verification).
 Ảnh damaged-state nằm trong ignored `app/Temp/StarShiftScoutCheckpoint/`.
 
-Manual: Play gameplay scene, đợi Scout bay vào vùng trên rồi kéo Player để aim,
-giữ pointer bắn Pulse. Scout chết sẽ disable; restart Play để thử lại, chưa có
-respawn/scheduler. Chọn scene Scout để chỉnh Entry/Hold Viewport và Entry Duration;
+Manual hiện chạy encounter A → B theo [L1 checkpoint](#l1-encounters-và-fast-start).
+Scout sandbox ở scene được giữ disabled cho isolated probes. Chọn prefab Scout để
+chỉnh default Entry/Hold Viewport và Entry Duration cho sandbox;
 HP chỉnh ở definition asset, flash/tint ở Enemy Damage Presentation. Các giá trị
 là prototype seeds ở canonical owners, không phải final tuning.
+
+## L1 encounters và fast start
+
+`ConfigureL1Encounters.Configure` chạy ở saved gameplay scene trong Edit Mode qua
+MCP, tạo hai encounter assets nếu chưa có, giữ existing tunables, nối runner/gates
+và disable sandbox Scout. `Inspect` đọc configs, wiring, missing references/scripts.
+Không raw-edit YAML hoặc reset config user đã chỉnh.
+`ApplyPlaytestFeedback` áp entry đồng bộ hiện tại và damage threshold vào existing
+encounter assets/Scout prefab; giữ các anchor, HP và weapon tuning đang có.
+`VerifyL1Encounters.DepartureFeedback` gom kiểm tra damage state, mirrored entry và
+shot còn visible qua source exit/timeline/lifetime. `QuickTuning` smoke HP/Pulse/B.
+
+`VerifyL1Encounters.Run` nhận ví dụ `[1600,6,false]` hoặc `[2000,6.8,true]`;
+`Death`, `Lifecycle`, `Boundary`, `Offscreen`, `Validate`, `Isolate` không cần args. Tất cả qua
+`../tools/unity/VerifyL1Encounters.cs`. Coverage, fast-start controls và regression
+isolation thuộc [dev/debug owner](../../docs/systems/dev-debug.md#m2-l1-fast-start-và-encounter-verification).
+Scene mở sẵn để Play A → B; chọn `L1Encounters` để tới config/dev component.
 
 ## Scout single-fire checkpoint
 
@@ -172,4 +189,74 @@ không save scene sau khi isolate. Coverage/isolation và giới hạn ở
 [dev/debug](../../docs/systems/dev-debug.md#m2-player-damage-lifecycle-verification).
 Manual: Play scene, để Scout bắn trúng hoặc body chạm Player; inspect lives/state qua
 MCP, references/tunables qua Inspector; xem entrance, blink và enemy fire resume. Game Over
-chưa có UI; restart Play để reset phiên test, không coi đây là Retry Wave.
+đã có minimal overlay; restart Play/dev replay để reset phiên test, không coi đây là Retry Wave.
+
+
+## M2 UI closure
+
+`ConfigureGameplayUi.Configure` chạy qua Unity MCP ở saved gameplay scene trong
+Edit Mode; tạo authored Canvas/HUD/overlay/EventSystem/session, dùng lại project
+InputSystem actions và giữ UI đã có. `Inspect` kiểm tra scene references/scripts,
+font glyphs và EventSystem. Presentation chỉnh trực tiếp RectTransform/components;
+không chạy lại baseline builders để reset gameplay tuning.
+
+`VerifyVerticalSlice.InputAndPause`, `FullRun(width,size,withDeath)`, `GameOver`,
+`Pooling`, `ResetAndStandalone` chạy bằng MCP run_script trong Play Mode.
+`EditorViewRestoration` kiểm tra cleanup preset/resolution/preview zoom/pan cả khi
+test bị ngắt; [Editor state contract](../../docs/systems/dev-debug.md#game-view-và-trạng-thái-editor).
+Ví dụ args FullRun: `[1600,6,true]`, `[2000,6,false]`, `[2000,6.8,false]`.
+Coverage/evidence và giới hạn thuộc
+[dev/debug](../../docs/systems/dev-debug.md#m2-vertical-slice-closure-verification).
+
+## M3 level và encounter foundation
+
+`ConfigureEncounterFoundation.Configure` promote saved L1 assets qua Unity API,
+không đổi GUID/tuning đã có; tạo LevelDefinition, CameraProfile/FlightSequence assets,
+bind LevelFlow/cleanup/prefab pool/debug và author placeholder mission approach.
+`Inspect` đọc config, sequence references và scene missing scripts/references.
+Dùng script này cho migration; không chạy lại M2 builders để reset tuning.
+
+`VerifyVerticalSlice.FullMissionRun` chạy full intro + migrated L1; regression probes
+và command timeouts ở [dev owner](../../docs/systems/dev-debug.md#m3-regression-entry-points).
+Ví dụ ở Unity root `app/`:
+
+```sh
+unity command run_script --file ../tools/unity/VerifyVerticalSlice.cs --entry VerifyVerticalSlice.FullMissionRun --args '[1600,6,true]' --timeout 90 --timeout_ms 85000 --format json
+unity command run_script --file ../tools/unity/VerifyEncounterFoundation.cs --entry VerifyEncounterFoundation.Boundaries --format json
+```
+
+Inspector: `Data/Levels/L1` giữ direction/intro/encounter order/default camera;
+`Data/Encounters` giữ groups/schedule/completion/fire/grace; `Data/Flights` giữ phases;
+`Data/Cameras` giữ size/region/transition. Runtime authority không nằm ở assets.
+Dev overrides/debug toggles nằm trên `L1Encounters`, default OFF.
+
+
+## Mission establishing và cinematic revision
+
+`ConfigureMissionPresentation.Configure` chạy ở Edit Mode sau M3 foundation để author
+CombatHud CanvasGroup, location/space announcement + description, subtle ContinueHint,
+transparent establishing tap area, visual-only approach ship và backdrop. Migration
+bỏ nút menu cũ; rerun giữ timing/copy đã tune. Không tạo Canvas, EventSystem, menu
+hoặc gameplay scene thứ hai. LocationName chưa quyết vẫn trống trong Level config.
+
+Play: đọc establishing text → prompt xuất hiện → valid tap bất kỳ → approach / space
+travel → brake đồng thời framing/HUD → gameplay card → combat. Intro không Pause; minor A→B
+giữ HUD và gameplay Pause, optional copy tự fade và không confirmation. Dev Skip Intro
+hoặc encounter start bỏ qua establishing tap. Test qua FullMissionRun, EstablishingInput
+và VerifyEncounterFoundation.PresentationBoundaries; evidence thuộc
+[dev owner](../../docs/systems/dev-debug.md#mission-presentation-revision).
+
+`VerifyVerticalSlice.CaptureIntroPreview` sample PNG sequence khoảng 10 fps vào ignored
+`app/Temp/StarShiftIntroReview/ux-preview-frames/` để review từ establishing tới gameplay;
+helper trả thời lượng thực để encode, dùng real virtual Mouse, không đo performance.
+
+Major establishing giữ layout giới thiệu; timed Mission/Encounter titles căn giữa
+trong cùng GameplayAnnouncement. Tên tạm dùng taxonomy để debug; tên planet chưa
+chốt giữ TBD. Bật Content Labels trên EncounterDebugView để xem từng Spawn Group,
+Formation và Flight Sequence / Path theo IDs thực; default OFF.
+
+Mission card gộp Mission title + starting Encounter ở dòng dưới, không mô tả Mission
+hoặc announcement đầu riêng; chỉ hiện khi HUD/control đã trở lại. Timing và Pause
+theo [presentation owner](../../docs/presentation/audio-vfx.md#level-intro-warning-và-dynamic-audio).
+FullMissionRun kiểm tra fresh drag/fire và Pause trong card trước first spawn.
+Dev jump lấy đúng Encounter index đã chọn.

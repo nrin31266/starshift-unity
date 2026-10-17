@@ -53,10 +53,13 @@ M2 Pulse Laser Lv1 seed `[TUNABLE]`, phục vụ VS-010/011 và chưa phải bal
 
 | Giá trị | Seed |
 |---|---:|
-| Fire interval | 0.2 s |
+| Fire interval | 0.17 s |
 | Projectile speed | 12 world units/s |
 | Damage mỗi hit | 1 |
 | Projectile lifetime | 1.5 s |
+
+Pulse placeholder giữ nguyên chiều dài; visual X scale 0.8 và collider width 0.08
+world units `[TUNABLE]` để tia thon hơn ở lượt test feel hiện tại.
 
 Static asset ở `app/Assets/StarShift/Data/Weapons/PulseLaserLv1.asset` giữ các seed
 và projectile prefab reference. Runtime snapshot damage/speed/lifetime khi launch;

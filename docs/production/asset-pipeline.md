@@ -217,3 +217,13 @@ profile trước khi chốt quality setting hoặc thêm package.
 - Audio không clipping/spam, loop hợp lệ; category/volume hierarchy phù hợp.
 - Giữ source/prompt/parameters quan trọng để regenerate; output và `.meta` đi cùng.
 - Không thêm asset, generator hoặc dependency ngoài task hiện tại.
+
+## M3 mission approach placeholder source
+
+`Art/Placeholders/planet-disc-placeholder.png` là procedural neutral disc do
+`tools/unity/ConfigureEncounterFoundation.cs` tạo bằng Unity Texture2D/TextureImporter.
+Không dùng external art/license; stars dùng cùng sprite và deterministic authoring
+seed trong script. Script chỉ tạo khi asset chưa tồn tại, giữ GUID/importer sau đó.
+Đây là test presentation theo [placeholder-first](#placeholder-first), không lock
+visual family hoặc tên hành tinh. Choreography thuộc
+[audio/VFX](../presentation/audio-vfx.md#level-intro-warning-và-dynamic-audio).

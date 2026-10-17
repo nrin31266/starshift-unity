@@ -99,6 +99,8 @@ namespace StarShift.Combat
             }
         }
 
+        public void Release() => FinishFlight();
+
         public void ResetForPool()
         {
             flying = false;

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using StarShift.Gameplay;
 
 namespace StarShift.Player
 {
@@ -19,6 +20,7 @@ namespace StarShift.Player
         private float elapsed;
         private int anchor;
         private bool entering;
+        public PlayDirection Direction { get; set; }
         public bool IsEntering => isActiveAndEnabled && entering;
         public bool IsComplete => IsEntering && elapsed >= duration && SafeTargetFound;
         public bool SafeTargetFound { get; private set; }
@@ -55,7 +57,7 @@ namespace StarShift.Player
             var depth = Vector3.Dot(transform.position - camera.transform.position, camera.transform.forward);
             Vector2 Target(int index)
             {
-                var normalized = region.min + Vector2.Scale(region.size, SafeAnchors[index]);
+                var normalized = region.min + Vector2.Scale(region.size, PlayDirectionSpace.Point(SafeAnchors[index], Direction));
                 return bounds.ClampPosition(camera.ViewportToWorldPoint(new Vector3(normalized.x, normalized.y, depth)), camera, region);
             }
             bool Clear(Vector2 position)
@@ -70,7 +72,8 @@ namespace StarShift.Player
                     if (Clear(Target(i))) { anchor = i; SafeTargetFound = true; break; }
             var destination = Target(anchor);
             var destinationViewport = camera.WorldToViewportPoint(new Vector3(destination.x, destination.y, transform.position.z));
-            var entry = camera.ViewportToWorldPoint(new Vector3(destinationViewport.x, -.12f, depth));
+            var entry = camera.ViewportToWorldPoint(Direction == PlayDirection.Right
+                ? new Vector3(-.12f, destinationViewport.y, depth) : new Vector3(destinationViewport.x, -.12f, depth));
             return Vector2.Lerp(entry, destination, Mathf.SmoothStep(0, 1, elapsed / duration));
         }
 

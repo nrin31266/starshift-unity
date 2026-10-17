@@ -12,12 +12,12 @@ HUD/button tránh giữa combat và cần touch target đủ lớn.
 Menu có các action sau; mobile không cần Quit button:
 
 ```text
-CONTINUE
-NEW GAME
-MISSIONS
-HOW TO PLAY
-SETTINGS
-CREDITS
+TIẾP TỤC
+CHƠI MỚI
+NHIỆM VỤ
+CÁCH CHƠI
+CÀI ĐẶT
+GIỚI THIỆU
 ```
 
 Continue chỉ enabled/visible khi CampaignSave hợp lệ. Action này load checkpoint
@@ -57,7 +57,7 @@ HUD cho biết survival, performance, currency và active weapon mà không che 
 
 ```text
 ┌─────────────────────────────────────────────┐
-│ 🚀 3      SCORE 012450       ✦ 284      ⏸ │
+│ 🚀 3       ★ 012450          ✦ 284      ⏸ │
 │                                             │
 │                                             │
 │                                             │
@@ -84,10 +84,10 @@ UI không tự tính lives hoặc chọn reward.
 Pause là overlay, không cần scene riêng. Các action:
 
 ```text
-RESUME
-RESTART WAVE
-SETTINGS
-MAIN MENU
+TIẾP TỤC
+CHƠI LẠI ĐỢT
+CÀI ĐẶT
+VỀ MENU CHÍNH
 ```
 
 Pause simulation/time contract ở [architecture](../systems/architecture.md#pause-và-time-management-locked).
@@ -101,13 +101,13 @@ Sau khi death sequence hoàn tất, mở Game Over overlay với selected stats 
 [player combat](../gameplay/player-combat.md) quyết.
 
 ```text
-MISSION FAILED
-Score
-Level / Wave
-Lives lost / selected stats
+THẤT BẠI
+Điểm
+Nhiệm vụ / Đợt
+Số mạng đã mất / thống kê chọn lọc
 
-RETRY WAVE
-MAIN MENU
+CHƠI LẠI ĐỢT
+VỀ MENU CHÍNH
 ```
 
 ## Level Clear và Campaign Result
@@ -164,4 +164,92 @@ cần kiểm tra trên mobile thay vì chỉ desktop Game view.
 ## Localization readiness
 
 Text/button không bake vào sprite; layout chừa chỗ cho text dài hơn khi localize.
-Ngôn ngữ shipping và font strategy vẫn [TBD]; không tự thêm localization package.
+Player-facing copy dùng **tiếng Việt**; proper sci-fi names (ví dụ Pulse Laser) có
+thể giữ English. Technical identifiers dùng English. Font strategy shipping vẫn
+[TBD]; không tự thêm localization package.
+
+
+## Vocabulary và announcement
+
+Taxonomy duy nhất ở [level owner](../content/levels-encounters.md#terminology-và-composition).
+Trong bản debug hiện tại, dùng tên cấu trúc + số/ID: Region / Planet, Mission,
+Encounter; các cấp composition hiện trong existing debug view. Đây là chủ ý để đọc
+flow, chưa cần copy hoa mỹ. Không gộp Spawn Group với Formation, không tự đổi một
+lần spawn thành Encounter mới. Technical taxonomy được giữ English trong nhãn tạm.
+“NHIỆM VỤ 01” không làm hero title của Region / Planet establishing; Mission numbering
+có thể là secondary metadata ở HUD/results/mission UI hoặc short Mission label.
+
+HUD thường trực ưu tiên icon + number; text lớn chỉ dành cho moment quan trọng,
+ngắn và không chặn gameplay. Mission start, clear và future danger warning dùng
+presentation tách khỏi gameplay authority; timing/fade có thể tune.
+
+## M2 UI implementation `[PROVISIONAL]`
+
+VS-006/024–026 dùng uGUI trong `02_Gameplay`, không thêm scene hay localization
+framework. Copy tập trung ở `GameplayCopy`; font runtime hiện có đủ glyph Việt.
+HUD nằm trong `Screen.safeArea`, scale theo chiều cao với reference 1600 × 900;
+anchors/offsets chỉnh trên RectTransform. Lives icon + count đọc `PlayerLives`;
+Pulse Laser + CẤP đọc `PulseLaserWeapon.CurrentLevel`. Score và Shard là icon + **—**
+(placeholder, không phải số zero hoặc economy giả); chưa có buff/boss/weapon cycle.
+
+Establishing scene dùng lại `GameplayAnnouncement` với location/space title và một
+câu mô tả ngắn, không tạo menu hoặc cinematic framework khác. `LocationName` chỉ
+được dùng khi đã author; tên hành tinh/location chưa quyết vẫn để trống `[TBD]`,
+không suy từ RegionId, DisplayName hoặc tự đặt fiction name. Fallback trung tính:
+“Region / Planet · TBD” / “Một hành tinh hiện ra ở phía xa.”, không phải tên riêng.
+Major establishing dùng layout giới thiệu lệch trái ở phần dưới; thường dành cho
+vào/đổi hành tinh/khu vực lớn. Không dùng layout này cho mọi lần đổi combat segment.
+
+Text có thời gian xuất hiện/đọc trước khi fade in lời nhắc nhỏ “Chạm để tiếp tục”.
+Không nút chữ nhật BẮT ĐẦU. Tap trái chuột hoặc touch hợp lệ ở bất kỳ điểm trong
+Game View tiếp tục; drag, cancel, right-click, hold dài và press bắt đầu trước lời
+nhắc không được tính. Không auto-launch khi hết thời gian đọc. Toàn bộ input của
+cinematic được consume; khi trả gameplay phải có press mới để move/fire. Detailed
+ownership thuộc [player owner](../gameplay/player-combat.md#m2-ui-pointer-ownership).
+
+Ẩn combat HUD/Pause ở **major cinematic**: establishing intro hiện tại; future
+major boss reveal, major direction-shift cinematic và ending áp dụng cùng rule.
+Không mặc định mọi transition là major cinematic. Sau continue, giữ approach /
+acceleration / deceleration; camera và HUD trở về đồng thời với deceleration,
+không nhịp đứng chờ riêng hoặc menu/confirmation nữa.
+Khi camera đã về khung gameplay, HUD hiện đủ và điều khiển mở, mới hiện Mission card.
+Mission card **căn giữa**, gồm hai dòng: “Mission 01” và “Encounter 01” nhỏ hơn ngay
+bên dưới. Mission không có câu mô tả. Encounter đầu được gộp vào card này để có
+thời gian đọc, không phát thêm announcement đầu tiên cạnh tranh với Mission card.
+Title Mission từ Intro config, subtitle Encounter lấy từ index đang vào trong Mission;
+normal start là 01, dev encounter jump phải phản ánh đúng index đã chọn.
+Card giữ lâu hơn minor handoff; nhịp dừng/hiển thị theo
+[audio/VFX](audio-vfx.md#level-intro-warning-và-dynamic-audio). Không trở thành hero
+location title hoặc yêu cầu tap lần nữa. Pause không nhận lệnh trong
+major intro; simulation vẫn chạy. HUD fade về trong Brake; hết Brake mở control rồi
+hiện card trên gameplay. Người chơi có thể kéo/bắn/Pause trong nhịp đọc, nhưng first
+spawn đợi card hoàn tất. Resume từ Pause hiện lại card với thời gian còn lại.
+
+Sau khi gameplay bắt đầu, HUD luôn hiện xuyên suốt ordinary A → B / formation
+transitions. Pause và gameplay permissions vẫn theo gameplay/lifecycle bình thường;
+minor handoff không tự khóa input hoặc ẩn Pause. Không Continue/forced confirmation.
+Minor title + một câu mô tả nằm **giữa màn hình**, dùng cùng announcement với layout
+căn giữa rồi auto fade; không chung vị trí/layout với major establishing. Incoming
+encounter config có thể để trống cả hai. L1 B dùng “Encounter 02” / “Tín hiệu mới đang
+tiến vào khu vực.” để debug đúng cấp, chưa dùng nhãn hoa mỹ.
+Minor announcement seed 1.6 s, fade .2 s `[TUNABLE]`; Pause/terminal/reset ẩn nó.
+Announcement chỉ render copy, không sở hữu gameplay authority.
+
+Pause hiện “TẠM DỪNG”; “TIẾP TỤC” hoạt động. “CHƠI LẠI ĐỢT”, “CÀI ĐẶT”,
+“VỀ MENU CHÍNH” disabled, kèm “Chưa có trong bản thử nghiệm”. Slice chưa có
+checkpoint restore/Settings/Main Menu backend; dev replay không được giả làm Retry.
+Gameplay pause/resume và terminal authority ở
+[architecture](../systems/architecture.md#m2-gameplay-session-và-ui-boundary).
+
+Sau full L1 A → B, compact panel hiện một lần “NHIỆM VỤ HOÀN THÀNH” sau .45 s
+unscaled `[TUNABLE]`. “TIẾP THEO” và “VỀ MENU CHÍNH” disabled cùng note trên;
+chưa có L2/results navigation hoặc stats giả. Combat đã khóa ngay trước clear delay.
+Standalone dev encounter không phát mission-clear panel.
+
+Game Over minimal thuộc batch UI slice: sau death sequence với lives 0 hiện
+“THẤT BẠI”, “CHƠI LẠI ĐỢT” và “VỀ MENU CHÍNH” disabled cùng note. Không hiển thị
+selected stats chưa track. Lưu/restore checkpoint và full navigation vẫn là task sau.
+
+Overlay chặn raycast toàn màn; HUD decoration không bắt pointer. Nút Pause/Resume
+và modal có target đủ lớn theo reference layout; chưa xác nhận dp/cutout trên Android.
+Input ownership chi tiết thuộc [player owner](../gameplay/player-combat.md#m2-ui-pointer-ownership).

@@ -32,6 +32,9 @@ public static class VerifyPlayerBounds
         var gameView = EditorWindow.GetWindow(gameViewType);
         var selectedSize = gameViewType.GetProperty("selectedSizeIndex");
         var originalSizeIndex = selectedSize.GetValue(gameView);
+        var gameViewZoom = gameView.GetType().GetField("m_ZoomArea", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(gameView);
+        var oldGameViewZoom = (Vector2)gameViewZoom.GetType().GetProperty("scale").GetValue(gameViewZoom);
+        var oldGameViewPan = (Vector2)gameViewZoom.GetType().GetProperty("translation").GetValue(gameViewZoom);
         // API Editor nội bộ chỉ dùng trong verification, không đi vào runtime.
         var setResolution = gameViewType.GetMethod("SetCustomResolution", BindingFlags.Instance | BindingFlags.NonPublic);
         if (setResolution == null) throw new InvalidOperationException("This Editor cannot configure the Game View with the expected API.");
@@ -105,7 +108,8 @@ public static class VerifyPlayerBounds
             if (originalMouse != null && originalMouse.added) originalMouse.MakeCurrent();
             input.ResetDrag();
             body.position = originalPosition;
-            selectedSize.SetValue(gameView, originalSizeIndex);
+            gameView.GetType().GetMethod("SizeSelectionCallback").Invoke(gameView, new object[] { originalSizeIndex, null });
+            gameViewZoom.GetType().GetMethod("SetTransform").Invoke(gameViewZoom, new object[] { oldGameViewPan, oldGameViewZoom });
             gameView.Repaint();
             camera.ResetAspect();
         }

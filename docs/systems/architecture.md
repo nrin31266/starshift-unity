@@ -133,7 +133,8 @@ Rigidbody2D Kinematic, gravity zero và freeze rotation là baseline prototype;
 collider radius/offset cũng provisional, chưa khóa movement API hay collision matrix.
 Prefab root ở origin, unit scale; spawn position thuộc scene instance.
 Ở checkpoint VS-001–003 chưa có lifecycle; phần hiện tại ở
-[M2 player damage lifecycle](#m2-player-damage-lifecycle). Encounter, HUD và persistence chưa implement.
+[M2 player damage lifecycle](#m2-player-damage-lifecycle) và
+[M2 L1 encounters](#m2-l1-encounter-runtime). HUD hiện có ở [M2 UI boundary](#m2-gameplay-session-và-ui-boundary); persistence chưa implement.
 Không tạo component rỗng để giữ chỗ cho các trách nhiệm chưa implement.
 
 VS-004–005 có runtime scripts ở `Scripts/Player/`:
@@ -173,13 +174,14 @@ Seed và boundary behavior thuộc
 `Scripts/Gameplay/GameplayViewSettings` là serializable value config nhỏ gồm target
 orthographic size và normalized playable Rect. `GameplayViewController` trên Main
 Camera sở hữu cả camera framing lẫn current playable region; không biết level ID,
-boss ID, player input, damage hoặc encounter completion. Chưa cần ScriptableObject,
-registry profile, tween/cinematic framework hoặc authoring system.
+boss ID, player input, damage hoặc encounter completion. M3 CameraProfile assets
+chỉ cung cấp view data/transition duration; không thêm tween/cinematic framework.
 
 Inspector có `Target View` và `Transition Duration`; sửa target trong Play Mode đi
 qua cùng request path với runtime caller. Gameplay code giữ direct reference tới
 controller, gọi `RequestView(new GameplayViewSettings(size, viewport))`, hoặc overload
-thêm duration tính bằng giây; `ReturnToBaseline()` request baseline full viewport.
+thêm duration tính bằng giây. LevelFlow gọi `SetBaseline` từ level/dev profile;
+`ReturnToBaseline()` request đúng baseline đó (fallback seed khi chưa bind level).
 API và naming hiện tại là implementation `[PROVISIONAL]`; camera policy thuộc
 [content owner](../content/levels-encounters.md#master-campaign-table-và-camera-profiles).
 Editor drawer dùng delayed numeric fields: commit bằng Enter hoặc đổi focus trước
@@ -224,7 +226,7 @@ contract thuộc [player combat](../gameplay/player-combat.md#player-state-model
 `PulseLaserDefinition` là ScriptableObject static, còn `PulseLaserWeapon` giữ
 cooldown và local `UnityEngine.Pool.ObjectPool<PlayerProjectile>`. Không có weapon
 switch/upgrade framework. `Muzzle.up` cung cấp hướng bắn trong slice; Player facing
-hiện tại quyết Up/Right, chưa có LevelDefinition/direction handoff runtime.
+do LevelFlow apply Up/Right từ LevelDefinition/dev override; không đổi input axes.
 Pool instances ở runtime root `PlayerProjectiles`, không parent vào tàu đang di
 chuyển; root được dọn cùng weapon. Disable weapon chỉ ngừng spawn, projectile đã
 bắn vẫn kết thúc bình thường. Seed/config ownership thuộc
@@ -247,7 +249,8 @@ thuộc [dev/debug](dev-debug.md#m2-pulse-laser-verification).
 ### M2 Scout baseline `[PROVISIONAL]`
 
 VS-012–014 tạo `Prefabs/Enemies/Scout.prefab`, đặt một instance trong `Enemies` của
-gameplay scene; không thêm scheduler, encounter runner hoặc enemy pool.
+gameplay scene. Instance sandbox hiện disabled; encounter runtime bên dưới dùng
+cùng prefab và flight/attack components.
 
 ```text
 Scout                      Rigidbody2D (Kinematic), EnemyHealth,
@@ -268,7 +271,8 @@ OnEnable reset HP; không mutate definition. Đây là reuse reset contract, ch�
 nghĩa production enemy pooling đã có.
 
 `EnemyDamagePresentation` subscribe/unsubscribe theo lifecycle, đọc HP và flash
-timer riêng. Nó chỉ đổi Hull renderer tint; không sửa HP, collider hoặc phase.
+timer riêng, dùng serialized HP fraction cho persistent damage cue. Nó chỉ đổi
+Hull renderer tint; không sửa HP, collider hoặc phase.
 Normal tint lấy từ authored renderer, reset khi disable; enable giữa damaged state
 phải phản ánh HP hiện tại. Presentation seed thuộc
 [audio/VFX](../presentation/audio-vfx.md#enemy-damage-feedback).
@@ -293,7 +297,7 @@ Production prefab chỉ reference runtime components/assets; các helpers trong
 
 VS-015 thêm `SingleFireAttack`, `EnemyFirePresentation` và child `Muzzle` vào Scout.
 `SingleFireDefinition` giữ prefab/timing/speed/lifetime static; attack giữ phase timer,
-đọc `EnemyHealth.IsAlive`/`EntryHoldFlight.IsHolding` và target Transform được scene
+đọc `EnemyHealth.IsAlive`/`EntryHoldFlight.CanShoot` và target Transform được scene
 bind vào Player. Prefab fallback tìm Player qua existing `PlayerGameplayGate` một lần
 ở Awake để lấy identity, không dùng gate đó làm authority enemy fire.
 Behavior/tunables do [enemy owner](../content/enemies-bosses.md#scout-single-fire-checkpoint) sở hữu.
@@ -301,12 +305,14 @@ Behavior/tunables do [enemy owner](../content/enemies-bosses.md#scout-single-fir
 Attack dùng local `ObjectPool<EnemyProjectile>` theo pattern Pulse; runtime root
 `EnemyProjectiles` cùng scene, không parent vào Scout. Disable producer hủy timer
 nhưng không clear shot đã launch; destroy producer dispose pool và destroy root.
-Chưa tạo pool service, weapon framework hoặc encounter state machine chung.
+M3 thêm shared scene prefab pool cho common enemies và encounter stages; projectile
+ownership/callback pools hiện có vẫn giữ nguyên, không thêm weapon framework.
 
-Local timer chỉ thực thi attack trong single-enemy sandbox, không quyết multi-enemy
-shot scheduling. Future encounter authority có responsibility cấp attack permission
-theo [content direction](../content/levels-encounters.md#multi-enemy-attack-coordination);
-chưa khóa serialized/API shape và không thêm hook khi runtime hiện tại chưa cần.
+Local timer thực thi attack, không quyết multi-enemy shot scheduling. Prefab dùng
+autonomous cycle cho isolated sandbox; encounter runner gọi `SetEncounterControlled()`
+trước khi activate. Chế độ này chỉ bắt đầu telegraph qua `TryRequestAttack()`, vẫn
+giữ health/flight/target/safety checks và local cooldown. Coordination policy thuộc
+[content owner](../content/levels-encounters.md#multi-enemy-attack-coordination).
 
 `EnemySingleProjectile.prefab` có Rigidbody2D Kinematic, BoxCollider2D trigger và
 `EnemyProjectile`; child Visual giữ SpriteRenderer. Typed component phân biệt hostile
@@ -364,7 +370,7 @@ release active hostile projectiles cùng scene qua existing pool callback. Produ
 bind scene reference hoặc fallback tìm gate một lần; không có gate thì fail closed.
 Nó không chọn shooter, không đóng băng movement và không là encounter/FireDirector.
 Lifecycle giữ block qua death/entrance, request grace khi entrance hoàn tất và block
-terminal ở Game Over. Transition/Result orchestration và spawn scheduler vẫn chưa có;
+terminal ở Game Over. M2 session nối Result sau full L1; general transition chưa có;
 owner sau có thể dùng cùng safety boundary, không suy từ Player `CanFire`.
 
 `PlayerDamagePresentation` chỉ đọc gate để death flash, protection blink/tint và
@@ -375,6 +381,62 @@ Ordering, timings, pointer behavior và cleanup/protection policy thuộc
 [audio/VFX](../presentation/audio-vfx.md#player-damage-lifecycle-placeholder).
 Không ghi CampaignSave/Profile. Verification ở
 [dev/debug](dev-debug.md#m2-player-damage-lifecycle-verification).
+
+### M2 L1 encounter runtime
+
+Prototype VS-022/023 đã được promote trong M3; scene object `L1Encounters` và
+GUID của Scout, L1 encounter assets được giữ. Responsibility/config hiện tại ở
+[M3 runtime foundation](#m3-level-và-encounter-runtime-foundation); behavior/tuning
+ở [level owner](../content/levels-encounters.md#m2-l1-playable-checkpoint).
+Không chạy lại baseline builders để reset content đã migrate.
+
+### M2 gameplay session và UI boundary
+
+`GameplaySession` trên `L1Encounters` nhận direct `RunStarted`, `MissionCompleted`
+của runner và `GameOver` sau death phase của lifecycle. Title/presentation request từ
+LevelFlow được forward tới HUD với title + subtitle và optional duration override; establishing copy persistent
+tới valid tap sau reading delay. `MissionCompleted` chỉ phát
+ở cuối full sequence, không phải mỗi group hoặc standalone encounter. Runner kiểm
+tra lives zero trước schedule/handoff trong physics tick để không spawn trong final
+death sequence; completion và lives-zero cùng tick ưu tiên Game Over.
+
+Session sở hữu Pause clock/CanPause và terminal combat boundary; CanPause chặn major intro
+ở authority; ordinary handoff vẫn nhận Pause và giữ HUD. Flow.PresentationChanged và encounter
+start refresh HUD visibility; UI gửi consumed continue tap/Pause/Resume và
+đọc state. Pause giữ lifecycle phase, lưu/restore `Time.timeScale` và
+`AudioListener.pause`; không thay state Dying/Respawning bằng enum Pause. UI vẫn dùng
+unscaled time. Disable/teardown session trả clock/audio đã mượn, không giữ pause rò
+sang lượt Play sau. Input cancel tại Pause/Resume theo
+[player owner](../gameplay/player-combat.md#m2-ui-pointer-ownership).
+
+Full mission completion đặt gate `Result` ngay, stop runner/coordinator, block enemy
+fire, release hostile/friendly projectiles về existing pools và freeze simulation.
+Không chờ presentation delay mới khóa damage/input/fire. Game Over dùng cùng cleanup
+sau signal của lifecycle; session không sở hữu lives/death/respawn timers.
+Dev replay vẫn reset runtime qua lifecycle trước `StartRun`, không giả checkpoint.
+
+`PlayerGameplayGate.SetCinematicLock` tạm chặn input/fire/damage, không thay lifecycle
+state/timers. Chỉ major intro dùng lock; ordinary handoff không bật nó. Gate
+notification cancel pending drag/cadence; unlock
+không Resume enemy safety gate để tránh bỏ qua death/respawn grace. Intro visual
+proxy không ghi Player pose; presentation restore authored Visual/backdrop khi
+kết thúc hoặc reset. Không tạo writer thứ hai trên Player Rigidbody.
+
+`GameplayHud` render lives/weapon/overlay và nhận valid establishing tap qua cùng
+Canvas/uGUI pointer handlers; transparent raycast area chỉ bật trong intro. Tap
+chỉ arm khi prompt sẵn sàng; drag/cancel/hold dài không launch. Không poll input
+thứ hai hoặc tạo menu mới. `GameplayAnnouncement` giữ title/description và fade/
+duration; cùng một component đổi anchor/alignment cho major establishing và centered
+minor title. Loại title không suy từ HUD lock. LevelFlow giữ phase MissionTitle sau
+Brake: cinematic đã hide, HUD/control/Pause mở, runner vẫn chờ trước first spawn.
+Phase này dùng scaled timer; Resume refresh card với thời gian còn lại. Mission card dùng duration từ Intro config, subtitle lấy từ
+starting encounter index do runner truyền vào; không có ArrivalDescription hoặc một
+first-Encounter announcement riêng. `SafeAreaLayout` chỉ cập nhật anchors khi safe area/resolution đổi.
+Canvas/RectTransform/buttons/EventSystem được author bằng `ConfigureGameplayUi` qua
+Unity; không dựng UI runtime từng frame. Default execution order đặt session trước
+HUD để đọc dependency sau Awake; announcement cũng initialize trước HUD. Không thêm
+UI state machine/event bus hoặc pool service. Copy/layout thuộc
+[UI/UX](../presentation/ui-ux.md#m2-ui-implementation-provisional).
 
 ## Config data và mutable runtime state
 
@@ -387,50 +449,79 @@ khi triển khai, không coi version trong URL là version project bắt buộc.
 
 ### LevelDefinition
 
-Conceptual fields giữ đủ data để một Gameplay scene chạy các level khác nhau:
+Tên class/asset hiện có được giữ để bảo toàn references: Mission tương ứng
+`LevelDefinition`, Spawn Group tương ứng `SpawnAction`, Formation là `FormationLayout`,
+Flight Sequence / Path là `FlightSequence` / `FlightPhase.Path`. Đây không phải các
+cấp thay thế cho [taxonomy canonical](../content/levels-encounters.md#terminology-và-composition).
 
-```text
-id
-displayName
-regionId
-playDirection
-cameraProfile
-backgroundProfile
-encounters[]
-transitionOut
-replayPreset
-```
+`LevelDefinition` là static ScriptableObject: stable ID, display metadata, mission
+number, region ID, optional location name, PlayDirection, default CameraProfile,
+ordered encounters, intro config và additional start aliases tới encounter thật.
+Region ID không tự trở thành location copy. Transition-out/replay preset refs chỉ
+thêm khi có consumer; M3 không tạo save/preset giả.
 
 ### EncounterDefinition và SpawnAction
 
-EncounterDefinition mô tả schedule/completion/checkpoint; SpawnAction là một entry
-trong schedule. Không hard-code L7 wave timing trong một MonoBehaviour bất kỳ.
-
-```text
-EncounterDefinition
-  id
-  completionMode
-  duration optional
-  spawnActions[]
-  optionalEvents[]
-  checkpointPolicy
-
-SpawnAction
-  timeOffset
-  enemyDefinition
-  count
-  formation
-  flightSequence
-  spawnAnchor
-  modifiers optional
-```
+`EncounterDefinition` sở hữu static completion mode/duration, spawn actions,
+optional event list, camera override, firing coordination knobs và boundary timing.
+M3 giữ serialized field `Groups` cùng legacy `ScoutPrefab` fallback để bảo toàn L1.
+`SpawnAction` có prefab/EnemyDefinition reference, count, time offset, stagger,
+formation, spacing, anchor, required flag và FlightSequence. Override definition
+phải khớp prefab; không mutate definition để đổi current HP.
 
 ### FlightSequence data
 
-Data phải mô tả các phase rõ, không cần visual node editor. Phase content, path library,
-formation, firing và exit policy thuộc
-[levels/encounters](../content/levels-encounters.md#flight-path-và-flightsequence);
-architecture chỉ quyết ranh giới config/runtime.
+`FlightSequence` asset chứa ordered `FlightPhase`: kind, path, normalized endpoints,
+curve, duration/cycles, smooth interpolation, shooting eligibility, clamp và terminal
+hold. Legacy entry/hold fields chỉ giữ hidden để builders/sandbox M2 còn dùng được;
+L1 production assets đã trỏ sequence. Detailed phase/path behavior ở
+[level owner](../content/levels-encounters.md#m3-flight-và-formation-authoring).
+
+### M3 level và encounter runtime foundation
+
+| Component | Runtime responsibility |
+|---|---|
+| LevelFlow | Bind LevelDefinition, apply direction/camera; intro phase/clock và establishing tap readiness được runner tick; gửi title/presentation changes; không render UI hoặc quản lives |
+| EncounterRunner | Schedule groups theo timestamp/stable tie order; mode completion; stages Intro/Running/ProjectileDrain/BossPostDeath/RewardGrace/Handoff; generation token và exactly-once notification |
+| EntryHoldFlight | Writer duy nhất của enemy pose; runtime elapsed/phase; reproject theo current camera; không quyết kill/completion/drop |
+| EncounterFireCoordinator | Eligible round-robin permissions; configurable active shooter limit, spacing/volley; local attack giữ telegraph/projectile pool |
+| EncounterCleanup | Registry scoped cho hostile/temporary/reward participants; không tự tìm/drop/grant reward |
+| ScenePrefabPool | Shared scene-scoped prefab storage cho common enemies; rent inactive, configure rồi activate; không chứa gameplay completion policy |
+| MissionIntroPresentation | Placeholder planet/starfield nhận progress, không giữ gameplay authority |
+
+`StartRun` validate level và start ID trước schedule. `LEVEL_START` chờ establishing
+tap; readiness do LevelFlow.CanContinue kiểm tra theo scaled reading clock. Valid tap
+qua session → LevelFlow.BeginApproach; phase durations/arrival copy nằm trong
+MissionIntroSettings. Encounter IDs bỏ intro. Explicit dev overload nhận skip/direction/camera override,
+không sửa asset hoặc persistence. Runtime counters/lists/timers luôn ở component.
+Không tạo scene-per-level, event bus, DI, FireDirector hoặc cutscene framework.
+
+`EncounterStarted(definition,generation)` phát trước spawn đầu, elapsed/counters zero,
+mỗi encounter một lần; M4 có thể lấy start snapshot qua boundary này, M3 chưa ghi save.
+`Completed` phát đúng một lần sau mode cleanup; bounded reward grace có thể vẫn
+đang mở. `MissionCompleted` chỉ phát sau grace của encounter cuối trong full run.
+Standalone không phát clear. Boss consumers giữ `Generation` token và gọi
+`NotifyBossDefeated`/`NotifyBossPresentationComplete`; token cũ bị từ chối sau
+reset hoặc encounter handoff. Configured post-death duration là fallback cho stub;
+real staged boss content sẽ cung cấp signal qua cùng boundary.
+
+Direct callbacks có thể reset run: runner kiểm tra generation trước khi tiếp tục.
+Hard reset/disable hủy intro/schedule/handoff/grace, attack permissions và boundary
+participants. Normal handoff behavior thuộc
+[cleanup owner](../content/levels-encounters.md#encounter-lifecycle-và-handoff).
+
+`IEncounterBoundaryObject` phân loại Hostile/Temporary/Reward, có stop-hostility,
+preserve-for-grace và idempotent release hooks. Consumer register/unregister với
+EncounterCleanup; reward chỉ là boundary, chưa có pickups/crates/DropDirector.
+Registry không count kill hoặc tự grant reward. Registration cần current generation
+token; callback cũ bị từ chối sau reset/handoff. Reward được completion consumer
+eject cũng nhận preserve-for-grace sau notification.
+
+Prefab pool phân biệt source prefab, chỉ rent instance đã return; không lấy enemy
+vừa death nhưng runner chưa resolve. Inactive root bị parent deactivate được
+reclaim trước run kế tiếp vì Unity cấm reparent giữa activation traversal.
+Player/enemy projectile pools `ObjectPool<T>` hiện có được giữ; không unify callback
+ownership hoặc pool các content chưa tồn tại chỉ để có generic service.
 
 ### EnemyDefinition và runtime entity
 
@@ -490,7 +581,7 @@ cleanup và reward-grace behavior theo
 không để từng enemy, VFX hoặc pool tự quyết một cleanup policy khác.
 
 Camera nhận view request từ gameplay state theo
-[foundation](#dynamic-gameplay-view-foundation); direction orchestration còn future.
+[foundation](#dynamic-gameplay-view-foundation); LevelFlow apply Up/Right theo level hoặc dev override.
 [Audio/VFX](../presentation/audio-vfx.md) sở hữu feedback cues và shake.
 World bounds và input conversion theo camera/aspect ratio/current playable region;
 camera không quyết encounter completion hoặc damage.

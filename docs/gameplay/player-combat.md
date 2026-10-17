@@ -19,12 +19,23 @@ damage, theo survival contract bên dưới. Đây là naming implementation
 `SetState()` báo thay đổi để xóa pending input/cadence khi bị khóa; không chạy
 death/respawn sequence, tự trừ lives hoặc tự chuyển state theo timer.
 Gate cũng chặn permissions khi bị disable hoặc `Time.timeScale == 0`.
-Pause UI/time controller chưa có; đổi local state không thay thế global pause.
+Global Pause do gameplay session điều phối; đổi local state không thay thế global pause.
+Major establishing intro không nhận manual Pause. Ordinary handoff giữ HUD/Pause
+và permissions theo gameplay/lifecycle, không bật cinematic lock. Major cinematic lock
+chặn input/fire/damage độc lập state; unlock
+không reset lives/protection hoặc mở sớm enemy-fire safety gate.
 VS-016–021 nối `PlayerContactReceiver` vào lifecycle/lives runtime. Gate vẫn là source
 of truth của phase/permission; lifecycle điều phối timers và transitions qua gate,
 không thêm state enum hoặc HUD authority song song.
 
 ## Input và điều khiển
+
+Establishing continue tap dùng uGUI trên Canvas hiện có: sau reading delay, fresh
+left-mouse/touch down + up trong màn hình, không drag/cancel/hold dài (tap tối đa
+.6 s `[TUNABLE]` trên HUD). Press bắt đầu
+trước prompt không được tái nhận khi prompt xuất hiện. Tap này và pointer còn giữ
+trong intro không trở thành gameplay ownership; clear gesture khi launch và khi trả
+control, sau đó đòi fresh gameplay press. Không thay relative drag/hold-to-fire contract.
 
 ### Relative drag `[LOCKED]`
 
@@ -213,8 +224,9 @@ VS-019 vertical entrance dùng 0.9 s `[TUNABLE]`, bắt đầu ngoài bottom c�
 camera và ease vào target trong current playable region. Framing/aspect/restricted
 region thay đổi thì reproject; không cache world waypoint. Preferred target ở giữa
 ngang, phần dưới region; nếu enemy body chặn target thì tìm candidate an toàn khác.
-Nếu các candidate đều bị chặn, giữ protected entrance, chưa mở input/fire. Horizontal
-direction orchestration và hazard producers chưa được implement trong batch này.
+Nếu các candidate đều bị chặn, giữ protected entrance, chưa mở input/fire. M3 áp cùng safe anchors qua PlayDirection: Right entrance từ left, preferred
+target bên trái current playable region; Player/muzzle face Right. Hazard producers
+chưa có, safe check vẫn dùng configured blocking layers.
 
 ### Invincibility
 
@@ -251,8 +263,10 @@ Retry load snapshot đầu wave/encounter checkpoint, không phục hồi world 
 serialization/restore chi tiết ở [save/profile](../systems/save-profile.md).
 
 VS-017–021 có terminal `GameOver` state và signal sau death phase: không respawn,
-không nhận hit tiếp, input/fire off và enemy-fire gate giữ block. Chưa có encounter
-runner để stop progression/spawn; signal/state là boundary cho owner đó và UI sau.
+không nhận hit tiếp, input/fire off và enemy-fire gate giữ block. Runner dừng
+spawn/progression ngay khi lives về zero; signal sau death sequence mở minimal
+Game Over overlay. UI chi tiết ở
+[UI/UX](../presentation/ui-ux.md#m2-ui-implementation-provisional).
 Disable/re-enable Player/lifecycle reset phiên runtime về starting lives/Active,
 hủy pending entrance/timers; đây không phải Retry/restore checkpoint hay save.
 
@@ -333,3 +347,18 @@ Các duration ở trên là seed; protection/shield overlap, horizontal entrance
 hazard-specific routing còn cần xác minh khi domain tương ứng được implement.
 [Audio/VFX](../presentation/audio-vfx.md) chỉ thể hiện kết quả, không quyết damage.
 [Dev/debug](../systems/dev-debug.md) cung cấp đường test death, respawn và Retry Wave.
+
+
+## M2 UI pointer ownership
+
+VS-006 dùng EventSystem raycast tại **Began/press**, không đọc cached hover của UI
+module (input sample chạy trước UI Update). Pointer bắt đầu trên Pause/button/modal
+không có gameplay anchor/fire intent; rời UI vẫn không chuyển quyền cho gameplay.
+Pointer bắt đầu ở gameplay giữ ownership tới release/cancel; kéo qua Pause không
+click nút. Multitouch có thể dùng ngón thứ hai để Pause trong khi ngón gameplay held.
+
+Pause/Resume là boundary hủy **cả gesture và fire intent**, yêu cầu press mới sau
+Resume. Đây là ngoại lệ có chủ ý cho generic gate block giữ held intent ở trên;
+death/respawn và ordinary handoff giữ contract cũ. Major establishing intro consume
+continue tap và gesture còn giữ, yêu cầu press mới khi trả gameplay. Full mission start/reset và terminal
+cũng cancel gesture. Không dùng lại drag delta hoặc cadence từ trước overlay.
