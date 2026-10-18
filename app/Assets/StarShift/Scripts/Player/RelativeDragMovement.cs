@@ -121,6 +121,19 @@ namespace StarShift.Player
             if (clamped != body.position) body.position = clamped;
         }
 
+        public void ResetForCheckpoint(PlayDirection direction)
+        {
+            ResetInput();
+            var normalized = PlayableViewport.min + Vector2.Scale(PlayableViewport.size,
+                PlayDirectionSpace.Point(new Vector2(.5f, .18f), direction));
+            var depth = Vector3.Dot(transform.position - movementCamera.transform.position, movementCamera.transform.forward);
+            body.position = movementBounds.ClampPosition(movementCamera.ViewportToWorldPoint(
+                new Vector3(normalized.x, normalized.y, depth)), movementCamera, PlayableViewport);
+            body.linearVelocity = Vector2.zero;
+            body.angularVelocity = 0;
+            transform.position = new Vector3(body.position.x, body.position.y, transform.position.z);
+        }
+
         internal void ApplyEntrancePosition()
         {
             if (movementCamera == null || !movementCamera.isActiveAndEnabled) return;

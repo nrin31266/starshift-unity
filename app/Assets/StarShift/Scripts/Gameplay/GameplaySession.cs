@@ -18,6 +18,9 @@ namespace StarShift.Gameplay
         private float previousScale;
         private bool previousAudioPause;
         private bool ownsClock;
+        public StarShift.Persistence.CampaignLifecycle Persistence => runner.GetComponent<StarShift.Persistence.CampaignLifecycle>();
+        public bool CanRetry => Persistence != null && Persistence.CanRetry;
+        public void RetryEncounter() => Persistence?.RetryEncounter();
         public LevelFlow Flow => runner.Flow;
         public bool HasActiveRun => runner.HasActiveRun;
         public bool CanPause => !IsTerminal && runner.HasActiveRun && (Flow == null || !Flow.IsCinematic);
@@ -72,10 +75,11 @@ namespace StarShift.Gameplay
             if (Flow != null) Flow.RefreshMissionTitle();
         }
 
-        private void OnRunStarted()
+        public void ResetRuntime()
         {
             lifecycle.GetComponent<PlayerTemporaryEffects>()?.ResetForSession();
-            lifecycle.GetComponent<PlayerPickupReceiver>()?.ResetForSession();
+            lifecycle.GetComponent<EmergencyMissileReserve>()?.CancelPending();
+            lifecycle.GetComponent<EmergencyMissilePresentation>()?.ResetForSession();
             lifecycle.GetComponentInChildren<SupportDrone>()?.ResetForSession();
             weapon.ResetForSession();
             ReleaseFriendlyProjectiles();
@@ -83,6 +87,11 @@ namespace StarShift.Gameplay
             IsPaused = false;
             pointer.CancelGesture();
             Changed?.Invoke();
+        }
+
+        private void OnRunStarted()
+        {
+            ResetRuntime();
             MissionStarted?.Invoke();
         }
 
@@ -98,6 +107,8 @@ namespace StarShift.Gameplay
         private void EndCombat()
         {
             runner.StopRun();
+            lifecycle.GetComponent<EmergencyMissileReserve>()?.CancelPending();
+            lifecycle.GetComponent<EmergencyMissilePresentation>()?.ResetForSession();
             enemyFireGate.Block();
             ReleaseFriendlyProjectiles();
             IsPaused = false;

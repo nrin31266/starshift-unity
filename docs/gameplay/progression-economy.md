@@ -61,9 +61,9 @@ RunStarted reset hai counter; death/handoff giữ chúng. Clear/Game Over freeze
 cho presentation hiện tại. Có runtime counts enemies destroyed, cores collected và
 supply crates collected để verify loop; chưa là full Campaign Result tracking.
 HUD đọc giá trị thực theo [UI owner](../presentation/ui-ux.md#gameplay-hud).
-Không serialize Score/Shards, không `PlayerProfile`, không reward writeback/dedupe
-qua Retry/Replay trong M4-A. Persistent Shard contract phía trên là target M4-B,
-không được xem session counter là persistent balance.
+M4-A ban đầu chỉ có runtime counters. M4-B persist checkpoint counters và tách
+Profile balance theo [save owner](../systems/save-profile.md); HUD session Shards
+vẫn là collected metric, không phải persistent wallet.
 
 ## Campaign progression và level unlock
 
@@ -100,8 +100,7 @@ không phải locked policy; serializer hoặc UI không được tự quyết t
 New Game chỉ reset current campaign, giữ Profile/Shard/high score và Settings.
 Nếu campaign đang tồn tại, [UI/UX](../presentation/ui-ux.md) yêu cầu confirmation.
 Retry restore checkpoint campaign; nó không tự áp rollback cho persistent profile.
-Reward deduplication/transaction qua Retry vẫn là câu hỏi ở
-[save/profile](../systems/save-profile.md#các-contract-còn-mở).
+M4-B test policy cho reward deduplication ở phần bên dưới; final policy vẫn [TBD].
 Dev override cũng không được mutate production data nếu thiếu explicit debug save command.
 
 ## Result/statistics tracking
@@ -116,7 +115,7 @@ cách hiển thị thuộc [UI/UX](../presentation/ui-ux.md).
 |---|---|
 | Must-have run stats | Score; level; elapsed play time; enemies destroyed; elites destroyed; bosses defeated; lives lost; Shards collected; supply drones captured; weapon cores collected |
 | Required tracking khi triển khai Campaign Result | Boss clear time; longest no-hit streak |
-| Optional tracking | Per-level clear time; retries; shield breaks; EMP uses |
+| Optional tracking | Per-level clear time; retries; shield breaks; reserve missile uses |
 
 Boss clear time và longest no-hit streak phải được track khi Campaign Result phụ
 thuộc chúng, không thể bỏ tracking rồi dùng số giả hoặc bỏ field trên result.
@@ -125,3 +124,26 @@ Clarification này không thêm metric, công thức hoặc timing contract mớ
 Exact no-hit streak/time accounting, Supply Drones Captured được tính khi destroy
 hay pickup, retry record aggregation và `campaignRunStats` checkpoint shape còn
 [TBD]. Grade S/A/B/C thuộc [UI/UX](../presentation/ui-ux.md) và chưa có rubric được chốt.
+
+
+## M4-B reward và record policy `[PROVISIONAL]`
+
+Profile Shard không rollback theo Retry. Để chống duplication mà không tự reset
+wallet, M4-B giữ mức **cumulative Shards collected cao nhất trong current Encounter**.
+Mỗi collection chỉ cộng Profile phần vượt mức đã credit. Ví dụ checkpoint Shards 4:
+collect thêm 3 → wallet +3; Retry restore counter về 4; collect lại 3 → wallet +0;
+collect tổng 5 trong attempt mới → wallet thêm 2. Continue giữ cùng ledger qua disk.
+Capture Encounter tiếp reset ledger với baseline counter mới; New Game tạo campaign
+ledger mới nhưng giữ Profile. Đây là policy prototype được phép bởi brief M4-B,
+không lock final economy hoặc guarantee identical random drops giữa các attempt.
+Score và run stats rollback; Profile/ledger không rollback. Không có clear bonus giả.
+
+Current Mission Clear lưu best score và minimum playable time trong Campaign mode;
+retried campaign hiện vẫn eligible theo test policy. Failed run không ghi record.
+Playable timer và checkpoint serialization thuộc [save owner](../systems/save-profile.md).
+Exact final retry eligibility/time aggregation vẫn [TBD]. Chỉ L1 được unlock bởi
+New Game; clear L1 không fabricate Mission 02 hoặc đánh dấu toàn campaign complete.
+
+Replay M4-B dùng hoàn toàn isolated runtime, không ghi records hay wallet. Đây là
+boundary test theo brief, không chốt SYS-028; persistent replay Shards và final
+record writeback vẫn cần User decision. Dev/Test cũng không writeback.

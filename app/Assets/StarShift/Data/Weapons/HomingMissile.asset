@@ -22,22 +22,25 @@ MonoBehaviour:
     FireInterval: 0.5
     SplashRadius: 0
   - ProjectileCount: 2
-    SpreadDegrees: 0
+    SpreadDegrees: 28
     LateralSpacing: 0.22
     Damage: 2
     CenterBonus: 0
     FireInterval: 0.5
     SplashRadius: 0
   - ProjectileCount: 3
-    SpreadDegrees: 0
+    SpreadDegrees: 44
     LateralSpacing: 0.22
     Damage: 2
     CenterBonus: 0
     FireInterval: 0.5
     SplashRadius: 0.85
-  projectileColor: {r: 1, g: 0.5, b: 0.16, a: 1}
+  projectileColor: {r: 1, g: 0.8, b: 0.55, a: 1}
   trackingDegreesPerSecond: 110
   trackingRange: 18
+  projectileScale: {x: 0.35, y: 0.48}
+  projectileSprite: {fileID: 21300000, guid: 7525dcea8f719e6f99a1484a056a3c1d, type: 3}
+  trailSeconds: 0.13
   projectilePrefab: {fileID: 6313352160549666604, guid: 689fd7f0b61bc39b798a1aea031257f6, type: 3}
   fireInterval: 0.2
   projectileSpeed: 8

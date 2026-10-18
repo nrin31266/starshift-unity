@@ -295,7 +295,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f00f70c9ef3ec2f1a2e673d832d056f, type: 3}
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Player.PlayerRespawnEntrance
-  duration: 0.9
+  duration: 0.55
   collisionShape: {fileID: 8200030433945885795}
   blockingLayers:
     serializedVersion: 2
@@ -313,9 +313,10 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Player.PlayerDamageLifecycle
   enemyFireGate: {fileID: 0}
-  deathDuration: 0.35
+  deathDuration: 0.6
   invincibilityDuration: 2.5
   enemyFireGrace: 1
+  shieldBreakInvincibilityDuration: 0.7
 --- !u!114 &4678981234046310746
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: PulseLaserThermal
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Combat.WeaponThermalProfile
   capacity: 100
-  heatPerSecond: 18
-  coolingDelay: 0.2
+  heatPerSecond: 9
+  coolingDelay: 0.3
   coolRate: 30
   overheatCoolRate: 50
   recoveryFraction: 0.4

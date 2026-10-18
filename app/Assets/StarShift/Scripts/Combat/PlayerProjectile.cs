@@ -24,6 +24,9 @@ namespace StarShift.Combat
         private int trackingVersion;
         private float splashRadius;
         private SpriteRenderer visual;
+        private Vector3 normalVisualScale;
+        private Sprite normalSprite;
+        private TrailRenderer trail;
         private readonly List<EnemyHealth> splashTargets = new List<EnemyHealth>(12);
 
         public GameObject Owner { get; private set; }
@@ -33,6 +36,8 @@ namespace StarShift.Combat
             body = GetComponent<Rigidbody2D>();
             hitbox = GetComponent<BoxCollider2D>();
             visual = GetComponentInChildren<SpriteRenderer>();
+            if (visual != null) { normalVisualScale = visual.transform.localScale; normalSprite = visual.sprite; }
+            trail = GetComponentInChildren<TrailRenderer>();
         }
 
         public void Launch(PulseLaserDefinition definition, Transform muzzle, GameObject owner, Action<PlayerProjectile> release)
@@ -60,7 +65,12 @@ namespace StarShift.Combat
                     trackingVersion = enemy.SpawnVersion;
                 }
             }
-            if (visual != null) visual.color = definition.ProjectileColor;
+            if (visual != null)
+            {
+                visual.color = definition.ProjectileColor;
+                visual.sprite = definition.ProjectileSprite != null ? definition.ProjectileSprite : normalSprite;
+                visual.transform.localScale = Vector3.Scale(normalVisualScale, new Vector3(definition.ProjectileScale.x, definition.ProjectileScale.y, 1));
+            }
             remainingLifetime = definition.ProjectileLifetime;
             onReleased = release;
             transform.SetPositionAndRotation(position, Quaternion.FromToRotation(Vector3.up, direction));
@@ -71,6 +81,15 @@ namespace StarShift.Combat
             hitbox.enabled = true;
             flying = true;
             gameObject.SetActive(true);
+            if (trail != null)
+            {
+                trail.Clear();
+                trail.time = definition.TrailSeconds;
+                trail.startColor = definition.ProjectileColor;
+                trail.endColor = new Color(definition.ProjectileColor.r, definition.ProjectileColor.g, definition.ProjectileColor.b, 0);
+                trail.emitting = definition.TrailSeconds > 0;
+                trail.enabled = trail.emitting;
+            }
         }
 
         private void FixedUpdate()
@@ -163,6 +182,7 @@ namespace StarShift.Combat
             sweepHits.Clear();
             hitbox.enabled = false;
             body.simulated = false;
+            if (visual != null) { visual.transform.localScale = normalVisualScale; visual.sprite = normalSprite; }
             gameObject.SetActive(false);
         }
 
@@ -170,6 +190,7 @@ namespace StarShift.Combat
         {
             flying = false;
             onReleased = null;
+            if (trail != null) { trail.emitting = false; trail.Clear(); }
         }
     }
 }

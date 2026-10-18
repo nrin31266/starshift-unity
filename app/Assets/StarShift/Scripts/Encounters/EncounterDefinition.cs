@@ -24,6 +24,8 @@ namespace StarShift.Encounters
     {
         public string Id = "ENCOUNTER_1";
         public EncounterCompletion Completion;
+        [Tooltip("Timeline kết thúc sớm khi đã chạy hết lịch spawn/events và không còn địch.")]
+        public bool CompleteWhenScheduleExhausted;
         [Tooltip("Fallback prefab cho các spawn action dùng cùng archetype.")]
         public GameObject ScoutPrefab;
         [Min(.01f)] public float Duration = 16f;

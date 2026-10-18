@@ -275,9 +275,10 @@ Minor announcement nhận duration bằng toàn bộ handoff do
 là 1.6 s, fade .2 s `[TUNABLE]`; Pause/terminal/reset ẩn nó.
 Announcement chỉ render copy, không sở hữu gameplay authority.
 
-Pause hiện “TẠM DỪNG”; “TIẾP TỤC” hoạt động. “CHƠI LẠI ĐỢT”, “CÀI ĐẶT”,
-“VỀ MENU CHÍNH” disabled, kèm “Chưa có trong bản thử nghiệm”. Slice chưa có
-checkpoint restore/Settings/Main Menu backend; dev replay không được giả làm Retry.
+Pause hiện “TẠM DỪNG”; “TIẾP TỤC” hoạt động. M4-B nối “CHƠI LẠI ĐỢT” tới
+current Encounter checkpoint khi backend báo CanRetry. “CÀI ĐẶT”, “VỀ MENU CHÍNH”
+vẫn disabled, kèm “Chưa có trong bản thử nghiệm”. Settings chỉ có persistence backend;
+chưa Main Menu. Restore policy thuộc [save owner](../systems/save-profile.md); dev replay không là Retry.
 Gameplay pause/resume và terminal authority ở
 [architecture](../systems/architecture.md#m2-gameplay-session-và-ui-boundary).
 
@@ -287,9 +288,18 @@ chưa có L2/results navigation hoặc stats giả. Combat đã khóa ngay trư�
 Standalone dev encounter không phát mission-clear panel.
 
 Game Over minimal thuộc batch UI slice: sau death sequence với lives 0 hiện
-“THẤT BẠI”, “CHƠI LẠI ĐỢT” và “VỀ MENU CHÍNH” disabled cùng note. Không hiển thị
-selected stats chưa track. Lưu/restore checkpoint và full navigation vẫn là task sau.
+“THẤT BẠI”; M4-B bật “CHƠI LẠI ĐỢT” khi có checkpoint, “VỀ MENU CHÍNH” vẫn
+disabled cùng note. Không hiển thị selected stats chưa track. Full navigation chưa làm.
 
 Overlay chặn raycast toàn màn; HUD decoration không bắt pointer. Nút Pause/Resume
 và modal có target đủ lớn theo reference layout; chưa xác nhận dp/cutout trên Android.
 Input ownership chi tiết thuộc [player owner](../gameplay/player-combat.md#m2-ui-pointer-ownership).
+
+
+## Reserve missile HUD prototype
+
+CombatHud có nút TÊN LỬA với current/cap, nằm trong SafeArea góc dưới phải; tách khỏi
+weapon-cycle. Disable khi stock zero, cooldown, Pause, cinematic, dying/respawning,
+terminal hoặc không ở Running Encounter. Nút chỉ gửi intent tới reserve owner;
+UI không trừ stock/damage hoặc lưu save. Pointer consumption dùng existing UI input
+boundary để bấm nút không khởi động drag/fire. Không thêm inventory/menu scene.

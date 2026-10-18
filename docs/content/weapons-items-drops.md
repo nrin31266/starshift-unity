@@ -53,16 +53,20 @@ Pulse seed `[TUNABLE]`, không là balance cuối:
 | Field | Giá trị |
 |---|---:|
 | Capacity | 100 |
-| Heat per second | 18 |
-| Cooling delay sau release | 0.2 s |
+| Heat per second | Pulse 9; Plasma 11; Homing 8.5 |
+| Cooling delay sau release | 0.30 s |
 | Normal cool rate | 30/s |
 | Overheat cool rate | 50/s |
 | Recovery threshold | 40% capacity |
 
-Target từ cold: khoảng 5.56 s sustained tới MAX và khoảng 1.2 s overheat recovery,
+Target từ cold: Pulse 11.11 s, Plasma 9.09 s, Homing 11.76 s sustained tới MAX;
+overheat recovery khoảng 1.2 s,
 sai số một physics step. Burst/tap dưới MAX không có lockout. Config asset
 `app/Assets/StarShift/Data/Weapons/PulseLaserThermal.asset` được tham chiếu từ Pulse
 definition; asset không giữ current heat, overheat latch hoặc cooling timer.
+Nhả bắn rất ngắn (dưới cooling delay) chưa xả nhiệt; nhả .5 s từ trạng thái chưa
+overheat chỉ xả khoảng 6 heat. Tuning này giảm lợi thế tap/release liên tục nhưng
+không rút ngắn cửa sổ sustained fire ở trên.
 
 ### Weapon count `[LOCKED]`
 
@@ -87,12 +91,12 @@ M2 Pulse Laser Lv1 seed `[TUNABLE]`, phục vụ VS-010/011 và chưa phải bal
 | Giá trị | Seed |
 |---|---:|
 | Fire interval | 0.17 s |
-| Projectile speed | 12 world units/s |
+| Projectile speed | 15 world units/s |
 | Damage mỗi hit | 1 |
 | Projectile lifetime | 1.5 s |
 
-Pulse placeholder giữ nguyên chiều dài; visual X scale 0.8 và collider width 0.08
-world units `[TUNABLE]` để tia thon hơn ở lượt test feel hiện tại.
+Pulse placeholder dùng capsule cyan có lõi sáng, branch visual scale (.25,.52) nhân base sprite; collider width
+.08 world units giữ hitbox rõ `[TUNABLE]`. Visual size không tự đổi damage hitbox.
 
 Static asset ở `app/Assets/StarShift/Data/Weapons/PulseLaserLv1.asset` giữ các seed
 và projectile prefab reference. Runtime snapshot damage/speed/lifetime khi launch;
@@ -158,10 +162,10 @@ Overdrive tăng fire rate trong khoảng 8 s [TUNABLE]. Feedback phải cho th�
 Support Drone là companion bắn phụ tạm thời, duration khoảng 10–12 s [TUNABLE].
 Không cần AI phức tạp; stats và buff refresh/stacking chưa được chốt.
 
-### EMP
+### Emergency Missile Ammo
 
-EMP clear hostile bullets và gây damage pulse lên enemy. Effect mạnh nhưng ngắn,
-không one-shot boss; exact damage/radius vẫn [TBD].
+Thay EMP auto-use bằng reserve ammo; damage và activation thuộc
+[contract tên lửa dự trữ](#tên-lửa-dự-trữ).
 
 ### Extra Life
 
@@ -206,17 +210,24 @@ Seeds runtime `[TUNABLE]` bổ sung cho các pattern ở trên:
 
 | Branch | Cadence L1 / L2 / L3 | Damage mỗi projectile | Special |
 |---|---|---|---|
-| Pulse | .17 / .17 / .17 s | 1; center Lv3 +1 | Lateral spacing .22 world units |
-| Plasma | .25 / .25 / .22 s | 1; center Lv3 +2 | Full fan 26° / 40° / 40° |
-| Homing | .5 / .5 / .5 s | 2 | Speed 8, lifetime 3 s, tracking 110°/s trong range 18; Lv3 splash .85 quanh target bị hit |
+| Pulse | .17 / .17 / .17 s | 1; center Lv3 +1 | Tia mảnh/nhanh, speed 15; lateral spacing .22 world units |
+| Plasma | .25 / .25 / .22 s | 1; center Lv3 +2 | Hạt rộng/chậm, speed 10; full fan 32° / 48° / 58° |
+| Homing | .5 / .5 / .5 s | 2 | Speed 8, lifetime 3 s; fan 0°/28°/44° rồi tracking 110°/s trong range 18; Lv3 splash .85 |
 
 Homing chọn nearest valid target phía trước lúc launch, turn có giới hạn, không
 reacquire nếu target chết hoặc instance đã được pool/reuse. Splash không damage
 trùng target chính. Các seed này chưa được cân cho boss; không implement boss mới.
-Plasma dùng projectile speed/lifetime baseline 12/1.5 s. Enemy HP không scale theo level.
+Plasma lifetime 1.5 s. Ba branch có sprite placeholder riêng: Pulse capsule,
+Plasma energy orb, Homing rocket có nose/fins/exhaust. Visual scale Plasma (.475,.38),
+Homing (.35,.48) nhân base sprite `[TUNABLE]`; Homing có trail .13 s. Plasma xòe từ
+cùng muzzle, Pulse/Homing dùng lateral spacing .22 world units, kể cả khi Homing
+đồng thời có fan angle. Sprite/scale/trail chỉ là presentation, không scale root/
+collider. Pool reuse reset sprite, scale và xóa trail vertices trước launch mới;
+Support Drone/fallback config vẫn dùng sprite gốc khi không author override.
+Enemy HP không scale theo level.
 
-Mỗi branch có một thermal profile; ba level cùng đọc profile đó. Plasma/Homing tạm
-reuse numeric seed Pulse qua hai asset riêng `[PROVISIONAL]`, không là final tuning.
+Mỗi branch có một thermal profile; ba level cùng đọc profile đó. Thermal values
+ở bảng thermal phía trên là tuning theo feedback, không là final balance.
 Switch giữ heat/latch riêng của từng branch; inactive branch không tick
 `[PROVISIONAL]`, tránh switch để reset nhiệt. Upgrade cùng branch giữ heat/latch.
 Overdrive chỉ nhân cadence 1.6× `[TUNABLE]`; heat/s vẫn theo type profile, không bypass
@@ -229,10 +240,10 @@ Overheated. Drone bắn phụ độc lập primary thermal, không mở khóa pr
 | Shield Cell | Một charge; collect lại giữ một charge, không cộng dồn. Protection gate chặn trước shield: invincibility không tiêu charge. Stacking decision vẫn TBD. |
 | Overdrive | Duration seed trên; collect lại refresh duration, không stack multiplier. |
 | Support Drone | Duration 11 s trong range seed trên; collect lại refresh. Một authored companion, bắn phụ 1 damage/.4 s, không elaborate AI. |
-| EMP | Release hostile projectiles trong cùng scene ngay; pulse 2 damage trong radius 8 world units `[TUNABLE]`. Không block fire gate, không chạy death hoặc handoff policy. |
+| Missile Ammo | Nhặt +1 reserve, cap 3; không tự detonate. Nút chủ động và damage policy ở phần tên lửa bên dưới. |
 | Extra Life | +1 tới cap do player owner giữ. Ở cap để pickup chưa collect tới khi life giảm hoặc pickup hết scope/lifetime; không convert economy. Overflow decision vẫn TBD. |
 | Weapon Core | Typed qua `PickupDefinition.Branch` cho test; code `T1+`/`T2+`/`T3+`. Maxed branch không collect/không conversion; random selection filter branch max. Generic-vs-typed và maxed fallback vẫn TBD. |
-| Stellar Shard | Amount 1 `[TUNABLE]`, collection ghi runtime counter riêng score. |
+| Stellar Shard | Amount 1 `[TUNABLE]`, resource ghi Profile qua [economy owner](../gameplay/progression-economy.md); không là Score. |
 
 Temporary effects giữ state/timer qua Spawn Group và ordinary Encounter handoff;
 Pause freeze. Dying/death, Game Over, Clear, root disable và mission reset xóa Shield,
@@ -243,11 +254,15 @@ vẫn theo projectile lifecycle, terminal session release friendly shots.
 Pickup là pooled runtime participant trong reward scope của EncounterCleanup.
 Collection dùng swept contact với đường di chuyển Player, bán kính .6 world units
 `[TUNABLE]`; không magnetism. Chỉ collect khi gameplay input gate mở, kể cả khi held fire.
-Pickup drift xuống .65 world units/s và dừng ở viewport y .12 `[PROVISIONAL]`.
-Direct pickup lifetime 12 s, crate 8 s và cap active 6 là test policy
+Power-up/crate drift xuống .8 world units/s và release khi qua viewport y -.06;
+không đọng thành hàng ở đáy màn. Shard bắt đầu fall speed 3.2, gravity 11, terminal
+speed 6.4 world units/s; nảy hai lần tại viewport y .06 với bounce height .06 × view
+height rồi .35 × lần đầu, sau đó rơi ra và recycle. Lifetime Shard 5 s, major trực
+tiếp 12 s, crate 8 s, cap active 6 `[TUNABLE]`. Relative swept contact xử lý chuyển
+động cả Player và pickup, không teleport/magnetism. Đây là test policy
 `[PROVISIONAL]`, không chốt lifetime/cap/magnetism ngoài phase. Full-viewport drop
 clamp giữ reward đọc/nhặt được ở edge. Trong .3 s cuối lifetime/grace, symbol + code fade theo scaled time `[TUNABLE]`.
-Pool reuse restore opacity. Scope expiry không phát collection/reward.
+Pool reuse restore opacity. Hết lifetime/ra khỏi view không phát collection/reward.
 Reward grace/cleanup thuộc [encounter owner](levels-encounters.md#reward-grace-và-chuyển-encounter).
 
 ### Drop Director test policy
@@ -338,7 +353,7 @@ Ví dụ khởi đầu:
 | Shield | 25 |
 | Overdrive | 18 |
 | Support Drone | 14 |
-| EMP | 9 |
+| Missile Ammo | 9 |
 | Extra Life | 4 |
 
 Không hiểu đây là % cố định; là relative weights.
@@ -402,7 +417,7 @@ Eligible random supply levels/conditions ngoài L1 còn [TBD] khi tune content.
 
 [TBD] Shield stacking/refresh, Weapon Core generic hay typed, maxed core fallback,
 Extra Life overflow, pickup magnet, pickup lifetime ngoài crate, active pickup cap,
-EMP damage/radius, drone stats và buff stacking/refresh. Không tự chọn một phương án
+final boss-phase interaction của reserve missile, drone stats và buff stacking/refresh. Không tự chọn một phương án
 vì dễ implement. Các giá trị duration/crate/drop/pity đã nêu giữ [TUNABLE].
 
 ## Pooling và presentation
@@ -410,4 +425,49 @@ vì dễ implement. Các giá trị duration/crate/drop/pity đã nêu giữ [TU
 Pickups/currency và frequent projectiles/VFX nên pool theo
 [architecture](../systems/architecture.md). Pooled object phải reset lifetime/state.
 Feedback từng item ở [audio/VFX](../presentation/audio-vfx.md); không dùng effect
-để quyết shield absorb, EMP damage hay reward selection.
+để quyết shield absorb, missile damage hay reward selection.
+
+
+## Tên lửa dự trữ
+
+Feedback 2026-10-19 thay auto-use EMP bằng **Emergency Missile**. Đây là emergency
+resource riêng, không phải nhánh primary Homing và không chịu heat/cadence primary.
+Giữ serialized PickupKind slot cũ khi đổi tên sang MissileAmmo; asset rename qua
+Unity giữ GUID. Testbed Encounter 4 guaranteed pickup nay cho ammo.
+
+| Rule | Current prototype |
+|---|---|
+| Reserve | Cap 3; starting 1 `[PROVISIONAL]`; ammo pickup +1 |
+| Activation | Bấm nút TÊN LỬA; chỉ khi gameplay input mở và Encounter đang Running |
+| Cadence | .8 s cooldown `[TUNABLE]`, không tiêu quả tiếp do duplicate click hoặc khi còn missile đang bay |
+| Launch → detonation | Flight .32 s `[TUNABLE]` theo scaled simulation; stock trừ khi launch, damage/bullet clear chỉ khi detonate |
+| Hostile bullets | Clear trong cùng scene tại detonation, giữ friendly shots |
+| Visible normal enemy | Destroy; không tác động enemy chưa vào màn/đã ra màn |
+| Visible large enemy | 60% max HP, damage làm tròn số nguyên gần nhất |
+| Visible boss | 10% max HP, damage làm tròn số nguyên gần nhất |
+| Supply/resource non-hostile | Không auto-destroy để farm reward |
+| Protection | .7 s brief invincibility từ launch `[TUNABLE]`, phủ cả flight; không rút ngắn window đang dài hơn |
+
+Damage percentages và cap theo lựa chọn User cho prototype; không tự coi economy
+hoặc boss-phase behavior cuối cùng đã locked. Classification normal/large/boss thuộc
+[enemy owner](enemies-bosses.md#emergency-missile-target-classification).
+Damage không phụ thuộc animation/camera impulse. Nhặt ở cap không consume, không
+conversion; random pool filter ammo khi đầy. Activation không block enemy fire gate.
+
+Chọn mục tiêu tại thời điểm detonation, theo combat Collider2D envelope giao với
+camera frustum; địch còn ló một phần ở edge vẫn nhận damage. Nếu target không có
+collider, fallback về anchor trong viewport. Không snapshot enemy list từ lúc launch.
+Reserve owner giữ flight timer và generation; presentation chỉ đọc progress/events.
+Pause freeze flight. Retry/Continue/NewGame/exit/terminal và run generation khác hủy
+flight cũ, không cho damage trễ sang run mới; checkpoint restore stock như thường.
+
+Nhịp phóng về tâm rồi nổ tham khảo
+[mô tả của developer Chicken Invaders](https://forum.chickeninvaders.com/t/plan-update-06/395).
+Ba vai bắn lấy cảm hứng ở việc phân biệt straight/spread/tracking; đây là adaptation
+của StarShift, không copy asset hoặc claim cùng formula/timing/balance CIU. Cap và
+damage hiện tại tiếp tục `[PROVISIONAL]`/tunable theo playtest, không chốt vì đã ghi docs.
+
+Reserve là campaign runtime state: ordinary death giữ số còn lại; checkpoint capture/
+Retry/Continue restore theo [save owner](../systems/save-profile.md). NewGame/Replay/
+Dev entry có preset riêng. Không persist cooldown, burst hoặc shake. Visual/audio
+cue thuộc [presentation owner](../presentation/audio-vfx.md#reserve-missile-impact-cue).

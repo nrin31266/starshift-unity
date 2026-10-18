@@ -22,9 +22,15 @@ namespace StarShift.Encounters
             get { foreach (var item in objects) if (item.Category == EncounterObjectCategory.Reward && item.IsActive) return true; return false; }
         }
         public int Token { get; private set; }
-        public void BeginScope(int token)
+        public int RewardToken { get; private set; }
+        public void BeginScope(int token, bool preserveRewards = false)
         {
-            ReleaseAll();
+            if (preserveRewards) CloseHostiles();
+            else
+            {
+                ReleaseAll();
+                RewardToken = token;
+            }
             Token = token;
         }
         public bool Register(IEncounterBoundaryObject item, int token)
