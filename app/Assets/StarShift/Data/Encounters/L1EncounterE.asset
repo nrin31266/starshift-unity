@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Encounters.EncounterDefinition
   Id: ENCOUNTER_5
   Completion: 0
+  CompleteWhenScheduleExhausted: 0
   ScoutPrefab: {fileID: 2966396641657307375, guid: 01a518f29274925a191b17ec41cf6a99, type: 3}
   Duration: 20
   Groups:
@@ -28,7 +29,7 @@ MonoBehaviour:
     Anchor: {x: 0, y: 0}
     SlotStep: {x: 0.1, y: 0.08}
     FormationRise: 0.025
-    Sequence: {fileID: 11400000, guid: 698c678b4615b200b83d8bac86d4378b, type: 2}
+    Sequence: {fileID: 11400000, guid: 4e1ad407c211e0832ab0c6a631da62e0, type: 2}
     EntryAnchor: {x: 0.5, y: 1.12}
     HoldAnchor: {x: 0.5, y: 0.78}
     EntryCurve: {x: 0, y: 0}
@@ -109,5 +110,5 @@ MonoBehaviour:
   ProjectileFadeSeconds: 0.3
   TransitionTitle: Encounter 5
   TransitionDescription:
-  RewardGraceSeconds: 4
+  RewardGraceSeconds: 1.5
   BossPostDeathSeconds: 1

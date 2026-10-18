@@ -22,6 +22,9 @@ namespace StarShift.Rewards
         private float graceRemaining = -1;
         private Color baseColor;
         private Vector3 previousPlayerPosition;
+        private Vector3 previousPickupPosition;
+        private float fallVelocity;
+        private int bounceCount;
         private Camera gameplayCamera;
         public PickupDefinition Item { get; private set; }
         public RewardDropTable Crate { get; private set; }
@@ -31,23 +34,26 @@ namespace StarShift.Rewards
         public void Launch(PickupDefinition item, RewardDropTable crate, Vector3 position, EncounterCleanup scope,
             PlayerPickupReceiver player, Func<RewardPickup, bool> onCollect, Action<RewardPickup> onRelease)
         {
-            Item = item; Crate = crate; cleanup = scope; token = scope.Token; receiver = player;
+            Item = item; Crate = crate; cleanup = scope; token = scope.RewardToken; receiver = player;
             collect = onCollect; release = onRelease; remaining = crate != null ? 8 : item.Lifetime;
             graceRemaining = -1;
             previousPlayerPosition = player.transform.position;
+            previousPickupPosition = position;
+            fallVelocity = -(item != null ? item.DriftSpeed : .8f);
+            bounceCount = 0;
             gameplayCamera = Camera.main;
             transform.position = position;
             baseColor = crate != null ? new Color(1, .78f, .2f) : item.Color;
             visual.color = baseColor;
             label.color = Color.white;
             label.text = crate != null ? "BOX" : item.ShortCode;
-            active = cleanup.Register(this, token);
+            active = cleanup.Register(this, scope.Token);
             gameObject.SetActive(active);
         }
         private void FixedUpdate()
         {
             if (!active) return;
-            if (cleanup.Token != token) { Release(); return; }
+            if (cleanup.RewardToken != token) { Release(); return; }
             remaining -= Time.fixedDeltaTime;
             if (graceRemaining >= 0) graceRemaining = Mathf.Max(0, graceRemaining - Time.fixedDeltaTime);
             var visibleRemaining = graceRemaining >= 0 ? Mathf.Min(remaining, graceRemaining) : remaining;
@@ -56,15 +62,30 @@ namespace StarShift.Rewards
             label.color = new Color(1, 1, 1, opacity);
             if (remaining <= 0) { Release(); return; }
             var position = transform.position;
-            position += Vector3.down * ((Item != null ? Item.DriftSpeed : .65f) * Time.fixedDeltaTime);
-            var floor = gameplayCamera.ViewportToWorldPoint(new Vector3(0, .12f, -gameplayCamera.transform.position.z)).y;
-            position.y = Mathf.Max(position.y, floor);
+            bool shard = Item != null && Item.Kind == PickupKind.Shard;
+            if (shard)
+            {
+                fallVelocity = Mathf.Max(-Item.MaximumFallSpeed, fallVelocity - Item.FallAcceleration * Time.fixedDeltaTime);
+                position.y += fallVelocity * Time.fixedDeltaTime;
+                var floor = gameplayCamera.ViewportToWorldPoint(new Vector3(0, .06f, -gameplayCamera.transform.position.z)).y;
+                if (position.y <= floor && fallVelocity < 0 && bounceCount < 2)
+                {
+                    position.y = floor;
+                    var height = Item.ShardBounceHeight * gameplayCamera.orthographicSize * 2 * (bounceCount == 0 ? 1 : .35f);
+                    fallVelocity = Mathf.Sqrt(2 * Item.FallAcceleration * height);
+                    bounceCount++;
+                }
+            }
+            else position += Vector3.down * ((Item != null ? Item.DriftSpeed : .8f) * Time.fixedDeltaTime);
             transform.position = position;
             // Sweep đường đi của Player để drag nhanh vẫn nhận contact; không hút pickup.
             var current = receiver.transform.position;
-            if (receiver.CanCollect && SegmentDistanceSquared(position, previousPlayerPosition, current) <= collectionRadius * collectionRadius)
+            if (receiver.CanCollect && SegmentDistanceSquared(Vector3.zero,
+                previousPlayerPosition - previousPickupPosition, current - position) <= collectionRadius * collectionRadius)
                 TryCollect();
             previousPlayerPosition = current;
+            previousPickupPosition = position;
+            if (active && gameplayCamera.WorldToViewportPoint(position).y < -.06f) Release();
         }
         private static float SegmentDistanceSquared(Vector3 point, Vector3 from, Vector3 to)
         {
@@ -74,8 +95,8 @@ namespace StarShift.Rewards
         }
         public bool TryCollect()
         {
-            if (!active || cleanup.Token != token || !receiver.CanCollect) return false;
-            // Khóa trước effect callback: EMP có thể giết enemy và eject thêm reward.
+            if (!active || cleanup.RewardToken != token || !receiver.CanCollect) return false;
+            // Khóa trước callback để effect không collect trùng khi eject thêm reward.
             active = false;
             if (!collect(this)) { active = true; return false; }
             Release(); return true;

@@ -9,14 +9,14 @@ Không chạy lại để overwrite tuning/content user đã chỉnh sau migrati
 read-only kiểm config, references/scripts và local overrides.
 
 `VerifyM4Testbed` có entries Weapons, PickupsAndRewards, CombatAndDrops,
-DropSelectionEdges, Stress, RegressionAndPools, PowerAndLifecycle, EmpAndProtection, PickupFade và Visuals(width).
+DropSelectionEdges, Stress, RegressionAndPools, PowerAndLifecycle, MissilesAndProtection, PickupFade và Visuals(width).
 Chạy nhóm liên quan, không full historical M2/M3 matrix mỗi lần sửa. Old suites có
 fixtures/counts theo checkpoint 2-Encounter cũ; dùng M4 entries cho current testbed.
 Không chạy hai runtime probes đồng thời. Sau probe missile, fixture restore flight
 flags trước pool reuse. Không save scene/runtime test state.
 
 Fast closure: `BeginClosure()` chạy nối tiếp DevFastStart 5 Encounter, weapon/heat,
-pickup/effect/reward/reset, EMP, drop edges, handoff grace/fade, pickup fade, density
+pickup/effect/reward/reset, reserve missile, drop edges, handoff grace/fade, pickup fade, density
 và đúng một full Mission 01 có death/Pause. Progress/result nằm ở
 `.design/m4-a/closure-results.json`; chờ `current: PASS` hoặc `FAILED` trước probe
 khác. Nếu fail, sửa và rerun riêng entry đó; không tự lặp toàn suite. Không chạy lại
@@ -321,3 +321,39 @@ hoặc announcement đầu riêng; chỉ hiện khi HUD/control đã trở lại
 theo [presentation owner](../../docs/presentation/audio-vfx.md#level-intro-warning-và-dynamic-audio).
 FullMissionRun kiểm tra fresh drag/fire và Pause trong card trước first spawn.
 Dev jump lấy đúng Encounter index đã chọn.
+
+## M4-B persistence
+
+`ConfigurePersistence.Configure` author lifecycle component + references một lần ở
+saved Gameplay scene/Edit Mode, qua Unity API. `Inspect` đọc scene state/reference
+integrity. Không chạy lại M4-A configuration hoặc reset local overrides.
+
+`VerifyPersistence.Core` chạy temp real JSON tests. Play Mode entries `Retry(2)`,
+`Retry(4)`, `Retry(5)`, `ActiveIsolation()` chạy targeted flows. `BeginLifecycle()`
+launch async full lifecycle; chờ ignored `.design/m4-b/lifecycle-progress.json` về
+PASS/FAILED trước runtime probe khác. Helper thật sự recreate Gameplay scene;
+không dùng production storage. Settings/NewGame/Continue/Replay được expose bằng
+CampaignLifecycle API, không cần Main Menu. Evidence/cost/limits thuộc
+[dev owner](../../docs/systems/dev-debug.md#m4-b-persistence-verification).
+
+
+## Gameplay feel follow-up
+
+`ConfigureGameplayFeel.Configure` trong `ConfigureGameplayFeel.cs` là one-time authoring
+follow-up, không chạy lại để overwrite later tuning. `VerifyGameplayFeel.BeginChecks`
+trả ngay; chờ `.design/gameplay-feel/progress.json` terminal. Có entries targeted
+Thermal, MissileAndImpact, ShieldRespawn, Pickups, EmptyEncounter, PickupCarryOver,
+MissileCancellation và TerminalCueCleanup. PickupCarryOver dùng cloned level/temp Campaign storage,
+kiểm đồ qua handoff, collect/Profile, Pause/lifetime và Retry/reset cleanup. Load
+một entry VerifyM4Testbed (Weapons hoặc DropSelectionEdges) trước HomingMechanics/Capture(width) để reuse existing Rig.
+Coverage và native screenshots ở [dev owner](../../docs/systems/dev-debug.md#gameplay-feel-verification).
+
+`ConfigureGameplayFeel.RefineWeaponsAndMissile` là targeted authoring cho nhịp
+launch/detonation, distinct projectile sprites/trails và khoảng nghỉ minor hiện tại;
+không chạy lại full Configure. `Capture(width)` có thêm reserve-flight trước impact.
+FullMission kiểm thêm real missile-button click và đúng một detonation. Probe
+MissileCancellation kiểm Retry/exit/StopRun giữa flight; không chạy probes đồng thời.
+
+`ConfigureGameplayFeel.TuneFallExitAndCooling` là targeted Edit Mode tuning cho
+Shard, timed Exit, thermal cooling và E4 timer allowance. Verify bằng Thermal,
+Pickups, EmptyEncounter và nearby PickupCarryOver; không cần full closure suite.

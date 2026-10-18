@@ -151,7 +151,7 @@ không biến cả asteroid storm thành chuỗi full-screen flash.
 | Shield break | Teal burst, distinct break SFX, tiny shake nếu phù hợp |
 | Overdrive | Firing/engine accent và timer cue; không làm projectile unreadable |
 | Support Drone | Entrance/trail ngắn và summon cue, bắn phụ dưới main weapon volume |
-| EMP | Pulse mạnh ngắn + EMP cue, nhanh trả contrast; không quyết damage bằng effect |
+| Reserve Missile | Amber burst + brief camera impact; exact prototype ở [cue owner section](#reserve-missile-impact-cue), không quyết damage bằng effect |
 | Extra Life | Green-white positive cue, ngắn và nhận ra survival reward |
 | Stellar Shard | Amber/gold glint và collect cue nhẹ, throttle khi nhiều pickup |
 
@@ -238,3 +238,24 @@ không cần adaptive-music framework phức tạp.
 Vibration setting tồn tại; exact use [TBD]. Gợi ý chưa khóa: player death,
 boss explosion, shield break nhẹ. Không rung mỗi bullet hit.
 SFX synth workflow và BGM licensing/import ở [asset pipeline](../production/asset-pipeline.md).
+
+
+## Reserve missile impact cue
+
+Special reserve missile có rocket lớn hơn primary Homing, phóng từ vị trí Player
+tại launch về tâm view theo nhịp tăng tốc, trail taper ngắn. Presentation đọc
+LaunchViewport/FlightProgress từ reserve owner; không quyết thời điểm damage.
+Đến Detonated mới hide rocket và phát amber flash ngắn + expanding thin ring .45 s
+`[TUNABLE]`, đồng thời camera impulse mạnh hơn normal Homing fire; primary Homing
+không trigger camera impulse. Flight duration thuộc [weapon owner](../content/weapons-items-drops.md#tên-lửa-dự-trữ).
+Prototype tunables
+trên GameplayViewController: duration .14 s (range .10–.18), strength .004 viewport
+fraction (clamped tối đa .01), decay nhanh theo squared envelope `[TUNABLE]`.
+Retrigger restart bounded window, không cộng biên độ hoặc thời lượng vô hạn.
+
+Dùng existing GameplayViewController; lệch orthographic projection chỉ trong URP
+begin/end camera rendering và restore matrix sau render. Không đổi Camera Transform,
+zoom, playable viewport, drag conversion, collider, damage hoặc gameplay timers.
+Không thêm camera system thứ hai. Pause freeze impulse clock và render neutral;
+NewGame/Retry/Continue/exit clear rocket/trail/flash và pending impact/burst. Respect ScreenShakeEnabled
+trong persisted Settings. Animation/impulse observer không quyết damage hoặc stock.

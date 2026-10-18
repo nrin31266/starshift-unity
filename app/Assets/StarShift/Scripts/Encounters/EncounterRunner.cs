@@ -80,14 +80,16 @@ namespace StarShift.Encounters
         {
             var dev = GetComponent<StarShift.Dev.DevFastStart>();
             if (dev != null && dev.TryStart()) return;
+            if (GetComponent<StarShift.Persistence.CampaignLifecycle>()?.TryBoot() == true) return;
             StartRun("LEVEL_START", false);
         }
         public void StartRun(string startPoint, bool singleEncounter)
             => StartRun(startPoint, singleEncounter, false, null, null);
 
         public void StartRun(string startPoint, bool singleEncounter, bool skipIntro,
-            PlayDirection? directionOverride, CameraProfile cameraOverride)
+            PlayDirection? directionOverride, CameraProfile cameraOverride, Action restoreState = null)
         {
+            GetComponent<StarShift.Persistence.CampaignLifecycle>()?.OnRunnerStarting();
             StopRun();
             pool.ReclaimInactive();
             if (safetyGate == null || playerGate == null || Definitions == null || Definitions.Length == 0)
@@ -109,6 +111,8 @@ namespace StarShift.Encounters
             var token = generation;
             RunStarted?.Invoke();
             if (token != generation) return;
+            restoreState?.Invoke();
+            if (token != generation) return;
             if (levelFlow != null)
             {
                 levelFlow.Begin(startPoint == "LEVEL_START" && !skipIntro, directionOverride, cameraOverride, index);
@@ -120,7 +124,7 @@ namespace StarShift.Encounters
         private void BeginEncounter(int index)
         {
             generation++;
-            cleanup.BeginScope(generation);
+            cleanup.BeginScope(generation, preserveRewards: true);
             CurrentIndex = index;
             Elapsed = 0;
             killed = requiredKilled = 0;
@@ -222,9 +226,18 @@ namespace StarShift.Encounters
                     if (slot.Flight != null && (slot.Flight.HasExited || (slot.Flight.IsExiting && slot.Flight.IsOutsideView))) Release(slot);
                 }
             }
-            if (Current.Completion == EncounterCompletion.Eliminate && requiredKilled == Current.RequiredCount) ResolveEncounter();
+            if (Current.Completion == EncounterCompletion.Timeline && Current.CompleteWhenScheduleExhausted &&
+                ScheduleExhausted() && !HasLiveEnemies()) ResolveEncounter();
+            else if (Current.Completion == EncounterCompletion.Eliminate && requiredKilled == Current.RequiredCount) ResolveEncounter();
             else if (Current.Completion == EncounterCompletion.Boss && Current.RequiredCount > 0 && requiredKilled == Current.RequiredCount)
                 NotifyBossDefeated(token);
+        }
+        private bool ScheduleExhausted()
+        {
+            foreach (var group in schedule) if (group.Spawned < group.Action.Count) return false;
+            // Event chưa tới giờ vẫn là nội dung cần chạy; không cắt mất reward/scripted moment.
+            foreach (var fired in optionalFired) if (!fired) return false;
+            return true;
         }
         private bool HasLiveEnemies()
         {
@@ -322,15 +335,14 @@ namespace StarShift.Encounters
             remaining = Current.RewardGraceSeconds;
             Completed?.Invoke(Current);
             if (token != generation) return;
+            // Pickup tiếp tục rơi qua encounter; chỉ chờ nhặt trước khi kết thúc world.
+            if (!standalone && CurrentIndex + 1 < Definitions.Length) { FinishHandoff(); return; }
             // Completion consumer có thể vừa eject reward cuối; preserve sau notification.
             cleanup.BeginGrace(remaining);
             if (!cleanup.HasRewards) FinishHandoff();
         }
         private void FinishHandoff()
         {
-            var token = generation;
-            cleanup.ReleaseAll();
-            if (token != generation) return;
             if (!standalone && CurrentIndex + 1 < Definitions.Length)
             {
                 Stage = EncounterStage.Handoff;
@@ -339,6 +351,9 @@ namespace StarShift.Encounters
             }
             else
             {
+                var token = generation;
+                cleanup.ReleaseAll();
+                if (token != generation) return;
                 Stage = EncounterStage.Idle;
                 if (!standalone) MissionCompleted?.Invoke();
             }

@@ -315,3 +315,13 @@ Staged defeat dẫn Ending/Campaign Result; exact animation/audio thuộc
 Boss 1 death chain và boss 2 shield-break chain được thể hiện theo
 [audio/VFX](../presentation/audio-vfx.md); mechanic vulnerability chỉ do gameplay
 resolve. Boss identity/phase trong file này không mang nghĩa có prefab/scene đã tạo.
+
+
+## Emergency missile target classification
+
+`EnemyDefinition.MissileTier` có Normal / Large / Boss `[PROVISIONAL]`. Đây là
+explicit authored classification, không đoán boss từ HP hoặc coi mọi minion trong
+boss Encounter là boss. Current Scout default Normal. Chưa author Large/Boss combat
+mới; verification dùng synthetic definitions. Non-hostile supply/resource giữ
+BodyDamagesPlayer=false và không bị missile auto-clear. Percent damage và viewport
+eligibility thuộc [weapon/item owner](weapons-items-drops.md#tên-lửa-dự-trữ).

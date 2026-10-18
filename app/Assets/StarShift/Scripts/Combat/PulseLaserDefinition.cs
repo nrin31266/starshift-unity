@@ -25,6 +25,12 @@ namespace StarShift.Combat
         [SerializeField, Min(0)] private float trackingDegreesPerSecond;
         [SerializeField, Min(0)] private float trackingRange = 18;
         public WeaponBranch Branch => branch;
+        [SerializeField] private Vector2 projectileScale = Vector2.one;
+        [SerializeField] private Sprite projectileSprite;
+        [SerializeField, Min(0)] private float trailSeconds;
+        public Sprite ProjectileSprite => projectileSprite;
+        public float TrailSeconds => trailSeconds;
+        public Vector2 ProjectileScale => projectileScale;
         public Color ProjectileColor => projectileColor;
         public float TrackingDegreesPerSecond => trackingDegreesPerSecond;
         public float TrackingRange => trackingRange;

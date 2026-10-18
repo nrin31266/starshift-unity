@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace StarShift.Rewards
 {
-    public enum PickupKind { Shard, WeaponCore, Shield, Overdrive, SupportDrone, Emp, ExtraLife }
+    public enum PickupKind { Shard, WeaponCore, Shield, Overdrive, SupportDrone, MissileAmmo, ExtraLife }
 
     [CreateAssetMenu(menuName = "StarShift/Rewards/Pickup Definition")]
     public sealed class PickupDefinition : ScriptableObject
@@ -17,7 +17,8 @@ namespace StarShift.Rewards
         [Min(0)] public float DriftSpeed = .65f;
         [Min(.1f)] public float Duration = 8;
         [Min(1)] public float FireRateMultiplier = 1.6f;
-        [Min(.1f)] public float EmpRadius = 8;
-        [Min(1)] public int EmpDamage = 2;
+        [Min(.1f)] public float FallAcceleration = 14;
+        [Min(.1f)] public float MaximumFallSpeed = 8;
+        [Range(.01f,.2f)] public float ShardBounceHeight = .06f;
     }
 }

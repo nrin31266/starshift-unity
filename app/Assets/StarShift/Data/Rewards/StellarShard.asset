@@ -17,9 +17,10 @@ MonoBehaviour:
   ShortCode: SS
   Color: {r: 1, g: 0.76, b: 0.2, a: 1}
   Amount: 1
-  Lifetime: 12
-  DriftSpeed: 0.65
+  Lifetime: 5
+  DriftSpeed: 3.2
   Duration: 8
   FireRateMultiplier: 1.6
-  EmpRadius: 8
-  EmpDamage: 2
+  FallAcceleration: 11
+  MaximumFallSpeed: 6.4
+  ShardBounceHeight: 0.06

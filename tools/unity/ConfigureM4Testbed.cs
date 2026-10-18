@@ -97,10 +97,10 @@ public static class ConfigureM4Testbed
         var shield=Item("ShieldCell",PickupKind.Shield,"SH",new Color(.2f,1,.7f));
         var od=Item("Overdrive",PickupKind.Overdrive,"OD",new Color(1,.45f,.8f));
         var drone=Item("SupportDrone",PickupKind.SupportDrone,"DR",Cyan); if(drone.Duration==8){drone.Duration=11;EditorUtility.SetDirty(drone);}
-        var emp=Item("EMP",PickupKind.Emp,"EMP",new Color(.7f,.8f,1));
+        var ammo=Item("MissileAmmo",PickupKind.MissileAmmo,"MSL+1",new Color(.7f,.8f,1));
         var life=Item("ExtraLife",PickupKind.ExtraLife,"+1",new Color(.4f,1,.5f));
         WeightedPickup[] weights={new WeightedPickup{Item=pulseCore,Weight=10},new WeightedPickup{Item=plasmaCore,Weight=10},new WeightedPickup{Item=homingCore,Weight=10},
-            new WeightedPickup{Item=shield,Weight=25},new WeightedPickup{Item=od,Weight=18},new WeightedPickup{Item=drone,Weight=14},new WeightedPickup{Item=emp,Weight=9},new WeightedPickup{Item=life,Weight=4}};
+            new WeightedPickup{Item=shield,Weight=25},new WeightedPickup{Item=od,Weight=18},new WeightedPickup{Item=drone,Weight=14},new WeightedPickup{Item=ammo,Weight=9},new WeightedPickup{Item=life,Weight=4}};
         var normal=Asset<RewardDropTable>(Data+"Rewards/NormalDrops.asset",x=>{x.Shard=shard;x.MajorItems=weights;});
         var major=Asset<RewardDropTable>(Data+"Rewards/SupplyCrateDrops.asset",x=>{x.Source=RewardSource.MajorCrate;x.MajorItems=weights;x.Shard=shard;});
         var resource=Asset<RewardDropTable>(Data+"Rewards/ResourceDrops.asset",x=>{x.Source=RewardSource.Resource;x.Shard=shard;});
@@ -165,7 +165,7 @@ public static class ConfigureM4Testbed
         a.Groups=new[]{Group(scout,hold,5,0,0),Group(scout,hold,1,1.8f,-.2f,forced(pulseCore))};
         b.Groups=new[]{Group(scout,fly,6,0,0,normal,FormationLayout.V),Group(scout,fly,6,.4f,-.17f,normal,FormationLayout.Staggered),Group(scout,fly,1,4,-.28f,forced(plasmaCore))};
         c.Groups=new[]{Group(scout,fly,4,0,0),Group(scout,fly,1,1,-.17f,forced(shield)),Group(scout,fly,1,3,-.28f,forced(od)),Group(scout,fly,1,5,-.39f,forced(drone)),Group(scout,fly,4,9,0)};
-        d.Groups=new[]{Group(scout,fly,6,0,0,normal,FormationLayout.Wedge),Group(scout,fly,1,2,-.25f,forced(emp)),Group(scout,fly,1,4,-.38f,forced(homingCore)),Group(scout,fly,4,7,-.12f)};
+        d.Groups=new[]{Group(scout,fly,6,0,0,normal,FormationLayout.Wedge),Group(scout,fly,1,2,-.25f,forced(ammo)),Group(scout,fly,1,4,-.38f,forced(homingCore)),Group(scout,fly,4,7,-.12f)};
         e.Groups=new[]{Group(scout,hold,5,0,0),Group(scout,hold,1,0,-.2f,forced(life)),Group(scout,hold,1,0,-.35f,forced(pulseCore))};
         var all=new[]{a,b,c,d,e};
         for(int i=0;i<all.Length;i++)

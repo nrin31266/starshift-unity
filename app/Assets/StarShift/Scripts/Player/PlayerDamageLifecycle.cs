@@ -12,9 +12,10 @@ namespace StarShift.Player
     public sealed class PlayerDamageLifecycle : MonoBehaviour
     {
         [SerializeField] private EnemyFireGate enemyFireGate;
-        [SerializeField, Min(.02f)] private float deathDuration = .35f;
+        [SerializeField, Min(.02f)] private float deathDuration = .6f;
         [SerializeField, Min(.02f)] private float invincibilityDuration = 2.5f;
         [SerializeField, Min(0)] private float enemyFireGrace = 1f;
+        [SerializeField, Min(.02f)] private float shieldBreakInvincibilityDuration = .7f;
         private PlayerGameplayGate gate;
         private PlayerLives lives;
         private PlayerRespawnEntrance entrance;
@@ -47,10 +48,30 @@ namespace StarShift.Player
             finally { gate.SetState(PlayerGameplayState.Active); }
         }
 
+        public void RestoreCheckpoint(int restoredLives)
+        {
+            remaining = 0;
+            entrance.Cancel();
+            lives.RestoreCheckpoint(restoredLives);
+            gate.SetState(PlayerGameplayState.Active);
+            enemyFireGate.ResumeAfter(0);
+        }
+
+        public void GrantBriefProtection(float seconds)
+        {
+            if (gate.State != PlayerGameplayState.Active && gate.State != PlayerGameplayState.PostEntryInvincibility) return;
+            remaining = Mathf.Max(remaining, seconds);
+            gate.SetState(PlayerGameplayState.PostEntryInvincibility);
+        }
+
         public bool TryReceiveHit(GameObject owner)
         {
             if (!isActiveAndEnabled || !gate.CanTakeDamage || lives.CurrentLives <= 0) return false;
-            if (effects != null && effects.TryAbsorb()) return true;
+            if (effects != null && effects.TryAbsorb())
+            {
+                GrantBriefProtection(shieldBreakInvincibilityDuration);
+                return true;
+            }
             remaining = deathDuration;
             // State khóa duplicate trước mọi callback; cleanup không phụ thuộc feedback.
             try { gate.SetState(PlayerGameplayState.Dying); }
@@ -133,6 +154,7 @@ namespace StarShift.Player
 
         private void OnValidate()
         {
+            shieldBreakInvincibilityDuration = Mathf.Max(.02f, shieldBreakInvincibilityDuration);
             deathDuration = Mathf.Max(.02f, deathDuration);
             invincibilityDuration = Mathf.Max(.02f, invincibilityDuration);
             enemyFireGrace = Mathf.Max(0, enemyFireGrace);

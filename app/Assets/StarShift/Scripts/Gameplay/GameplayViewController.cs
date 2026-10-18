@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace StarShift.Gameplay
 {
@@ -13,6 +14,14 @@ namespace StarShift.Gameplay
         [SerializeField, Min(0), Tooltip("Giây scaled time; smoothstep không overshoot. 0 = áp ngay.")]
         private float transitionDuration = .6f;
 
+        [SerializeField, Range(.1f,.18f)] private float reserveImpactDuration = .14f;
+        [SerializeField, Range(0,.01f), Tooltip("Biên độ theo tỷ lệ khung hình; chỉ lệch projection lúc render.")]
+        private float reserveImpactStrength = .004f;
+        private float impactRemaining;
+        private float impactElapsed;
+        private bool ownsProjection;
+        public float ImpactRemaining => impactRemaining;
+        public float ImpactStrength => reserveImpactStrength;
         private Camera gameplayCamera;
         private GameplayViewSettings transitionTarget;
         private GameplayViewSettings baselineView = GameplayViewSettings.Baseline;
@@ -37,6 +46,43 @@ namespace StarShift.Gameplay
         {
             if (gameplayCamera == null) gameplayCamera = GetComponent<Camera>();
             RequestView(targetView, 0);
+            RenderPipelineManager.beginCameraRendering += BeginCameraRendering;
+            RenderPipelineManager.endCameraRendering += EndCameraRendering;
+        }
+
+        public void TriggerReserveImpact()
+        {
+            impactRemaining = reserveImpactDuration;
+            impactElapsed = 0;
+        }
+        public void CancelImpact()
+        {
+            impactRemaining = impactElapsed = 0;
+            if (gameplayCamera != null) gameplayCamera.ResetProjectionMatrix();
+            ownsProjection = false;
+        }
+        private void BeginCameraRendering(ScriptableRenderContext context, Camera camera)
+        {
+            if (camera != gameplayCamera || impactRemaining <= 0 || Time.timeScale <= 0) return;
+            var projection = camera.projectionMatrix;
+            var fade = impactRemaining / reserveImpactDuration;
+            var amplitude = Mathf.Clamp(reserveImpactStrength, 0, .01f) * fade * fade * 2;
+            projection.m03 += Mathf.Sin(impactElapsed * 173 + 1.2f) * amplitude;
+            projection.m13 += Mathf.Sin(impactElapsed * 131 + .5f) * amplitude;
+            camera.projectionMatrix = projection;
+            ownsProjection = true;
+        }
+        private void EndCameraRendering(ScriptableRenderContext context, Camera camera)
+        {
+            if (camera != gameplayCamera || !ownsProjection) return;
+            camera.ResetProjectionMatrix();
+            ownsProjection = false;
+        }
+        private void OnDisable()
+        {
+            RenderPipelineManager.beginCameraRendering -= BeginCameraRendering;
+            RenderPipelineManager.endCameraRendering -= EndCameraRendering;
+            CancelImpact();
         }
 
         public void RequestView(GameplayViewSettings settings) => RequestView(settings, transitionDuration);
@@ -63,6 +109,11 @@ namespace StarShift.Gameplay
 
         private void Update()
         {
+            if (impactRemaining > 0)
+            {
+                impactElapsed += Time.deltaTime;
+                impactRemaining = Mathf.Max(0, impactRemaining - Time.deltaTime);
+            }
             // Inspector dùng cùng đường request với gameplay caller; retarget từ state hiện tại.
             if (targetView.OrthographicSize != transitionTarget.OrthographicSize ||
                 targetView.PlayableViewport != transitionTarget.PlayableViewport)

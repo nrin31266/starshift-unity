@@ -132,7 +132,7 @@ có giới hạn sau completion, không phải điều kiện phải nhặt hế
 | Mode | Điều kiện completion và xử lý enemy còn sống |
 |---|---|
 | Eliminate | Required enemies phải chết trước khi complete; không despawn chúng để giả hoàn thành. Non-required enemy còn sống đi qua cleanup chung. |
-| Timeline | Enemy đã exit được despawn. Khi timeline kết thúc, đóng spawn/attack/collision enemy và release chúng. Minor handoff dùng projectile grace/fade dưới đây; encounter cuối giữ bounded drain tới contact/view exit theo view diagonal/speed trước completion. Không handoff threat active sang encounter sau. |
+| Timeline | Enemy đã exit được despawn. `CompleteWhenScheduleExhausted` opt-in cho phép kết thúc sớm khi đã spawn hết mọi scheduled group, mọi optional event đã resolve và không còn live enemy; không áp cho Survive/Boss. Khi timeline kết thúc, đóng spawn/attack/collision enemy và release chúng. Minor handoff dùng projectile grace/fade dưới đây; encounter cuối giữ bounded drain tới contact/view exit theo view diagonal/speed trước completion. Không handoff threat active sang encounter sau. |
 | Survive | Timer kết thúc đóng spawn/attack và vô hiệu hóa hazard cũ; enemy còn sống đi qua cleanup chung. Minor handoff dùng projectile grace/fade dưới đây trước completion; terminal boundary clear hostile projectiles ngay. |
 | Boss | Ngay khi boss defeat, dừng hostile producers và clear hostile projectiles/hazards trước post-boss/result/region transition. Giữ staged death/presentation và reward flow; completion vẫn cần post-death sequence hoàn tất. |
 
@@ -187,12 +187,21 @@ vẫn clear an toàn theo completion mode, không tự đổi thành minor grace
 
 ### Reward grace và chuyển encounter
 
-Nếu còn valuable pickup hoặc Supply Crate, mở reward grace sau khi reward từ final
+Trong cùng Mission, minor handoff giữ mọi beneficial pickup, Stellar Shard và Supply
+Crate chưa nhặt. Chúng tiếp tục motion/lifetime hiện có qua Encounter tiếp theo;
+không reset tuổi, auto-collect hoặc xóa chỉ vì đổi encounter. Không mở thêm reward
+grace giữa các encounter thường; sau hostile cleanup, nghỉ ngắn bằng HandoffDelay
+rồi mới start encounter kế. Đây là breathing beat, không phải zero-delay nối nhóm;
+không đợi player nhặt hết đồ.
+Cap pickup vẫn tính cả đồ từ encounter trước.
+
+Trước khi kết thúc world (final/standalone encounter, result/scene/region transition),
+nếu còn valuable pickup hoặc Supply Crate, mở reward grace sau khi reward từ final
 kill/boss death đã hiện và player có thể điều khiển để nhặt. Duration là [TUNABLE]; tại boundary, bảo đảm pickup/crate còn ít nhất khoảng grace này nếu
 lifetime cũ sắp hết. Không spawn threat mới trong cửa sổ đó. Không có reward để
 nhặt thì bỏ qua grace.
 
-Grace hết thì pickup/crate chưa nhặt được expire với cue đọc được; không auto-collect
+Grace cuối world hết thì pickup/crate chưa nhặt được expire với cue đọc được; không auto-collect
 hoặc tự đổi thành bonus. Handoff không chờ player nhặt hết. Với result/scene/region
 transition, cơ hội nhặt phải diễn ra trước khi khóa control hoặc unload world.
 Crate lifetime ngoài boundary và reward behavior vẫn thuộc
@@ -201,15 +210,15 @@ Crate lifetime ngoài boundary và reward behavior vẫn thuộc
 ```text
 Completion / boss defeat cleanup
 → kết thúc post-death và reward presentation nếu có
-→ reward grace khi còn pickup/crate
-→ resolve/release object cũ còn lại
+→ minor handoff giữ pickup/crate; hoặc grace cuối world rồi release
 → checkpoint đầu encounter tiếp theo → start schedule mới
 ```
 
 Chỉ mở checkpoint/start encounter tiếp theo sau handoff an toàn; không snapshot
 object trong grace. Quit giữa grace hoặc post-boss vẫn là câu hỏi resume-marker
 [TBD] tại [save/profile](../systems/save-profile.md#các-contract-còn-mở).
-M3 grace seed khi có registered reward là 2 s `[TUNABLE]`, timer scaled;
+Explicit reset, Retry, đổi run và terminal teardown vẫn release mọi pickup/crate;
+checkpoint không snapshot đồ còn rơi. M3 grace cuối world seed khi có registered reward là 2 s `[TUNABLE]`, timer scaled;
 không có reward thì bỏ qua. Hook chỉ preserve/expire qua consumer, không grant.
 Optional hooks nhận unique ID/type, offset, condition (always/player alive/no live
 enemies) và optional spawn group. Condition pending chỉ sống trong main schedule;
@@ -472,21 +481,22 @@ production. M3 data-driven foundation tiếp tục sở hữu mọi schedule/pat
 | 01 | Eliminate / 6 | Basic fire/heat, typed Pulse Core và upgrade |
 | 02 | Timeline 20 s / 13 scheduled | Hai nhóm 6 Scout vào chồng nhịp; V/Staggered, controlled shooters, Plasma Core, pool/drop load |
 | 03 | Timeline 24 s / 11 + optional supply | Shield/OD/Drone giữa các nhóm; supply → crate → major pickup |
-| 04 | Timeline 20 s / 12 | Survival pressure, EMP, Homing Core; death/respawn/downgrade |
+| 04 | Timeline 21 s / 12 | Survival pressure, Missile Ammo, Homing Core; death/respawn/downgrade |
 | 05 | Eliminate / 7 + optional resource | Extra Life/Pulse Core, guaranteed resource Shard, final reward grace và Clear |
 
 Count scheduled không bằng visible peak. Target stress khoảng 8–12 visible;
 nhóm reward bổ sung có thể tăng peak ngắn lên 13 `[TUNABLE]`. Config dùng Line, V,
-Staggered, Wedge; ba shared `M4Hold`/`M4Arc`/`M4Supply` sequences. Không script riêng
+Staggered, Wedge; shared FlightSequences, gồm top entry/retreat, straight top-to-bottom dive,
+right-to-left sweep và diagonal pass bổ sung sau feedback. Không script riêng
 cho từng Encounter. Normal enemies vẫn Scout hiện có; supply/resource targets là
 placeholder destructibles, không thêm archetype combat final.
 
 Attack seeds chung `[TUNABLE]`: ActiveShooterLimit 2, shot spacing .7 s, volley 2,
 pause giữa volley 1.7 s; vẫn qua coordinator + safety gate, không tự fire mọi enemy.
-Minor projectile grace/fade giữ policy dưới đây; handoff 1.7 s. RewardGraceSeconds
-4 s `[TUNABLE]`, chỉ mở khi có reward thật. Grace extend remaining lifetime, không
-xóa reward ở completion notification; hết grace cleanup scope trước encounter tiếp.
-Không carry stale reward qua run/mission reset. Mục tiêu nhặt vẫn không chặn completion.
+Minor projectile grace/fade giữ policy dưới đây; handoff 1 s `[TUNABLE]`, cho nhịp
+nghỉ nhẹ thay vì start ngay hoặc đợi phần timer rỗng. RewardGraceSeconds
+cuối world 1.5 s `[TUNABLE]`; policy giữ đồ qua encounter và cleanup thuộc
+[reward handoff](#reward-grace-và-chuyển-encounter). Mục tiêu nhặt không chặn completion.
 
 Dev aliases `SYSTEM_DENSITY`, `SYSTEM_EFFECTS`, `SYSTEM_SURVIVAL`, `SYSTEM_REWARDS`
 trỏ các encounter thật. `ENCOUNTER_4`/`ENCOUNTER_5` là IDs bổ sung có chủ ý cho testbed,
@@ -525,7 +535,7 @@ trước completion. B đóng schedule tại 14 s kể cả enemy sống hoặc 
 không trung chỉ vì nguồn bắn đã exit hoặc schedule hết giờ.
 Tại normal completion sau projectile cleanup/drain, không còn enemy hoặc hostile
 projectile active trước notification/handoff; explicit reset clear ngay. Cleanup không gửi damage/death để giả kill.
-Khoảng handoff A → B là 1.7 s `[TUNABLE]`; đây là minor gameplay transition,
+Khoảng handoff A → B hiện dùng tuning của [testbed hiện tại](#m4-a-mission-01-system-testbed-provisional); đây là minor gameplay transition,
 giữ HUD/Pause và permissions theo gameplay/lifecycle bình thường. Cue nền nhẹ và
 optional contextual title/description tự fade; không menu hoặc chờ confirmation.
 Incoming encounter giữ optional TransitionTitle/TransitionDescription; để trống thì
@@ -912,3 +922,23 @@ Exact preset chưa được thiết kế chốt. Replay policy thuộc
 [progression/economy](../gameplay/progression-economy.md).
 Enemy stats/behavior ở [enemies/bosses](enemies-bosses.md);
 weapon, core và supply/drop contract ở [weapons/items/drops](weapons-items-drops.md).
+
+
+## Testbed flight và pacing follow-up `[PROVISIONAL]`
+
+Mission 01 vẫn là system testbed. Encounter 2 dùng top retreat/right sweep xen kẽ;
+Encounter 3 dùng diagonal/top retreat; Encounter 4 dùng straight top dive/right sweep;
+Encounter 5 có right-entry terminal hold. Encounter 1 giữ top entry. Required targets
+của Eliminate vẫn phải kill; không bay đi để giả completion.
+
+New timed sequences giữ entry 1.3 s, combat 9 s, exit 3 s `[TUNABLE]`; endpoints
+ngoài view có allowance cho formation/anchor offsets. Top retreat rời theo cùng
+trục dọc; dive đi từ trên xuống và tiếp tục ra đáy. Exit được kéo dài nhẹ để đọc
+đường rời màn rõ hơn; trần Timeline E4 theo testbed table cho đủ thời gian exit.
+Không xoay app orientation.
+
+Encounter 2/3/4 bật early-exhaustion ở bảng completion. Còn spawn/event tương lai
+thì chưa kết thúc sớm; optional Supply vẫn được chạy. Sau enemy cuối exit vẫn giữ
+bounded projectile grace/fade, rồi minor handoff theo [testbed tuning](#m4-a-mission-01-system-testbed-provisional) giữ pickup như
+1 → 2. Không đợi timer 20/24 s thêm khi world đã hết mục tiêu và schedule đã xong.
+Survive giữ timer đầy đủ. Early exhaustion không tính escaped enemy là kill/drop.

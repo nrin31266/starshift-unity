@@ -494,7 +494,7 @@ L1 production assets đã trỏ sequence. Detailed phase/path behavior ở
 | EncounterRunner | Schedule groups theo timestamp/stable tie order; mode completion; stages Intro/Running/ProjectileDrain/BossPostDeath/RewardGrace/Handoff; generation token và exactly-once notification |
 | EntryHoldFlight | Writer duy nhất của enemy pose; runtime elapsed/phase; reproject theo current camera; không quyết kill/completion/drop |
 | EncounterFireCoordinator | Eligible round-robin permissions; configurable active shooter limit, spacing/volley; local attack giữ telegraph/projectile pool |
-| EncounterCleanup | Registry scoped cho hostile/temporary/reward participants; không tự tìm/drop/grant reward |
+| EncounterCleanup | Registry cho hostile/temporary theo encounter token và reward theo run token; không tự tìm/drop/grant reward |
 | ScenePrefabPool | Shared scene-scoped prefab storage cho common enemies; rent inactive, configure rồi activate; không chứa gameplay completion policy |
 | MissionIntroPresentation | Placeholder planet/starfield nhận progress, không giữ gameplay authority |
 
@@ -515,6 +515,9 @@ reset hoặc encounter handoff. Configured post-death duration là fallback cho 
 real staged boss content sẽ cung cấp signal qua cùng boundary.
 
 Direct callbacks có thể reset run: runner kiểm tra generation trước khi tiếp tục.
+`EncounterCleanup.Token` đổi mỗi encounter; `RewardToken` chỉ đổi khi hard reset.
+RewardPickup đăng ký bằng current encounter token nhưng kiểm lifetime/collection bằng
+reward token, nên stale producers bị từ chối mà pickup còn rơi vẫn hợp lệ.
 Hard reset/disable hủy intro/schedule/handoff/grace, attack permissions và boundary
 participants. Normal handoff behavior thuộc
 [cleanup owner](../content/levels-encounters.md#encounter-lifecycle-và-handoff).
@@ -562,7 +565,7 @@ chưa cần sinh asset hoặc khóa schema để tài liệu trông hoàn chỉn
 | PulseLaserWeapon | Active primary cadence/heat states và pooled projectiles; loadout event reset cadence, không mutate definitions |
 | PlayerProjectile | Snapshot damage/motion/tracking/splash; same-scene target registry, spawn-version guard khi enemy reuse |
 | PlayerTemporaryEffects | Shield/OD/Drone runtime timer/protection; scaled gameplay gate, lifecycle clear |
-| PlayerPickupReceiver | Route collect tới loadout/lives/effects/run rewards; EMP pulse, không giữ buff state trong UI |
+| PlayerPickupReceiver | Route collect tới loadout/lives/effects/run rewards/reserve; không giữ buff state trong UI |
 | SupportDrone | Một authored companion và local projectile pool; visual/timer đọc effects owner, damage không mượn primary weapon authority |
 | RunRewards | Runtime score/shard và verification counters; reset theo run, không save/profile |
 | RewardDropTable / PickupDefinition | Static reward source/weights/item tuning; test overrides không sửa global drops |
@@ -683,3 +686,35 @@ Không ECS/DOTS, enterprise framework, custom node graph/editor hay backend.
 Không premature abstraction, loading framework phức tạp hoặc pool mọi object theo
 thói quen. [Dev/debug](dev-debug.md) sở hữu verification/DoD;
 [save/profile](save-profile.md) sở hữu serialization, atomic write và migration.
+
+
+## M4-B persistence integration
+
+`CampaignLifecycle` kết nối EncounterRunner, GameplaySession và Player owners bằng
+scene references. Plain C# CampaignProgress/JsonSaveStore không tìm hoặc mutate scene.
+Persistent/runtime categories, schema và restore/write permissions thuộc duy nhất
+[save/profile](save-profile.md#m4-b-implementation-provisional).
+
+Runner nhận optional restore callback sau toàn bộ RunStarted consumers, trước
+LevelFlow/EncounterStarted; generation guards vẫn chặn reentrant start. Raw start
+thu hồi Campaign write permission. GameplaySession.ResetRuntime sở hữu pooled
+friendly shot/effect/thermal cleanup và clock release; PlayerDamageLifecycle restore
+hủy pending death/entrance qua public owner API. RelativeDragMovement là writer của
+Player checkpoint pose. HUD chỉ gửi Retry intent và đọc CanRetry, không serialize.
+
+
+## Gameplay feel boundaries
+
+EmergencyMissileReserve sở hữu stock, activation/cooldown, scaled flight timer/
+generation và detonation damage qua EnemyHealth. Fired chỉ báo launch; Detonated
+báo sau damage. EmergencyMissilePresentation đọc flight progress để vẽ rocket và
+chỉ phát flash/burst/GameplayViewController impulse ở Detonated. Config classification ở EnemyDefinition, không
+suy luận boss từ current Encounter mode hoặc HP. UI gửi intent, không giữ reserve.
+Session reset/terminal hủy pending flight trước khi freeze clock và dọn presentation;
+checkpoint DTO restore stock qua reserve owner. Không coroutine, animation callback
+hoặc VFX nào được cấp quyền damage. Primary config có optional sprite/trail override;
+projectile reuse xóa trail và restore sprite/scale, không đổi physics root.
+
+GameplayViewController áp impulse trong render callback rồi restore projection;
+không dịch Transform của camera đang được movement/bounds/flight dùng làm authority.
+Các tunables thuộc [presentation owner](../presentation/audio-vfx.md#reserve-missile-impact-cue).

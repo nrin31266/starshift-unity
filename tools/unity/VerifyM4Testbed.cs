@@ -79,14 +79,14 @@ public static class VerifyM4Testbed
             Require(weapon.Heat>0 && !weapon.IsOverheated,"Burst incorrectly locked");
             var burstHeat=weapon.Heat;await Task.Delay(500);Require(weapon.Heat<burstHeat,"Release did not cool");
             await rig.MouseEvent(new Vector2(400,200),true);
-            await Until(()=>weapon.IsOverheated,7000,"No MAX overheat");
+            await Until(()=>weapon.IsOverheated,Mathf.CeilToInt(loadout.ActiveDefinition.ThermalProfile.Capacity / loadout.ActiveDefinition.ThermalProfile.HeatPerSecond * 1000)+1500,"No MAX overheat");
             Require(weapon.HeatFraction>=.97f && rig.Gate.CanInput,"Overheat affected movement permission");
             var position=rig.Player.transform.position;await rig.MouseEvent(new Vector2(480,200),true);Require(rig.Player.transform.position.x>position.x,"Overheated movement failed");
             Session.Pause();var frozen=weapon.Heat;await Task.Delay(180);Require(weapon.Heat==frozen,"Pause heat advanced");Session.Resume();
             await Until(()=>!weapon.IsOverheated,1800,"Recovery failed");Require(weapon.Heat>0,"Recovery waited for zero");
             // Resume hủy ownership; tạo held intent mới cho auto-resume probe.
             await rig.MouseEvent(new Vector2(400,200),false);await rig.MouseEvent(new Vector2(400,200),true);
-            await Until(()=>weapon.IsOverheated,6000,"Second overheat failed");var shots=weapon.ShotsFired;
+            await Until(()=>weapon.IsOverheated,Mathf.CeilToInt(loadout.ActiveDefinition.ThermalProfile.Capacity / loadout.ActiveDefinition.ThermalProfile.HeatPerSecond * 1000)+1500,"Second overheat failed");var shots=weapon.ShotsFired;
             await Until(()=>weapon.ShotsFired>shots,2000,"Held auto-resume failed");
             await rig.MouseEvent(new Vector2(400,200),false);
             var retained=weapon.Heat;loadout.ApplyCore(WeaponBranch.Pulse);Require(Mathf.Approximately(retained,weapon.Heat),"Core reset heat");
@@ -111,6 +111,8 @@ public static class VerifyM4Testbed
             var life=rig.Player.GetComponent<PlayerDamageLifecycle>();rig.Unprotect();var lives=rig.Lives.CurrentLives;
             receiver.TryCollect(Item("PulseCore"));
             Require(life.TryReceiveHit(null) && rig.Lives.CurrentLives==lives && !effects.HasShield && loadout.ActiveLevel==2,"Shield precedence failed");
+            Require(!life.TryReceiveHit(null),"Shield break duplicate hit");
+            await Until(()=>rig.Gate.State==PlayerGameplayState.Active,1500,"Shield protection did not expire");
             Require(life.TryReceiveHit(null) && rig.Lives.CurrentLives==lives-1 && loadout.ActiveLevel==1,"Unshielded death failed");
             await Until(()=>rig.Gate.State==PlayerGameplayState.PostEntryInvincibility,2500,"Respawn missing");rig.Protect();
             Require(receiver.TryCollect(Item("ExtraLife")) && rig.Lives.CurrentLives==lives,"Extra life failed");
@@ -123,19 +125,20 @@ public static class VerifyM4Testbed
             Restart(rig,"ENCOUNTER_2");await Task.Delay(2000);
             var beforeScore=rewards.Score;var enemy=Enemies.First();enemy.ReceivePlayerHit(enemy.CurrentHp,rig.Player);await Task.Delay(100);
             Require(rewards.Score==beforeScore+enemy.Definition.Score,"Kill score missing or duplicated");var score=rewards.Score;enemy.ReceivePlayerHit(999,rig.Player);Require(rewards.Score==score,"Duplicate kill reward");
-            receiver.TryCollect(Item("EMP"));Require(receiver.EmpUses==1 && rig.Lives.CurrentLives==3,"EMP altered death/lives");
+            receiver.TryCollect(Item("MissileAmmo"));Require(rig.Player.GetComponent<EmergencyMissileReserve>().Current==2 && rig.Lives.CurrentLives==3,"Ammo pickup altered death/lives");
             Restart(rig,"ENCOUNTER_1",false);await Task.Delay(2000);
             foreach(var target in Enemies)target.ReceivePlayerHit(target.CurrentHp,rig.Player);
-            await Until(()=>Runner.Stage==EncounterStage.RewardGrace,1800,"No reward grace");
+            await Until(()=>Runner.Stage==EncounterStage.Handoff,1800,"No minor handoff");
             var final=Pickups.FirstOrDefault(p=>p.Item==Item("PulseCore"));Require(final!=null,"Final kill reward lost");var beforeLevel=loadout.ActiveLevel;
             rig.Place(final.transform.position);await Task.Delay(100);Require(loadout.ActiveLevel==beforeLevel+1,"Final reward uncollectible");
             await Until(()=>Runner.CurrentIndex==1,7000,"Handoff failed");
-            Require(Director.ActivePickups==0,"Stale rewards crossed scope");
             Restart(rig);receiver.TryCollect(Item("ShieldCell"));receiver.TryCollect(Item("Overdrive"));receiver.TryCollect(Item("SupportDrone"));
-            rig.Unprotect();rig.Player.GetComponent<PlayerDamageLifecycle>().TryReceiveHit(null);rig.Player.GetComponent<PlayerDamageLifecycle>().TryReceiveHit(null);
+            rig.Unprotect();Require(life.TryReceiveHit(null),"Shield-break setup failed");
+            await Until(()=>rig.Gate.State==PlayerGameplayState.Active,1500,"Shield-break protection did not expire before death");
+            Require(life.TryReceiveHit(null),"Unshielded death rejected");
             Require(!effects.HasShield && effects.OverdriveRemaining==0 && effects.DroneRemaining==0,"Death retained buffs");
             Restart(rig);Require(rewards.Score==0 && rewards.Shards==0 && loadout.ActiveLevel==1 && effects.DroneRemaining==0,"Replay/reset stale state");
-            return new{pass=true,contact=true,movingCollection=true,poolReuse=true,shield=true,extraLifeCap=5,overdriveExpiry=true,droneExpiry=true,score=true,emp=true,rewardGrace=true,deathReset=true};
+            return new{pass=true,contact=true,movingCollection=true,poolReuse=true,shield=true,extraLifeCap=5,overdriveExpiry=true,droneExpiry=true,score=true,missileAmmo=true,handoffCollection=true,deathReset=true};
         }
     }
     public static async Task<object> CombatAndDrops()
@@ -208,7 +211,7 @@ public static class VerifyM4Testbed
         Action save=()=>System.IO.File.WriteAllText(path,Newtonsoft.Json.JsonConvert.SerializeObject(new{current,results},Newtonsoft.Json.Formatting.Indented));
         var checks=new Dictionary<string,Func<Task<object>>>{
             {"devFastStartReview",DevFastStartReview},{"weaponsAndHeat",Weapons},
-            {"pickupsEffectsRewardsReset",PickupsAndRewards},{"empProtection",EmpAndProtection},
+            {"pickupsEffectsRewardsReset",PickupsAndRewards},{"missileProtection",MissilesAndProtection},
             {"dropEdges",()=>Task.FromResult(DropSelectionEdges())},{"handoff",HandoffSmoke},{"pickupFade",PickupFade},
             {"density",Stress},{"fullMission",()=>FullMission(1600,true)}};
         try
@@ -318,7 +321,8 @@ public static class VerifyM4Testbed
         {
             var startFrame=Time.frameCount;var loadout=rig.Player.GetComponent<WeaponLoadout>();var effects=rig.Player.GetComponent<PlayerTemporaryEffects>();var rewards=Runner.GetComponent<RunRewards>();
             var completed=new List<string>();Action<EncounterDefinition> done=e=>completed.Add(e.Id);Runner.Completed+=done;
-            int peak=0;bool death=false,paused=false;int upgrades=0;int lastLevel=1;var screenshots=new List<string>();
+            int peak=0;bool death=false,paused=false,missileUsed=false;int upgrades=0;int lastLevel=1;var screenshots=new List<string>();
+            var reserve=rig.Player.GetComponent<EmergencyMissileReserve>();int missileDetonations=0;Action detonated=()=>missileDetonations++;reserve.Detonated+=detonated;
             try
             {
                 await Until(()=>Runner.Flow.CanContinue,3000,"Intro not ready");
@@ -347,6 +351,14 @@ public static class VerifyM4Testbed
                     }
                     // Đợi formation density đủ trước khi pilot bắn trong stress encounter.
                     if(Runner.CurrentIndex==1 && Runner.Elapsed<2.4f) {await Task.Delay(80);continue;}
+                    if(!missileUsed && Runner.CurrentIndex==3 && Enemies.Count(e=>!e.GetComponent<EntryHoldFlight>().IsOutsideView)>=2 && reserve.CanUse)
+                    {
+                        var point=RectTransformUtility.WorldToScreenPoint(null,Ui<Button>("EmergencyMissile").transform.position);
+                        var stock=reserve.Current;
+                        await rig.MouseEvent(point,false);await rig.MouseEvent(point,true);await rig.MouseEvent(point,false);
+                        Require(reserve.Current==stock-1,"Full-run missile button did not consume exactly one");
+                        await Until(()=>!reserve.IsInFlight,1200,"Full-run missile did not detonate");missileUsed=true;
+                    }
                     var pickup=Pickups.FirstOrDefault(p=>p.Crate!=null || rig.Player.GetComponent<PlayerPickupReceiver>().CanUse(p.Item));
                     if(pickup!=null)
                     {
@@ -366,12 +378,13 @@ public static class VerifyM4Testbed
                 Require(completed.Count==5 && completed.Distinct().Count()==5,"Completion not once-only");
                 Require(rewards.Score>0 && upgrades>0 && Director.PickupsCollected>0,"Full mission reward loop missing");
                 Require(!withDeath || (death && paused),"Death/Pause full-run coverage missing");
+                Require(missileUsed && missileDetonations==1,"Full-run reserve launch/detonation missing or duplicate");
                 Require(effects.OverdriveRemaining==0 && effects.DroneRemaining==0 && !effects.HasShield && Pickups.Length==0,"Terminal stale effects/rewards");
                 await Task.Delay(600);
                 screenshots.Add(await Capture("mission-clear-"+width));
-                return new{pass=true,width,height=900,withDeath,death,paused,completed,peakVisible=peak,rewards.Score,rewards.Shards,rewards.CoresCollected,rewards.SupplyCaptured,Director.PickupsCollected,upgrades,frames=Time.frameCount-startFrame,screenshots};
+                return new{pass=true,width,height=900,withDeath,death,paused,missileUsed,missileDetonations,completed,peakVisible=peak,rewards.Score,rewards.Shards,rewards.CoresCollected,rewards.SupplyCaptured,Director.PickupsCollected,upgrades,frames=Time.frameCount-startFrame,screenshots};
             }
-            finally{Runner.Completed-=done;}
+            finally{Runner.Completed-=done;reserve.Detonated-=detonated;}
         }
     }
 
@@ -540,15 +553,15 @@ public static class VerifyM4Testbed
         }
     }
 
-    public static async Task<object> EmpAndProtection()
+    public static async Task<object> MissilesAndProtection()
     {
         using(var rig=new Rig(1600,6))
         {
             Restart(rig,"ENCOUNTER_2");await Task.Delay(2100);rig.Place(Vector2.zero);
             var enemies=Enemies.Take(2).ToArray();
-            for(int i=0;i<2;i++){rig.Freeze(enemies[i]);enemies[i].transform.position=new Vector3(i==0?2:10,2,0);enemies[i].GetComponent<Rigidbody2D>().position=enemies[i].transform.position;}
+            for(int i=0;i<2;i++){rig.Freeze(enemies[i]);enemies[i].transform.position=new Vector3(i==0?2:Camera.main.ViewportToWorldPoint(new Vector3(1.2f,.6f,10)).x,2,0);enemies[i].GetComponent<Rigidbody2D>().position=enemies[i].transform.position;}
             var hp=enemies.Select(e=>e.CurrentHp).ToArray();var receiver=rig.Player.GetComponent<PlayerPickupReceiver>();
-            var profile=AssetDatabase.LoadAssetAtPath<SingleFireDefinition>("Assets/StarShift/Data/Enemies/ScoutSingleFire.asset");var muzzle=new GameObject("EmpProbeMuzzle");muzzle.transform.position=new Vector3(3,3,0);
+            var profile=AssetDatabase.LoadAssetAtPath<SingleFireDefinition>("Assets/StarShift/Data/Enemies/ScoutSingleFire.asset");var muzzle=new GameObject("MissileProbeMuzzle");muzzle.transform.position=new Vector3(3,3,0);
             var hostile=UnityEngine.Object.Instantiate(profile.ProjectilePrefab);
             var friendly=UnityEngine.Object.Instantiate(rig.Player.GetComponent<WeaponLoadout>().ActiveDefinition.ProjectilePrefab);
             try
@@ -556,14 +569,17 @@ public static class VerifyM4Testbed
                 hostile.Launch(profile,muzzle.transform,enemies[0].gameObject,rig.Player,p=>p.ResetForPool());
                 friendly.Launch(rig.Player.GetComponent<WeaponLoadout>().ActiveDefinition,new Vector3(-5,-4,0),Vector2.up,1,0,rig.Player,p=>p.ResetForPool());
                 var gate=UnityEngine.Object.FindAnyObjectByType<EnemyFireGate>();var allowed=gate.CanFire;var lives=rig.Lives.CurrentLives;
-                Require(receiver.TryCollect(Item("EMP")),"EMP rejected");
-                Require(enemies[0].CurrentHp==hp[0]-Item("EMP").EmpDamage && enemies[1].CurrentHp==hp[1],"EMP radius/damage wrong");
-                Require(UnityEngine.Object.FindObjectsByType<EnemyProjectile>().Length==0 && friendly.gameObject.activeSelf && gate.CanFire==allowed && rig.Lives.CurrentLives==lives,"EMP used wrong cleanup semantics");
+                Require(receiver.TryCollect(Item("MissileAmmo")),"Missile ammo rejected");
+                Require(enemies[0].CurrentHp==hp[0] && enemies[1].CurrentHp==hp[1],"Ammo pickup must not detonate");
+                Require(rig.Player.GetComponent<EmergencyMissileReserve>().TryUse(),"Missile activation rejected");
+                await Until(()=>!rig.Player.GetComponent<EmergencyMissileReserve>().IsInFlight,1200,"Missile detonation timeout");
+                Require(!enemies[0].IsAlive && enemies[1].CurrentHp==hp[1],"Visible normal targets only");
+                Require(UnityEngine.Object.FindObjectsByType<EnemyProjectile>().Length==0 && friendly.gameObject.activeSelf && gate.CanFire==allowed && rig.Lives.CurrentLives==lives,"Missile used wrong cleanup semantics");
                 receiver.TryCollect(Item("ShieldCell"));var effects=rig.Player.GetComponent<PlayerTemporaryEffects>();
                 var life=rig.Player.GetComponent<PlayerDamageLifecycle>();life.enabled=true;rig.Gate.SetState(PlayerGameplayState.PostEntryInvincibility);
                 Require(!life.TryReceiveHit(null) && effects.HasShield,"Invincibility consumed shield");
                 rig.Gate.SetState(PlayerGameplayState.Active);Require(life.TryReceiveHit(null) && !effects.HasShield && rig.Lives.CurrentLives==3,"Shield did not absorb intended hit");
-                return new{pass=true,empRadiusAndDamage=true,hostileOnlyCleanup=true,firePermissionUnchanged=true,invincibilityBeforeShield=true};
+                return new{pass=true,missileReserveAndActivation=true,hostileOnlyCleanup=true,firePermissionUnchanged=true,invincibilityBeforeShield=true};
             }
             finally{UnityEngine.Object.Destroy(hostile.gameObject);UnityEngine.Object.Destroy(friendly.gameObject);UnityEngine.Object.Destroy(muzzle);}
         }

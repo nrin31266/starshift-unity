@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Encounters.EncounterDefinition
   Id: ENCOUNTER_2
   Completion: 1
+  CompleteWhenScheduleExhausted: 1
   ScoutPrefab: {fileID: 2966396641657307375, guid: 01a518f29274925a191b17ec41cf6a99, type: 3}
   Duration: 20
   Groups:
@@ -28,7 +29,7 @@ MonoBehaviour:
     Anchor: {x: 0, y: 0}
     SlotStep: {x: 0.1, y: 0.08}
     FormationRise: 0.025
-    Sequence: {fileID: 11400000, guid: 230525e7bf0bda3068bd4e85d268f1e4, type: 2}
+    Sequence: {fileID: 11400000, guid: 561777152fe9c1fb78dc20b8fd4f50e9, type: 2}
     EntryAnchor: {x: 0.5, y: 1.12}
     HoldAnchor: {x: 0.5, y: 0.78}
     EntryCurve: {x: 0, y: 0}
@@ -47,7 +48,7 @@ MonoBehaviour:
     Anchor: {x: 0, y: -0.17}
     SlotStep: {x: 0.1, y: 0.08}
     FormationRise: 0.025
-    Sequence: {fileID: 11400000, guid: 230525e7bf0bda3068bd4e85d268f1e4, type: 2}
+    Sequence: {fileID: 11400000, guid: 865cd30d8a7610da4a764cc1bab15452, type: 2}
     EntryAnchor: {x: 0.5, y: 1.12}
     HoldAnchor: {x: 0.5, y: 0.78}
     EntryCurve: {x: 0, y: 0}
@@ -66,7 +67,7 @@ MonoBehaviour:
     Anchor: {x: 0, y: -0.28}
     SlotStep: {x: 0.1, y: 0.08}
     FormationRise: 0.025
-    Sequence: {fileID: 11400000, guid: 230525e7bf0bda3068bd4e85d268f1e4, type: 2}
+    Sequence: {fileID: 11400000, guid: 561777152fe9c1fb78dc20b8fd4f50e9, type: 2}
     EntryAnchor: {x: 0.5, y: 1.12}
     HoldAnchor: {x: 0.5, y: 0.78}
     EntryCurve: {x: 0, y: 0}
@@ -80,10 +81,10 @@ MonoBehaviour:
   ShotSpacing: 0.7
   ShotsPerVolley: 2
   VolleyPause: 1.7
-  HandoffDelay: 1.7
+  HandoffDelay: 1
   ProjectileGraceSeconds: 0.65
   ProjectileFadeSeconds: 0.3
   TransitionTitle: Encounter 2
   TransitionDescription:
-  RewardGraceSeconds: 4
+  RewardGraceSeconds: 1.5
   BossPostDeathSeconds: 1

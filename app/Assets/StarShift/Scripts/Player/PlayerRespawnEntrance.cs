@@ -9,7 +9,7 @@ namespace StarShift.Player
     [AddComponentMenu("StarShift/Player/Player Respawn Entrance")]
     public sealed class PlayerRespawnEntrance : MonoBehaviour
     {
-        [SerializeField, Min(.02f)] private float duration = .9f;
+        [SerializeField, Min(.02f)] private float duration = .55f;
         [SerializeField] private CircleCollider2D collisionShape;
         [SerializeField] private LayerMask blockingLayers;
         private readonly List<Collider2D> overlaps = new List<Collider2D>(8);

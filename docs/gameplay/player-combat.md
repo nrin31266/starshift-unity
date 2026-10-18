@@ -167,7 +167,9 @@ Nguồn:
 ### Shield
 
 Shield active absorb một damaging hit rồi vỡ. Hit này không trừ life, không chạy
-weapon downgrade và chỉ phát shield-break feedback. Stacking/refresh final của item còn
+weapon downgrade. Sau shield-break có .7 s brief invincibility `[TUNABLE]`,
+blink cùng protected cue, input/fire vẫn mở để rời body overlap. Không teleport,
+không clear enemy hoặc chạy respawn; hit lặp trong window không tiêu life/charge. Stacking/refresh final của item còn
 [TBD]; M4-A chỉ dùng test semantics tại [weapon/item owner](../content/weapons-items-drops.md); protection overlap
 không được tự quyết qua thứ tự collider callback.
 
@@ -190,7 +192,7 @@ Fatal hit
 VS-018 khóa state Dying trước callback, rồi synchronously trừ đúng một life, áp
 active-weapon penalty và clear/block hostile combat. Dying state yêu cầu placeholder
 death cue; presentation không được quyết khi nào trừ life hoặc cho phép hit tiếp.
-Death phase trước entrance dùng 0.35 s `[TUNABLE]`; clock scaled, callback feedback
+Death phase trước entrance dùng 0.6 s `[TUNABLE]`; clock scaled, callback feedback
 lỗi không được bỏ qua mandatory life/cleanup work hoặc giữ sequence mắc kẹt.
 
 ### Weapon penalty on death `[LOCKED]`
@@ -237,7 +239,7 @@ wait ngắn → xuất hiện ngoài edge phù hợp → bay vào gameplay posit
 → Normal gameplay khi invincibility hết
 ```
 
-VS-019 vertical entrance dùng 0.9 s `[TUNABLE]`, bắt đầu ngoài bottom của current
+VS-019 vertical entrance dùng 0.55 s `[TUNABLE]`, bắt đầu ngoài bottom của current
 camera và ease vào target trong current playable region. Framing/aspect/restricted
 region thay đổi thì reproject; không cache world waypoint. Preferred target ở giữa
 ngang, phần dưới region; nếu enemy body chặn target thì tìm candidate an toàn khác.
@@ -379,3 +381,12 @@ Resume. Đây là ngoại lệ có chủ ý cho generic gate block giữ held in
 death/respawn và ordinary handoff giữ contract cũ. Major establishing intro consume
 continue tap và gesture còn giữ, yêu cầu press mới khi trả gameplay. Full mission start/reset và terminal
 cũng cancel gesture. Không dùng lại drag delta hoặc cadence từ trước overlay.
+
+
+## Gameplay feel follow-up
+
+Death delay .6 s dành chỗ cho explosion choreography; entrance .55 s trả movement/
+fire sớm sau khi đạt safe anchor. Tổng nominal 1.15 s trước post-entry control,
+không thêm input lock vì camera cue. Full death VFX chưa được tạo chỉ bằng tuning này.
+Emergency Missile có brief protection qua lifecycle authority; timing không bị camera
+shake chi phối. Damage/window/camera presentation thuộc các owner được link ở trên.

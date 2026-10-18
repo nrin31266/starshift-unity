@@ -47,6 +47,10 @@ namespace StarShift.UI
         [SerializeField] private Button weaponButton;
         [SerializeField] private Text effectLabel;
         [SerializeField] private Text pickupLabel;
+        [SerializeField] private EmergencyMissileReserve missileReserve;
+        [SerializeField] private Button missileButton;
+        [SerializeField] private Text missileCount;
+        private int previousMissiles = -1;
         private PlayerGameplayGate playerGate;
         private int previousOverdriveSeconds = -1;
         private int previousDroneSeconds = -1;
@@ -70,14 +74,16 @@ namespace StarShift.UI
             session.MissionTitleRequested += OnMissionTitle;
             pauseButton.onClick.AddListener(session.Pause);
             resumeButton.onClick.AddListener(session.Resume);
+            restartButton.onClick.AddListener(session.RetryEncounter);
             continueHint.text = GameplayCopy.TapToContinue;
             Label(resumeButton, GameplayCopy.Resume);
             Label(restartButton, GameplayCopy.RestartEncounter);
             Label(settingsButton, GameplayCopy.Settings);
             Label(menuButton, GameplayCopy.MainMenu);
             Label(continueButton, GameplayCopy.Continue);
-            restartButton.interactable = settingsButton.interactable = menuButton.interactable = continueButton.interactable = false;
+            settingsButton.interactable = menuButton.interactable = continueButton.interactable = false;
             if (weaponButton != null) weaponButton.onClick.AddListener(CycleWeapon);
+            if (missileButton != null) missileButton.onClick.AddListener(UseMissile);
             if (pickupReceiver != null) pickupReceiver.Collected += OnPickup;
             previousScore = previousShards = previousBranch = -1;
             unavailableLabel.text = GameplayCopy.Unavailable;
@@ -106,6 +112,7 @@ namespace StarShift.UI
             title.text = session.IsClear ? GameplayCopy.MissionClear : session.IsTerminal ? GameplayCopy.GameOver : GameplayCopy.Pause;
             resumeButton.gameObject.SetActive(session.IsPaused);
             restartButton.gameObject.SetActive(!session.IsClear);
+            restartButton.interactable = session.CanRetry;
             settingsButton.gameObject.SetActive(session.IsPaused);
             continueButton.gameObject.SetActive(session.IsClear);
             var flow = session.Flow;
@@ -163,11 +170,22 @@ namespace StarShift.UI
                 if (session.IsTerminal || effects == null || cueRemaining <= 0 || playerGate.State == PlayerGameplayState.Dying) pickupLabel.text = "";
             }
             if (weaponButton != null) weaponButton.interactable = !session.IsPaused && !session.IsTerminal && playerGate.CanInput;
+            if (missileButton != null)
+            {
+                missileButton.interactable = missileReserve.CanUse;
+                if (previousMissiles != missileReserve.Current)
+                {
+                    previousMissiles = missileReserve.Current;
+                    missileCount.text = $"TÊN LỬA {previousMissiles}/{missileReserve.Capacity}";
+                }
+            }
             RefreshHeat();
             if (!session.IsClear || overlay.activeSelf) return;
             clearRemaining -= Time.unscaledDeltaTime;
             if (clearRemaining <= 0) overlay.SetActive(true);
         }
+
+        private void UseMissile() => missileReserve.TryUse();
 
         private void CycleWeapon()
         {
@@ -222,12 +240,14 @@ namespace StarShift.UI
         private void OnDisable()
         {
             if (weaponButton != null) weaponButton.onClick.RemoveListener(CycleWeapon);
+            if (missileButton != null) missileButton.onClick.RemoveListener(UseMissile);
             if (pickupReceiver != null) pickupReceiver.Collected -= OnPickup;
             session.Changed -= RefreshOverlay;
             session.MissionStarted -= OnMissionStarted;
             session.MissionTitleRequested -= OnMissionTitle;
             pauseButton.onClick.RemoveListener(session.Pause);
             resumeButton.onClick.RemoveListener(session.Resume);
+            restartButton.onClick.RemoveListener(session.RetryEncounter);
             tapStarts.Clear();
             establishingTapArea.raycastTarget = false;
         }

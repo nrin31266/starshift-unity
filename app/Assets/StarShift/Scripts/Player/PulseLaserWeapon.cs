@@ -118,7 +118,7 @@ namespace StarShift.Player
             {
                 var slot = i - (count - 1) * .5f;
                 var angle = count > 1 && pattern.SpreadDegrees > 0 ? slot * pattern.SpreadDegrees / (count - 1) : 0;
-                var position = muzzle.position + muzzle.right * (pattern != null && pattern.SpreadDegrees == 0 ? slot * pattern.LateralSpacing : 0);
+                var position = muzzle.position + muzzle.right * (pattern != null ? slot * pattern.LateralSpacing : 0);
                 var damage = pattern != null ? pattern.Damage : config.Damage;
                 if (pattern != null && Mathf.Abs(slot) < .01f) damage += pattern.CenterBonus;
                 var projectile = projectiles.Get();

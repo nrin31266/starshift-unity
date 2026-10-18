@@ -10,16 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88c0194be1da9e78482b324826ddb190, type: 3}
-  m_Name: EMP
+  m_Name: MissileAmmo
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Rewards.PickupDefinition
   Kind: 5
   Branch: 0
-  ShortCode: EMP
+  ShortCode: MSL+1
   Color: {r: 0.7, g: 0.8, b: 1, a: 1}
   Amount: 1
   Lifetime: 12
-  DriftSpeed: 0.65
+  DriftSpeed: 0.8
   Duration: 8
   FireRateMultiplier: 1.6
-  EmpRadius: 8
-  EmpDamage: 2
+  FallAcceleration: 14
+  MaximumFallSpeed: 8
+  ShardBounceHeight: 0.06

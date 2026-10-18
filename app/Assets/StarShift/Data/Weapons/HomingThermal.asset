@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: HomingThermal
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Combat.WeaponThermalProfile
   capacity: 100
-  heatPerSecond: 18
-  coolingDelay: 0.2
+  heatPerSecond: 8.5
+  coolingDelay: 0.3
   coolRate: 30
   overheatCoolRate: 50
   recoveryFraction: 0.4

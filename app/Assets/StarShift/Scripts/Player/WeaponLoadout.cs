@@ -44,6 +44,19 @@ namespace StarShift.Player
             levels[(int)ActiveBranch] = Mathf.Max(1, ActiveLevel - 1);
             Changed?.Invoke();
         }
+        public int[] CaptureLevels() => (int[])levels.Clone();
+        public void Restore(WeaponBranch active, int[] restored)
+        {
+            if (restored == null || restored.Length != levels.Length || !Enum.IsDefined(typeof(WeaponBranch), active))
+                throw new ArgumentException("Invalid weapon checkpoint.");
+            for (int i = 0; i < levels.Length; i++)
+                if (restored[i] < (i == 0 ? 1 : 0) || restored[i] > 3 || (restored[i] > 0 && Definition((WeaponBranch)i) == null))
+                    throw new ArgumentException("Unavailable checkpoint weapon.");
+            if (restored[(int)active] <= 0) throw new ArgumentException("Locked active weapon.");
+            Array.Copy(restored, levels, levels.Length);
+            ActiveBranch = active;
+            Changed?.Invoke();
+        }
         public void ResetForSession()
         {
             levels[0] = 1; levels[1] = levels[2] = 0;
