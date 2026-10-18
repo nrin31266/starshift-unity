@@ -71,6 +71,105 @@ public static class VerifyGameplayFeel
         }
         var result=new{pass=true,results};Evidence("thermal",result);return result;
     }
+    public static async Task<object> ProjectionReset()
+    {
+        var readyFrame=Time.frameCount;
+        await Until(()=>Time.frameCount>readyFrame,1,"Initial gameplay frame");
+        Runner.StopRun();
+        var camera=Camera.main;var view=camera.GetComponent<GameplayViewController>();
+        var original=view.TargetView;var originalScale=Time.timeScale;
+        int renders=0,shifted=0;Matrix4x4 rendered=default;
+        Action<ScriptableRenderContext,Camera> observe=(context,c)=>
+        {
+            if(c!=camera)return;
+            rendered=c.projectionMatrix;renders++;
+            if(Mathf.Abs(rendered.m03)+Mathf.Abs(rendered.m13)>.00001f)shifted++;
+        };
+        RenderPipelineManager.beginCameraRendering+=observe;
+        try
+        {
+            Time.timeScale=1;view.CancelImpact();camera.aspect=16f/9;
+            view.RequestView(new GameplayViewSettings(6,new Rect(0,0,1,1)),0);
+            view.TriggerReserveImpact();
+            await Until(()=>shifted>0,1,"Impact not observed in render");
+            await Until(()=>view.ImpactRemaining<=0,1,"Impact did not expire");
+            int before=renders;
+            await Until(()=>renders>before,1,"Post-impact render");
+            Require(Mathf.Abs(rendered.m03)+Mathf.Abs(rendered.m13)<.00001f,"Impact offset leaked");
+            var sample=camera.transform.position+camera.transform.forward*10+camera.transform.up*2;
+            var initialY=camera.WorldToViewportPoint(sample).y;
+            view.RequestView(new GameplayViewSettings(9,new Rect(0,0,1,1)),.08f);
+            await Until(()=>!view.IsTransitioning,1,"RequestView transition");before=renders;
+            await Until(()=>renders>before,1,"Zoom render");
+            Require(Mathf.Abs(rendered.m11-1f/9)<.0001f && camera.WorldToViewportPoint(sample).y<initialY-.04f,"Rendered RequestView framing stuck");
+            var previousX=rendered.m00;camera.aspect=20f/9;before=renders;
+            await Until(()=>renders>before,1,"Aspect render");
+            Require(Mathf.Abs(rendered.m00-1f/(9*camera.aspect))<.0001f && rendered.m00<previousX,"Rendered aspect stuck");
+            camera.orthographicSize=7;
+            Require(Mathf.Abs(camera.projectionMatrix.m11-1f/7)<.0001f,"Direct ortho stuck after render");
+            // Reset phải hoạt động cả khi không đang sở hữu render offset.
+            camera.projectionMatrix=Matrix4x4.identity;view.CancelImpact();camera.orthographicSize=8;
+            Require(Mathf.Abs(camera.projectionMatrix.m11-1f/8)<.0001f,"CancelImpact retained custom projection");
+            camera.projectionMatrix=Matrix4x4.identity;view.enabled=false;camera.orthographicSize=10;
+            Require(Mathf.Abs(camera.projectionMatrix.m11-.1f)<.0001f,"OnDisable retained custom projection");
+            var result=new{pass=true,shifted,renders,requestViewRendered=true,aspectRendered=true,directOrtho=true,cancelReset=true,disableReset=true};
+            Evidence("projection-reset",result);return result;
+        }
+        finally
+        {
+            RenderPipelineManager.beginCameraRendering-=observe;
+            view.enabled=true;view.CancelImpact();camera.ResetAspect();view.RequestView(original,0);Time.timeScale=originalScale;
+        }
+    }
+
+    public static async Task<object> PresentationNullSafety()
+    {
+        var presentation=Player.GetComponent<EmergencyMissilePresentation>();
+        var fields=new[]{"burst","persistence","view"};
+        var saved=fields.Select(f=>new SerializedObject(presentation).FindProperty(f).objectReferenceValue).ToArray();
+        var view=Camera.main.GetComponent<GameplayViewController>();
+        var results=new System.Collections.Generic.List<object>();
+        foreach(var scenario in new[]{"full","burst-null","persistence-null","view-null","shake-disabled"})
+        {
+            string path=null;EnemyHealth target=null;bool flightEnabled=false,attackEnabled=false;
+            int detonations=0;bool shook=false;
+            Action observed=()=>{detonations++;shook=view.ImpactRemaining>0;};
+            try
+            {
+                path=Fixture();
+                for(int i=0;i<fields.Length;i++)Set(presentation,fields[i],saved[i]);
+                if(scenario.EndsWith("-null"))Set(presentation,scenario.Replace("-null",""),null);
+                if(scenario=="shake-disabled")
+                {
+                    var settings=SettingsData.Defaults();settings.ScreenShakeEnabled=false;
+                    Require(Owner.SetSettings(settings),"Shake setting fixture");
+                }
+                await Until(()=>EnemyHealth.Active.Any(e=>e.IsAlive && e.Definition.BodyDamagesPlayer),3,"Null matrix target spawn");
+                target=EnemyHealth.Active.First(e=>e.IsAlive && e.Definition.BodyDamagesPlayer);
+                var flight=target.GetComponent<EntryHoldFlight>();var attack=target.GetComponent<SingleFireAttack>();
+                flightEnabled=flight.enabled;attackEnabled=attack.enabled;flight.enabled=false;attack.enabled=false;
+                target.transform.position=Camera.main.ViewportToWorldPoint(new Vector3(.5f,.7f,-Camera.main.transform.position.z));
+                target.GetComponent<Rigidbody2D>().position=target.transform.position;Physics2D.SyncTransforms();
+                view.CancelImpact();Reserve.Detonated+=observed;var stock=Reserve.Current;
+                Require(Reserve.TryUse() && Reserve.Current==stock-1,"Null matrix activation/stock: "+scenario);
+                await Until(()=>detonations==1,1,"Null matrix detonation: "+scenario);
+                Require(!target.IsAlive && Reserve.Current==stock-1,"Null matrix damage/stock: "+scenario);
+                Require(shook==(scenario!="view-null" && scenario!="shake-disabled"),"Null matrix shake policy: "+scenario);
+                await Task.Delay(80);
+                results.Add(new{scenario,damage=true,stock=true,detonations,shook});
+            }
+            finally
+            {
+                Reserve.Detonated-=observed;
+                for(int i=0;i<fields.Length;i++)Set(presentation,fields[i],saved[i]);
+                if(target!=null){target.GetComponent<EntryHoldFlight>().enabled=flightEnabled;target.GetComponent<SingleFireAttack>().enabled=attackEnabled;}
+                presentation.ResetForSession();Owner.ExitIsolated();
+                if(path!=null && Directory.Exists(Path.GetDirectoryName(path)))Directory.Delete(Path.GetDirectoryName(path),true);
+            }
+        }
+        var result=new{pass=true,results};Evidence("presentation-null-safety",result);return result;
+    }
+
     public static async Task<object> MissileAndImpact()
     {
         var path=Fixture();

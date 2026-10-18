@@ -96,6 +96,30 @@ public static class VerifyPersistence
         }
         finally { if (Directory.Exists(directory)) Directory.Delete(directory,true); }
     }
+    public static object BestTimeGuard()
+    {
+        var directory=Path.Combine(Path.GetTempPath(),"starshift-best-time-"+Guid.NewGuid().ToString("N"));
+        try
+        {
+            var store=new JsonSaveStore(Path.Combine(directory,"save.json"));
+            var data=Fixture();
+            data.Profile.Records=new[]{new MissionRecord{MissionId="L1",BestTimeSeconds=120}};
+            Require(store.Write(data,Valid),"Best-time fixture");
+            var service=new CampaignProgress(store,Valid);
+            var inputs=new[]{0f,100f,140f,-1f};
+            var expected=new[]{120f,100f,100f,100f};
+            for(int i=0;i<inputs.Length;i++)
+            {
+                Require(service.NewGame("L1",Fixture().Campaign.Checkpoint),"Best-time next campaign");
+                service.CommitClear(500,inputs[i]);Require(service.Flush(),"Best-time flush");
+                service=new CampaignProgress(store,Valid);
+                Require(service.Snapshot.Profile.Records[0].BestTimeSeconds==expected[i],"Best-time guard: "+inputs[i]);
+            }
+            return new{pass=true,inputs,expected,diskReload=true};
+        }
+        finally {if(Directory.Exists(directory))Directory.Delete(directory,true);}
+    }
+
     static string UseFixture(int index)
     {
         var directory=Path.Combine(Path.GetTempPath(),"starshift-runtime-"+Guid.NewGuid().ToString("N"));

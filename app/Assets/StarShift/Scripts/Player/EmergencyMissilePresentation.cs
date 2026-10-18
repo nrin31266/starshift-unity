@@ -24,8 +24,10 @@ namespace StarShift.Player
         {
             if (rocket != null) rocket.enabled = false;
             if (trail != null) trail.emitting = false;
-            remaining = duration; burst.enabled = true;
-            if (persistence.PersistentSnapshot?.Settings.ScreenShakeEnabled != false) view.TriggerReserveImpact();
+            remaining = duration;
+            if (burst != null) burst.enabled = true;
+            var shakeEnabled = persistence == null || persistence.PersistentSnapshot?.Settings.ScreenShakeEnabled != false;
+            if (shakeEnabled && view != null) view.TriggerReserveImpact();
         }
         public void ResetForSession()
         {
@@ -54,14 +56,18 @@ namespace StarShift.Player
             if (remaining <= 0) return;
             remaining = Mathf.Max(0, remaining - Time.deltaTime);
             var t = 1 - remaining / duration;
-            burst.transform.position = camera.ViewportToWorldPoint(new Vector3(.5f,.5f, -camera.transform.position.z));
-            burst.transform.localScale = Vector3.one * Mathf.Lerp(.3f, camera.orthographicSize * camera.aspect * 4, t);
-            burst.startColor = burst.endColor = new Color(1,.65f,.2f, .8f*(1-t));
-            burst.widthMultiplier = Mathf.Lerp(.09f,.025f,t);
-            burst.enabled = remaining > 0;
+            var centerPosition = camera.ViewportToWorldPoint(new Vector3(.5f,.5f, -camera.transform.position.z));
+            if (burst != null)
+            {
+                burst.transform.position = centerPosition;
+                burst.transform.localScale = Vector3.one * Mathf.Lerp(.3f, camera.orthographicSize * camera.aspect * 4, t);
+                burst.startColor = burst.endColor = new Color(1,.65f,.2f, .8f*(1-t));
+                burst.widthMultiplier = Mathf.Lerp(.09f,.025f,t);
+                burst.enabled = remaining > 0;
+            }
             if (flash != null)
             {
-                flash.transform.position = burst.transform.position;
+                flash.transform.position = centerPosition;
                 flash.transform.localScale = Vector3.one * Mathf.Lerp(.5f, 2.4f, t);
                 flash.color = new Color(1, .85f, .45f, Mathf.Clamp01(1 - t * 4) * .75f);
                 flash.enabled = flash.color.a > 0;

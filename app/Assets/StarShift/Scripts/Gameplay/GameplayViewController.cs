@@ -19,7 +19,6 @@ namespace StarShift.Gameplay
         private float reserveImpactStrength = .004f;
         private float impactRemaining;
         private float impactElapsed;
-        private Matrix4x4 renderProjection;
         private bool ownsProjection;
         public float ImpactRemaining => impactRemaining;
         public float ImpactStrength => reserveImpactStrength;
@@ -59,14 +58,13 @@ namespace StarShift.Gameplay
         public void CancelImpact()
         {
             impactRemaining = impactElapsed = 0;
-            if (ownsProjection && gameplayCamera != null) gameplayCamera.projectionMatrix = renderProjection;
+            if (gameplayCamera != null) gameplayCamera.ResetProjectionMatrix();
             ownsProjection = false;
         }
         private void BeginCameraRendering(ScriptableRenderContext context, Camera camera)
         {
             if (camera != gameplayCamera || impactRemaining <= 0 || Time.timeScale <= 0) return;
-            renderProjection = camera.projectionMatrix;
-            var projection = renderProjection;
+            var projection = camera.projectionMatrix;
             var fade = impactRemaining / reserveImpactDuration;
             var amplitude = Mathf.Clamp(reserveImpactStrength, 0, .01f) * fade * fade * 2;
             projection.m03 += Mathf.Sin(impactElapsed * 173 + 1.2f) * amplitude;
@@ -77,16 +75,14 @@ namespace StarShift.Gameplay
         private void EndCameraRendering(ScriptableRenderContext context, Camera camera)
         {
             if (camera != gameplayCamera || !ownsProjection) return;
-            camera.projectionMatrix = renderProjection;
+            camera.ResetProjectionMatrix();
             ownsProjection = false;
         }
         private void OnDisable()
         {
             RenderPipelineManager.beginCameraRendering -= BeginCameraRendering;
             RenderPipelineManager.endCameraRendering -= EndCameraRendering;
-            if (ownsProjection && gameplayCamera != null) gameplayCamera.projectionMatrix = renderProjection;
-            ownsProjection = false;
-            impactRemaining = impactElapsed = 0;
+            CancelImpact();
         }
 
         public void RequestView(GameplayViewSettings settings) => RequestView(settings, transitionDuration);

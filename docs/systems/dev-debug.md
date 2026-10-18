@@ -1,5 +1,23 @@
 # Dev và debug
 
+## PR #5 findings fix verification — 2026-10-19
+
+Targeted grouped pass sau ba bug fixes: Unity compile completed/failed=false;
+`VerifyGameplayFeel.ProjectionReset` PASS actual render impact → expiry → RequestView
+zoom/aspect framing, direct ortho update và CancelImpact/OnDisable automatic projection
+reset. Probe chờ initial Play frame để Start không reset impact đang đo; chỉ camera
+probe được rerun sau fixture correction. Không chạy historical camera matrix.
+
+`PresentationNullSafety` PASS full refs, burst null, persistence null, view null và
+Screen Shake disabled; mỗi case dùng temp storage, real launch/detonation, stock
+trừ đúng một, damage vẫn đúng và LateUpdate không lỗi. `MissileAndImpact` PASS;
+`VerifyPersistence.BestTimeGuard` PASS existing 120 → input 0/100/140/-1 cho kết quả
+120/100/100/100, có disk reload. Persistence Core và short HandoffSmoke PASS.
+Final Console ground truth 0 errors/0 warnings; scene clean, 0 missing scripts/
+references; docs checker và diff check PASS. Raw evidence: ignored `.design/pr5-fixes/`.
+Projectile active registry optimization được defer tới profiling; không thêm registry.
+Không chạy full Mission, historical suite, Android hoặc PR/design/architecture review.
+
 ## M4-B pre-PR closure — 2026-10-19
 
 Một grouped closure mới, không rerun historical matrix: `VerifyPersistence.Core`,

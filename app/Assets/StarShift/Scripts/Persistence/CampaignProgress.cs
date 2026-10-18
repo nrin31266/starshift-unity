@@ -65,7 +65,8 @@ namespace StarShift.Persistence
             var record = records.Find(r => r.MissionId == data.Campaign.MissionId);
             if (record == null) { record = new MissionRecord { MissionId = data.Campaign.MissionId }; records.Add(record); }
             record.BestScore = Math.Max(record.BestScore, score);
-            if (record.BestTimeSeconds <= 0 || playSeconds < record.BestTimeSeconds) record.BestTimeSeconds = playSeconds;
+            if (playSeconds > 0 && (record.BestTimeSeconds <= 0 || playSeconds < record.BestTimeSeconds))
+                record.BestTimeSeconds = playSeconds;
             data.Profile.Records = records.ToArray();
             Dirty = true;
         }
