@@ -1,10 +1,34 @@
+using System;
 using UnityEngine;
 
 namespace StarShift.Combat
 {
+    [Serializable]
+    public sealed class WeaponLevelPattern
+    {
+        [Min(1)] public int ProjectileCount = 1;
+        [Min(0)] public float SpreadDegrees;
+        [Min(0)] public float LateralSpacing = .22f;
+        [Min(1)] public int Damage = 1;
+        [Min(0)] public int CenterBonus;
+        [Min(.02f)] public float FireInterval = .17f;
+        [Min(0)] public float SplashRadius;
+    }
+
+    // Giữ class/GUID cũ để prefab và regression fixtures không mất reference.
     [CreateAssetMenu(menuName = "StarShift/Weapons/Pulse Laser Definition")]
     public sealed class PulseLaserDefinition : ScriptableObject
     {
+        [SerializeField] private WeaponBranch branch;
+        [SerializeField] private WeaponLevelPattern[] levels;
+        [SerializeField] private Color projectileColor = new Color(.3f, .9f, 1);
+        [SerializeField, Min(0)] private float trackingDegreesPerSecond;
+        [SerializeField, Min(0)] private float trackingRange = 18;
+        public WeaponBranch Branch => branch;
+        public Color ProjectileColor => projectileColor;
+        public float TrackingDegreesPerSecond => trackingDegreesPerSecond;
+        public float TrackingRange => trackingRange;
+        public WeaponLevelPattern Pattern(int level) => levels != null && level > 0 && level <= levels.Length ? levels[level - 1] : null;
         [SerializeField] private PlayerProjectile projectilePrefab;
         [SerializeField, Min(.02f)] private float fireInterval = .2f;
         [SerializeField, Min(.01f)] private float projectileSpeed = 12f;

@@ -1,5 +1,35 @@
 # Unity baseline authoring
 
+## M4-A combat/reward testbed
+
+`ConfigureM4Testbed.Configure` là one-time authoring migration trên saved Gameplay
+scene/Edit Mode. Dùng Unity API để giữ GUID, author type configs/pickups/drop tables,
+Player components, compact HUD và 5 testbed Encounters; giữ intro-delay override đã có.
+Không chạy lại để overwrite tuning/content user đã chỉnh sau migration. `Inspect`
+read-only kiểm config, references/scripts và local overrides.
+
+`VerifyM4Testbed` có entries Weapons, PickupsAndRewards, CombatAndDrops,
+DropSelectionEdges, Stress, RegressionAndPools, PowerAndLifecycle, EmpAndProtection, PickupFade và Visuals(width).
+Chạy nhóm liên quan, không full historical M2/M3 matrix mỗi lần sửa. Old suites có
+fixtures/counts theo checkpoint 2-Encounter cũ; dùng M4 entries cho current testbed.
+Không chạy hai runtime probes đồng thời. Sau probe missile, fixture restore flight
+flags trước pool reuse. Không save scene/runtime test state.
+
+Fast closure: `BeginClosure()` chạy nối tiếp DevFastStart 5 Encounter, weapon/heat,
+pickup/effect/reward/reset, EMP, drop edges, handoff grace/fade, pickup fade, density
+và đúng một full Mission 01 có death/Pause. Progress/result nằm ở
+`.design/m4-a/closure-results.json`; chờ `current: PASS` hoặc `FAILED` trước probe
+khác. Nếu fail, sửa và rerun riêng entry đó; không tự lặp toàn suite. Không chạy lại
+pool benchmark, historical matrix hoặc Android trong entry này.
+
+Full mission: gọi `BeginFullMission(1600,false)` hoặc `(2000,true)` qua `run_script`;
+entry trả ngay và ghi result vào `.design/m4-a/full-result-{width}.json`. Chờ file
+hết `status: running` trước probe khác. `BeginFinalRuns()` chạy đúng hai lượt nối
+nhau. Cách này tránh MCP transport timeout 60s; exception vẫn được ghi với pass=false.
+Visuals capture ScreenCapture có HUD vào `.design/m4-a/screenshots/`, restore Game
+View/zoom/pan trong finally. Coverage và giới hạn ở
+[dev owner](../../docs/systems/dev-debug.md#m4-a-combatreward-testbed-verification).
+
 ## M3.5 thermal HUD checkpoint
 
 `ConfigureThermalHud.Configure` chạy ở saved Gameplay scene/Edit Mode qua

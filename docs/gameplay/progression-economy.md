@@ -49,6 +49,22 @@ asteroid mới có định hướng, chưa có exact bonus; không tự gán s�
 
 Exact score formula và clear/no-hit bonus vẫn [TBD]. Không coi seed là final balance.
 
+## M4-A runtime boundary `[PROVISIONAL]`
+
+`RunRewards` là authority của mission/runtime Score và Shards collected, độc lập HUD.
+Kill hook từ EncounterRunner chỉ award một lần khi HP về zero; despawn/exit/cleanup
+không là kill. Scout dùng score seed ở bảng trên. Resource/supply score tạm 0 vì exact
+bonus vẫn TBD; không tự gán clear/no-hit/boss bonus. Shard tăng khi pickup được collect,
+không tăng khi enemy chết/eject reward.
+
+RunStarted reset hai counter; death/handoff giữ chúng. Clear/Game Over freeze counters
+cho presentation hiện tại. Có runtime counts enemies destroyed, cores collected và
+supply crates collected để verify loop; chưa là full Campaign Result tracking.
+HUD đọc giá trị thực theo [UI owner](../presentation/ui-ux.md#gameplay-hud).
+Không serialize Score/Shards, không `PlayerProfile`, không reward writeback/dedupe
+qua Retry/Replay trong M4-A. Persistent Shard contract phía trên là target M4-B,
+không được xem session counter là persistent balance.
+
 ## Campaign progression và level unlock
 
 New Game bắt đầu campaign ở L1; clear level dẫn sang level kế tiếp. Boss boundary

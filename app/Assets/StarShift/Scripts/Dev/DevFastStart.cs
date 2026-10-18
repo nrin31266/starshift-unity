@@ -19,6 +19,11 @@ namespace StarShift.Dev
         [SerializeField] private PlayDirection direction;
         [SerializeField] private CameraProfile cameraOverride;
 
+        [SerializeField] private bool deterministicRewards;
+        [SerializeField] private int rewardSeed = 410;
+        [SerializeField, Range(1, 3)] private int startingWeaponLevel = 1;
+        [SerializeField] private bool unlockAllWeapons;
+
         public bool TryStart()
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -45,6 +50,15 @@ namespace StarShift.Dev
             player.GetComponent<PlayerPointerInput>().ResetDrag();
             if (startLevel != null) runner.Flow.LoadLevel(startLevel);
             runner.StartRun(startPoint, standalone, skipIntro, overrideDirection ? direction : (PlayDirection?)null, cameraOverride);
+            if (deterministicRewards) GetComponent<StarShift.Rewards.RewardDirector>()?.SetTestSeed(rewardSeed);
+            var loadout = player.GetComponent<WeaponLoadout>();
+            if (loadout != null)
+                for (int i = 0; i < 3; i++)
+                {
+                    var branch = (WeaponBranch)i;
+                    if (i > 0 && !unlockAllWeapons) continue;
+                    while (loadout.Level(branch) < startingWeaponLevel) loadout.ApplyCore(branch);
+                }
 #endif
         }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using StarShift.Enemies;
 using StarShift.Gameplay;
 using StarShift.Player;
+using StarShift.Rewards;
 using UnityEngine;
 
 namespace StarShift.Encounters
@@ -46,6 +47,7 @@ namespace StarShift.Encounters
         public event Action<EncounterDefinition> Completed;
         public event Action<EncounterDefinition, int> EncounterStarted;
         public event Action<OptionalEvent, int> OptionalEventTriggered;
+        public event Action<EnemyHealth, RewardDropTable, Vector3> EnemyDefeated;
         public event Action RunStarted;
         public event Action MissionCompleted;
 
@@ -56,6 +58,7 @@ namespace StarShift.Encounters
             public SingleFireAttack Attack;
             public bool Required;
             public bool Resolved;
+            public Action DeathHandler;
         }
         private sealed class ScheduledGroup
         {
@@ -246,6 +249,15 @@ namespace StarShift.Encounters
             coordinator.Register(slot.Attack);
             root.transform.SetParent(transform, false);
             root.transform.rotation = Quaternion.Euler(0,0,PlayDirectionSpace.Rotation(direction));
+            var token = generation;
+            var rewarded = false;
+            slot.DeathHandler = () =>
+            {
+                if (rewarded || slot.Resolved || token != generation || Stage != EncounterStage.Running) return;
+                rewarded = true;
+                EnemyDefeated?.Invoke(slot.Health, group.RewardOverride, slot.Health.transform.position);
+            };
+            slot.Health.Died += slot.DeathHandler;
             root.SetActive(true);
             spawned.Add(slot);
         }
@@ -253,6 +265,8 @@ namespace StarShift.Encounters
         {
             slot.Resolved = true;
             if (slot.Health == null) return;
+            slot.Health.Died -= slot.DeathHandler;
+            slot.DeathHandler = null;
             coordinator.Unregister(slot.Attack);
             pool.Return(slot.Health.gameObject);
         }

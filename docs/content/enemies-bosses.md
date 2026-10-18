@@ -59,6 +59,15 @@ là không; enemy thường đọc state qua silhouette/damage feedback.
 Projectile hit báo feedback và cập nhật damage state; death resolve một lần.
 Choreography flash/particle/SFX/shake thuộc [audio/VFX](../presentation/audio-vfx.md).
 
+## M4-A non-attacking test targets `[PROVISIONAL]`
+
+Supply Drone dùng HP 3, Resource Asteroid dùng HP 4 `[TUNABLE]` trong placeholder
+prefabs. Cả hai reuse health/flight; attack disabled. Supply body không damage Player;
+resource asteroid body qua damaging contact gate. Không thêm archetype attack, boss
+hoặc production art mới. HP của Scout giữ nguyên khi Player upgrade.
+Placement ở [testbed owner](levels-encounters.md#m4-a-mission-01-system-testbed-provisional),
+reward/destroy/escape ở [item owner](weapons-items-drops.md#drop-director-test-policy).
+
 ## Enemy roster
 
 Exact HP/stats là [TUNABLE]. Bảng balance seed bên dưới là baseline prototype.

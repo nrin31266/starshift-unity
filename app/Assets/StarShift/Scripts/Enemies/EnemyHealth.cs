@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using StarShift.Combat;
 
@@ -10,8 +11,14 @@ namespace StarShift.Enemies
     public sealed class EnemyHealth : MonoBehaviour, IPlayerProjectileTarget
     {
         [SerializeField] private EnemyDefinition definition;
+        private static readonly List<EnemyHealth> active = new List<EnemyHealth>();
+        public static IReadOnlyList<EnemyHealth> Active => active;
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetRegistry() => active.Clear();
+        private void OnDisable() => active.Remove(this);
 
         public EnemyDefinition Definition => definition;
+        public int SpawnVersion { get; private set; }
         public int CurrentHp { get; private set; }
         public int MaxHp => definition != null ? definition.MaxHp : 0;
         public bool IsAlive => isActiveAndEnabled && CurrentHp > 0;
@@ -26,7 +33,9 @@ namespace StarShift.Enemies
                 enabled = false;
                 return;
             }
+            SpawnVersion++;
             CurrentHp = definition.MaxHp;
+            if (!active.Contains(this)) active.Add(this);
         }
 
         public void ReceivePlayerHit(int damage, GameObject owner)

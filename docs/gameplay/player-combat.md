@@ -167,8 +167,8 @@ Nguồn:
 ### Shield
 
 Shield active absorb một damaging hit rồi vỡ. Hit này không trừ life, không chạy
-weapon downgrade và chỉ phát shield-break feedback. Stacking/refresh của item còn
-[TBD] tại [weapon/item owner](../content/weapons-items-drops.md); protection overlap
+weapon downgrade và chỉ phát shield-break feedback. Stacking/refresh final của item còn
+[TBD]; M4-A chỉ dùng test semantics tại [weapon/item owner](../content/weapons-items-drops.md); protection overlap
 không được tự quyết qua thứ tự collider callback.
 
 ### Player death flow `[LOCKED]`
@@ -206,9 +206,9 @@ Weapon khác giữ level hiện tại.
 
 Shield-absorbed hit không downgrade.
 
-M2 hiện chỉ có Pulse Lv1. `ApplyDeathDowngrade()` là boundary của active weapon,
-giữ Lv1 và reset cadence; chưa tạo level state/pattern Lv2/Lv3 giả để chứng minh
-upgrade chưa implement. Rule level cao hơn vẫn giữ nguyên, chưa runtime-verified.
+M4-A `WeaponLoadout` giữ level từng branch; `ApplyDeathDowngrade()` giảm đúng active
+branch và reset cadence/thermal states. Weapon khác giữ level/unlock. Shield absorb
+không đi qua boundary này. Pattern/config ở [weapon owner](../content/weapons-items-drops.md#weapon-progression-prototype).
 
 ### Respawn `[LOCKED]`
 
@@ -336,7 +336,7 @@ trong region nhỏ hơn chính nó. Implementation và component boundary ở
 
 VS-016 slice không resolve friendly fire, projectile-vs-projectile hoặc enemy-vs-enemy;
 không tự thêm damage behavior. Invincibility bỏ qua damaging hit;
-chi tiết shield consumption khi các protection state overlap [TBD].
+M4-A test semantics khi protection overlap ở [item owner](../content/weapons-items-drops.md#pickup-và-effect-test-policy); final stacking decision vẫn [TBD].
 
 `PlayerContactReceiver` route hostile hit và EnemyHealth body contact qua cùng
 `TryReceiveHit()`/protection gate. Enemy projectile contact tiêu thụ shot kể cả khi

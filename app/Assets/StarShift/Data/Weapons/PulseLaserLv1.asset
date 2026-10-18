@@ -12,6 +12,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b752b07589708d3af8684af1b8a7c796, type: 3}
   m_Name: PulseLaserLv1
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Combat.PulseLaserDefinition
+  branch: 0
+  levels:
+  - ProjectileCount: 1
+    SpreadDegrees: 0
+    LateralSpacing: 0.22
+    Damage: 1
+    CenterBonus: 0
+    FireInterval: 0.17
+    SplashRadius: 0
+  - ProjectileCount: 2
+    SpreadDegrees: 0
+    LateralSpacing: 0.22
+    Damage: 1
+    CenterBonus: 0
+    FireInterval: 0.17
+    SplashRadius: 0
+  - ProjectileCount: 3
+    SpreadDegrees: 0
+    LateralSpacing: 0.22
+    Damage: 1
+    CenterBonus: 1
+    FireInterval: 0.17
+    SplashRadius: 0
+  projectileColor: {r: 0.3, g: 0.9, b: 1, a: 1}
+  trackingDegreesPerSecond: 0
+  trackingRange: 18
   projectilePrefab: {fileID: 6313352160549666604, guid: 689fd7f0b61bc39b798a1aea031257f6, type: 3}
   fireInterval: 0.17
   projectileSpeed: 12

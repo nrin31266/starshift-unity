@@ -22,25 +22,40 @@ namespace StarShift.Player
         private double nextShotTime;
         private bool wasAllowed;
         private bool shuttingDown;
-        private readonly WeaponHeatState heat = new WeaponHeatState();
-        public int CurrentLevel => 1;
+        private readonly WeaponHeatState[] heatStates = { new WeaponHeatState(), new WeaponHeatState(), new WeaponHeatState() };
+        private WeaponLoadout loadout;
+        private PlayerTemporaryEffects effects;
+        private PulseLaserDefinition ActiveDefinition => loadout != null && loadout.ActiveDefinition != null ? loadout.ActiveDefinition : definition;
+        private WeaponHeatState heat => heatStates[(int)CurrentBranch];
+        public WeaponBranch CurrentBranch => loadout != null ? loadout.ActiveBranch : WeaponBranch.Pulse;
+        public int CurrentLevel => loadout != null ? loadout.ActiveLevel : 1;
+        public int ShotsFired { get; private set; }
+        public int CreatedProjectileCount { get; private set; }
         public float Heat => heat.Heat;
-        public float HeatFraction => definition != null && definition.ThermalProfile != null ? heat.Heat / definition.ThermalProfile.Capacity : 0;
+        public float HeatFraction => ActiveDefinition != null && ActiveDefinition.ThermalProfile != null ? heat.Heat / ActiveDefinition.ThermalProfile.Capacity : 0;
         public bool IsOverheated => heat.IsOverheated;
         public bool CanFire => gameplayGate != null && gameplayGate.CanFire && !heat.IsOverheated;
 
-        // Slice chỉ có Lv1; giữ boundary death penalty, chưa giả lập upgrade chưa có.
-        public void ApplyDeathDowngrade() => heat.Reset();
+        public void ApplyDeathDowngrade()
+        {
+            loadout?.ApplyDeathDowngrade();
+            foreach (var state in heatStates) state.Reset();
+            ResetCadence();
+        }
 
         public void ResetForSession()
         {
-            heat.Reset();
+            loadout?.ResetForSession();
+            foreach (var state in heatStates) state.Reset();
+            ShotsFired = 0;
             ResetCadence();
         }
 
         private void Awake()
         {
             gameplayGate = GetComponent<PlayerGameplayGate>();
+            loadout = GetComponent<WeaponLoadout>();
+            effects = GetComponent<PlayerTemporaryEffects>();
             if (definition == null || definition.ProjectilePrefab == null || muzzle == null || pointerInput == null)
             {
                 Debug.LogError("PulseLaserWeapon requires a definition, projectile prefab, muzzle and pointer input.", this);
@@ -55,11 +70,12 @@ namespace StarShift.Player
                     // Scene teardown có thể hủy projectile root trước weapon.
                     if (projectile != null) Destroy(projectile.gameObject);
                 },
-                true, 8, 32);
+                true, 8, 64);
         }
 
         private void OnEnable()
         {
+            if (loadout != null) loadout.Changed += ResetCadence;
             if (gameplayGate != null) gameplayGate.StateChanged += OnGameplayStateChanged;
             if (pointerInput != null) pointerInput.FireIntentChanged += ResetCadence;
             ResetCadence();
@@ -67,6 +83,7 @@ namespace StarShift.Player
 
         private void OnDisable()
         {
+            if (loadout != null) loadout.Changed -= ResetCadence;
             if (gameplayGate != null) gameplayGate.StateChanged -= OnGameplayStateChanged;
             if (pointerInput != null) pointerInput.FireIntentChanged -= ResetCadence;
             ResetCadence();
@@ -80,8 +97,8 @@ namespace StarShift.Player
                 ResetCadence();
                 return;
             }
-            if (definition.ThermalProfile != null)
-                heat.Tick(definition.ThermalProfile, pointerInput.FireHeld, Time.fixedDeltaTime);
+            if (ActiveDefinition.ThermalProfile != null)
+                heat.Tick(ActiveDefinition.ThermalProfile, pointerInput.FireHeld, Time.fixedDeltaTime);
             if (!CanFire || !pointerInput.FireHeld)
             {
                 ResetCadence();
@@ -94,15 +111,30 @@ namespace StarShift.Player
                 nextShotTime = now;
             }
             if (now + .000001 < nextShotTime) return;
-            var projectile = projectiles.Get();
-            projectile.Launch(definition, muzzle, gameObject, ReleaseProjectile);
-            nextShotTime += definition.FireInterval;
+            var config = ActiveDefinition;
+            var pattern = config.Pattern(CurrentLevel);
+            var count = pattern != null ? pattern.ProjectileCount : 1;
+            for (int i = 0; i < count; i++)
+            {
+                var slot = i - (count - 1) * .5f;
+                var angle = count > 1 && pattern.SpreadDegrees > 0 ? slot * pattern.SpreadDegrees / (count - 1) : 0;
+                var position = muzzle.position + muzzle.right * (pattern != null && pattern.SpreadDegrees == 0 ? slot * pattern.LateralSpacing : 0);
+                var damage = pattern != null ? pattern.Damage : config.Damage;
+                if (pattern != null && Mathf.Abs(slot) < .01f) damage += pattern.CenterBonus;
+                var projectile = projectiles.Get();
+                projectile.Launch(config, position, Quaternion.AngleAxis(angle, Vector3.forward) * muzzle.up,
+                    damage, pattern != null ? pattern.SplashRadius : 0, gameObject, ReleaseProjectile);
+                ShotsFired++;
+            }
+            var interval = (pattern != null ? pattern.FireInterval : config.FireInterval) / (effects != null ? effects.FireRateMultiplier : 1);
+            nextShotTime += interval;
             // Không bắn bù thành burst nếu clock/config đổi qua nhiều interval.
-            if (nextShotTime <= now) nextShotTime = now + definition.FireInterval;
+            if (nextShotTime <= now) nextShotTime = now + interval;
         }
 
         private PlayerProjectile CreateProjectile()
         {
+            CreatedProjectileCount++;
             var projectile = Instantiate(definition.ProjectilePrefab, projectileRoot);
             projectile.ResetForPool();
             return projectile;

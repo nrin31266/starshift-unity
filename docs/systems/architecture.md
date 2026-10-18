@@ -234,8 +234,7 @@ death dùng boundary downgrade/reset hiện có. HUD chỉ đọc heat/latch và
 bar khi giá trị đổi; không Find/allocate hoặc tạo UI trong heat hot path.
 Semantics do [player](../gameplay/player-combat.md#thermal-lifecycle), mechanic và
 seed do [weapons](../content/weapons-items-drops.md#primary-weapon-heat--m35) sở hữu.
-Không có weapon
-switch/upgrade framework. `Muzzle.up` cung cấp hướng bắn trong slice; Player facing
+M4-A thêm loadout/component boundaries được mô tả bên dưới; không có generic weapon framework. `Muzzle.up` cung cấp hướng bắn trong slice; Player facing
 do LevelFlow apply Up/Right từ LevelDefinition/dev override; không đổi input axes.
 Pool instances ở runtime root `PlayerProjectiles`, không parent vào tàu đang di
 chuyển; root được dọn cùng weapon. Disable weapon chỉ ngừng spawn, projectile đã
@@ -527,7 +526,7 @@ không điều khiển damage hoặc thời điểm completion; policy thuộc c
 
 `IEncounterBoundaryObject` phân loại Hostile/Temporary/Reward, có stop-hostility,
 preserve-for-grace và idempotent release hooks. Consumer register/unregister với
-EncounterCleanup; reward chỉ là boundary, chưa có pickups/crates/DropDirector.
+EncounterCleanup; M4-A reward consumer được mô tả ở boundary bên dưới.
 Registry không count kill hoặc tự grant reward. Registration cần current generation
 token; callback cũ bị từ chối sau reset/handoff. Reward được completion consumer
 eject cũng nhận preserve-for-grace sau notification.
@@ -553,6 +552,37 @@ Static config fields thuộc [weapons/items/drops](../content/weapons-items-drop
 Selection, unlocks, branch levels và runtime fire timers không mutate definition.
 DropTable, CameraProfile và TransitionProfile cũng là ứng viên config asset;
 chưa cần sinh asset hoặc khóa schema để tài liệu trông hoàn chỉnh.
+
+## M4-A combat và rewards boundaries
+
+| Component/data | Responsibility |
+|---|---|
+| WeaponLoadout | Mutable unlocks, per-branch level và active selection; không fire hoặc giữ heat |
+| PulseLaserDefinition / WeaponLevelPattern | Static type config, ba level patterns, một thermal reference mỗi type; giữ class/GUID cũ để tương thích prefab |
+| PulseLaserWeapon | Active primary cadence/heat states và pooled projectiles; loadout event reset cadence, không mutate definitions |
+| PlayerProjectile | Snapshot damage/motion/tracking/splash; same-scene target registry, spawn-version guard khi enemy reuse |
+| PlayerTemporaryEffects | Shield/OD/Drone runtime timer/protection; scaled gameplay gate, lifecycle clear |
+| PlayerPickupReceiver | Route collect tới loadout/lives/effects/run rewards; EMP pulse, không giữ buff state trong UI |
+| SupportDrone | Một authored companion và local projectile pool; visual/timer đọc effects owner, damage không mượn primary weapon authority |
+| RunRewards | Runtime score/shard và verification counters; reset theo run, không save/profile |
+| RewardDropTable / PickupDefinition | Static reward source/weights/item tuning; test overrides không sửa global drops |
+| RewardRoller | Plain C# seeded selection, state filtering/weights và bounded crate pity history |
+| RewardDirector | Subscribe kill/run boundary, chọn drop, rent/return reward; không quản Player movement/death/UI |
+| RewardPickup | Pooled reward-scope participant, contact/lifetime và callback collect; không tự chọn/áp effect |
+
+EncounterRunner phát `EnemyDefeated` đúng một lần từ lethal hook trước root disable;
+unsubscribe khi slot release. Movement/exit/cleanup không giả reward death. Group
+có optional RewardOverride; normal fallback ở director. Supply/Resource tái dùng
+EnemyHealth/EntryHoldFlight và prefab pool; disabled attack, contact hazard config
+riêng. Optional Event chỉ schedule group qua foundation M3.
+
+ScenePrefabPool tái dùng common enemies và pickups; rent inactive → configure/bind
+scope token → parent vào active root → activate. Projectiles của primary/drone có
+scene root độc lập Player, tránh dịch chuyển cùng tàu. Pool reset bỏ callbacks,
+target/version, hit flags, lifetime và ownership. Static enemy registry chỉ giữ
+active health trong scene; OnDisable unregister, subsystem registration clear.
+Không dùng singleton/event bus/DI/loot framework mới. Game Over/Clear/reset release
+rewards qua existing scope, clear effects và friendly projectiles qua session/lifecycle.
 
 ## Component boundaries `[LOCKED]`
 
