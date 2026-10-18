@@ -1,5 +1,100 @@
 # Dev và debug
 
+## M4-A combat/reward testbed verification
+
+Checkpoint M4-A 2026-10-18, base sau PR #3 (`9d0fafed`).
+Mission 01 hiện là [provisional system testbed](../content/levels-encounters.md#m4-a-mission-01-system-testbed-provisional),
+không production campaign. Weapon/item tuning và các assumption chưa chốt ở
+[weapon owner](../content/weapons-items-drops.md#m4-a-runtime-test-semantics-provisional).
+
+### Entry và deterministic rewards
+
+`DevFastStart` giữ release guard `UNITY_EDITOR || DEVELOPMENT_BUILD`, default off.
+Có `startingWeaponLevel`, `unlockAllWeapons`, `deterministicRewards`, `rewardSeed`;
+apply override sau run reset, không mutate definitions hoặc disk/save.
+Jump dùng real Encounter IDs/aliases ở [level owner](../content/levels-encounters.md#checkpoint-và-stable-dev-start-ids).
+Reward seed chỉ đổi RNG/history của runtime RewardDirector, không global Unity RNG.
+Production dùng random; authored guaranteed tables chỉ nằm trên reward moments của
+testbed. Không thêm fake production checkpoint hoặc checkpoint DTO ở M4-A.
+
+### Grouped targeted evidence
+
+`VerifyM4Testbed` chạy Play Mode qua Unity MCP `run_script`, file ngoài Assets:
+
+| Entry | Evidence |
+|---|---|
+| Weapons | PASS 9 branch/level salvos; active-only death penalty/minimum; release-before-MAX, MAX-only lock, movement, recovery, held auto-resume, Pause |
+| PickupsAndRewards | PASS contact/moving collection, pickup reuse, Shield/life/downgrade, Extra Life cap, OD/Drone apply/expiry/Pause, kill score once-only, final-kill reward grace, death/reset |
+| CombatAndDrops | PASS 12 visible enemies; 4,000 seeded rolls reproducible (23 major, 159 Shard); defensive pity; limited missile tracking/Lv3 splash; supply destroy/escape; guaranteed resource Shard; cap 6 |
+| DropSelectionEdges | PASS pity reset và maxed core/life filtering |
+| Stress | PASS 12 visible, multiple groups, continuous fire/heat changes, effects, deaths, 81 primary projectiles fired, Score 500/Shard 1, peak 3 pickups |
+| RegressionAndPools | PASS hostile grace → damage-off fade → release, Pause fade, Game Over, reset; enemy counts 15/15/15/15 và primary created counts 26/26/26/26 sau warmup |
+| PowerAndLifecycle | PASS actual Pulse TTK trên cùng Scout HP: Lv1 .70 s, Lv3 .18 s; Plasma Lv3+OD created 60/60 sau warmup; UI switch pointer exclusion; pickup expiry; effect/heat retention qua handoff; run reset release friendly shots |
+| EmpAndProtection | PASS EMP radius/damage, hostile-only clear, friendly shots/fire permission giữ nguyên, invincibility trước Shield |
+| PickupFade | PASS lifetime/grace fade, Pause freeze, grace extension và opacity reset khi pool reuse |
+| Visuals(width) | PASS capture 8 runtime states ở 1600×900 và 2000×900; review actual Game View |
+
+Đây là Editor/virtual Input System evidence, không Android hardware hoặc human feel
+approval. Pool counts là identity/churn smoke, không profiler/FPS/device benchmark.
+Phần targeted dùng runtime setup/protected fixtures; không dùng setup đó làm campaign
+balance proof. Missile probe giữ HP thật, assert damage delta thay vì giả enemy HP 2.
+Fixture restore flight flags khi rời probe, Game View zoom/pan/resolution, devices,
+Input System policies, clock/audio và lifecycle; không save runtime scene/config.
+
+Full mission evidence được ghi bởi `BeginFullMission`/`BeginFinalRuns` ra ignored
+`.design/m4-a/full-result-{width}.json`; entry trả ngay để tránh MCP transport timeout
+60 s trong khi task async vẫn tiếp tục. Không bắt đầu probe khác khi file còn
+`status: running`. `FullMission` trực tiếp vẫn dùng được khi client có timeout đủ dài.
+Hai final runs dùng Play session sạch sau khi sửa fixture flight cleanup. Full flow
+bằng virtual pointer có protection cho reproducibility; lượt 20:9 dùng accepted hit
+qua real lifecycle để kiểm death/entrance/downgrade và click Pause/Resume qua uGUI.
+Không gọi những lượt này là Android/manual-human playtest.
+
+### Final full Mission runs
+
+| Game View | Evidence trong Play session sạch |
+|---|---|
+| 1600×900 / 16:9 | PASS intro → 5 encounters → Clear; 5,799 frames; peak 12 visible; Score 4,600, Shards 1, cores 4, supply crates 1, pickups 10 |
+| 2000×900 / 20:9 | PASS cùng flow + accepted death/respawn/active downgrade + UI Pause/Resume; 5,727 frames; peak 12 visible; Score 4,200, Shards 2, cores 4, supply crates 1, pickups 12 |
+
+Mỗi Encounter complete đúng một lần. Clear không còn buffs, pickups hoặc friendly/
+hostile shots; runtime counters được giữ để trình bày. Captures gồm Clear overlay thật.
+Reward totals khác nhau theo kill/collection, không phải expected economy/balance.
+Đây là protected fixture có kiểm lifecycle có chủ ý, không manual human/device play.
+
+### Fast closure evidence
+
+`BeginClosure()` PASS một grouped pass: DevFastStart đủ 5 Encounter và replay,
+9 weapon salvos/heat, pickup/effect/reward/reset, EMP/protection, drop/pity edges,
+projectile grace/fade/Pause và pickup fade. Density mới: 12 visible,
+82 primary shots, Score 600/Shard 1, peak 4 pickups.
+Đúng một full run mới 1600×900 PASS intro → 5 unique completions → Clear, có accepted
+death/respawn/downgrade và uGUI Pause/Resume: 5,770 frames, peak 12, Score 4,100,
+Shards 2, cores 4, supply 1, pickups 12. Result local:
+`.design/m4-a/closure-results.json`. Hai full runs phía trên vẫn là historical evidence
+valid; closure không đổi production C#/tuning/HUD. Không rerun historical/aspect/camera
+matrix, pool benchmark hoặc Android. Compile/Console PASS (0 errors/warnings), saved
+scene không dirty, 0 missing scripts/references; docs checker và diff check PASS.
+Hai override local intro .01 s và runInBackground=true được giữ ngoài commit.
+
+### Review, scope và tracker
+
+`unity-scriptdesign` review changed gameplay components: loadout/config/runtime,
+effect lifecycle, subscriber cleanup, pool parent/root, missile target incarnation,
+HUD authority. Một `design-review` trên 8 states × 2 aspects: normal/density/pickup/
+effect/high heat/Overheated/nonzero counters/transition. Content-fit counters,
+compact bottom cues/timers, không thêm fake icons/final art. Review/evidence local ở
+ignored `.design/m4-a/`. Ponytail không expose callable skill/tool trong session;
+không cài plugin hoặc claim đã chạy; static cross-system review giới hạn M4 diff.
+
+Tracker Google giữ source of truth. Connected Drive cần reauthentication; browser
+public sheet chỉ View. Exact Status/Proof/Notes cell patch nằm local trong
+`.design/m4-a/tracker-updates.tsv`, gồm M4-A và stale M2/M3 reconciliation từ historical
+canonical evidence; không tạo workbook/tracker mới. Không tìm thấy workbook Excel
+project trong workspace. SYS-004/015 checkpoint/restore và SYS-021–030 persistence
+vẫn ngoài M4-A; SYS-005/008/012 decision chưa locked. Không khởi động M4-B.
+
+
 ## M3.5 thermal HUD verification
 
 HUD correction hiện tại theo feedback user: functional placeholder vuông góc,

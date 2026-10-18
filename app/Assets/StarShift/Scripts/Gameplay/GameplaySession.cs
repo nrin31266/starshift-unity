@@ -74,7 +74,11 @@ namespace StarShift.Gameplay
 
         private void OnRunStarted()
         {
+            lifecycle.GetComponent<PlayerTemporaryEffects>()?.ResetForSession();
+            lifecycle.GetComponent<PlayerPickupReceiver>()?.ResetForSession();
+            lifecycle.GetComponentInChildren<SupportDrone>()?.ResetForSession();
             weapon.ResetForSession();
+            ReleaseFriendlyProjectiles();
             RestoreClock();
             IsPaused = false;
             pointer.CancelGesture();
@@ -95,11 +99,16 @@ namespace StarShift.Gameplay
         {
             runner.StopRun();
             enemyFireGate.Block();
-            foreach (var shot in FindObjectsByType<PlayerProjectile>())
-                if (shot.gameObject.scene == gameObject.scene) shot.Release();
+            ReleaseFriendlyProjectiles();
             IsPaused = false;
             Freeze();
             Changed?.Invoke();
+        }
+
+        private void ReleaseFriendlyProjectiles()
+        {
+            foreach (var shot in FindObjectsByType<PlayerProjectile>())
+                if (shot.gameObject.scene == gameObject.scene) shot.Release();
         }
 
         private void Freeze()

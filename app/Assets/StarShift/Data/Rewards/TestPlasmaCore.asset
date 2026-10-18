@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1118c710ce289527acf9dff8006adbc, type: 3}
+  m_Name: TestPlasmaCore
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Rewards.RewardDropTable
+  Source: 0
+  MajorChance: 0.0075
+  ShardChance: 0.035
+  Shard: {fileID: 11400000, guid: c9a7fb08849c837d29680c750ea5ed1a, type: 2}
+  GuaranteedPickup: {fileID: 11400000, guid: 42f828de135191c78bb824e5ec9e98e9, type: 2}
+  MajorItems: []

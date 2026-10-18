@@ -114,7 +114,7 @@ round-robin trong các Scout eligible, chỉ một telegraph/attack đang đư�
 không bắt buộc mọi Scout visible phải bắn. Local initial delay/cooldown vẫn là lower
 bound; coordinator không bỏ qua safety gate hoặc tạo backlog sau pause/grace.
 
-Seed `[TUNABLE]` trong hai encounter assets: A một shot rồi nghỉ 1 s; B hai shot
+Historical M2 seed `[TUNABLE]` trước M4 testbed: A một shot rồi nghỉ 1 s; B hai shot
 luân phiên trong một volley, cách nhau ít nhất 0.55 s **sau shot/cancel trước**,
 rồi nghỉ 1.8 s. Mỗi shot vẫn có telegraph riêng theo fire profile; đây là group
 burst của Scout, không thêm burst weapon hoặc Raider archetype. Thuật toán còn
@@ -436,8 +436,8 @@ window trước boss giới thiệu. Visual identity thuộc [art direction](../
 
 ### Level 1 — First Contact `[PROVISIONAL]`
 
-L1 giới thiệu movement, hold-to-fire và basic enemy trong 1–1.5 phút. Hai encounter
-đủ cho mục tiêu này; không thêm pressure chỉ để khớp baseline ba wave.
+Định hướng content sau testbed: L1 giới thiệu movement, hold-to-fire và basic enemy
+trong 1–1.5 phút. Hai encounter đủ cho mục tiêu này; không thêm pressure chỉ để khớp baseline ba wave.
 
 Camera:
 
@@ -460,6 +460,37 @@ Encounter B — `Timeline`
 - một nhóm dừng ngắn rồi bắn burst;
 - tiếp tục bay ra và vẫn có thể bắn;
 - wave kết thúc theo timeline.
+
+#### M4-A Mission 01 system testbed `[PROVISIONAL]`
+
+Content hiện tại là SYSTEM TESTBED, không là final Level 1. Mục tiêu final tutorial
+phía trên sẽ được author/tune lại ở content phase; không dùng testbed làm campaign
+production. M3 data-driven foundation tiếp tục sở hữu mọi schedule/path/completion.
+
+| Encounter | Mode / authored main enemies | Mục tiêu |
+|---|---|---|
+| 01 | Eliminate / 6 | Basic fire/heat, typed Pulse Core và upgrade |
+| 02 | Timeline 20 s / 13 scheduled | Hai nhóm 6 Scout vào chồng nhịp; V/Staggered, controlled shooters, Plasma Core, pool/drop load |
+| 03 | Timeline 24 s / 11 + optional supply | Shield/OD/Drone giữa các nhóm; supply → crate → major pickup |
+| 04 | Timeline 20 s / 12 | Survival pressure, EMP, Homing Core; death/respawn/downgrade |
+| 05 | Eliminate / 7 + optional resource | Extra Life/Pulse Core, guaranteed resource Shard, final reward grace và Clear |
+
+Count scheduled không bằng visible peak. Target stress khoảng 8–12 visible;
+nhóm reward bổ sung có thể tăng peak ngắn lên 13 `[TUNABLE]`. Config dùng Line, V,
+Staggered, Wedge; ba shared `M4Hold`/`M4Arc`/`M4Supply` sequences. Không script riêng
+cho từng Encounter. Normal enemies vẫn Scout hiện có; supply/resource targets là
+placeholder destructibles, không thêm archetype combat final.
+
+Attack seeds chung `[TUNABLE]`: ActiveShooterLimit 2, shot spacing .7 s, volley 2,
+pause giữa volley 1.7 s; vẫn qua coordinator + safety gate, không tự fire mọi enemy.
+Minor projectile grace/fade giữ policy dưới đây; handoff 1.7 s. RewardGraceSeconds
+4 s `[TUNABLE]`, chỉ mở khi có reward thật. Grace extend remaining lifetime, không
+xóa reward ở completion notification; hết grace cleanup scope trước encounter tiếp.
+Không carry stale reward qua run/mission reset. Mục tiêu nhặt vẫn không chặn completion.
+
+Dev aliases `SYSTEM_DENSITY`, `SYSTEM_EFFECTS`, `SYSTEM_SURVIVAL`, `SYSTEM_REWARDS`
+trỏ các encounter thật. `ENCOUNTER_4`/`ENCOUNTER_5` là IDs bổ sung có chủ ý cho testbed,
+không phải checkpoint persistence hoặc final mission layout.
 
 #### M2 L1 playable checkpoint
 
@@ -500,8 +531,8 @@ optional contextual title/description tự fade; không menu hoặc chờ confir
 Incoming encounter giữ optional TransitionTitle/TransitionDescription; để trống thì
 không announcement. Lifecycle death/respawn vẫn tiến theo state/timers cũ, không bị
 reset/ghi đè bởi handoff. HUD chỉ ẩn cho major cinematic, theo
-[UI owner](../presentation/ui-ux.md#m2-ui-implementation-provisional). L1 chưa có reward nên không mở reward
-grace. M3 có bounded grace hook khi future consumer register reward, không fake pickup. Death/respawn không reset encounter hoặc survivor HP; timeline/movement vẫn
+[UI owner](../presentation/ui-ux.md#m2-ui-implementation-provisional). M2/M3 checkpoint này chưa có reward; current testbed dùng
+[reward grace thật](#m4-a-mission-01-system-testbed-provisional). Death/respawn không reset encounter hoặc survivor HP; timeline/movement vẫn
 tiến theo scaled time, safety gate chỉ chặn attack. Game Over hủy schedule/handoff.
 Sau B full mission dừng combat và hiện compact clear theo
 [UI/UX](../presentation/ui-ux.md#m2-ui-implementation-provisional); reward/save và next-level flow chưa implement.
@@ -855,14 +886,16 @@ LEVEL_START
 ENCOUNTER_1
 ENCOUNTER_2
 ENCOUNTER_3
+ENCOUNTER_4
+ENCOUNTER_5
 PRE_BOSS
 BOSS
 POST_BOSS
 TRANSITION
 ```
 
-Mỗi level chỉ expose start point thật. Encounter D không tự có ENCOUNTER_4 chỉ vì
-baseline liệt kê ba ID; khi implementation cần phải bổ sung contract ID có chủ ý.
+Mỗi level chỉ expose start point thật. M4-A bổ sung ENCOUNTER_4/5 cho hai encounter thật của system testbed;
+không yêu cầu content khác phải có các ID này.
 Không tạo fake wave để mọi level cùng schema start point.
 
 ## Mission Replay presets

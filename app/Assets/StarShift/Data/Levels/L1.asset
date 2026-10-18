@@ -47,4 +47,15 @@ MonoBehaviour:
   Encounters:
   - {fileID: 11400000, guid: 4ba754d9865477110b1604b8e9a11136, type: 2}
   - {fileID: 11400000, guid: 496c8abd1c1857ea7a1cd78ccabf0b9a, type: 2}
-  AdditionalStarts: []
+  - {fileID: 11400000, guid: 9ab226fd2ab9fe2d39fcf335fcd6193e, type: 2}
+  - {fileID: 11400000, guid: b97534e64345a99f494423684a0aaa13, type: 2}
+  - {fileID: 11400000, guid: 7d5bf5722bdd0653d97d94ce92ac8f91, type: 2}
+  AdditionalStarts:
+  - Id: SYSTEM_DENSITY
+    Encounter: {fileID: 11400000, guid: 496c8abd1c1857ea7a1cd78ccabf0b9a, type: 2}
+  - Id: SYSTEM_EFFECTS
+    Encounter: {fileID: 11400000, guid: 9ab226fd2ab9fe2d39fcf335fcd6193e, type: 2}
+  - Id: SYSTEM_SURVIVAL
+    Encounter: {fileID: 11400000, guid: b97534e64345a99f494423684a0aaa13, type: 2}
+  - Id: SYSTEM_REWARDS
+    Encounter: {fileID: 11400000, guid: 7d5bf5722bdd0653d97d94ce92ac8f91, type: 2}

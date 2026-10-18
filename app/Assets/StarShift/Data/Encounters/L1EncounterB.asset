@@ -15,55 +15,75 @@ MonoBehaviour:
   Id: ENCOUNTER_2
   Completion: 1
   ScoutPrefab: {fileID: 2966396641657307375, guid: 01a518f29274925a191b17ec41cf6a99, type: 3}
-  Duration: 14
+  Duration: 20
   Groups:
-  - Count: 3
+  - Count: 6
     StartTime: 0
-    Stagger: 0.25
-    EnemyPrefab: {fileID: 0}
+    Stagger: 0.12
+    EnemyPrefab: {fileID: 2966396641657307375, guid: 01a518f29274925a191b17ec41cf6a99, type: 3}
     EnemyDefinition: {fileID: 11400000, guid: 2c37a090b272d820c9642dfd8f189abe, type: 2}
+    RewardOverride: {fileID: 11400000, guid: 3df01b008d0456981a6ba9e3c09af7d6, type: 2}
     Required: 1
-    Formation: 0
+    Formation: 3
     Anchor: {x: 0, y: 0}
-    SlotStep: {x: 0.13, y: 0.065}
-    FormationRise: 0
-    Sequence: {fileID: 11400000, guid: 3ee8c08b22bf353da8e2a35dec87f0d2, type: 2}
-    EntryAnchor: {x: -0.24, y: 0.78}
-    HoldAnchor: {x: 0.32, y: 0.72}
-    EntryCurve: {x: 0.1, y: 0.12}
-    EntryDuration: 3.2
+    SlotStep: {x: 0.1, y: 0.08}
+    FormationRise: 0.025
+    Sequence: {fileID: 11400000, guid: 230525e7bf0bda3068bd4e85d268f1e4, type: 2}
+    EntryAnchor: {x: 0.5, y: 1.12}
+    HoldAnchor: {x: 0.5, y: 0.78}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
     HoldDuration: 3
-    ExitAnchor: {x: -0.28, y: 0.42}
-    ExitDuration: 7.5
-  - Count: 3
-    StartTime: 0
-    Stagger: 0.25
-    EnemyPrefab: {fileID: 0}
+    ExitAnchor: {x: 1.18, y: 0.3}
+    ExitDuration: 3
+  - Count: 6
+    StartTime: 0.4
+    Stagger: 0.12
+    EnemyPrefab: {fileID: 2966396641657307375, guid: 01a518f29274925a191b17ec41cf6a99, type: 3}
     EnemyDefinition: {fileID: 11400000, guid: 2c37a090b272d820c9642dfd8f189abe, type: 2}
+    RewardOverride: {fileID: 11400000, guid: 3df01b008d0456981a6ba9e3c09af7d6, type: 2}
     Required: 1
-    Formation: 0
-    Anchor: {x: 0, y: 0}
-    SlotStep: {x: -0.13, y: 0.065}
-    FormationRise: 0
-    Sequence: {fileID: 11400000, guid: d5ef1e9dbb5b3f661a559bc7e4573e01, type: 2}
-    EntryAnchor: {x: 1.24, y: 0.78}
-    HoldAnchor: {x: 0.68, y: 0.72}
-    EntryCurve: {x: -0.1, y: 0.12}
-    EntryDuration: 3.2
+    Formation: 5
+    Anchor: {x: 0, y: -0.17}
+    SlotStep: {x: 0.1, y: 0.08}
+    FormationRise: 0.025
+    Sequence: {fileID: 11400000, guid: 230525e7bf0bda3068bd4e85d268f1e4, type: 2}
+    EntryAnchor: {x: 0.5, y: 1.12}
+    HoldAnchor: {x: 0.5, y: 0.78}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
     HoldDuration: 3
-    ExitAnchor: {x: 1.28, y: 0.42}
-    ExitDuration: 7.5
+    ExitAnchor: {x: 1.18, y: 0.3}
+    ExitDuration: 3
+  - Count: 1
+    StartTime: 4
+    Stagger: 0.12
+    EnemyPrefab: {fileID: 2966396641657307375, guid: 01a518f29274925a191b17ec41cf6a99, type: 3}
+    EnemyDefinition: {fileID: 11400000, guid: 2c37a090b272d820c9642dfd8f189abe, type: 2}
+    RewardOverride: {fileID: 11400000, guid: 8c8d7320c40c24df5beb8328d354e12b, type: 2}
+    Required: 1
+    Formation: 1
+    Anchor: {x: 0, y: -0.28}
+    SlotStep: {x: 0.1, y: 0.08}
+    FormationRise: 0.025
+    Sequence: {fileID: 11400000, guid: 230525e7bf0bda3068bd4e85d268f1e4, type: 2}
+    EntryAnchor: {x: 0.5, y: 1.12}
+    HoldAnchor: {x: 0.5, y: 0.78}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 3
+    ExitAnchor: {x: 1.18, y: 0.3}
+    ExitDuration: 3
   OptionalEvents: []
   CameraOverride: {fileID: 0}
-  ActiveShooterLimit: 1
-  ShotSpacing: 0.55
+  ActiveShooterLimit: 2
+  ShotSpacing: 0.7
   ShotsPerVolley: 2
-  VolleyPause: 1.8
-  HandoffDelay: 1
+  VolleyPause: 1.7
+  HandoffDelay: 1.7
   ProjectileGraceSeconds: 0.65
   ProjectileFadeSeconds: 0.3
-  TransitionTitle: Encounter 02
-  TransitionDescription: "T\xEDn hi\u1EC7u \u0111\u1ECBch \u0111ang ti\u1EBFn v\xE0o
-    khu v\u1EF1c."
-  RewardGraceSeconds: 2
+  TransitionTitle: Encounter 2
+  TransitionDescription:
+  RewardGraceSeconds: 4
   BossPostDeathSeconds: 1

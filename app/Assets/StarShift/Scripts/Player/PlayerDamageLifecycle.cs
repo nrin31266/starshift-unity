@@ -21,11 +21,13 @@ namespace StarShift.Player
         private PulseLaserWeapon weapon;
         private RelativeDragMovement movement;
         private float remaining;
+        private PlayerTemporaryEffects effects;
         public event Action GameOver;
 
         private void Awake()
         {
             gate = GetComponent<PlayerGameplayGate>();
+            effects = GetComponent<PlayerTemporaryEffects>();
             lives = GetComponent<PlayerLives>();
             entrance = GetComponent<PlayerRespawnEntrance>();
             weapon = GetComponent<PulseLaserWeapon>();
@@ -48,6 +50,7 @@ namespace StarShift.Player
         public bool TryReceiveHit(GameObject owner)
         {
             if (!isActiveAndEnabled || !gate.CanTakeDamage || lives.CurrentLives <= 0) return false;
+            if (effects != null && effects.TryAbsorb()) return true;
             remaining = deathDuration;
             // State khóa duplicate trước mọi callback; cleanup không phụ thuộc feedback.
             try { gate.SetState(PlayerGameplayState.Dying); }

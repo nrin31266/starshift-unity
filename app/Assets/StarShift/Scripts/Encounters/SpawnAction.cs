@@ -1,5 +1,6 @@
 using System;
 using StarShift.Enemies;
+using StarShift.Rewards;
 using UnityEngine;
 
 namespace StarShift.Encounters
@@ -14,6 +15,7 @@ namespace StarShift.Encounters
         [Min(0)] public float Stagger = .35f;
         public GameObject EnemyPrefab;
         public EnemyDefinition EnemyDefinition;
+        public RewardDropTable RewardOverride;
         public bool Required = true;
         public FormationLayout Formation;
         public Vector2 Anchor;

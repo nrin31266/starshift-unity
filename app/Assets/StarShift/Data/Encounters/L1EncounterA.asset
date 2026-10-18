@@ -15,36 +15,56 @@ MonoBehaviour:
   Id: ENCOUNTER_1
   Completion: 0
   ScoutPrefab: {fileID: 2966396641657307375, guid: 01a518f29274925a191b17ec41cf6a99, type: 3}
-  Duration: 16
+  Duration: 20
   Groups:
-  - Count: 3
+  - Count: 5
     StartTime: 0
-    Stagger: 0.35
-    EnemyPrefab: {fileID: 0}
+    Stagger: 0.12
+    EnemyPrefab: {fileID: 2966396641657307375, guid: 01a518f29274925a191b17ec41cf6a99, type: 3}
     EnemyDefinition: {fileID: 11400000, guid: 2c37a090b272d820c9642dfd8f189abe, type: 2}
+    RewardOverride: {fileID: 0}
     Required: 1
-    Formation: 0
+    Formation: 1
     Anchor: {x: 0, y: 0}
-    SlotStep: {x: 0.18, y: 0}
-    FormationRise: 0
-    Sequence: {fileID: 11400000, guid: e548f9ebb1c9b6d79b4945e3bfc702c3, type: 2}
+    SlotStep: {x: 0.1, y: 0.08}
+    FormationRise: 0.025
+    Sequence: {fileID: 11400000, guid: 698c678b4615b200b83d8bac86d4378b, type: 2}
     EntryAnchor: {x: 0.5, y: 1.12}
     HoldAnchor: {x: 0.5, y: 0.78}
     EntryCurve: {x: 0, y: 0}
-    EntryDuration: 0.9
+    EntryDuration: 1.2
+    HoldDuration: 3
+    ExitAnchor: {x: 1.18, y: 0.3}
+    ExitDuration: 3
+  - Count: 1
+    StartTime: 1.8
+    Stagger: 0.12
+    EnemyPrefab: {fileID: 2966396641657307375, guid: 01a518f29274925a191b17ec41cf6a99, type: 3}
+    EnemyDefinition: {fileID: 11400000, guid: 2c37a090b272d820c9642dfd8f189abe, type: 2}
+    RewardOverride: {fileID: 11400000, guid: e8ff475379109b7e2b8d535f14a67031, type: 2}
+    Required: 1
+    Formation: 1
+    Anchor: {x: 0, y: -0.2}
+    SlotStep: {x: 0.1, y: 0.08}
+    FormationRise: 0.025
+    Sequence: {fileID: 11400000, guid: 698c678b4615b200b83d8bac86d4378b, type: 2}
+    EntryAnchor: {x: 0.5, y: 1.12}
+    HoldAnchor: {x: 0.5, y: 0.78}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
     HoldDuration: 3
     ExitAnchor: {x: 1.18, y: 0.3}
     ExitDuration: 3
   OptionalEvents: []
   CameraOverride: {fileID: 0}
-  ActiveShooterLimit: 1
-  ShotSpacing: 1
-  ShotsPerVolley: 1
-  VolleyPause: 1
+  ActiveShooterLimit: 2
+  ShotSpacing: 0.7
+  ShotsPerVolley: 2
+  VolleyPause: 1.7
   HandoffDelay: 1.7
   ProjectileGraceSeconds: 0.65
   ProjectileFadeSeconds: 0.3
-  TransitionTitle:
+  TransitionTitle: Encounter 1
   TransitionDescription:
-  RewardGraceSeconds: 2
+  RewardGraceSeconds: 4
   BossPostDeathSeconds: 1

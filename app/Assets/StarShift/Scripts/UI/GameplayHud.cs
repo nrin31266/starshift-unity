@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using StarShift.Gameplay;
 using StarShift.Player;
+using StarShift.Rewards;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -39,6 +40,22 @@ namespace StarShift.UI
         [SerializeField, Min(.1f)] private float maximumTapSeconds = .6f;
         [SerializeField, Min(.01f)] private float hintFadeSeconds = .4f;
         [SerializeField, Min(0)] private float clearDelay = .45f;
+        [SerializeField] private WeaponLoadout loadout;
+        [SerializeField] private PlayerTemporaryEffects effects;
+        [SerializeField] private PlayerPickupReceiver pickupReceiver;
+        [SerializeField] private RunRewards rewards;
+        [SerializeField] private Button weaponButton;
+        [SerializeField] private Text effectLabel;
+        [SerializeField] private Text pickupLabel;
+        private PlayerGameplayGate playerGate;
+        private int previousOverdriveSeconds = -1;
+        private int previousDroneSeconds = -1;
+        private bool previousShield;
+        private float cueRemaining;
+        private void Awake() => playerGate = weapon.GetComponent<PlayerGameplayGate>();
+        private int previousBranch = -1;
+        private int previousScore = -1;
+        private int previousShards = -1;
         private float clearRemaining;
         private int previousLives = -1;
         private int previousLevel = -1;
@@ -60,7 +77,9 @@ namespace StarShift.UI
             Label(menuButton, GameplayCopy.MainMenu);
             Label(continueButton, GameplayCopy.Continue);
             restartButton.interactable = settingsButton.interactable = menuButton.interactable = continueButton.interactable = false;
-            scoreLabel.text = shardLabel.text = GameplayCopy.Placeholder;
+            if (weaponButton != null) weaponButton.onClick.AddListener(CycleWeapon);
+            if (pickupReceiver != null) pickupReceiver.Collected += OnPickup;
+            previousScore = previousShards = previousBranch = -1;
             unavailableLabel.text = GameplayCopy.Unavailable;
             RefreshOverlay();
         }
@@ -69,7 +88,8 @@ namespace StarShift.UI
 
         private void OnMissionStarted()
         {
-            previousLives = previousLevel = -1;
+            previousLives = previousLevel = previousBranch = -1;
+            cueRemaining = 0;
             announcement.Hide();
         }
 
@@ -116,16 +136,44 @@ namespace StarShift.UI
                 previousLives = lives.CurrentLives;
                 livesLabel.text = GameplayCopy.Lives(previousLives);
             }
-            if (previousLevel != weapon.CurrentLevel)
+            if (previousLevel != weapon.CurrentLevel || previousBranch != (int)weapon.CurrentBranch)
             {
                 previousLevel = weapon.CurrentLevel;
-                weaponLabel.text = GameplayCopy.WeaponStatus(previousLevel);
+                previousBranch = (int)weapon.CurrentBranch;
+                weaponLabel.text = $"T{previousBranch + 1} L{previousLevel}";
             }
+            if (rewards != null && previousScore != rewards.Score) { previousScore = rewards.Score; scoreLabel.text = previousScore.ToString(); }
+            if (rewards != null && previousShards != rewards.Shards) { previousShards = rewards.Shards; shardLabel.text = previousShards.ToString(); }
+            if (effectLabel != null)
+            {
+                var second = Mathf.CeilToInt(effects.OverdriveRemaining);
+                var drone = Mathf.CeilToInt(effects.DroneRemaining);
+                if (second != previousOverdriveSeconds || drone != previousDroneSeconds || effects.HasShield != previousShield)
+                {
+                    previousOverdriveSeconds = second; previousDroneSeconds = drone; previousShield = effects.HasShield;
+                    var text = previousShield ? "SH" : "";
+                    if (second > 0) text += $"  OD {second}";
+                    if (drone > 0) text += $"  DR {drone}";
+                    effectLabel.text = text.Trim();
+                }
+            }
+            if (pickupLabel != null)
+            {
+                if (!session.IsPaused) cueRemaining -= Time.deltaTime;
+                if (session.IsTerminal || effects == null || cueRemaining <= 0 || playerGate.State == PlayerGameplayState.Dying) pickupLabel.text = "";
+            }
+            if (weaponButton != null) weaponButton.interactable = !session.IsPaused && !session.IsTerminal && playerGate.CanInput;
             RefreshHeat();
             if (!session.IsClear || overlay.activeSelf) return;
             clearRemaining -= Time.unscaledDeltaTime;
             if (clearRemaining <= 0) overlay.SetActive(true);
         }
+
+        private void CycleWeapon()
+        {
+            if (!session.IsPaused && !session.IsTerminal && playerGate.CanInput) loadout.Cycle();
+        }
+        private void OnPickup(string code) { if (pickupLabel == null) return; pickupLabel.text = code; cueRemaining = 1.2f; }
 
         private void RefreshHeat()
         {
@@ -173,6 +221,8 @@ namespace StarShift.UI
 
         private void OnDisable()
         {
+            if (weaponButton != null) weaponButton.onClick.RemoveListener(CycleWeapon);
+            if (pickupReceiver != null) pickupReceiver.Collected -= OnPickup;
             session.Changed -= RefreshOverlay;
             session.MissionStarted -= OnMissionStarted;
             session.MissionTitleRequested -= OnMissionTitle;

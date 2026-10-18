@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using StarShift.Enemies;
 
 namespace StarShift.Combat
 {
@@ -18,6 +19,12 @@ namespace StarShift.Combat
         private float remainingLifetime;
         private int damage;
         private bool flying;
+        private EnemyHealth trackingTarget;
+        private float turnRate;
+        private int trackingVersion;
+        private float splashRadius;
+        private SpriteRenderer visual;
+        private readonly List<EnemyHealth> splashTargets = new List<EnemyHealth>(12);
 
         public GameObject Owner { get; private set; }
 
@@ -25,18 +32,39 @@ namespace StarShift.Combat
         {
             body = GetComponent<Rigidbody2D>();
             hitbox = GetComponent<BoxCollider2D>();
+            visual = GetComponentInChildren<SpriteRenderer>();
         }
 
         public void Launch(PulseLaserDefinition definition, Transform muzzle, GameObject owner, Action<PlayerProjectile> release)
+            => Launch(definition, muzzle.position, muzzle.up, definition.Damage, 0, owner, release);
+
+        public void Launch(PulseLaserDefinition definition, Vector3 position, Vector2 forward, int hitDamage,
+            float splash, GameObject owner, Action<PlayerProjectile> release)
         {
             Owner = owner;
-            direction = muzzle.up;
+            direction = forward.normalized;
             speed = definition.ProjectileSpeed;
-            damage = definition.Damage;
+            damage = hitDamage;
+            splashRadius = splash;
+            turnRate = definition.TrackingDegreesPerSecond;
+            trackingTarget = null;
+            if (turnRate > 0)
+            {
+                var nearest = definition.TrackingRange * definition.TrackingRange;
+                foreach (var enemy in EnemyHealth.Active)
+                {
+                    var delta = (Vector2)(enemy.transform.position - position);
+                    if (!enemy.IsAlive || enemy.gameObject.scene != gameObject.scene || Vector2.Dot(direction, delta) <= 0 || delta.sqrMagnitude >= nearest) continue;
+                    nearest = delta.sqrMagnitude;
+                    trackingTarget = enemy;
+                    trackingVersion = enemy.SpawnVersion;
+                }
+            }
+            if (visual != null) visual.color = definition.ProjectileColor;
             remainingLifetime = definition.ProjectileLifetime;
             onReleased = release;
-            transform.SetPositionAndRotation(muzzle.position, muzzle.rotation);
-            body.position = muzzle.position;
+            transform.SetPositionAndRotation(position, Quaternion.FromToRotation(Vector3.up, direction));
+            body.position = position;
             body.linearVelocity = Vector2.zero;
             body.angularVelocity = 0;
             body.simulated = true;
@@ -49,6 +77,13 @@ namespace StarShift.Combat
         {
             if (!flying) return;
             var step = Mathf.Min(Time.fixedDeltaTime, remainingLifetime);
+            if (trackingTarget != null && trackingTarget.IsAlive && trackingTarget.SpawnVersion == trackingVersion)
+            {
+                var targetDirection = (Vector2)trackingTarget.transform.position - body.position;
+                var angle = Vector2.SignedAngle(direction, targetDirection);
+                direction = Quaternion.AngleAxis(Mathf.Clamp(angle, -turnRate * step, turnRate * step), Vector3.forward) * direction;
+                transform.rotation = Quaternion.FromToRotation(Vector3.up, direction);
+            }
             var distance = speed * step;
             var filter = new ContactFilter2D { useTriggers = true };
             body.Cast(direction, filter, sweepHits, distance);
@@ -91,7 +126,19 @@ namespace StarShift.Combat
             hitbox.enabled = false;
             var release = onReleased;
             onReleased = null;
-            try { target?.ReceivePlayerHit(damage, Owner); }
+            try
+            {
+                splashTargets.Clear();
+                // Splash quanh target bị hit, độc lập khoảng sweep còn lại của physics step.
+                var impact = target is EnemyHealth hitEnemy ? (Vector2)hitEnemy.transform.position : body.position;
+                if (target != null && splashRadius > 0)
+                    foreach (var enemy in EnemyHealth.Active)
+                        if (enemy.IsAlive && enemy.gameObject.scene == gameObject.scene && !ReferenceEquals(enemy, target) &&
+                            ((Vector2)enemy.transform.position - impact).sqrMagnitude <= splashRadius * splashRadius)
+                            splashTargets.Add(enemy);
+                target?.ReceivePlayerHit(damage, Owner);
+                foreach (var enemy in splashTargets) if (enemy != null && enemy.IsAlive) enemy.ReceivePlayerHit(damage, Owner);
+            }
             finally
             {
                 if (release != null) release(this);
@@ -109,6 +156,10 @@ namespace StarShift.Combat
             direction = Vector2.zero;
             speed = remainingLifetime = 0;
             damage = 0;
+            trackingTarget = null;
+            turnRate = splashRadius = 0;
+            trackingVersion = 0;
+            splashTargets.Clear();
             sweepHits.Clear();
             hitbox.enabled = false;
             body.simulated = false;

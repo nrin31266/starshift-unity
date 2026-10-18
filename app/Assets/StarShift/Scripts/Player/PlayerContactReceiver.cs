@@ -23,7 +23,7 @@ namespace StarShift.Player
         {
             if (!isActiveAndEnabled) return;
             var enemy = other.GetComponentInParent<EnemyHealth>();
-            if (enemy != null && enemy.IsAlive) lifecycle.TryReceiveHit(enemy.gameObject);
+            if (enemy != null && enemy.IsAlive && enemy.Definition.BodyDamagesPlayer) lifecycle.TryReceiveHit(enemy.gameObject);
         }
     }
 }

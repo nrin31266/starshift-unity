@@ -188,6 +188,88 @@ Weapon Core unlock weapon mới hoặc tăng level đúng branch. Exact core typ
 [TBD]: generic core có smart selection hay core riêng theo weapon. Reward phải đọc
 được là unlock/upgrade gì; không tự chọn typing chỉ vì thuận tiện implement.
 
+## M4-A runtime test semantics `[PROVISIONAL]`
+
+Mission 01 hiện là [system testbed](levels-encounters.md#m4-a-mission-01-system-testbed-provisional).
+Các lựa chọn dưới đủ để kiểm tra runtime; không chốt các quyết định TBD ở cuối file.
+Definition assets chỉ chứa static config; không ghi level/heat/buff timer vào asset.
+
+### Weapon progression prototype
+
+Ba branches dùng pattern seed ở trên với ba level thực. `WeaponLoadout` giữ unlock,
+active branch và level riêng; bắt đầu chỉ Pulse Lv1. Core đúng branch unlock Lv1
+hoặc tăng một level tới Lv3. Core không tự switch; nút `Tn Lx` cycle các branch đã
+unlock theo Pulse → Plasma → Homing. Downgrade chỉ active branch theo
+[player contract](../gameplay/player-combat.md#weapon-penalty-on-death-locked).
+
+Seeds runtime `[TUNABLE]` bổ sung cho các pattern ở trên:
+
+| Branch | Cadence L1 / L2 / L3 | Damage mỗi projectile | Special |
+|---|---|---|---|
+| Pulse | .17 / .17 / .17 s | 1; center Lv3 +1 | Lateral spacing .22 world units |
+| Plasma | .25 / .25 / .22 s | 1; center Lv3 +2 | Full fan 26° / 40° / 40° |
+| Homing | .5 / .5 / .5 s | 2 | Speed 8, lifetime 3 s, tracking 110°/s trong range 18; Lv3 splash .85 quanh target bị hit |
+
+Homing chọn nearest valid target phía trước lúc launch, turn có giới hạn, không
+reacquire nếu target chết hoặc instance đã được pool/reuse. Splash không damage
+trùng target chính. Các seed này chưa được cân cho boss; không implement boss mới.
+Plasma dùng projectile speed/lifetime baseline 12/1.5 s. Enemy HP không scale theo level.
+
+Mỗi branch có một thermal profile; ba level cùng đọc profile đó. Plasma/Homing tạm
+reuse numeric seed Pulse qua hai asset riêng `[PROVISIONAL]`, không là final tuning.
+Switch giữ heat/latch riêng của từng branch; inactive branch không tick
+`[PROVISIONAL]`, tránh switch để reset nhiệt. Upgrade cùng branch giữ heat/latch.
+Overdrive chỉ nhân cadence 1.6× `[TUNABLE]`; heat/s vẫn theo type profile, không bypass
+Overheated. Drone bắn phụ độc lập primary thermal, không mở khóa primary fire.
+
+### Pickup và effect test policy
+
+| Item | Semantics cho M4-A |
+|---|---|
+| Shield Cell | Một charge; collect lại giữ một charge, không cộng dồn. Protection gate chặn trước shield: invincibility không tiêu charge. Stacking decision vẫn TBD. |
+| Overdrive | Duration seed trên; collect lại refresh duration, không stack multiplier. |
+| Support Drone | Duration 11 s trong range seed trên; collect lại refresh. Một authored companion, bắn phụ 1 damage/.4 s, không elaborate AI. |
+| EMP | Release hostile projectiles trong cùng scene ngay; pulse 2 damage trong radius 8 world units `[TUNABLE]`. Không block fire gate, không chạy death hoặc handoff policy. |
+| Extra Life | +1 tới cap do player owner giữ. Ở cap để pickup chưa collect tới khi life giảm hoặc pickup hết scope/lifetime; không convert economy. Overflow decision vẫn TBD. |
+| Weapon Core | Typed qua `PickupDefinition.Branch` cho test; code `T1+`/`T2+`/`T3+`. Maxed branch không collect/không conversion; random selection filter branch max. Generic-vs-typed và maxed fallback vẫn TBD. |
+| Stellar Shard | Amount 1 `[TUNABLE]`, collection ghi runtime counter riêng score. |
+
+Temporary effects giữ state/timer qua Spawn Group và ordinary Encounter handoff;
+Pause freeze. Dying/death, Game Over, Clear, root disable và mission reset xóa Shield,
+Overdrive, Drone. Respawn không restore buffs. Hit được shield absorb không chạy death
+hoặc downgrade. Drone visual tắt khi gate không cho control; pending shot đã launch
+vẫn theo projectile lifecycle, terminal session release friendly shots.
+
+Pickup là pooled runtime participant trong reward scope của EncounterCleanup.
+Collection dùng swept contact với đường di chuyển Player, bán kính .6 world units
+`[TUNABLE]`; không magnetism. Chỉ collect khi gameplay input gate mở, kể cả khi held fire.
+Pickup drift xuống .65 world units/s và dừng ở viewport y .12 `[PROVISIONAL]`.
+Direct pickup lifetime 12 s, crate 8 s và cap active 6 là test policy
+`[PROVISIONAL]`, không chốt lifetime/cap/magnetism ngoài phase. Full-viewport drop
+clamp giữ reward đọc/nhặt được ở edge. Trong .3 s cuối lifetime/grace, symbol + code fade theo scaled time `[TUNABLE]`.
+Pool reuse restore opacity. Scope expiry không phát collection/reward.
+Reward grace/cleanup thuộc [encounter owner](levels-encounters.md#reward-grace-và-chuyển-encounter).
+
+### Drop Director test policy
+
+`RewardDropTable` chọn Normal/Elite/MajorCrate/Resource, odds, weighted major list và
+optional guaranteed pickup cho authored test moment. Normal asset dùng .75% major,
+3.5% shard `[TUNABLE]`; chỉ roll shard nếu không ra major. Không loot shower toàn cục.
+Elite source dùng cùng configurable table/weights; chưa author Elite combat ở M4-A.
+Resource đảm bảo Shard. Supply target chết eject crate; reward chọn khi nhặt crate,
+không trao trực tiếp lúc destroy/exit. Không tăng score supply/resource khi exact
+bonus vẫn TBD; score 0 tạm cho hai test targets.
+
+Major weights theo baseline phía trên, Core weight chia đều ba branch. Filter maxed
+core/Extra Life overflow; low-life defensive weight ×3, locked branch core weight ×2
+`[PROVISIONAL]`. Chưa có campaign-depth policy trước M4-B. Sau hai crate low-life
+không defensive, crate tiếp chọn Shield/Extra Life; defensive hoặc mở crate khi lives
+trên 1 reset history. History reset theo run. Không pity trên mọi enemy kill.
+Guaranteed test tables chỉ phục vụ testbed, không chốt production drop distribution.
+
+Production dùng runtime RNG. Dev/test seed được reset sau RunStarted, không sửa
+asset/config hoặc disk. Đường test và release guard ở [dev owner](../systems/dev-debug.md).
+
 ## Supply Drone và Supply Crate
 
 ### Supply Drone concept `[LOCKED]`

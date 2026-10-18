@@ -57,7 +57,7 @@ HUD cho biết survival, performance, currency và active weapon mà không che 
 
 ```text
 ┌─────────────────────────────────────────────┐
-│ H ▰▰▰▱▱          S —       SS —        ⏸ │
+│ H ▰▰▰▱▱          S 0       SS 0        ⏸ │
 │                                             │
 │                                             │
 │                                             │
@@ -78,10 +78,10 @@ HUD cho biết survival, performance, currency và active weapon mà không che 
 
 M3.5 HUD là functional placeholder: Lives dùng sprite hiện có + count; phần chưa
 có icon thật dùng chữ viết tắt (`S` score, `SS` Stellar Shard, `H` heat) + value/state.
-Không tự vẽ icon thay thế ở phase này. Chưa có economy
-runtime thì giữ `—`, không giả score/currency. Full weapon name không cần hiển thị
+Không tự vẽ icon thay thế ở phase này. M4-A thay placeholder bằng
+Score và Shards runtime thật; không hiển thị persistent balance chưa implement. Full weapon name không cần hiển thị
 trong combat: bottom-right dùng `T1 L1` (type 1, level 1); `T1` là nhãn tạm cho
-Pulse trong slice hiện tại, không phải config/save ID hoặc weapon unlock mới. Tên đầy đủ có
+Pulse, `T2` Plasma, `T3` Homing; đây là presentation code, không phải save ID. Tên đầy đủ có
 thể xuất hiện ở Pause/loadout/pickup/upgrade UI khi những consumer đó được làm.
 
 Compact không đồng nghĩa thu nhỏ thông tin gameplay quan trọng. Heat có cụm riêng
@@ -102,7 +102,15 @@ orange-red + cue ngắn `NÓNG` khi Overheated. Bar tiếp tục cho thấy reco
 dựa vào hue; không spam warning giữa combat hoặc thêm Continue. Warning threshold
 chỉ là visual `[TUNABLE]`, không thay [weapon fire rules](../content/weapons-items-drops.md#primary-weapon-heat--m35).
 Major/minor cinematic visibility vẫn theo contract phía dưới; ordinary Encounter
-handoff giữ HUD visible. Không mở rộng UI sang economy/rewards trong M3.5.
+handoff giữ HUD visible.
+
+M4-A counter containers tự rộng theo nội dung (`S`/`SS` + số), không giữ plate rộng
+cho chữ ngắn. Weapon 88×44 là button cycle các branch đã unlock, tuân UI pointer
+ownership; chỉ nhận khi gameplay gate cho control. Một hàng nhỏ bottom-center dùng
+`SH`, `OD n`, `DR n` cho active effects/timer; cue pickup riêng phía trên tồn tại
+1.2 s `[TUNABLE]`, Pause freeze, terminal/reset clear. Không announcement lớn ở giữa
+combat, không panel riêng cho từng buff hoặc fake icon. Shield còn có teal cue quanh
+Player; presentation chỉ đọc state của effect owner.
 
 Boss/hazard warning ngắn, chỉ dùng khi có thông tin cần báo; không spam WARNING.
 [Player combat](../gameplay/player-combat.md) sở hữu touch exclusion và weapon switch;
@@ -218,8 +226,8 @@ VS-006/024–026 dùng uGUI trong `02_Gameplay`, không thêm scene hay localiza
 framework. Copy tập trung ở `GameplayCopy`; font runtime hiện có đủ glyph Việt.
 HUD nằm trong `Screen.safeArea`, scale theo chiều cao với reference 1600 × 900;
 anchors/offsets chỉnh trên RectTransform. Lives icon + count đọc `PlayerLives`;
-Pulse Laser + CẤP đọc `PulseLaserWeapon.CurrentLevel`. Score và Shard là icon + **—**
-(placeholder, không phải số zero hoặc economy giả); chưa có buff/boss/weapon cycle.
+weapon type/level đọc loadout/weapon runtime. M2 từng dùng Score/Shard placeholder;
+current HUD theo [Gameplay HUD](#gameplay-hud), buff/boss scope không được suy rộng từ placeholder.
 
 Establishing scene dùng lại `GameplayAnnouncement` với location/space title và một
 câu mô tả ngắn, không tạo menu hoặc cinematic framework khác. `LocationName` chỉ
@@ -259,8 +267,7 @@ transitions. Pause và gameplay permissions vẫn theo gameplay/lifecycle bình 
 minor handoff không tự khóa input hoặc ẩn Pause. Không Continue/forced confirmation.
 Minor title + một câu mô tả nằm **giữa màn hình**, dùng cùng announcement với layout
 căn giữa rồi auto fade; không chung vị trí/layout với major establishing. Incoming
-encounter config có thể để trống cả hai. L1 B dùng “Encounter 02” / “Tín hiệu địch đang
-tiến vào khu vực.” để debug đúng cấp, chưa dùng nhãn hoa mỹ. Nhãn cấp thống nhất
+encounter config có thể để trống cả hai. M4-A testbed dùng “Encounter NN” và description trống để debug đúng cấp, chưa dùng nhãn hoa mỹ. Nhãn cấp thống nhất
 `Mission NN` / `Encounter NN`; câu mô tả tiếng Việt, không dùng lại “đợt” làm title.
 Minor announcement nhận duration bằng toàn bộ handoff do
 [level owner](../content/levels-encounters.md#level-1--first-contact-provisional) quy định,
@@ -274,7 +281,7 @@ checkpoint restore/Settings/Main Menu backend; dev replay không được giả 
 Gameplay pause/resume và terminal authority ở
 [architecture](../systems/architecture.md#m2-gameplay-session-và-ui-boundary).
 
-Sau full L1 A → B, compact panel hiện một lần “NHIỆM VỤ HOÀN THÀNH” sau .45 s
+Sau full Mission 01 (current testbed 5 Encounters), compact panel hiện một lần “NHIỆM VỤ HOÀN THÀNH” sau .45 s
 unscaled `[TUNABLE]`. “TIẾP THEO” và “VỀ MENU CHÍNH” disabled cùng note trên;
 chưa có L2/results navigation hoặc stats giả. Combat đã khóa ngay trước clear delay.
 Standalone dev encounter không phát mission-clear panel.
