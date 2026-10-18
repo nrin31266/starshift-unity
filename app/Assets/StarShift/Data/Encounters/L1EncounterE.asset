@@ -105,6 +105,8 @@ MonoBehaviour:
   ShotSpacing: 0.7
   ShotsPerVolley: 2
   VolleyPause: 1.7
+  ClearPauseSeconds: 2
+  HandoffTravelSeconds: 1.5
   HandoffDelay: 2
   ProjectileGraceSeconds: 0.65
   ProjectileFadeSeconds: 0.3

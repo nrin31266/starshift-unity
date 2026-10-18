@@ -22,6 +22,7 @@ namespace StarShift.UI
         private bool visualWasActive;
         private bool backdropWasActive;
         private bool cueVisible;
+        public bool IsCueVisible => cueVisible;
         private MissionIntroPhase phase;
         private PlayDirection direction;
         private float progress;

@@ -190,12 +190,10 @@ vẫn clear an toàn theo completion mode, không tự đổi thành minor grace
 Trong cùng Mission, minor handoff giữ mọi beneficial pickup, Stellar Shard và Supply
 Crate chưa nhặt. Chúng tiếp tục motion/lifetime hiện có qua Encounter tiếp theo;
 không reset tuổi, auto-collect hoặc xóa chỉ vì đổi encounter. Không mở thêm reward
-grace giữa các encounter thường. HandoffDelay là khoảng nghỉ cố định bắt đầu sau khi
-combat và projectile drain/cleanup kết thúc cho tới khi start encounter kế.
-Khoảng nghỉ này bảo đảm breathing beat đầy đủ, không bị trừ bớt bởi thời gian drain đạn
-(dù diệt địch bằng đạn thường có projectile drain hay bằng tên lửa xóa đạn tức thì đều
-nhận trọn vẹn HandoffDelay). Không mở thêm reward grace giữa các encounter thường;
-không đợi player nhặt hết đồ.
+grace giữa các encounter thường. Minor handoff gồm hai pha tách biệt:
+1. **Khoảng nghỉ đứng im (`ClearPauseSeconds`, 2.0 s `[TUNABLE]`):** Bắt đầu ngay sau khi combat và projectile drain kết thúc (hoặc sau khi toàn bộ tàu địch đã tự rời khỏi màn hình). Trong 2.0 s này màn hình đứng im hoàn toàn, không cuộn sao, không hiện announcement title. Áp dụng nhất quán cho cả 3 trường hợp: bắn hạ bằng súng thường, quét sạch bằng tên lửa dự phòng, và tàu địch tự bay ra khỏi màn hình.
+2. **Pha bay cuộn nhẹ (`HandoffTravelSeconds`, 1.5 s `[TUNABLE]`):** Bắt đầu sau khi hết 2.0 s đứng im; sao cuộn nhẹ xuất hiện và trôi (`PresentHandoff`), announcement title hiện lên đồng bộ với nhịp bay trước khi đợt địch tiếp theo bắt đầu xuất hiện.
+Không mở thêm reward grace giữa các encounter thường; không đợi player nhặt hết đồ.
 Cap pickup vẫn tính cả đồ từ encounter trước.
 
 Trước khi kết thúc world (final/standalone encounter, result/scene/region transition),

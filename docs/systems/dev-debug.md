@@ -2,13 +2,12 @@
 
 ## Fixed clear pause grouped verification — 2026-10-19
 
-User chọn khoảng nghỉ cố định sau sạch địch, không đợi hết Timeline timer.
-`VerifyGameplayFeel.ClearHandoffDelay` PASS ba paths: real primary shot kill,
-primary kill còn hostile projectile và reserve clear trong early-exhaustion Timeline.
-Cả ba đo trọn vẹn HandoffDelay (2.0s + frame tick) từ lúc hoàn tất cleanup/drain tới đúng một successor; Pause freeze PASS. HandoffDelay là khoảng nghỉ cố định sau khi combat/projectile drain kết thúc, không bị trừ bớt bởi thời gian drain; không thêm grace giữ reward giữa Encounter.
-PickupCarryOver PASS với nhịp mới; MissileAndImpact, ProjectionReset, ButtonInput,
-short HandoffSmoke và persistence Core PASS trong cùng grouped pass. Các assertions
-announcement trong verifier cũ đã theo remaining handoff, compile-only PASS.
+User chọn khoảng nghỉ cố định 2.0 s đứng im hoàn toàn sau khi xong địch (bắn hạ, tên lửa, hoặc tàu tự rời đi), rồi mới bay cuộn nhẹ 1.5 s chuyển sang encounter tiếp theo.
+`VerifyGameplayFeel.ClearHandoffDelay` PASS bốn paths: real primary shot kill, primary kill còn hostile projectile, reserve clear trong early-exhaustion Timeline, và tàu địch tự rời khỏi màn hình (ships-exited).
+Cả bốn kịch bản đo chính xác:
+1. Pha 1 đứng im: đúng 2.02 s (2.0 s + 1 frame tick), sao đứng yên (`IsCueVisible == false`), Pause freeze PASS.
+2. Pha 2 bay cuộn nhẹ: đúng 1.52 s (1.5 s + 1 frame tick), sao bắt đầu cuộn nhẹ (`IsCueVisible == true`), announcement title hiển thị đồng bộ.
+PickupCarryOver PASS với nhịp mới (2.0 s đứng im + 1.5 s bay cuộn nhẹ = 3.5 s); MissileAndImpact, ProjectionReset, short HandoffSmoke và persistence Core PASS trong cùng grouped pass.
 Ponytail 5.3.2 scoped review dùng installed `ponytail`/`ponytail-review` skills: không
 có unresolved finding; không thấy dead runtime code hoặc untracked source trong
 phạm vi sửa. Capture tooling có consumer, nằm ngoài Assets; artifacts vẫn ignored.

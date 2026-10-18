@@ -326,7 +326,8 @@ public static class VerifyGameplayFeel
             second.Duration=30;second.CompleteWhenScheduleExhausted=false;
             level.Encounters=new[]{first,second};level.AdditionalStarts=Array.Empty<LevelStartPoint>();level.Intro.Enabled=false;
             Runner.StopRun();Runner.Flow.LoadLevel(level);
-            foreach(var scenario in new[]{"last-shot","last-shot-with-hostile","reserve-clear"})
+            first.ClearPauseSeconds = 2f; first.HandoffTravelSeconds = 1.5f;
+            foreach(var scenario in new[]{"last-shot","last-shot-with-hostile","reserve-clear","ships-exited"})
             {
                 string path=null;EnemyHealth target=null;PlayerProjectile pulse=null;EnemyProjectile hostile=null;
                 SingleFireDefinition fire=null;GameObject muzzle=null;
@@ -335,8 +336,8 @@ public static class VerifyGameplayFeel
                 Action<EncounterDefinition,int> started=(d,t)=>{if(d==second)starts++;};
                 try
                 {
-                    first.Completion=scenario=="reserve-clear"?EncounterCompletion.Timeline:EncounterCompletion.Eliminate;
-                    first.CompleteWhenScheduleExhausted=scenario=="reserve-clear";
+                    first.Completion=scenario=="reserve-clear" || scenario=="ships-exited"?EncounterCompletion.Timeline:EncounterCompletion.Eliminate;
+                    first.CompleteWhenScheduleExhausted=scenario=="reserve-clear" || scenario=="ships-exited";
                     path=Fixture();Require(Owner.NewGame(),"Handoff fixture NewGame");Time.timeScale=1;
                     await Until(()=>Runner.CurrentIndex==0 && Runner.SpawnedCount==1,1,"Handoff target spawn");
                     target=EnemyHealth.Active.Single(e=>e.IsAlive && e.Definition.BodyDamagesPlayer);
@@ -354,22 +355,38 @@ public static class VerifyGameplayFeel
                         hostile.Launch(fire,muzzle.transform,target.gameObject,Player.gameObject,p=>{hostileReleased=true;p.ResetForPool();});
                     }
                     if(scenario=="reserve-clear")Require(Reserve.TryUse(),"Handoff reserve launch");
+                    else if(scenario=="ships-exited")
+                    {
+                        flight.Configure(Vector2.zero,Vector2.zero,Vector2.zero,.05f,new Vector2(3,3),.05f,.05f);
+                        flight.enabled=true;
+                        await Task.Delay(160);
+                        target.transform.position=new Vector3(3,3,0);
+                        Physics2D.SyncTransforms();
+                    }
                     else
                     {
                         var definition=Player.GetComponent<WeaponLoadout>().Definition(WeaponBranch.Pulse);
                         pulse=UnityEngine.Object.Instantiate(definition.ProjectilePrefab);
                         pulse.Launch(definition,target.transform.position-Vector3.up*.6f,Vector2.up,target.CurrentHp,0,Player.gameObject,p=>p.ResetForPool());
                     }
-                    await Until(()=>killedAt>=0 && Runner.Stage!=EncounterStage.Running,1,"Handoff final kill");
+                    if(scenario!="ships-exited")
+                        await Until(()=>killedAt>=0 && Runner.Stage!=EncounterStage.Running,1,"Handoff final kill");
                     await Until(()=>Runner.Stage==EncounterStage.Handoff,2,"Handoff enter");
                     var handoffStart=Time.fixedTime;
+                    var presentation=UnityEngine.Object.FindAnyObjectByType<StarShift.UI.MissionIntroPresentation>();
+                    Require(Runner.IsClearPause && !Runner.IsHandoffTravel,"Expected ClearPause active");
+                    Require(presentation==null || !presentation.IsCueVisible,"Cue must be hidden during clear pause");
                     Session.Pause();var frozen=Time.fixedTime;await Task.Delay(100);
                     Require(Time.fixedTime==frozen && Runner.CurrentIndex==0,"Pause advanced clear wait");Session.Resume();
+                    await Until(()=>Runner.IsHandoffTravel,3,"Travel enter");
+                    var clearPauseSeconds=Time.fixedTime-handoffStart;
+                    Require(Mathf.Abs(clearPauseSeconds-first.EffectiveClearPauseSeconds)<.08f,"Inconsistent clear pause: "+scenario+" "+clearPauseSeconds);
+                    Require(presentation==null || presentation.IsCueVisible,"Cue must be visible during handoff travel");
                     await Until(()=>Runner.CurrentIndex==1 && Runner.Stage==EncounterStage.Running,3,"Handoff successor");
-                    var handoffSeconds=Time.fixedTime-handoffStart;
-                    Require(starts==1 && Mathf.Abs(handoffSeconds-first.HandoffDelay)<.08f,"Inconsistent clear pause: "+scenario+" "+handoffSeconds);
+                    var travelSeconds=Time.fixedTime-(handoffStart+clearPauseSeconds);
+                    Require(starts==1 && Mathf.Abs(travelSeconds-first.EffectiveHandoffTravelSeconds)<.08f,"Inconsistent travel duration: "+scenario+" "+travelSeconds);
                     Require(scenario!="last-shot-with-hostile" || hostileReleased,"Handoff skipped hostile cleanup");
-                    samples.Add(new{scenario,handoffSeconds,expected=first.HandoffDelay,starts,pauseFreeze=true});
+                    samples.Add(new{scenario,clearPauseSeconds,expectedPause=first.EffectiveClearPauseSeconds,travelSeconds,expectedTravel=first.EffectiveHandoffTravelSeconds,starts,pauseFreeze=true});
                 }
                 finally
                 {
@@ -407,6 +424,7 @@ public static class VerifyGameplayFeel
         try
         {
             first.Completion=EncounterCompletion.Timeline;first.Duration=.15f;
+            first.ClearPauseSeconds=.6f;first.HandoffTravelSeconds=.4f;
             first.CompleteWhenScheduleExhausted=false;first.Groups=Array.Empty<SpawnAction>();first.OptionalEvents=Array.Empty<OptionalEvent>();
             second.Duration=30;second.Groups=Array.Empty<SpawnAction>();second.OptionalEvents=Array.Empty<OptionalEvent>();second.CompleteWhenScheduleExhausted=false;
             level.Encounters=new[]{first,second};level.AdditionalStarts=Array.Empty<LevelStartPoint>();level.Intro.Enabled=false;
@@ -426,9 +444,10 @@ public static class VerifyGameplayFeel
             Require(item.IsActive && shard.IsActive && crate.IsActive,"Completion deleted pickups");
             Session.Pause();var remaining=shard.Remaining;var position=shard.transform.position;
             await Task.Delay(120);Require(shard.Remaining==remaining && shard.transform.position==position,"Pause advanced carried pickup");Session.Resume();
-            await Until(()=>Runner.CurrentIndex==1 && Runner.Stage==EncounterStage.Running,3,"Carry successor missing");
+            await Until(()=>Runner.CurrentIndex==1 && Runner.Stage==EncounterStage.Running,5,"Carry successor missing");
             var handoffSeconds=Time.fixedTime-completionTime;
-            Require(completionTime>=0 && handoffSeconds>=.9f && Mathf.Abs(handoffSeconds-first.HandoffDelay)<.08f,"Minor breathing pause missing/too long: "+handoffSeconds);
+            var expectedHandoff=first.EffectiveClearPauseSeconds+first.EffectiveHandoffTravelSeconds;
+            Require(completionTime>=0 && handoffSeconds>=.9f && Mathf.Abs(handoffSeconds-expectedHandoff)<.08f,"Minor breathing pause missing/too long: "+handoffSeconds);
             Require(cleanup.Token!=token && cleanup.RewardToken==rewardToken && !cleanup.Register(item,token),"Stale encounter callback accepted");
             Require(item.IsActive && shard.IsActive && crate.IsActive && item.Remaining<11 && shard.Remaining<4,"Handoff deleted or renewed lifetime");
             var shards=Owner.PersistentSnapshot.Profile.StellarShardBalance;

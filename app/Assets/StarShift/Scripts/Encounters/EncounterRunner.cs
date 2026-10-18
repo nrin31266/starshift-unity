@@ -29,6 +29,9 @@ namespace StarShift.Encounters
         private int requiredKilled;
         private bool standalone;
         private float remaining;
+        private float clearPauseRemaining;
+        private float travelRemaining;
+        private bool travelStarted;
         private int generation;
         private bool bossDefeated;
         private bool completionSent;
@@ -39,6 +42,10 @@ namespace StarShift.Encounters
         public EncounterStage Stage { get; private set; }
         public bool IsRunning => Stage == EncounterStage.Running || Stage == EncounterStage.ProjectileDrain || Stage == EncounterStage.BossPostDeath;
         public bool HasActiveRun => Stage != EncounterStage.Idle;
+        public bool IsClearPause => Stage == EncounterStage.Handoff && !travelStarted;
+        public bool IsHandoffTravel => Stage == EncounterStage.Handoff && travelStarted;
+        public float ClearPauseRemaining => clearPauseRemaining;
+        public float TravelRemaining => travelRemaining;
         public float Elapsed { get; private set; }
         public int SpawnedCount => spawned.Count;
         public int KilledCount => killed;
@@ -128,6 +135,8 @@ namespace StarShift.Encounters
             CurrentIndex = index;
             Elapsed = 0;
             killed = requiredKilled = 0;
+            clearPauseRemaining = travelRemaining = 0;
+            travelStarted = false;
             spawned.Clear(); schedule.Clear();
             foreach (var action in Current.Groups) schedule.Add(new ScheduledGroup { Action = action, Start = action.StartTime });
             optionalFired = new bool[Current.OptionalEvents.Length];
@@ -153,9 +162,20 @@ namespace StarShift.Encounters
             if (Stage == EncounterStage.Handoff)
             {
                 var handoffToken = generation;
-                if (levelFlow != null) levelFlow.TickHandoff(Time.fixedDeltaTime);
                 remaining -= Time.fixedDeltaTime;
-                if (remaining <= 0)
+                if (clearPauseRemaining > 0)
+                {
+                    clearPauseRemaining -= Time.fixedDeltaTime;
+                    return;
+                }
+                if (!travelStarted)
+                {
+                    travelStarted = true;
+                    if (levelFlow != null) levelFlow.BeginHandoff(travelRemaining, Definitions[CurrentIndex + 1]);
+                }
+                if (levelFlow != null) levelFlow.TickHandoff(Time.fixedDeltaTime);
+                travelRemaining -= Time.fixedDeltaTime;
+                if (travelRemaining <= 0)
                 {
                     if (levelFlow != null) levelFlow.EndHandoff();
                     if (handoffToken == generation) BeginEncounter(CurrentIndex + 1);
@@ -346,8 +366,15 @@ namespace StarShift.Encounters
             if (!standalone && CurrentIndex + 1 < Definitions.Length)
             {
                 Stage = EncounterStage.Handoff;
-                remaining = Current.HandoffDelay;
-                if (levelFlow != null) levelFlow.BeginHandoff(remaining, Definitions[CurrentIndex + 1]);
+                clearPauseRemaining = Current.EffectiveClearPauseSeconds;
+                travelRemaining = Current.EffectiveHandoffTravelSeconds;
+                travelStarted = false;
+                remaining = clearPauseRemaining + travelRemaining;
+                if (clearPauseRemaining <= 0)
+                {
+                    travelStarted = true;
+                    if (levelFlow != null) levelFlow.BeginHandoff(travelRemaining, Definitions[CurrentIndex + 1]);
+                }
             }
             else
             {
@@ -362,6 +389,8 @@ namespace StarShift.Encounters
         {
             generation++;
             Stage = EncounterStage.Idle;
+            clearPauseRemaining = travelRemaining = 0;
+            travelStarted = false;
             if (levelFlow != null) levelFlow.Cancel();
             if (coordinator != null) coordinator.Stop();
             foreach (var slot in spawned) if (!slot.Resolved) Release(slot);

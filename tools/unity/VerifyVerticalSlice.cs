@@ -132,10 +132,11 @@ public static class VerifyVerticalSlice
                 await Until(() => Runner.Stage == EncounterStage.Handoff, 500, "Cleanup did not finish before handoff.");
                 var handoffStart = Time.fixedTime;
                 var announcement = UnityEngine.Object.FindAnyObjectByType<GameplayAnnouncement>();
+                await Until(() => Runner.IsHandoffTravel, 2500, "Travel did not start after clear pause.");
                 Require(title == originalLevel.Encounters[1].TransitionTitle && detail == originalLevel.Encounters[1].TransitionDescription &&
-                    Mathf.Approximately(titleDuration, Runner.Current.HandoffDelay) &&
+                    Mathf.Approximately(titleDuration, Runner.Current.EffectiveHandoffTravelSeconds) &&
                     announcement.transform.Find("Title").GetComponent<Text>().alignment == TextAnchor.MiddleCenter,
-                    "Minor title/copy/duration was not synchronized to handoff.");
+                    "Minor title/copy/duration was not synchronized to handoff travel.");
                 var reused = pool.Get(); Require(reused == shot, "Pool did not reuse the cleaned projectile.");
                 target.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(.8f, .5f, 10));
                 muzzle.transform.position = target.transform.position + Vector3.up * .05f;

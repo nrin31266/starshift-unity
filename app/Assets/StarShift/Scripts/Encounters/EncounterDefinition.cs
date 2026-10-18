@@ -36,7 +36,11 @@ namespace StarShift.Encounters
         [Min(.02f)] public float ShotSpacing = 1f;
         [Min(1)] public int ShotsPerVolley = 1;
         [Min(.02f)] public float VolleyPause = 1f;
+        [Min(0)] public float ClearPauseSeconds = 2f;
+        [Min(0)] public float HandoffTravelSeconds = 1.5f;
         [Min(0)] public float HandoffDelay = 2f;
+        public float EffectiveClearPauseSeconds => ClearPauseSeconds > 0 ? ClearPauseSeconds : (HandoffDelay > 0 ? HandoffDelay : 2f);
+        public float EffectiveHandoffTravelSeconds => HandoffTravelSeconds > 0 ? HandoffTravelSeconds : 1.5f;
         [Min(0)] public float ProjectileGraceSeconds = .65f;
         [Min(.01f)] public float ProjectileFadeSeconds = .3f;
         public string TransitionTitle;
@@ -58,6 +62,7 @@ namespace StarShift.Encounters
             if (string.IsNullOrWhiteSpace(Id) || Groups == null || OptionalEvents == null ||
                 !ConfigValue.Positive(Duration) || !ConfigValue.Positive(ShotSpacing) || !ConfigValue.Positive(VolleyPause) ||
                 ActiveShooterLimit < 1 || ShotsPerVolley < 1 || !ConfigValue.Nonnegative(HandoffDelay) ||
+                !ConfigValue.Nonnegative(ClearPauseSeconds) || !ConfigValue.Nonnegative(HandoffTravelSeconds) ||
                 !ConfigValue.Nonnegative(ProjectileGraceSeconds) || !ConfigValue.Positive(ProjectileFadeSeconds) ||
                 !ConfigValue.Positive(RewardGraceSeconds) || !ConfigValue.Nonnegative(BossPostDeathSeconds) ||
                 (CameraOverride != null && !CameraOverride.IsValid) || !Enum.IsDefined(typeof(EncounterCompletion), Completion)) return false;
