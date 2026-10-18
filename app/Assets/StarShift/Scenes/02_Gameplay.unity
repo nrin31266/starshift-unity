@@ -2076,7 +2076,7 @@ MonoBehaviour:
       height: 1
   transitionDuration: 0.6
   reserveImpactDuration: 0.14
-  reserveImpactStrength: 0.004
+  reserveImpactStrength: 0.024
 --- !u!114 &519420034
 MonoBehaviour:
   m_ObjectHideFlags: 0

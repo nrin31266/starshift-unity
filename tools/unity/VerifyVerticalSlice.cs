@@ -133,7 +133,7 @@ public static class VerifyVerticalSlice
                 var handoffStart = Time.fixedTime;
                 var announcement = UnityEngine.Object.FindAnyObjectByType<GameplayAnnouncement>();
                 Require(title == originalLevel.Encounters[1].TransitionTitle && detail == originalLevel.Encounters[1].TransitionDescription &&
-                    Mathf.Approximately(titleDuration, Runner.Current.HandoffDelay) &&
+                    Mathf.Abs(titleDuration - Mathf.Max(0, Runner.Current.HandoffDelay - (handoffStart - drainStart))) < .08f &&
                     announcement.transform.Find("Title").GetComponent<Text>().alignment == TextAnchor.MiddleCenter,
                     "Minor title/copy/duration was not synchronized to handoff.");
                 var reused = pool.Get(); Require(reused == shot, "Pool did not reuse the cleaned projectile.");
@@ -152,7 +152,7 @@ public static class VerifyVerticalSlice
                 await Until(() => !edgeShot.gameObject.activeSelf, 400, "Offscreen shot waited for fade instead of recycling.");
                 Require(Time.fixedTime - edgeStart < .3f && releases == 3 && probe.Hits == 1,
                     "Viewport exit did not recycle early and cleanly.");
-                await Until(() => Time.fixedTime - handoffStart >= 1.5f, 2200, "Extended handoff stalled.");
+                await Until(() => Time.fixedTime - handoffStart >= titleDuration * .6f, 2200, "Extended handoff stalled.");
                 Require(Runner.CurrentIndex == 0 && Runner.Stage == EncounterStage.Handoff &&
                     announcement.GetComponent<CanvasGroup>().alpha > .5f, "Cue/title did not remain readable for the longer handoff.");
                 var screenshot = await Capture("minor-handoff-cleanup");

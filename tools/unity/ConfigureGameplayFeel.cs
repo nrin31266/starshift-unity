@@ -115,7 +115,7 @@ public static class ConfigureGameplayFeel
         var reserve=Ensure<StarShift.Player.EmergencyMissileReserve>(player);
         Reference(reserve,"runner",runner);Reference(reserve,"lifecycle",life);
         var view=Camera.main.GetComponent<StarShift.Gameplay.GameplayViewController>();
-        Number(view,"reserveImpactDuration",.14f);Number(view,"reserveImpactStrength",.004f);
+        Number(view,"reserveImpactDuration",.14f);Number(view,"reserveImpactStrength",.024f);
         var burstNode=player.transform.Find("MissileBurst");
         if(burstNode==null){burstNode=new GameObject("MissileBurst").transform;burstNode.SetParent(player.transform,false);}
         var burst=ConfigureRing(burstNode);
@@ -259,11 +259,11 @@ public static class ConfigureGameplayFeel
         for(int i=0;i<4;i++)
         {
             var encounter=AssetDatabase.LoadAssetAtPath<EncounterDefinition>(Root+"Encounters/L1Encounter"+(char)('A'+i)+".asset");
-            encounter.HandoffDelay=1;EditorUtility.SetDirty(encounter);
+            encounter.HandoffDelay=2;EditorUtility.SetDirty(encounter);
         }
         UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(player.scene);
         UnityEditor.SceneManagement.EditorSceneManager.SaveScene(player.scene);AssetDatabase.SaveAssets();
-        return new{pass=true,distinctSprites=3,flightSeconds=.32f,handoffSeconds=1};
+        return new{pass=true,distinctSprites=3,flightSeconds=.32f,handoffSeconds=2};
     }
     public static object TuneFallExitAndCooling()
     {

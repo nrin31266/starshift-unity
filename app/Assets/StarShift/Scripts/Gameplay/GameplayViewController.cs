@@ -15,8 +15,8 @@ namespace StarShift.Gameplay
         private float transitionDuration = .6f;
 
         [SerializeField, Range(.1f,.18f)] private float reserveImpactDuration = .14f;
-        [SerializeField, Range(0,.01f), Tooltip("Biên độ theo tỷ lệ khung hình; chỉ lệch projection lúc render.")]
-        private float reserveImpactStrength = .004f;
+        [SerializeField, Range(0,.032f), Tooltip("Biên độ theo tỷ lệ khung hình; chỉ lệch projection lúc render.")]
+        private float reserveImpactStrength = .024f;
         private float impactRemaining;
         private float impactElapsed;
         private bool ownsProjection;
@@ -66,7 +66,7 @@ namespace StarShift.Gameplay
             if (camera != gameplayCamera || impactRemaining <= 0 || Time.timeScale <= 0) return;
             var projection = camera.projectionMatrix;
             var fade = impactRemaining / reserveImpactDuration;
-            var amplitude = Mathf.Clamp(reserveImpactStrength, 0, .01f) * fade * fade * 2;
+            var amplitude = Mathf.Clamp(reserveImpactStrength, 0, .032f) * fade * fade * 2;
             projection.m03 += Mathf.Sin(impactElapsed * 173 + 1.2f) * amplitude;
             projection.m13 += Mathf.Sin(impactElapsed * 131 + .5f) * amplitude;
             camera.projectionMatrix = projection;

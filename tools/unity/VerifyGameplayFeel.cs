@@ -218,7 +218,7 @@ public static class VerifyGameplayFeel
             for(int i=0;i<10;i++)view.TriggerReserveImpact();
             Require(view.ImpactRemaining<=.18f,"Impact stacking");
             await Until(()=>view.ImpactRemaining<=0,1,"Impact expiry");
-            Require(rendered>0 && restored>0 && maxOffset<=.02001f,"Render impulse missing/unbounded: "+rendered+" "+maxOffset);
+            Require(rendered>0 && restored>0 && maxOffset<=view.ImpactStrength*2+.00001f,"Render impulse missing/unbounded: "+rendered+" "+maxOffset);
             Require(camera.transform.position==position && camera.transform.rotation==rotation && camera.projectionMatrix==baseline,"Camera gameplay pose/projection drift");
             var stock=Reserve.Current;Session.Pause();Session.RetryEncounter();Require(Reserve.Current==2,"Retry missile stock");
             Reserve.TryUse();Require(Reserve.Current==1,"Consume after retry");
@@ -311,6 +311,84 @@ public static class VerifyGameplayFeel
         }
         var result=new{pass=true,noShoot=true,samples};Evidence("encounter-pacing",result);return result;
     }
+    public static async Task<object> ClearHandoffDelay()
+    {
+        var original=Runner.Flow.Level;var originalScale=Time.timeScale;
+        var level=UnityEngine.Object.Instantiate(original);
+        var first=UnityEngine.Object.Instantiate(original.Encounters[0]);
+        var second=UnityEngine.Object.Instantiate(original.Encounters[1]);
+        var samples=new System.Collections.Generic.List<object>();
+        try
+        {
+            first.Groups=new[]{first.Groups[0]};first.Groups[0].Count=1;first.Groups[0].StartTime=0;
+            first.OptionalEvents=Array.Empty<OptionalEvent>();
+            second.Groups=Array.Empty<SpawnAction>();second.OptionalEvents=Array.Empty<OptionalEvent>();
+            second.Duration=30;second.CompleteWhenScheduleExhausted=false;
+            level.Encounters=new[]{first,second};level.AdditionalStarts=Array.Empty<LevelStartPoint>();level.Intro.Enabled=false;
+            Runner.StopRun();Runner.Flow.LoadLevel(level);
+            foreach(var scenario in new[]{"last-shot","last-shot-with-hostile","reserve-clear"})
+            {
+                string path=null;EnemyHealth target=null;PlayerProjectile pulse=null;EnemyProjectile hostile=null;
+                SingleFireDefinition fire=null;GameObject muzzle=null;
+                bool flightEnabled=false,attackEnabled=false;float killedAt=-1;int starts=0;
+                Action died=()=>killedAt=Time.fixedTime;
+                Action<EncounterDefinition,int> started=(d,t)=>{if(d==second)starts++;};
+                try
+                {
+                    first.Completion=scenario=="reserve-clear"?EncounterCompletion.Timeline:EncounterCompletion.Eliminate;
+                    first.CompleteWhenScheduleExhausted=scenario=="reserve-clear";
+                    path=Fixture();Require(Owner.NewGame(),"Handoff fixture NewGame");Time.timeScale=1;
+                    await Until(()=>Runner.CurrentIndex==0 && Runner.SpawnedCount==1,1,"Handoff target spawn");
+                    target=EnemyHealth.Active.Single(e=>e.IsAlive && e.Definition.BodyDamagesPlayer);
+                    var flight=target.GetComponent<EntryHoldFlight>();var attack=target.GetComponent<SingleFireAttack>();
+                    flightEnabled=flight.enabled;attackEnabled=attack.enabled;flight.enabled=false;attack.enabled=false;
+                    target.transform.position=new Vector3(0,1,0);target.GetComponent<Rigidbody2D>().position=target.transform.position;
+                    Physics2D.SyncTransforms();target.Died+=died;Runner.EncounterStarted+=started;
+                    bool hostileReleased=false;
+                    if(scenario=="last-shot-with-hostile")
+                    {
+                        fire=UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<SingleFireDefinition>("Assets/StarShift/Data/Enemies/ScoutSingleFire.asset"));
+                        var data=new SerializedObject(fire);data.FindProperty("projectileSpeed").floatValue=1;data.ApplyModifiedPropertiesWithoutUndo();
+                        muzzle=new GameObject("HandoffHostileProbe");muzzle.transform.position=new Vector3(5,3,0);
+                        hostile=UnityEngine.Object.Instantiate(fire.ProjectilePrefab);
+                        hostile.Launch(fire,muzzle.transform,target.gameObject,Player.gameObject,p=>{hostileReleased=true;p.ResetForPool();});
+                    }
+                    if(scenario=="reserve-clear")Require(Reserve.TryUse(),"Handoff reserve launch");
+                    else
+                    {
+                        var definition=Player.GetComponent<WeaponLoadout>().Definition(WeaponBranch.Pulse);
+                        pulse=UnityEngine.Object.Instantiate(definition.ProjectilePrefab);
+                        pulse.Launch(definition,target.transform.position-Vector3.up*.6f,Vector2.up,target.CurrentHp,0,Player.gameObject,p=>p.ResetForPool());
+                    }
+                    await Until(()=>killedAt>=0 && Runner.Stage!=EncounterStage.Running,1,"Handoff final kill");
+                    Session.Pause();var frozen=Time.fixedTime;await Task.Delay(100);
+                    Require(Time.fixedTime==frozen && Runner.CurrentIndex==0,"Pause advanced clear wait");Session.Resume();
+                    await Until(()=>Runner.CurrentIndex==1 && Runner.Stage==EncounterStage.Running,3,"Handoff successor");
+                    var seconds=Time.fixedTime-killedAt;
+                    Require(starts==1 && Mathf.Abs(seconds-first.HandoffDelay)<.08f,"Inconsistent clear pause: "+scenario+" "+seconds);
+                    Require(scenario!="last-shot-with-hostile" || hostileReleased,"Handoff skipped hostile cleanup");
+                    samples.Add(new{scenario,seconds,expected=first.HandoffDelay,starts,pauseFreeze=true});
+                }
+                finally
+                {
+                    Runner.EncounterStarted-=started;
+                    if(target!=null){target.Died-=died;target.GetComponent<EntryHoldFlight>().enabled=flightEnabled;target.GetComponent<SingleFireAttack>().enabled=attackEnabled;}
+                    if(pulse!=null)UnityEngine.Object.Destroy(pulse.gameObject);
+                    if(hostile!=null)UnityEngine.Object.Destroy(hostile.gameObject);
+                    if(muzzle!=null)UnityEngine.Object.Destroy(muzzle);
+                    if(fire!=null)UnityEngine.Object.Destroy(fire);
+                    Owner.ExitIsolated();if(path!=null)Directory.Delete(Path.GetDirectoryName(path),true);
+                }
+            }
+            var result=new{pass=true,samples};Evidence("clear-handoff-delay",result);return result;
+        }
+        finally
+        {
+            Runner.StopRun();Runner.Flow.LoadLevel(original);Time.timeScale=originalScale;
+            UnityEngine.Object.Destroy(first);UnityEngine.Object.Destroy(second);UnityEngine.Object.Destroy(level);
+        }
+    }
+
     public static async Task<object> PickupCarryOver()
     {
         var originalScale=Time.timeScale;var originalAudio=AudioListener.pause;
@@ -429,6 +507,65 @@ public static class VerifyGameplayFeel
             finally{UnityEngine.Object.Destroy(shot.gameObject);}
         }
     }
+    public static async Task<object> ReserveImpactPreview()
+    {
+        var fixture=ReuseRig(1600);
+        using((IDisposable)fixture.rig)
+        {
+            var path=Fixture();var camera=Camera.main;var view=camera.GetComponent<GameplayViewController>();
+            var folder=Path.GetFullPath("../.design/reserve-impact/frames");Directory.CreateDirectory(folder);
+            var recorder=new GameObject("ReserveImpactCapture").AddComponent<ReserveImpactFrameRecorder>();
+            int detonations=0;float maxX=0,maxY=0;
+            var samples=new System.Collections.Generic.List<object>();
+            var position=camera.transform.position;var rotation=camera.transform.rotation;
+            var playerPosition=Player.transform.position;var matrix=camera.projectionMatrix;
+            var start=Time.time;
+            Action detonation=()=>detonations++;
+            Action<ScriptableRenderContext,Camera> observe=(context,c)=>
+            {
+                if(c!=camera)return;
+                var m=c.projectionMatrix;
+                maxX=Mathf.Max(maxX,Mathf.Abs(m.m03-matrix.m03)*Screen.width*.5f);
+                maxY=Mathf.Max(maxY,Mathf.Abs(m.m13-matrix.m13)*Screen.height*.5f);
+                samples.Add(new{frame=recorder.Frames.Count,seconds=Time.time-start,impact=view.ImpactRemaining,clipX=m.m03-matrix.m03,clipY=m.m13-matrix.m13});
+            };
+            try
+            {
+                await Task.Delay(1700);playerPosition=Player.transform.position;
+                position=camera.transform.position;rotation=camera.transform.rotation;matrix=camera.projectionMatrix;
+                Reserve.Detonated+=detonation;RenderPipelineManager.beginCameraRendering+=observe;
+                start=Time.time;recorder.Begin(55);
+                await Until(()=>recorder.Frames.Count>=8,2,"Preview pre-roll");
+                Require(Reserve.TryUse(),"Preview missile launch");
+                await Until(()=>recorder.Frames.Count>=55 && recorder.Pending==0,4,"Preview frame capture");
+                Require(!recorder.Failed,"Preview GPU readback failed");
+                Require(detonations==1 && view.ImpactRemaining==0,"Preview detonation/expiry");
+                Require(maxX>12 && maxX<52 && maxY<30,"Impact not clearly visible or excessive: "+maxX+"/"+maxY);
+                Require(camera.transform.position==position && camera.transform.rotation==rotation && camera.projectionMatrix==matrix,"Preview camera drift");
+                Require(Vector3.Distance(Player.transform.position,playerPosition)<.001f,"Shake moved Player");
+                // Encode sau khi quay xong để PNG IO không làm hụt frame impact.
+                var texture=new Texture2D(Screen.width,Screen.height,TextureFormat.RGBA32,false);
+                try
+                {
+                    for(int i=0;i<recorder.Frames.Count;i++)
+                    {
+                        texture.LoadRawTextureData(recorder.Frames[i]);texture.Apply();
+                        File.WriteAllBytes(Path.Combine(folder,"frame-"+i.ToString("D3")+".png"),texture.EncodeToPNG());
+                    }
+                }
+                finally {UnityEngine.Object.Destroy(texture);}
+                var result=new{pass=true,strength=view.ImpactStrength,duration=.14f,width=Screen.width,height=Screen.height,frames=recorder.Frames.Count,maxPixelsX=maxX,maxPixelsY=maxY,detonations,playerStable=true,cameraStable=true,folder,samples};
+                Evidence("reserve-impact-preview",result);return result;
+            }
+            finally
+            {
+                Reserve.Detonated-=detonation;RenderPipelineManager.beginCameraRendering-=observe;
+                UnityEngine.Object.Destroy(recorder.gameObject);
+                Owner.ExitIsolated();if(Directory.Exists(Path.GetDirectoryName(path)))Directory.Delete(Path.GetDirectoryName(path),true);
+            }
+        }
+    }
+
     public static async Task<object> Capture(int width)
     {
         var fixture=ReuseRig(width);var paths=new System.Collections.Generic.List<string>();
@@ -558,4 +695,28 @@ public static class VerifyGameplayFeel
         }
     }
 
+}
+
+public sealed class ReserveImpactFrameRecorder : MonoBehaviour
+{
+    public readonly System.Collections.Generic.List<byte[]> Frames=new System.Collections.Generic.List<byte[]>();
+    public int Pending {get;private set;}
+    public bool Failed {get;private set;}
+    public void Begin(int count)=>StartCoroutine(Record(count));
+    System.Collections.IEnumerator Record(int count)
+    {
+        for(int i=0;i<count;i++)
+        {
+            yield return new WaitForEndOfFrame();
+            var target=RenderTexture.GetTemporary(Screen.width,Screen.height,0,RenderTextureFormat.ARGB32);
+            ScreenCapture.CaptureScreenshotIntoRenderTexture(target);
+            int index=Frames.Count;Frames.Add(null);Pending++;
+            AsyncGPUReadback.Request(target,0,TextureFormat.RGBA32,request=>
+            {
+                if(request.hasError)Failed=true;
+                else Frames[index]=request.GetData<byte>().ToArray();
+                RenderTexture.ReleaseTemporary(target);Pending--;
+            });
+        }
+    }
 }

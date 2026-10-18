@@ -190,8 +190,11 @@ vẫn clear an toàn theo completion mode, không tự đổi thành minor grace
 Trong cùng Mission, minor handoff giữ mọi beneficial pickup, Stellar Shard và Supply
 Crate chưa nhặt. Chúng tiếp tục motion/lifetime hiện có qua Encounter tiếp theo;
 không reset tuổi, auto-collect hoặc xóa chỉ vì đổi encounter. Không mở thêm reward
-grace giữa các encounter thường; sau hostile cleanup, nghỉ ngắn bằng HandoffDelay
-rồi mới start encounter kế. Đây là breathing beat, không phải zero-delay nối nhóm;
+grace giữa các encounter thường. HandoffDelay là khoảng nghỉ tối thiểu từ lúc
+combat resolve tới start encounter kế; projectile drain/grace/fade nằm trong khoảng
+này, không cộng thêm một HandoffDelay sau drain. Không còn đạn (kể cả tên lửa vừa
+xóa sạch) vẫn đợi đủ cùng khoảng nghỉ; nếu cleanup lâu hơn thì chờ an toàn trước.
+Đây là breathing beat, không phải zero-delay nối nhóm;
 không đợi player nhặt hết đồ.
 Cap pickup vẫn tính cả đồ từ encounter trước.
 
@@ -493,7 +496,7 @@ placeholder destructibles, không thêm archetype combat final.
 
 Attack seeds chung `[TUNABLE]`: ActiveShooterLimit 2, shot spacing .7 s, volley 2,
 pause giữa volley 1.7 s; vẫn qua coordinator + safety gate, không tự fire mọi enemy.
-Minor projectile grace/fade giữ policy dưới đây; handoff 1 s `[TUNABLE]`, cho nhịp
+Minor projectile grace/fade giữ policy dưới đây; handoff 2 s `[TUNABLE]`, cho nhịp
 nghỉ nhẹ thay vì start ngay hoặc đợi phần timer rỗng. RewardGraceSeconds
 cuối world 1.5 s `[TUNABLE]`; policy giữ đồ qua encounter và cleanup thuộc
 [reward handoff](#reward-grace-và-chuyển-encounter). Mục tiêu nhặt không chặn completion.

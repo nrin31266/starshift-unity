@@ -269,7 +269,7 @@ Minor title + một câu mô tả nằm **giữa màn hình**, dùng cùng annou
 căn giữa rồi auto fade; không chung vị trí/layout với major establishing. Incoming
 encounter config có thể để trống cả hai. M4-A testbed dùng “Encounter NN” và description trống để debug đúng cấp, chưa dùng nhãn hoa mỹ. Nhãn cấp thống nhất
 `Mission NN` / `Encounter NN`; câu mô tả tiếng Việt, không dùng lại “đợt” làm title.
-Minor announcement nhận duration bằng toàn bộ handoff do
+Minor announcement nhận duration bằng phần handoff còn lại sau projectile cleanup do
 [level owner](../content/levels-encounters.md#level-1--first-contact-provisional) quy định,
 để chữ và cue bay kết thúc cùng nhịp. Fallback cho announcement không truyền duration
 là 1.6 s, fade .2 s `[TUNABLE]`; Pause/terminal/reset ẩn nó.

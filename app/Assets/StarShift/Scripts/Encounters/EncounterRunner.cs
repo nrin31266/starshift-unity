@@ -29,6 +29,7 @@ namespace StarShift.Encounters
         private int requiredKilled;
         private bool standalone;
         private float remaining;
+        private float projectileDrainElapsed;
         private int generation;
         private bool bossDefeated;
         private bool completionSent;
@@ -126,7 +127,7 @@ namespace StarShift.Encounters
             generation++;
             cleanup.BeginScope(generation, preserveRewards: true);
             CurrentIndex = index;
-            Elapsed = 0;
+            Elapsed = projectileDrainElapsed = 0;
             killed = requiredKilled = 0;
             spawned.Clear(); schedule.Clear();
             foreach (var action in Current.Groups) schedule.Add(new ScheduledGroup { Action = action, Start = action.StartTime });
@@ -177,6 +178,7 @@ namespace StarShift.Encounters
             Elapsed += Time.fixedDeltaTime;
             if (Stage == EncounterStage.ProjectileDrain)
             {
+                projectileDrainElapsed += Time.fixedDeltaTime;
                 remaining -= Time.fixedDeltaTime;
                 if (safetyGate.VisibleProjectileTimeLimit <= 0 || remaining <= 0) CompleteEncounter();
                 return;
@@ -346,7 +348,8 @@ namespace StarShift.Encounters
             if (!standalone && CurrentIndex + 1 < Definitions.Length)
             {
                 Stage = EncounterStage.Handoff;
-                remaining = Current.HandoffDelay;
+                // Drain nằm trong nhịp nghỉ chung; tên lửa clear đạn không làm nhịp ngắn hơn.
+                remaining = Mathf.Max(0, Current.HandoffDelay - projectileDrainElapsed);
                 if (levelFlow != null) levelFlow.BeginHandoff(remaining, Definitions[CurrentIndex + 1]);
             }
             else

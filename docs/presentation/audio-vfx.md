@@ -249,8 +249,8 @@ LaunchViewport/FlightProgress từ reserve owner; không quyết thời điểm 
 `[TUNABLE]`, đồng thời camera impulse mạnh hơn normal Homing fire; primary Homing
 không trigger camera impulse. Flight duration thuộc [weapon owner](../content/weapons-items-drops.md#tên-lửa-dự-trữ).
 Prototype tunables
-trên GameplayViewController: duration .14 s (range .10–.18), strength .004 viewport
-fraction (clamped tối đa .01), decay nhanh theo squared envelope `[TUNABLE]`.
+trên GameplayViewController: duration .14 s (range .10–.18), strength .024 viewport
+fraction (6× seed .004; clamped tối đa .032), decay nhanh theo squared envelope `[TUNABLE]`.
 Retrigger restart bounded window, không cộng biên độ hoặc thời lượng vô hạn.
 
 Dùng existing GameplayViewController; lệch orthographic projection chỉ trong URP

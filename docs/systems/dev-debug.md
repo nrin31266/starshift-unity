@@ -1,5 +1,38 @@
 # Dev và debug
 
+## Fixed clear pause grouped verification — 2026-10-19
+
+User chọn khoảng nghỉ cố định sau sạch địch, không đợi hết Timeline timer.
+`VerifyGameplayFeel.ClearHandoffDelay` PASS ba paths: real primary shot kill,
+primary kill còn hostile projectile và reserve clear trong early-exhaustion Timeline.
+Cả ba đo 2.04 scaled s tới đúng một successor; Pause freeze PASS. Projectile drain
+nằm trong nhịp nghỉ theo encounter owner; không thêm grace giữ reward giữa Encounter.
+PickupCarryOver PASS với nhịp mới; MissileAndImpact, ProjectionReset, ButtonInput,
+short HandoffSmoke và persistence Core PASS trong cùng grouped pass. Các assertions
+announcement trong verifier cũ đã theo remaining handoff, compile-only PASS.
+Ponytail 5.3.2 scoped review dùng installed `ponytail`/`ponytail-review` skills: không
+có unresolved finding; không thấy dead runtime code hoặc untracked source trong
+phạm vi sửa. Capture tooling có consumer, nằm ngoài Assets; artifacts vẫn ignored.
+Đúng một full Mission 01 mới PASS: 4370 frames, 5 unique completions, death/respawn,
+Pause/Resume, real reserve HUD input và đúng một detonation; Score 4500, Shards 2,
+cores 4, supply 1, pickups 14. Final Edit Mode scene clean, 0 missing scripts/
+references, Console ground truth 0 errors/0 warnings. Docs/diff checks PASS.
+Report/raw evidence ở `.design/encounter-handoff/`. Không chạy PR review, Android
+hoặc historical full suite.
+
+## Reserve impact strength follow-up — 2026-10-19
+
+Targeted tuning theo User feedback; canonical seed thuộc audio/VFX owner.
+`VerifyGameplayFeel.ReserveImpactPreview` ghi 55 native Game View frames 1600×900
+qua GPU readback, encode PNG sau capture để không block nhịp impact. Đã inspect
+chuỗi frame: world giật rõ tại detonation, HUD đứng yên và world sớm ổn định lại;
+peak observed khoảng 28.17 px ngang/9.49 px dọc. Player pose và Camera Transform
+không đổi, projection cuối trở lại baseline. GIF/evidence ở ignored `.design/reserve-impact/`.
+Capture fixture chờ framing ổn định trước baseline; không dùng timing PNG IO làm clock.
+MissileAndImpact, ProjectionReset, ButtonInput và short HandoffSmoke PASS. Compile,
+final Console, missing scripts/references, docs/diff checks PASS. Đây là Editor Game
+View evidence, không là device feel approval; không chạy full Mission hoặc Android.
+
 ## PR #5 findings fix verification — 2026-10-19
 
 Targeted grouped pass sau ba bug fixes: Unity compile completed/failed=false;
