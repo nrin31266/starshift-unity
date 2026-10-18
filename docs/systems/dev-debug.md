@@ -5,8 +5,7 @@
 User chọn khoảng nghỉ cố định sau sạch địch, không đợi hết Timeline timer.
 `VerifyGameplayFeel.ClearHandoffDelay` PASS ba paths: real primary shot kill,
 primary kill còn hostile projectile và reserve clear trong early-exhaustion Timeline.
-Cả ba đo 2.04 scaled s tới đúng một successor; Pause freeze PASS. Projectile drain
-nằm trong nhịp nghỉ theo encounter owner; không thêm grace giữ reward giữa Encounter.
+Cả ba đo trọn vẹn HandoffDelay (2.0s + frame tick) từ lúc hoàn tất cleanup/drain tới đúng một successor; Pause freeze PASS. HandoffDelay là khoảng nghỉ cố định sau khi combat/projectile drain kết thúc, không bị trừ bớt bởi thời gian drain; không thêm grace giữ reward giữa Encounter.
 PickupCarryOver PASS với nhịp mới; MissileAndImpact, ProjectionReset, ButtonInput,
 short HandoffSmoke và persistence Core PASS trong cùng grouped pass. Các assertions
 announcement trong verifier cũ đã theo remaining handoff, compile-only PASS.

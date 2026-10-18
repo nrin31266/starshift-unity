@@ -361,13 +361,15 @@ public static class VerifyGameplayFeel
                         pulse.Launch(definition,target.transform.position-Vector3.up*.6f,Vector2.up,target.CurrentHp,0,Player.gameObject,p=>p.ResetForPool());
                     }
                     await Until(()=>killedAt>=0 && Runner.Stage!=EncounterStage.Running,1,"Handoff final kill");
+                    await Until(()=>Runner.Stage==EncounterStage.Handoff,2,"Handoff enter");
+                    var handoffStart=Time.fixedTime;
                     Session.Pause();var frozen=Time.fixedTime;await Task.Delay(100);
                     Require(Time.fixedTime==frozen && Runner.CurrentIndex==0,"Pause advanced clear wait");Session.Resume();
                     await Until(()=>Runner.CurrentIndex==1 && Runner.Stage==EncounterStage.Running,3,"Handoff successor");
-                    var seconds=Time.fixedTime-killedAt;
-                    Require(starts==1 && Mathf.Abs(seconds-first.HandoffDelay)<.08f,"Inconsistent clear pause: "+scenario+" "+seconds);
+                    var handoffSeconds=Time.fixedTime-handoffStart;
+                    Require(starts==1 && Mathf.Abs(handoffSeconds-first.HandoffDelay)<.08f,"Inconsistent clear pause: "+scenario+" "+handoffSeconds);
                     Require(scenario!="last-shot-with-hostile" || hostileReleased,"Handoff skipped hostile cleanup");
-                    samples.Add(new{scenario,seconds,expected=first.HandoffDelay,starts,pauseFreeze=true});
+                    samples.Add(new{scenario,handoffSeconds,expected=first.HandoffDelay,starts,pauseFreeze=true});
                 }
                 finally
                 {
