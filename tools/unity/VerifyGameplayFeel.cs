@@ -326,7 +326,7 @@ public static class VerifyGameplayFeel
             second.Duration=30;second.CompleteWhenScheduleExhausted=false;
             level.Encounters=new[]{first,second};level.AdditionalStarts=Array.Empty<LevelStartPoint>();level.Intro.Enabled=false;
             Runner.StopRun();Runner.Flow.LoadLevel(level);
-            first.ClearPauseSeconds = 2f; first.HandoffTravelSeconds = 1.5f;
+            first.ClearPauseSeconds = 1f; first.HandoffTravelSeconds = 1.5f;
             foreach(var scenario in new[]{"last-shot","last-shot-with-hostile","reserve-clear","ships-exited"})
             {
                 string path=null;EnemyHealth target=null;PlayerProjectile pulse=null;EnemyProjectile hostile=null;

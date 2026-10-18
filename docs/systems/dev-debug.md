@@ -2,12 +2,12 @@
 
 ## Fixed clear pause grouped verification — 2026-10-19
 
-User chọn khoảng nghỉ cố định 2.0 s đứng im hoàn toàn sau khi xong địch (bắn hạ, tên lửa, hoặc tàu tự rời đi), rồi mới bay cuộn nhẹ 1.5 s chuyển sang encounter tiếp theo.
+User điều chỉnh khoảng nghỉ cố định mặc định thành 1.0 s đứng im hoàn toàn sau khi xong địch (bắn hạ, tên lửa, hoặc tàu tự rời đi), rồi mới bay cuộn nhẹ 1.5 s chuyển sang encounter tiếp theo.
 `VerifyGameplayFeel.ClearHandoffDelay` PASS bốn paths: real primary shot kill, primary kill còn hostile projectile, reserve clear trong early-exhaustion Timeline, và tàu địch tự rời khỏi màn hình (ships-exited).
 Cả bốn kịch bản đo chính xác:
-1. Pha 1 đứng im: đúng 2.02 s (2.0 s + 1 frame tick), sao đứng yên (`IsCueVisible == false`), Pause freeze PASS.
+1. Pha 1 đứng im: đúng 1.02 s (1.0 s + 1 frame tick), sao đứng yên (`IsCueVisible == false`), Pause freeze PASS.
 2. Pha 2 bay cuộn nhẹ: đúng 1.52 s (1.5 s + 1 frame tick), sao bắt đầu cuộn nhẹ (`IsCueVisible == true`), announcement title hiển thị đồng bộ.
-PickupCarryOver PASS với nhịp mới (2.0 s đứng im + 1.5 s bay cuộn nhẹ = 3.5 s); MissileAndImpact, ProjectionReset, short HandoffSmoke và persistence Core PASS trong cùng grouped pass.
+PickupCarryOver PASS với nhịp mới (1.0 s đứng im + 1.5 s bay cuộn nhẹ = 2.5 s); MissileAndImpact, ProjectionReset, short HandoffSmoke và persistence Core PASS trong cùng grouped pass.
 Ponytail 5.3.2 scoped review dùng installed `ponytail`/`ponytail-review` skills: không
 có unresolved finding; không thấy dead runtime code hoặc untracked source trong
 phạm vi sửa. Capture tooling có consumer, nằm ngoài Assets; artifacts vẫn ignored.
