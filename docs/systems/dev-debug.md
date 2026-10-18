@@ -1,5 +1,186 @@
 # Dev và debug
 
+## M4-B pre-PR closure — 2026-10-19
+
+Một grouped closure mới, không rerun historical matrix: `VerifyPersistence.Core`,
+`ActiveIsolation`, `Retry(5)`, `VerifyGameplayFeel.PickupCarryOver`, `MissileAndImpact`
+và `VerifyM4Testbed.HandoffSmoke` đều PASS. Bao phủ JSON/integrity/recovery,
+Retry/Continue recreate service và Shard dedupe, active Campaign/Replay isolation,
+pause flush, pickup/Shard/crate carry-over với lifetime tự nhiên, stale token rejection,
+reserve flight/detonation/stock restore và handoff projectile grace/fade/Pause.
+Pickup handoff đo 1.0199995 scaled s. Không chạy lại lifecycle scene-reload/full
+Replay matrix; evidence trước đó ở [M4-B verification](#m4-b-persistence-verification).
+
+Đúng một `VerifyGameplayFeel.BeginFullMission` mới PASS tại 1600×900: intro-enabled
+clone → 5 unique Encounter completions → Clear, accepted death/respawn, Pause/Resume,
+real reserve HUD input và đúng một detonation. 4257 frames; Score 4500, Shards 4,
+cores 4, supply 1, pickups 14. Fixture giữ nguyên local intro asset.
+
+Compile `up_to_date`, failed=false; final Edit Mode Console ground truth 0 errors/
+0 warnings, scene không dirty; `ConfigureM4Testbed.Inspect` báo valid, 0 missing
+scripts (scene/prefabs), 0 missing scene references. Bốn obsolete Flight GUIDs không
+còn reference trong Unity assets; EMP→MissileAmmo giữ GUID qua rename. Docs checker
+PASS 19 Markdown/337 links; diff check PASS sau cleanup trailing whitespace.
+Raw evidence ở ignored `.design/m4-b-closure/`; source entry points vẫn versioned.
+L1 intro delay .01, Intro.Enabled=false và runInBackground=true chỉ giữ local,
+không đưa vào PR. SYS-028 còn User decision; SYS-030 chưa có Android/device proof.
+Không claim final art, missile/Homing visual polish hoặc human/device feel approval.
+Không chạy PR review hoặc architecture review trong closure này.
+
+## Gameplay feel verification
+
+### Fall, exit và cooling tuning follow-up
+
+`ConfigureGameplayFeel.TuneFallExitAndCooling` chỉ đổi Shard motion, bốn timed Exit
+sequences, cooling của ba primary profiles và trần Timeline E4; không chạy full
+authoring. Runtime code/lifecycle không đổi. Canonical values ở
+[weapons](../content/weapons-items-drops.md#primary-weapon-heat--m35) và
+[encounters](../content/levels-encounters.md#m4-a-mission-01-system-testbed-provisional).
+
+Targeted PASS: Thermal giữ cold fire 11.12/9.10/11.77 s, overheat recovery 1.20 s;
+nhả .2 s không mất heat, .5 s mất 6 heat. Pickups còn đủ hai bounce rồi tự exit
+(sample y=2: 2.70 scaled s), power-up recycle vẫn PASS. EmptyEncounter E2/3/4 PASS
+ở 15.94/21.00/20.22 s, đủ 13/12/12 spawns; E4 có upper timer mới để không cắt exit
+chậm hơn. PickupCarryOver PASS, pause/handoff khoảng 1.02 s và reset vẫn đúng.
+Chỉ rerun nhóm affected và nearby smoke; không lặp full mission/historical suite
+cho tuning nhỏ này. Editor evidence, chưa là human/device feel approval.
+
+### Missile flight và weapon silhouette refinement
+
+Theo feedback tiếp 2026-10-19, `ConfigureGameplayFeel.RefineWeaponsAndMissile` là
+targeted Edit Mode authoring cho sprite overrides, pooled TrailRenderer, reserve
+rocket/flash và minor handoff tuning; không chạy lại full Configure để reset local
+balance/flight/intro edits. Placeholder PNG được generate bằng Unity API trong
+helper, import và bind bằng GUID; không tải asset CIU.
+
+`MissileAndImpact` nay kiểm delayed damage, protection từ launch, Pause giữa flight,
+exactly-once detonation và địch ló ở viewport x=1.005 vẫn nhận damage, trong khi target
+hoàn toàn ngoài view/non-hostile giữ HP. `MissileCancellation` kiểm Pause visual,
+Retry giữa flight khôi phục stock/xóa trail và không detonate trễ; StopRun/generation
+change và exit cũng cancel. `HomingMechanics` thêm distinct sprite và trail/sprite
+reset qua pool reuse; collider/root scale giữ nguyên. PickupCarryOver đo handoff
+1.01999664 s theo scaled clock (config 1 s), vẫn giữ powerup/Shard/crate qua boundary.
+
+Grouped PASS: MissileAndImpact, MissileCancellation, nine weapon salvos/heat,
+HomingMechanics, MissilesAndProtection, TerminalCueCleanup, PickupCarryOver và
+DropSelectionEdges. Một full Mission 01 mới PASS 4164 frames, 5 unique completions,
+accepted death/respawn, Pause/Resume và real reserve HUD click → đúng một detonation;
+4500 Score, 1 Shard, 5 cores, 1 supply, 11 pickups. Clear cleanup PASS. Native Game
+View 1600/2000×900 có cả launch/impact captures, review không còn rectangular Homing
+hoặc overlap ngay muzzle. Final scene inspect 0 missing scripts/references, clean.
+Synthetic Large/Boss damage vẫn không là balance proof trên boss thật; không claim
+Android/human feel approval. Canonical mechanics ở
+[weapons](../content/weapons-items-drops.md#tên-lửa-dự-trữ), timing ở
+[encounters](../content/levels-encounters.md#m4-a-mission-01-system-testbed-provisional).
+
+### Earlier feedback verification
+
+Follow-up 2026-10-19 theo User feedback; vẫn dùng Mission 01 testbed, không author M5
+content. `ConfigureGameplayFeel.Configure` qua `ConfigureGameplayFeel.cs` author flight
+variants, early Timeline option, thermal/visual tuning, reserve ammo rename giữ GUID,
+reserve/button/burst references và respawn timings. Không chạy lại M4 baseline builder.
+
+`VerifyGameplayFeel.BeginChecks` chạy targeted Thermal → MissileAndImpact →
+ShieldRespawn → Pickups → EmptyEncounter; progress ở ignored
+`.design/gameplay-feel/progress.json`. Reserve tests dùng unique temp storage và
+synthetic normal/large/boss definitions, restore originals trước pool reuse. Kiểm
+stock cap/activation/duplicate click, damage, visible eligibility, non-hostile exclude,
+Retry/Continue/Replay isolation, known v1 migration và Screen Shake preference.
+Render callbacks đo actual shifted/restored matrices, bounded retrigger và unchanged
+camera pose. Camera cue không được dùng làm gameplay test clock.
+
+EmptyEncounter không bắn qua Encounter 2/3/4, kiểm all scheduled/optional groups đã
+spawn và completion trước configured upper timer, một successor start. Pickups đo
+hai bounce Shard và powerup viewport-exit recycle. ShieldRespawn đo protected window,
+Pause và actual death-delay/control return. Thermal đo từng profile, không giảm test
+coverage để giữ timeout cũ. VerifyM4Testbed.Weapons dùng timeout từ thermal profile.
+
+`HomingMechanics` test real bounded turning/splash và visual scaling không đổi
+collider. `Capture(width)` dùng lại existing verifier Rig, sau khi load một entry
+VerifyM4Testbed (Weapons/DropSelectionEdges); captures native Game View ở 1600/2000 × 900 vào
+`.design/gameplay-feel/screenshots/`, restore input/view/zoom/pan trong finally.
+Canonical gameplay/presentation details thuộc owners liên quan, không duplicate ở đây.
+
+Grouped closure PASS: thermal cold 11.12/9.10/11.77 s, recovery .86 s;
+shield/death/control return .60/1.17 s; reserve tier damage normal kill, large100→40,
+boss1000→900; 9 observed impulse render samples and restored matrices, max clip
+translation .00746; two Shard bounces; no-shoot E2/3/4 completion 15.68/20.98/19.54 s
+trước upper timers, đủ 13/12/12 scheduled/optional spawns. Real button input consumes
+pointer without primary shot/Player move. Native visual review fixed selector overlap
+and opaque burst, screenshots at both aspect ratios. Synthetic Large/Boss tests không
+là new combat content.
+
+Một full Mission với enabled-intro clone PASS 4505 frames: five distinct completions,
+death, Pause/Resume, score 4300, 2 Shards, 4 cores, one supply, 12 pickups. Original
+intro Enabled=false đang có được giữ; verifier không đổi asset đó để ép pass. First
+legacy attempt failed Intro-not-ready vì assumption enabled intro; wrapper dùng clone.
+Sau terminal presentation-only cleanup, targeted GameOver cue reset, persistence
+Core/ActiveIsolation và reserve/protection PASS. Evidence này có trước pickup carry-over
+follow-up bên dưới.
+
+
+### Pickup carry-over và cleanup follow-up
+
+`VerifyGameplayFeel.PickupCarryOver` chạy bằng temp Campaign storage và cloned level:
+real power-up/Shard/crate qua minor handoff, vẫn collect và credit Profile; lifetime
+không renew, Pause freeze, stale encounter token bị từ chối. Retry/reset phải release
+mọi pickup và giữ Profile balance. Shard vẫn tự bounce/exit. Final-world grace kiểm
+bằng `VerifyPersistence.Retry(5)`; terminal cue regression kích hoạt tại state callback
+để không phụ thuộc wall-clock sleep gần cuối death animation.
+
+Cleanup xóa bốn flight assets không còn Unity dependency: L1A0/L1B0/L1B1/M4Arc cùng
+`.meta`; legacy builders có thể tái tạo khi cần. Giữ Wide/LowerRegion vì còn là Dev
+camera presets. Runtime scripts đều có consumer qua code hoặc scene/prefab GUID;
+không xóa fallback còn được sandbox/builder dùng. Authoring helper gộp vào
+`tools/unity/ConfigureGameplayFeel.cs`; bỏ các entry sửa layout/ring một lần đã được
+hợp nhất vào Configure. Không chạy lại authoring để reset tuning user hiện có.
+
+Grouped verification sau thay đổi PASS: PickupCarryOver, PickupsAndRewards (đợi hết
+shield-break protection trước fatal hit), HandoffSmoke, persistence Core/ActiveIsolation,
+Retry(5), DropSelectionEdges và TerminalCueCleanup. Fixture carry-over tự set/restore
+clock để chạy được sau terminal probe. Một full Mission 01 mới PASS 4349 frames,
+5 unique completions, accepted death/Pause, 4200 Score, 4 Shards, 4 cores, 1 supply,
+14 pickups; Clear không còn buff/pickup/projectile. Compile và final Console 0 error/
+warning, scene sạch, 0 missing scripts/references; docs checker PASS. Đây là Editor
+evidence; không rerun Android/device hoặc historical full matrix.
+
+
+
+## M4-B persistence verification
+
+Base `621b4361` (PR #4 merged). `ConfigurePersistence.Configure` author lifecycle
+component/references bằng Unity API, giữ original scene/assets GUIDs và local
+L1 intro delay .01 / runInBackground true. Không chạy lại M4-A authoring migration.
+
+`VerifyPersistence.Core` chạy Edit hoặc Play Mode, temp storage riêng: real JSON
+roundtrip/overwrite, orphan temp, malformed/required-root/version/ID/enum/range,
+validated backup recovery, preserve invalid diagnostic, shard ledger qua reload,
+clear idempotence, New Game/Profile/Settings và invalid setting. Có regression
+HasCampaign cho JsonUtility inline-null cloning. Không chạm save thật.
+
+`VerifyPersistence.Retry(index)` trong Play Mode cho indices 2, 4, 5: real dropped
+Shard collection, reward/effect/death/downgrade, Pause button Retry, restored owner
+state và clean combat objects; Continue sau recreate service; không duplicate wallet.
+Encounter 4 thêm normal respawn, lives-zero GameOver và Retry; Encounter 5 retry
+trong final reward grace trước Mission Clear. Không full Mission cho mỗi case.
+
+`VerifyPersistence.BeginLifecycle` trả ngay; chờ `.design/m4-b/lifecycle-progress.json`
+PASS/FAILED trước runtime probe khác. Một flow NewGame intro → Encounter 3 → pause/
+flush → thật sự reload Gameplay scene → Continue bỏ intro → Clear commit → full
+Replay với mutation/death/clear → DevFastStart với reward/upgrade/death/clear; so
+sánh bytes/data và production file trước/sau. Failure tail dùng corrupt test copy,
+backup recovery, invalid/no-save Continue/NewGame behavior. Evidence trong ignored
+`.design/m4-b/`; test dirs được xóa sau test, không commit cache/save files.
+
+Persistence/restore policy thuộc [save owner](save-profile.md), reward prototype
+thuộc [economy](../gameplay/progression-economy.md#m4-b-reward-và-record-policy-provisional).
+Chưa có Android process kill/device QA; scripted kills chỉ accelerate lifecycle,
+không claim weapon-pattern/density benchmark. Runtime smoke khác chạy theo blast radius.
+Tracker patch tiếp tục dùng duy nhất `.design/m4-a/tracker-updates.tsv`; Google Drive
+connector cần reauthentication, tracker hiện đọc qua public CSV. SYS-028 là User
+decision còn mở; SYS-030 device lifecycle proof chưa thuộc M4-B Editor QA.
+
+
 ## M4-A combat/reward testbed verification
 
 Checkpoint M4-A 2026-10-18, base sau PR #3 (`9d0fafed`).
