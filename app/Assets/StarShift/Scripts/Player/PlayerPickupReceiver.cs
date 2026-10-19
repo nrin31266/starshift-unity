@@ -23,7 +23,7 @@ namespace StarShift.Player
         public bool CanCollect => isActiveAndEnabled && gate.CanInput;
         public bool CanUse(PickupDefinition item)
         {
-            if (!CanCollect || item == null) return false;
+            if (item == null) return false;
             if (item.Kind == PickupKind.WeaponCore) return loadout.CanUpgrade(item.Branch);
             if (item.Kind == PickupKind.MissileAmmo) return missiles != null && missiles.CanCollect;
             if (item.Kind == PickupKind.ExtraLife) return lives.CurrentLives < lives.MaximumLives;
@@ -31,12 +31,12 @@ namespace StarShift.Player
         }
         public bool TryCollect(PickupDefinition item)
         {
-            if (!CanUse(item)) return false;
+            if (!CanCollect || !CanUse(item)) return false;
             switch (item.Kind)
             {
                 case PickupKind.Shard: rewards.AddShards(item.Amount); break;
                 case PickupKind.WeaponCore:
-                    if (!loadout.ApplyCore(item.Branch)) return false;
+                    if (!loadout.ApplyCore(item.Branch, true)) return false;
                     rewards.RecordCore(); break;
                 case PickupKind.ExtraLife: if (!lives.TryAddLife()) return false; break;
                 case PickupKind.MissileAmmo: if (!missiles.TryAdd()) return false; break;

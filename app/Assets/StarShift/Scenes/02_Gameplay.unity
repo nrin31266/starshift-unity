@@ -1372,6 +1372,7 @@ RectTransform:
   - {fileID: 1140765867}
   - {fileID: 79361714}
   - {fileID: 2028547942}
+  - {fileID: 1580882322}
   m_Father: {fileID: 1663679967}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -3132,6 +3133,7 @@ MonoBehaviour:
   weapon: {fileID: 707720427}
   livesLabel: {fileID: 297236431}
   weaponLabel: {fileID: 915527745}
+  weaponInventory: {fileID: 1580882324}
   heatFill: {fileID: 1021373357}
   heatFrame: {fileID: 130318407}
   heatStatus: {fileID: 1049346621}
@@ -3326,7 +3328,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 20
+    m_FontSize: 22
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -8090,6 +8092,85 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!1 &1580882321
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1580882322}
+  - component: {fileID: 1580882323}
+  - component: {fileID: 1580882324}
+  m_Layer: 0
+  m_Name: WeaponInventory
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1580882322
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1580882321}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 359223447}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -8, y: 60}
+  m_SizeDelta: {x: 188, y: 26}
+  m_Pivot: {x: 1, y: 0}
+--- !u!222 &1580882323
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1580882321}
+  m_CullTransparentMesh: 1
+--- !u!114 &1580882324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1580882321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.55, g: 0.8, b: 0.88, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 16
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 5
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text:
 --- !u!1 &1581608679 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1780204274834010384, guid: a82d5580647c6a958825836a390fc992, type: 3}
@@ -8845,6 +8926,7 @@ GameObject:
   - component: {fileID: 1730183994}
   - component: {fileID: 1730183995}
   - component: {fileID: 1730183996}
+  - component: {fileID: 1730183997}
   m_Layer: 0
   m_Name: L1Encounters
   m_TagString: Untagged
@@ -8865,9 +8947,9 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Dev.DevFastStart
   devModeEnabled: 0
-  startPoint: LEVEL_START
+  startPoint: TRANSITION
   standalone: 0
-  startLevel: {fileID: 0}
+  startLevel: {fileID: 11400000, guid: 5f971138825cc7e818687ade679f32fd, type: 2}
   skipIntro: 0
   overrideDirection: 0
   direction: 0
@@ -9087,6 +9169,20 @@ MonoBehaviour:
   turnSeconds: 2
   decelerationSeconds: 1.5
   revealSeconds: 1.3
+--- !u!114 &1730183997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1730183981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf332dcf86afae3fc823620f9783f561, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.AsteroidDestructionPresentation
+  burstSprite: {fileID: 21300000, guid: 31f61b311b2fae5dfb5ab8d72d62ad2a, type: 3}
+  seconds: 0.35
 --- !u!1 &1737356114
 GameObject:
   m_ObjectHideFlags: 0
@@ -10574,7 +10670,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.27, y: 1}
   m_AnchorMax: {x: 0.73, y: 1}
-  m_AnchoredPosition: {x: 0, y: -60}
+  m_AnchoredPosition: {x: 0, y: -55}
   m_SizeDelta: {x: 0, y: 50}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &2009458129
@@ -10641,8 +10737,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -20, y: 80}
-  m_SizeDelta: {x: 176, y: 56}
+  m_AnchoredPosition: {x: -8, y: 96}
+  m_SizeDelta: {x: 96, y: 48}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &2028547943
 MonoBehaviour:

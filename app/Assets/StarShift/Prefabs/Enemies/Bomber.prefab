@@ -330,7 +330,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.45, y: 1.45, z: 1.45}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9132080610079981249}
@@ -395,6 +395,10 @@ MonoBehaviour:
   damagedTint: {r: 0.9, g: 0.28, b: 0.3, a: 1}
   damagedHealthFraction: 0.5
   flashDuration: 0.08
+  criticalHealthFraction: 0
+  criticalTint: {r: 1, g: 0.35, b: 0.12, a: 1}
+  damagedSprite: {fileID: 0}
+  criticalSprite: {fileID: 0}
 --- !u!114 &7714595344411158825
 MonoBehaviour:
   m_ObjectHideFlags: 0

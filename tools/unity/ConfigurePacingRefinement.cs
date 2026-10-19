@@ -12,11 +12,11 @@ using UnityEngine.SceneManagement;
 public static class ConfigurePacingRefinement
 {
  const string R="Assets/StarShift/Data/RegionA/",P="Assets/StarShift/Prefabs/Enemies/";
- static T L<T>(string name) where T:UnityEngine.Object=>AssetDatabase.LoadAssetAtPath<T>(R+name+".asset");
- static GameObject Enemy(string n)=>AssetDatabase.LoadAssetAtPath<GameObject>(P+n+".prefab");
+ static T L<T>(string name) where T:UnityEngine.Object=>StarShift.Editor.RegionAAssetPaths.Load<T>(R+name+".asset");
+ static GameObject Enemy(string n)=>StarShift.Editor.RegionAAssetPaths.Load<GameObject>(P+n+".prefab");
  static void Set(UnityEngine.Object o,string f,object v){o.GetType().GetField(f,BindingFlags.Instance|BindingFlags.NonPublic).SetValue(o,v);EditorUtility.SetDirty(o);}
  static T A<T>(string name,Action<T> update) where T:ScriptableObject{
-  var x=L<T>(name);if(x==null){x=ScriptableObject.CreateInstance<T>();AssetDatabase.CreateAsset(x,R+name+".asset");}update(x);EditorUtility.SetDirty(x);return x;
+  var x=L<T>(name);if(x==null){x=ScriptableObject.CreateInstance<T>();AssetDatabase.CreateAsset(x,StarShift.Editor.RegionAAssetPaths.Resolve<T>(R+name+".asset"));}update(x);EditorUtility.SetDirty(x);return x;
  }
  static FlightSequence Wing(string n,bool right,bool terminal=false,bool sine=false,float entry=2.6f,float hold=7)
  =>A<FlightSequence>(n,x=>{
@@ -71,7 +71,7 @@ public static class ConfigurePacingRefinement
   Set(runner.GetComponent<EncounterCuePresentation>(),"encounterAnnouncement",wave.GetComponent<GameplayAnnouncement>());
   foreach(var cue in UnityEngine.Object.FindObjectsByType<GameplayAnnouncement>()){Set(cue,"minorAnchor",new Vector2(.5f,.87f));Set(cue,"minorTitleSize",25);}
   var asteroidPath=P+"StormAsteroid.prefab";var root=PrefabUtility.LoadPrefabContents(asteroidPath);try{foreach(var v in root.GetComponentsInChildren<SpriteRenderer>())if(v.gameObject.name!="HullPlaceholder"&&v.gameObject.name!="EntryWarning")v.gameObject.SetActive(false);var motion=root.GetComponent<AsteroidVisualMotion>()??root.AddComponent<AsteroidVisualMotion>();Set(motion,"visual",root.GetComponentInChildren<SpriteRenderer>().transform);PrefabUtility.SaveAsPrefabAsset(root,asteroidPath);}finally{PrefabUtility.UnloadPrefabContents(root);}
-  var resourcePath=P+"ResourceAsteroid.prefab";var resource=PrefabUtility.LoadPrefabContents(resourcePath);try{foreach(var v in resource.GetComponentsInChildren<SpriteRenderer>()){if(v.gameObject.name=="HullPlaceholder"){v.sprite=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/StarShift/Art/Placeholders/asteroid-placeholder.png");v.color=new Color(.9f,.65f,.2f);}else if(v.gameObject.name!="EntryWarning")v.gameObject.SetActive(false);}PrefabUtility.SaveAsPrefabAsset(resource,resourcePath);}finally{PrefabUtility.UnloadPrefabContents(resource);}
+  var resourcePath=P+"ResourceAsteroid.prefab";var resource=PrefabUtility.LoadPrefabContents(resourcePath);try{foreach(var v in resource.GetComponentsInChildren<SpriteRenderer>()){if(v.gameObject.name=="HullPlaceholder"){v.sprite=StarShift.Editor.RegionAAssetPaths.Load<Sprite>("Assets/StarShift/Art/Placeholders/asteroid-placeholder.png");v.color=new Color(.9f,.65f,.2f);}else if(v.gameObject.name!="EntryWarning")v.gameObject.SetActive(false);}PrefabUtility.SaveAsPrefabAsset(resource,resourcePath);}finally{PrefabUtility.UnloadPrefabContents(resource);}
   foreach(var m in Enumerable.Range(1,4).Select(i=>L<LevelDefinition>("Mission0"+i)))if(!m.IsValid(out var error))throw new InvalidOperationException(error);
   EditorSceneManager.MarkSceneDirty(scene);EditorSceneManager.SaveScene(scene);AssetDatabase.SaveAssets();return new{configured=true};
  }

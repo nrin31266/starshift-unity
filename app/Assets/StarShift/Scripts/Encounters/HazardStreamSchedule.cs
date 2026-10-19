@@ -22,12 +22,13 @@ namespace StarShift.Encounters
                     var from = new Vector2(x,1.15f);
                     var entry = from + direction * (.17f / -direction.y);
                     var exit = entry + direction * (1.18f / -direction.y);
-                    float scale = Sample(config.Scale);
+                    var variant = config.Variants.Length > 0 ? config.Variants[random.Next(config.Variants.Length)] : null;
+                    float scale = variant != null ? variant.Scale : Sample(config.Scale);
                     float weight = Mathf.InverseLerp(config.Scale.x,config.Scale.y,scale);
                     result.Add(new SpawnAction { Count=1,StartTime=time+i*.12f,Required=false,EnemyPrefab=config.Prefab,
-                        ContinuousTransit=true,SpawnScale=scale,VisualSpin=Mathf.Lerp(-100,100,(float)random.NextDouble()),
+                        ContinuousTransit=true,SpawnScale=scale,HpOverride=variant != null ? variant.Hp : 0,VisualSpin=Mathf.Lerp(-70,70,(float)random.NextDouble()),
                         EntryAnchor=from,HoldAnchor=entry,ExitAnchor=exit,EntryDuration=.65f,HoldDuration=0,
-                        ExitDuration=Mathf.Lerp(config.TransitSeconds.x,config.TransitSeconds.y,weight) });
+                        ExitDuration=variant != null ? config.TransitSeconds.x * variant.TransitMultiplier : Mathf.Lerp(config.TransitSeconds.x,config.TransitSeconds.y,weight) });
                 }
                 time += Sample(config.Interval);
             }

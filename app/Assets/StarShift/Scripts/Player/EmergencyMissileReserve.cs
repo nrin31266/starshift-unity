@@ -33,7 +33,7 @@ namespace StarShift.Player
         public bool IsInFlight => flightRemaining > 0;
         public float FlightProgress => IsInFlight ? 1 - flightRemaining / flightDuration : 1;
         public Vector2 LaunchViewport { get; private set; }
-        public bool CanUse => isActiveAndEnabled && gate.CanInput && runner.Stage == EncounterStage.Running && Current > 0 && cooldown <= 0 && !IsInFlight;
+        public bool CanUse => isActiveAndEnabled && gate.CanInput && (runner.Stage == EncounterStage.Running || runner.Stage == EncounterStage.ExitDrain) && Current > 0 && cooldown <= 0 && !IsInFlight;
         public event Action Fired;
         public event Action Detonated;
         private void Awake() { gate = GetComponent<PlayerGameplayGate>(); ResetForSession(); }

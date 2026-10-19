@@ -33,7 +33,7 @@ public static class VerifyRegionA
       Evidence(new{status="RUNNING",mission});
       try{
        using(var rig=new Rig(1600,6)){
-        Runner.StopRun();Runner.Flow.LoadLevel(AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/RegionA/Mission0"+mission+".asset"));
+        Runner.StopRun();Runner.Flow.LoadLevel(StarShift.Editor.RegionAAssetPaths.Load<LevelDefinition>("Assets/StarShift/Data/RegionA/Mission0"+mission+".asset"));
         Runner.StartRun("LEVEL_START",false,true,null,null);rig.Protect();
         var start=Time.fixedTime;var wall=Time.realtimeSinceStartup;int peak=0;var captured=new HashSet<int>();
         var durations=new List<object>();int previous=0;float boundary=start;
@@ -61,7 +61,7 @@ public static class VerifyRegionA
     {
       Evidence(new{status="RUNNING",test="boss"});
       try{using(var rig=new Rig(1600,6)){
-        Runner.StopRun();Runner.Flow.LoadLevel(AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/RegionA/Mission04.asset"));
+        Runner.StopRun();Runner.Flow.LoadLevel(StarShift.Editor.RegionAAssetPaths.Load<LevelDefinition>("Assets/StarShift/Data/RegionA/Mission04.asset"));
         Runner.StartRun("BOSS",false,true,null,null);rig.Protect();
         await Until(()=>UnityEngine.Object.FindAnyObjectByType<BossPhaseRunner>()!=null,2000,"Boss spawn");
         var boss=UnityEngine.Object.FindAnyObjectByType<BossPhaseRunner>();var health=boss.Health;
@@ -113,7 +113,7 @@ public static class VerifyRegionA
           if(!paused && id=="L2" && Runner.CurrentIndex==1){Session.Pause();var t=Runner.Elapsed;await Task.Delay(250);Require(t==Runner.Elapsed,"Full run pause");Session.Resume();paused=true;}
           if(!died && id=="L2" && Runner.CurrentIndex==2 && Runner.Elapsed>3){rig.Unprotect();Require(rig.Player.GetComponent<PlayerDamageLifecycle>().TryReceiveHit(null),"Full death");await Until(()=>rig.Gate.State==PlayerGameplayState.PostEntryInvincibility,3000,"Full respawn");rig.Protect();died=true;}
           if(!switched && id=="L3" && rig.Gate.CanInput){
-             Runner.GetComponent<RewardDirector>().Spawn(AssetDatabase.LoadAssetAtPath<PickupDefinition>("Assets/StarShift/Data/Rewards/PlasmaCore.asset"),null,rig.Player.transform.position);
+             Runner.GetComponent<RewardDirector>().Spawn(StarShift.Editor.RegionAAssetPaths.Load<PickupDefinition>("Assets/StarShift/Data/Rewards/PlasmaCore.asset"),null,rig.Player.transform.position);
              await Task.Delay(100);var loadout=rig.Player.GetComponent<WeaponLoadout>();
              if(loadout.Level(WeaponBranch.Plasma)>0){loadout.Cycle();switched=true;}
           }
@@ -161,7 +161,7 @@ public static class VerifyRegionA
       Evidence(new{status="RUNNING",test="content"});
       try{using(var rig=new Rig(2000,6)){
         var owner=Runner.GetComponent<StarShift.Persistence.CampaignLifecycle>();owner.ExitIsolated();
-        Func<int,LevelDefinition> level=n=>AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/RegionA/Mission0"+n+".asset");
+        Func<int,LevelDefinition> level=n=>StarShift.Editor.RegionAAssetPaths.Load<LevelDefinition>("Assets/StarShift/Data/RegionA/Mission0"+n+".asset");
         Runner.Flow.LoadLevel(level(1));Runner.StartRun("LEVEL_START",false,true,null,null);rig.Protect();owner.AdvanceMission(level(2));rig.Protect();
         Require(Runner.Stage==EncounterStage.Intro&&Runner.SpawnedCount==0&&Runner.Flow.IntroPhase==MissionIntroPhase.MissionTitle,"Arrival card must precede spawn");
         await Until(()=>Runner.Stage==EncounterStage.Running,5000,"Arrival card completion");
@@ -293,7 +293,7 @@ public static class VerifyRegionA
             await MouseEvent(anchor,false);await MouseEvent(anchor,true);
             await MouseEvent(anchor+Vector2.ClampMagnitude(delta,650),true);
         }
-        static EncounterDefinition[] Configs() => new[] { "A", "B" }.Select(id => AssetDatabase.LoadAssetAtPath<EncounterDefinition>("Assets/StarShift/Data/Encounters/L1Encounter" + id + ".asset")).ToArray();
+        static EncounterDefinition[] Configs() => new[] { "A", "B" }.Select(id => StarShift.Editor.RegionAAssetPaths.Load<EncounterDefinition>("Assets/StarShift/Data/Fixtures/Encounters/L1Encounter" + id + ".asset")).ToArray();
         public void Dispose()
         {
             RestoreFlights();

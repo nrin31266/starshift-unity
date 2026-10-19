@@ -89,7 +89,11 @@ namespace StarShift.Gameplay
 
         public void RequestView(GameplayViewSettings settings, float seconds)
         {
-            targetView = settings.Validated();
+            settings = settings.Validated();
+            // Handoff và EncounterStarted có thể cùng request một đích; giữ nguyên đường zoom đang chạy.
+            if (seconds > 0 && settings.OrthographicSize == transitionTarget.OrthographicSize &&
+                settings.PlayableViewport == transitionTarget.PlayableViewport) return;
+            targetView = settings;
             transitionTarget = targetView;
             startSize = gameplayCamera.orthographicSize;
             startViewport = CurrentPlayableViewport;

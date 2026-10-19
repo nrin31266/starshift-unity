@@ -226,10 +226,11 @@ contract thuộc [player combat](../gameplay/player-combat.md#player-state-model
 `PulseLaserDefinition` là ScriptableObject static, tham chiếu `WeaponThermalProfile`
 theo weapon type. `PulseLaserWeapon` giữ cadence, một plain C# `WeaponHeatState`
 riêng cho instance và local `UnityEngine.Pool.ObjectPool<PlayerProjectile>`.
-Thermal simulation chỉ tick bằng scaled physics delta khi gameplay gate cho phép;
+Thermal simulation tick bằng scaled physics delta độc lập quyền bắn;
 weapon kết hợp thermal ready với gate/held intent trước khi spawn. Không ghi state
 vào definition/profile, không sửa Player gate để biểu diễn Overheated, không
-couple movement với thermal. `GameplaySession.RunStarted` reset weapon cho mission;
+couple movement với thermal. `GameplaySession.RunStarted` giữ thermal qua live
+Mission handoff; session/checkpoint restart mới reset;
 death dùng boundary downgrade/reset hiện có. HUD chỉ đọc heat/latch và cập nhật
 bar khi giá trị đổi; không Find/allocate hoặc tạo UI trong heat hot path.
 Semantics do [player](../gameplay/player-combat.md#thermal-lifecycle), mechanic và
@@ -562,7 +563,7 @@ chưa cần sinh asset hoặc khóa schema để tài liệu trông hoàn chỉn
 | Component/data | Responsibility |
 |---|---|
 | WeaponLoadout | Mutable unlocks, per-branch level và active selection; không fire hoặc giữ heat |
-| PulseLaserDefinition / WeaponLevelPattern | Static type config, ba level patterns, một thermal reference mỗi type; giữ class/GUID cũ để tương thích prefab |
+| PulseLaserDefinition / WeaponLevelPattern | Static type config, năm level patterns, một thermal reference mỗi type; giữ class/GUID cũ để tương thích prefab |
 | PulseLaserWeapon | Active primary cadence/heat states và pooled projectiles; loadout event reset cadence, không mutate definitions |
 | PlayerProjectile | Snapshot damage/motion/tracking/splash; same-scene target registry, spawn-version guard khi enemy reuse |
 | PlayerTemporaryEffects | Shield/OD/Drone runtime timer/protection; scaled gameplay gate, lifecycle clear |
@@ -570,7 +571,7 @@ chưa cần sinh asset hoặc khóa schema để tài liệu trông hoàn chỉn
 | SupportDrone | Một authored companion và local projectile pool; visual/timer đọc effects owner, damage không mượn primary weapon authority |
 | RunRewards | Runtime score/shard và verification counters; reset theo run, không save/profile |
 | RewardDropTable / PickupDefinition | Static reward source/weights/item tuning; test overrides không sửa global drops |
-| RewardRoller | Plain C# seeded selection, state filtering/weights và bounded crate pity history |
+| RewardRoller | Plain C# seeded selection, state filtering/weights và bounded supply pity history |
 | RewardDirector | Subscribe kill/run boundary, chọn drop, rent/return reward; không quản Player movement/death/UI |
 | RewardPickup | Pooled reward-scope participant, contact/lifetime và callback collect; không tự chọn/áp effect |
 
@@ -755,3 +756,34 @@ hai runs thành terminal/hide title; preserve input/pose là explicit launch opt
 PlanetJourney giữ scaled major cinematic phase/callback generation; LevelFlow nối existing
 intro presentation và Up/Right boundary. GameplaySession giữ input/clock cleanup;
 presentation không cấp damage hoặc persistence writes. Timing thuộc level/audio owners.
+
+
+## M5 shared composition and reward floor boundaries
+
+`FormationPlan` là static slot data; SpawnAction chỉ tham chiếu plan/dải slot và
+fixed HP override khi cần. Validator từ chối duplicate/range overlap. EntryHoldFlight
+vẫn giữ pose/clock/reprojection; combat offset/reposition và motion pause được reset
+khi pooled instance activate. Boss phase/module gửi intent, không tự clamp Transform.
+Playable viewport vẫn do CameraProfile → GameplayViewController → PlayerMovementBounds
+sở hữu; asteroid/Boss region policy ở [level owner](../content/levels-encounters.md#m5-region-a-authored-content-provisional).
+
+EncounterRewardQuota là plain C# deterministic selection state, tách khỏi static
+EncounterDefinition. RewardDirector subscribe encounter start, kill, escape và
+completion; chọn/credit/fallback floor, không mutate config hoặc persistence DTO.
+RewardDirector phát drop-spawn/collected facts cho scoped verification observers;
+không thêm debug log hoặc persistence write. RunStarted reset roller history; encounter boundary reseed selection nhưng giữ supply
+pity history trong run. Save/profile không cần schema mới: stable encounter seed được
+tái dựng, Player checkpoint/Shard ledger/write authority giữ nguyên. Quota/overflow
+semantics thuộc [reward owner](../content/weapons-items-drops.md#encounter-reward-floor-provisional).
+
+Hazard variant data thuộc stream config; scheduler snapshot scale/HP/transit vào
+SpawnAction, EnemyHealth nhận HP trước activate. EnemyDamagePresentation chỉ đọc
+health và chọn tint/optional frame. AsteroidDestructionPresentation subscribe lethal
+reward event để phát pooled visual burst, không có gameplay damage/shake authority.
+
+BossAttackModule giữ một local attack clock: projectile mode dùng pool hiện có;
+beam mode charge/active bounds và Physics2D query route qua PlayerContactReceiver.
+BossBeamPresentation nhận bounds/read-only active cue, không quyết damage. Beam
+braces motion qua flight owner và nhả khi cancel/end/death/disable. Phase runner
+cancel module trước reposition; death/generation/Retry vẫn do existing owners xử lý.
+Không thêm Wave runtime, per-Mission controller, loot framework hoặc boss-minion framework.

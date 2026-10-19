@@ -304,6 +304,15 @@ Column, V, Wedge, Staggered, TwinFlank, Cross, Escort và Ring. Count/spacing/ri
 là config. Cross/Pincer composition dùng nhiều nhóm/phase, không có graph editor.
 Readability của pressure trong content sau vẫn cần playtest với attacks/hazards thật.
 
+`FormationPlan` `[PROVISIONAL]` chứa một tập normalized target-slot offsets dùng chung.
+Mỗi subgroup tham chiếu cùng plan và giữ dải `FirstSlot..FirstSlot+Count-1`; dải
+không được trùng hoặc vượt plan. Các subgroup có entry path riêng nhưng cùng
+settle anchor, tạo một silhouette tổng. `SlotOffset` và debug paths đọc cùng plan;
+không thêm Wave runtime hoặc per-Mission world offsets. Layout cũ vẫn dùng cho
+fixtures/content không cần shared plan. Validation kiểm unique slots/ranges; native
+Game View kiểm spacing/footprint và đường hội tụ ở cả hai landscape aspects.
+
+
 Up là local normalized viewport; Right map `(x,y)` thành `(y,1-x)` và offsets thành
 `(y,-x)`. Spawn edge, formation, flight và respawn cùng transform, không tạo hai
 bộ paths hoặc rotate Android orientation. Player/muzzle face forward tương ứng;
@@ -476,8 +485,8 @@ Encounter B — `Timeline`
 
 #### M4-A Mission 01 system testbed `[PROVISIONAL]`
 
-Fixture lịch sử M4 giữ tại `Data/Levels/L1.asset`, ID `M4_FIXTURE`; không còn là
-campaign production. L1 production nằm tại `Data/RegionA/Mission01.asset`. M3
+Fixture lịch sử M4 giữ tại `Data/Fixtures/Levels/M4SystemTestbed.asset`, ID `M4_FIXTURE`; không còn là
+campaign production. L1 production nằm tại `Data/RegionA/Missions/Mission01.asset`. M3
 data-driven foundation tiếp tục sở hữu mọi schedule/path/completion.
 
 | Encounter | Mode / authored main enemies | Mục tiêu |
@@ -509,7 +518,7 @@ không phải checkpoint persistence hoặc final mission layout.
 #### M2 L1 playable checkpoint
 
 VS-022/023 dùng Scout cho cả hai nhóm B; Raider-light vẫn là lựa chọn content về sau.
-Seeds dưới là `[TUNABLE]`, được author trong `Data/Encounters/L1EncounterA.asset`
+Seeds dưới là `[TUNABLE]`, được author trong `Data/Fixtures/Encounters/L1EncounterA.asset`
 và `L1EncounterB.asset`; không phải final multi-enemy balance.
 
 | Encounter/group | Spawn | Viewport formation và flight |
@@ -875,11 +884,11 @@ Visible common-enemy density seeds `[TUNABLE]`:
 
 | Encounter scale | Common enemies visible cùng lúc |
 |---|---|
-| Early | khoảng 4–7 |
-| Mid | khoảng 6–10 |
-| Large formation / later | khoảng 8–12 |
+| Early | khoảng 7–10 |
+| Mid | khoảng 9–13 |
+| Large formation / later | khoảng 10–14 |
 
-Range large formation tiếp nối seed simultaneous 10–12, không phải hard cap/quota.
+Range large formation là seed visual density, không phải hard cap/quota.
 Tutorial như L1 A có thể ít hơn; short low-threat spectacle có thể cao hơn nếu
 performance/readability cho phép. Không đổi authored encounter count chỉ để đạt
 range. Visible count không phải active shooter count; permission/shot spacing thuộc
@@ -952,65 +961,96 @@ Survive giữ timer đầy đủ. Early exhaustion không tính escaped enemy l�
 
 ## M5 Region A authored content `[PROVISIONAL]`
 
-Production definitions nằm trong `Data/RegionA/Mission01–04.asset`, dùng scene
+Production definitions nằm trong `Data/RegionA/Missions/Mission01–04.asset`, dùng scene
 Gameplay chung. Fixture M4 giữ nguyên encounter/reward coverage riêng; không đưa
 SYSTEM_* aliases hoặc guaranteed effect drops vào campaign. Định hướng L1–L4 ở trên
 là target; bảng dưới là authored runtime seed `[TUNABLE]` hiện tại.
 
-| Mission | Encounter | Composition |
-|---|---|---|
-| 01 | Eliminate → Timeline | 5 Scout (2 trái + 2 phải + 1 Pulse Core carrier); 10 Scout qua hai entry beats (6 + 4) |
-| 02 | Timeline → Survive 14 s → Eliminate | 10 Raider + 2 Scout qua hai beats (6 + 6); 20 normal asteroids + 2 resource targets; 2 Bomber + 5 Scout cùng escort entry |
-| 03 | Timeline → Timeline → Eliminate | 12 Raider qua hai sine beats (6 + 6); pincer 4 Scout + 4 Raider, optional Supply rồi 4 Scout; 1 Elite Bomber + 5 Raider |
-| 04 | Survive 16 s → Boss | 24 normal asteroids + 2 resource targets + optional Supply; 1 Vanguard Frigate |
+| Encounter | Composition / silhouette | Shared slot ownership | Entry beats |
+|---|---|---|---:|
+| M1 Foundation | 7 Scout, chevron nhỏ | trái 0–2, phải 3–5, mũi 6 | 1 |
+| M1 Formation | 12 Scout, double diamond | trái 0–4, phải 5–9, trục giữa 10–11 | 1 |
+| M2 Raider | 12 Raider, spearhead hai cánh | trái 0–4, phải 5–9, giữa 10–11 | 1 |
+| M2 Bomber | 2 Bomber + 8 Scout, heavy escort | Scout trái 0–3/phải 4–7; Bomber 8–9 | 1 |
+| M3 Sine | 12 Raider, hai snake chain đối xứng | trái 0–5, phải 6–11 | 1 |
+| M3 Pincer | 6 Scout + 6 Raider, X hai cánh | Scout trái 0–5, Raider phải 6–11 | 1 |
+| M3 Elite | 1 Elite Bomber + 10 Raider, halo guard | Elite 0; Raider trái 1–5/phải 6–10 | 1 |
 
-Các offset dưới đây tính từ combat clock của Encounter, sau entry lead; offset của
-beat sau tính từ lúc beat đó được kích hoạt, không từ đầu Encounter. Stagger .18 s
-cho từng tàu trong subgroup `[TUNABLE]`; số subgroup không phải số entry beat.
+Một beat có nhiều subgroup đồng thời, không phải reinforcement tự chiếm lại anchor.
+Entry arcs hội tụ trong 3.1 s, stagger .09 s/subgroup; settled anchor (.5,.62)
+`[TUNABLE]`. M1 Formation giữ combat 18 s; Raider/Sine/Pincer 20 s rồi exit 3.2 s;
+Timeline vẫn kết thúc sớm khi hết schedule/enemy, cap lần lượt 32/38/42/42 s.
+Foundation/Bomber/Elite dùng terminal hold và Eliminate. Sine dùng shared bounded
+motion envelope, giữ hình hai chain. Pincer trái/phải bắt đầu cùng lúc; Supply mở
+từ T3.5 khi còn ≤2 địch, fallback T16, không có reinforcement đứng đè lên X.
+Adaptive entry-beat support vẫn giữ cho fixture/content khác; không ép mỗi Đợt hai beats.
 
-| Encounter | Entry beat đầu | Beat / event kế |
-|---|---|---|
-| M1 Foundation | 2 Scout trái T0, 2 phải T+.12, carrier giữa thấp hơn/scale 1.2× T+.20 | Một beat, Eliminate không tự hết ở Duration 30 s |
-| M1 Formation | 3 Scout trái T0 + 3 phải T+.12 | 2 trái T0 + 2 phải T+.12 trong beat 2; Timeline cap 32 s |
-| M2 Raider | 3 Raider trái T0 + 3 phải T+.12 | 4 Raider T0 + 2 Scout T+.30 trong beat 2; Timeline cap 38 s |
-| M2 Storm | Normal stream từ T+.20; resource ở T2 và T7 | Survive đủ 14 s, không cần bắn hết |
-| M2 Bomber | 2 Bomber T0; 2 Scout trái T+.15, 2 phải T+.30, tail Scout T+.30 | Một escort beat; Eliminate không dùng Duration 40 s làm timeout |
-| M3 Sine | 3 Raider trái T0 + 3 phải T+.15 | Lặp composition trong beat 2; Timeline cap 42 s |
-| M3 Pincer | 4 Scout trái T0 + 4 Raider phải T+.15 | Supply từ T2.5 nếu còn ≤2 địch, fallback T7; sau Supply chết/thoát ≥1.2 s và còn ≤2 địch mở 2+2 Scout (phải trễ .15 s), fallback 7 s sau resolve; Timeline cap 42 s |
-| M3 Elite | Elite Bomber T0 + 3 Raider trái T+.15 + 2 phải T+.30 | Một beat; Eliminate không dùng Duration 45 s làm timeout |
-| M4 Storm | Normal stream từ T+.20; resource T2/T8; optional Supply T4 | Survive đủ 16 s |
-| M4 Boss | Vanguard T0 sau warning lead .5 s | Boss HP/death gate, không dùng Duration 120 s làm timeout |
+Storm `[TUNABLE]`: M2 Survive 14 s, 30 normal + 2 resource targets (T2/T7);
+M4 Survive 16 s, 36 normal + 2 resource (T2/T8), optional Supply T4. Seed 522/544,
+burst 1–2 cách .12 s, interval .46–.65 s; normal transit tổng khoảng 4.78–6.89 s,
+small nhanh hơn huge. Size/HP và damage stages thuộc [enemy owner](enemies-bosses.md#m5-runtime-seeds-tunable).
+M2 trên-trái → dưới-phải; M4 trên-phải → dưới-trái, cone ±3° trong viewport space.
+Resource chạy song song cùng luồng, tổng transit 6.95 s. Không clamp mid-path hoặc
+mix hướng trong một storm. Cross-direction traffic vẫn `[FUTURE]` cho encounter riêng.
 
-M1 Formation, M2 Raider và M3 Sine dùng adaptive beat 2: beat trước đã spawn đủ,
-ít nhất 2.2 s từ đầu beat trước và còn ≤2 địch; hoặc fallback 7 s. Không chờ timestamp
-13/15/18 s cũ. Timeline có thể kết thúc sớm sau schedule exhaustion và không còn enemy;
-Duration là cap, không phải bắt player chờ khi đã clear.
+Encounter camera overrides `[TUNABLE]`, smoothstep transition 1.15 s:
 
-Storm dùng deterministic seed riêng (M2 522, M4 544), burst 1–2 cách nhau .12 s,
-interval giữa burst .7–1.05 s, scale .65–1.4, thời gian transit tổng 2.85–3.85 s
-(small nhanh hơn), spin ±100°/s `[TUNABLE]`. Một Encounter có **một hướng chính**:
-M2 trên-trái → dưới-phải; M4 trên-phải → dưới-trái, cone ±3° ở viewport space.
-Resource targets song song cùng luồng, transit 4.75 s; không clamp đường bay vào
-viewport hoặc thêm hướng chéo đối nghịch. Cross-direction traffic là `[FUTURE]`
-chỉ dành cho Encounter được chủ ý author riêng.
+| Encounter | Ortho size | Player playable viewport |
+|---|---:|---|
+| M1 Foundation | 5.8 | full |
+| M1 Formation | 6.2 | full |
+| M2 Raider | 6.6 | full |
+| M2 Storm | 7.3 | full |
+| M2 Bomber | 6.4 | full |
+| M3 Sine | 6.9 | full |
+| M3 Pincer / Supply | 7.3 | full |
+| M3 Elite | 6.6 | full |
+| M4 Storm | 7.8 | full |
+| Vanguard | 9.0 | x .02–.98, y .02–.61 |
 
-Active shooter limit 1; shot spacing .85 s, volley 2, volley pause 2.2 s. Timeline
+Camera size không tự đổi shot budget/HP; playable region được author riêng.
+Mission travel zoom trực tiếp tới camera của encounter đầu mission kế; không snap
+về level baseline rồi zoom lần hai. Intro Brake cũng kết thúc ở encounter entry view.
+Request trùng target đang chạy không restart transition. Sau continue tap, real Player nhận control/fire ngay trong approach; không dùng
+fake ship để bàn giao hoặc reset pose/gesture tại Brake end. Camera tiếp tục zoom
+theo profile, movement clamp theo current view; không chase world anchor cũ.
+Boss flight upper-zone và braced beam thuộc [enemy owner](enemies-bosses.md#boss-1--vanguard-frigate-provisional).
+Asteroid luôn full movement; sau Boss/Planet handoff, existing view owner restore
+profile/region của state tiếp theo. Input mapping và footprint clamp theo current view.
+
+Active shooter seed `[TUNABLE]` theo encounter, author được 1–6:
+
+| Encounter | Active limit | Shot spacing | Shots/volley | Volley pause |
+|---|---:|---:|---:|---:|
+| M1 Foundation | 1 | .65 s | 2 | 2.2 s |
+| M1 Formation / M2 Raider | 2 | .22 s | 4 | 1.8 s |
+| M2 Bomber | 2 | .16 s | 4 | 1.8 s |
+| M3 Sine | 3 | .16 s | 6 | 1.8 s |
+| M3 Pincer / Elite | 3 | .12 s | 6 | 1.8 s |
+
+Limit là số attack sequence đồng thời, không phải số viên đạn. Coordinator vẫn chọn
+luân phiên; mỗi enemy giữ telegraph/cooldown riêng, visible enemies > active shooters.
+ Timeline
 opt-in schedule exhaustion chỉ sau mọi scheduled group/optional event resolve.
 Pincer giữ combat phía trên, exit hướng lên; không chạy qua safe start phía dưới.
 Production minor handoff `[TUNABLE]`: rest .7 s chồng projectile grace .45 s + fade .25 s,
 rồi travel .85 s; Đợt kế hiển thị 1.3 s, entry lead .5 s nằm trong thời gian chữ hiện.
 Warning Boss 1.4 s. Thời gian tới first spawn còn có fixed-step rounding; không cộng
 cleanup thành một khoảng nghỉ nối tiếp. Fixture M4 giữ seed riêng ở section lịch sử.
-Reward giữ qua minor handoff; cuối Mission có grace tối đa 2.5 s nếu còn đồ (Boss 5 s),
-kết thúc sớm nếu hết đồ, rồi mới bắt đầu Mission/Planet travel.
+Hết Timeline/Survive thì dừng spawn/fire mới, sang ExitDrain: asteroid tiếp tục
+đúng transit tới khi ra khỏi viewport; quái còn sót rút lên/ra khỏi màn trong 1.1 s.
+Sau 8 s chỉ ép retreat cho đối tượng chưa vào Exit, không release giữa viewport.
+Kill/reward còn hợp lệ trong ExitDrain; sau đó mới projectile grace và handoff.
+Reward giữ qua minor handoff; cuối Mission có grace tối đa 2.5 s nếu còn đồ, Boss
+12 s `[TUNABLE]`. Trong grace, reward giữ trong viewport tại floor y .09 và fade
+trước khi hết timer; kết thúc sớm nếu hết đồ rồi mới Mission/Planet travel.
 
 Same-planet Mission travel `[TUNABLE]`: 2.3 s, settle .3 s rồi bias lùi xuống tối đa
 .04 viewport, sao tăng tốc và bias quay về 0. Title hiện ở T1.95 trong travel, visible
 2.1 s; Mission kế launch ở T2.3 và entry sau .5 s, chồng title. Không lock player hoặc
 hủy held gesture/teleport qua boundary; Pause vẫn hoạt động. Initial planet approach
 vẫn .7 + 1.8 + .8 = 3.3 s; title đầu Mission có spawn lead .75 s riêng.
-Boss camera 7.5; các encounter khác dùng Normal 6.0, không tự áp camera seed cũ từ
-tracker để thay baseline đã tune. Exact difficulty/duration cần representative playtest;
+Encounter overrides ở bảng trên thay baseline uniform trước đó. Exact difficulty/duration cần representative playtest;
 6–9 phút Region A vẫn là mục tiêu, chưa coi automated clear là balance approval.
 
 Sau L4/reward resolution, major travel khóa input/fire: glide .9 s → accelerate/bank

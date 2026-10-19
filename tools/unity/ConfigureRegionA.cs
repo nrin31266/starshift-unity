@@ -12,10 +12,10 @@ using UnityEngine.SceneManagement;
 public static class ConfigureRegionA
 {
  const string D="Assets/StarShift/Data/", R=D+"RegionA/", P="Assets/StarShift/Prefabs/Enemies/";
- static T Load<T>(string p) where T:UnityEngine.Object=>AssetDatabase.LoadAssetAtPath<T>(p);
+ static T Load<T>(string p) where T:UnityEngine.Object=>StarShift.Editor.RegionAAssetPaths.Load<T>(p);
  public static void Set(UnityEngine.Object o,string f,object v){o.GetType().GetField(f,BindingFlags.Instance|BindingFlags.NonPublic).SetValue(o,v);EditorUtility.SetDirty(o);}
  static T Asset<T>(string n,Action<T> setup) where T:ScriptableObject
- {var a=Load<T>(R+n+".asset");if(a!=null)return a;a=ScriptableObject.CreateInstance<T>();setup(a);AssetDatabase.CreateAsset(a,R+n+".asset");return a;}
+ {var a=Load<T>(R+n+".asset");if(a!=null)return a;a=ScriptableObject.CreateInstance<T>();setup(a);AssetDatabase.CreateAsset(a,StarShift.Editor.RegionAAssetPaths.Resolve<T>(R+n+".asset"));return a;}
  static SingleFireDefinition Fire(string n,int count,float spread,float cooldown)
  =>Asset<SingleFireDefinition>(n,x=>{var old=Load<SingleFireDefinition>(D+"Enemies/ScoutSingleFire.asset");Set(x,"projectilePrefab",old.ProjectilePrefab);Set(x,"initialDelay",.8f);Set(x,"telegraphDuration",count>1?.7f:.4f);Set(x,"cooldown",cooldown);Set(x,"projectileCount",count);Set(x,"spreadDegrees",spread);});
  static GameObject Enemy(string n,int hp,int score,Color color,Vector2 size,SingleFireDefinition fire,bool large=false)

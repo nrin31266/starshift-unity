@@ -144,7 +144,7 @@ không biến cả asteroid storm thành chuỗi full-screen flash.
 | Event | Feedback định hướng |
 |---|---|
 | Supply Drone xuất hiện | Nhận ra cargo/reward bằng trail/navigation cue, không warning như boss |
-| Supply Drone destroyed | Break/small explosion, supply hit, tiny shake; crate ejection thấy rõ |
+| Supply Drone destroyed | Break/small explosion, supply hit, small burst; hai direct pickup bật nhẹ hai phía, không BOX trung gian |
 | Crate drift/pickup | Cargo drift, reward reveal + crate cue; không giấu pickup trong explosion |
 | Weapon Core | Upgrade pulse và upgrade cue, branch/level đọc qua HUD |
 | Shield Cell | Teal defensive ring/activate cue |
@@ -266,9 +266,9 @@ trong persisted Settings. Animation/impulse observer không quyết damage hoặ
 ## M5 Vanguard placeholder
 
 `[TUNABLE]` Death beats chạy 2.4 s scaled time: bốn small burst xen kẽ → core/main
-burst → short final impact → crate. Hostile damage đã bị khóa trước beats, timing
-không quyết HP hoặc phase. Phase transition có amber core cue 1.2 s; strong attacks
-có module glow trước launch. Không final VFX/music/audio pack mới.
+burst → short final impact → Core + support pair. Hostile damage đã bị khóa trước beats, timing
+không quyết HP hoặc phase. Phase transition có amber core cue theo [enemy owner](../content/enemies-bosses.md#boss-1--vanguard-frigate-provisional);
+strong attacks có module glow trước launch. Không final VFX/music/audio pack mới.
 
 Reserve missile vẫn dùng impact/projection restore hiện có; Homing primary không
 phát impact đó. Boss death tạm reuse short reserve impulse, chưa có strong final
@@ -280,3 +280,15 @@ hoặc audio polish. Timing và gates thuộc [level owner](../content/levels-en
 
 Asteroid/resource entry có amber edge marker trước khi hazard vào view. Supply event
 hiện cue `TIẾP TẾ` ngắn; không mở tutorial panel hoặc chặn Encounter.
+
+
+M5 second feel pass: asteroid dùng persistent damaged/critical tint sau hit flash,
+optional sprite-frame hooks cho future cracks và pooled .35 s expanding glow burst.
+Burst scale theo asteroid root; không thêm AoE hoặc camera shake cho mỗi rock.
+
+Vanguard reactor/core và engine cue làm phase break; twin pods telegraph đồng thời,
+missile pod riêng, beam pod hãm tàu trước khai hỏa. Magenta lane warning có opacity
+.3; active lane .9 với white core rộng 25% beam. Module gửi cùng damage bounds cho
+presentation, giữ safe space rõ hai bên. Native 16:9/20:9 review phải xem beam còn
+nối đúng pod khi active. Timing/HP/movement thuộc [enemy owner](../content/enemies-bosses.md#boss-1--vanguard-frigate-provisional),
+không để animation/color quyết damage. Defeat chain vẫn 2.4 s trước direct reward pair/handoff.

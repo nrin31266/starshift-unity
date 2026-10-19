@@ -43,10 +43,10 @@ namespace StarShift.Player
             ResetCadence();
         }
 
-        public void ResetForSession()
+        public void ResetForSession(bool preserveThermalState = false)
         {
             loadout?.ResetForSession();
-            foreach (var state in heatStates) state.Reset();
+            if (!preserveThermalState) foreach (var state in heatStates) state.Reset();
             ShotsFired = 0;
             ResetCadence();
         }
@@ -91,14 +91,14 @@ namespace StarShift.Player
 
         private void FixedUpdate()
         {
-            // CanFire gồm cả Pause/timeScale: gate khóa thì không tick thermal simulation.
-            if (!gameplayGate.CanFire)
+            if (Time.timeScale <= 0) return;
+            // Nhiệt có clock riêng: bị khóa bắn và nhánh không active vẫn tiếp tục nguội.
+            for (int i = 0; i < heatStates.Length; i++)
             {
-                ResetCadence();
-                return;
+                var thermalDefinition = loadout != null ? loadout.Definition((WeaponBranch)i) : i == 0 ? definition : null;
+                if (thermalDefinition != null && thermalDefinition.ThermalProfile != null)
+                    heatStates[i].Tick(thermalDefinition.ThermalProfile, i == (int)CurrentBranch && gameplayGate.CanFire && pointerInput.FireHeld, Time.fixedDeltaTime);
             }
-            if (ActiveDefinition.ThermalProfile != null)
-                heat.Tick(ActiveDefinition.ThermalProfile, pointerInput.FireHeld, Time.fixedDeltaTime);
             if (!CanFire || !pointerInput.FireHeld)
             {
                 ResetCadence();

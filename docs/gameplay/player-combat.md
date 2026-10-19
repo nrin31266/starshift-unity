@@ -20,7 +20,7 @@ damage, theo survival contract bên dưới. Đây là naming implementation
 death/respawn sequence, tự trừ lives hoặc tự chuyển state theo timer.
 Gate cũng chặn permissions khi bị disable hoặc `Time.timeScale == 0`.
 Global Pause do gameplay session điều phối; đổi local state không thay thế global pause.
-Major establishing intro không nhận manual Pause. Ordinary handoff giữ HUD/Pause
+Establishing trước continue tap không nhận manual Pause; approach sau tap cho Pause như gameplay. Ordinary handoff giữ HUD/Pause
 và permissions theo gameplay/lifecycle, không bật cinematic lock. Major cinematic lock
 chặn input/fire/damage độc lập state; unlock
 không reset lives/protection hoặc mở sớm enemy-fire safety gate.
@@ -34,8 +34,9 @@ Establishing continue tap dùng uGUI trên Canvas hiện có: sau reading delay,
 left-mouse/touch down + up trong màn hình, không drag/cancel/hold dài (tap tối đa
 .6 s `[TUNABLE]` trên HUD). Press bắt đầu
 trước prompt không được tái nhận khi prompt xuất hiện. Tap này và pointer còn giữ
-trong intro không trở thành gameplay ownership; clear gesture khi launch và khi trả
-control, sau đó đòi fresh gameplay press. Không thay relative drag/hold-to-fire contract.
+trước continue không trở thành gameplay ownership; clear gesture khi nhận continue,
+sau đó fresh gameplay press được move/fire ngay trong approach zoom. Giữ pose và
+held gesture qua Brake end; chỉ departure/reveal/awaiting tap còn cinematic lock. Không thay relative drag/hold-to-fire contract.
 
 ### Relative drag `[LOCKED]`
 
@@ -87,15 +88,16 @@ không bắn bù. Không thêm input/action mới.
 | Pause | Đứng yên theo gameplay time |
 | Dying/death | Reset heat về 0, xóa Overheated ngay khi nhận damaging hit |
 | Respawn | Trở lại với weapon thermal ready |
-| Encounter A → B / minor transition | Giữ heat và latch, không reset |
-| Entry/major cinematic hoặc gameplay gate block | Giữ state, không tick thermal simulation |
-| Mission reset/replay | Reset heat/latch/cooling delay/cadence |
+| Encounter A → B / live Mission handoff | Giữ heat/latch/delay, tiếp tục tick; không reset |
+| Entry/major cinematic hoặc gameplay gate block | Tiếp tục nguội bằng scaled time, không cộng nhiệt dù pointer held |
+| NewGame / Retry / Continue / Replay / Dev restart | Reset heat/latch/cooling delay/cadence |
 | Game Over / Clear | Không tiếp tục thermal simulation |
 
 ### Weapon switch
 
 Player được switch tự do giữa các weapon đã unlock [LOCKED], cycle qua những
-branch khả dụng. Active weapon fire theo config khi gate cho phép và gameplay pointer held;
+branch khả dụng. Nhặt Core thành công tự chọn branch vừa nâng cấp; switch vẫn giữ
+heat/latch riêng; nhánh không active tiếp tục nguội theo profile, không reset. Chi tiết level/typing thuộc item owner. Active weapon fire theo config khi gate cho phép và gameplay pointer held;
 selection này phải được checkpoint-save theo [save/profile](../systems/save-profile.md).
 Bố trí nút thuộc [UI/UX](../presentation/ui-ux.md); branch/pattern ở
 [weapons/items/drops](../content/weapons-items-drops.md).
@@ -323,6 +325,13 @@ footprint trên một trục, đặt giữa trục đó; không thể đảm b�
 trong region nhỏ hơn chính nó. Implementation và component boundary ở
 [architecture owner](../systems/architecture.md#m2-scene-và-player-baseline-provisional).
 
+Region A second feel pass `[TUNABLE]`: asteroid Survive dùng full viewport; Vanguard
+chỉ thu Player vào lower combat region qua CameraProfile, không clamp trong Boss
+script. Exact region/camera values thuộc [encounter owner](../content/levels-encounters.md#m5-region-a-authored-content-provisional).
+Boss body/beam đều route qua existing life/protection receiver; beam telegraph không
+gây hit. Sau death/Retry/Planet transition phải reset input, beam damage và view đúng
+state, không giữ restricted boss region trong storm.
+
 ## Collision matrix theo gameplay contract
 
 Đây là interaction contract, chưa khóa Unity layer names hay Rigidbody2D settings.
@@ -379,10 +388,10 @@ click nút. Multitouch có thể dùng ngón thứ hai để Pause trong khi ng�
 Pause/Resume là boundary hủy **cả gesture và fire intent**, yêu cầu press mới sau
 Resume. Đây là ngoại lệ có chủ ý cho generic gate block giữ held intent ở trên;
 death/respawn và ordinary handoff giữ contract cũ. Major establishing intro consume
-continue tap và gesture còn giữ, yêu cầu press mới khi trả gameplay. Full mission start/reset và terminal
+continue tap và gesture còn giữ; fresh press sau tap có thể bắn/drag trong approach. Full mission start/reset và terminal
 cũng cancel gesture. Ngoại lệ same-planet Mission handoff giữ held gesture và relative
 drag đang hoạt động; movement owner compose travel bias nhỏ vào displacement, không
-hard-animation hoặc reset pose. Major Planet travel vẫn lock và consume tap. Không dùng lại drag delta hoặc cadence từ trước overlay.
+hard-animation hoặc reset pose. Major Planet departure/reveal vẫn lock và consume tap; approach sau tap mở control/fire, giữ gesture qua finish. Không dùng lại drag delta hoặc cadence từ trước overlay.
 
 
 ## Gameplay feel follow-up

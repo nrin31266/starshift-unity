@@ -28,6 +28,7 @@ namespace StarShift.Enemies
             if (!IsPhaseB && health.CurrentHp <= health.MaxHp * definition.PhaseBThreshold)
             {
                 IsPhaseB = true; CancelModules(); next = 0; remaining = definition.TransitionSeconds; phaseCue.enabled = true;
+                flight.Reposition(definition.PhaseBOffset, definition.TransitionSeconds, definition.PhaseBMotionMultiplier);
             }
             if (!gate.CanFire || !flight.IsHolding) { CancelModules(); remaining = Mathf.Max(remaining, 1); return; }
             if (current != null)

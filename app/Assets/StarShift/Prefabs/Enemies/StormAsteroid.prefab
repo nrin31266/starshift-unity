@@ -109,7 +109,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.28, y: 0.8}
+  m_Size: {x: 0.43200004, y: 0.43200004}
   m_EdgeRadius: 0
 --- !u!1 &5814809856772857992
 GameObject:
@@ -301,9 +301,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EnemyDamagePresentation
   hull: {fileID: 6314957006533597239}
-  damagedTint: {r: 0.9, g: 0.28, b: 0.3, a: 1}
-  damagedHealthFraction: 0.5
+  damagedTint: {r: 0.7, g: 0.4, b: 0.24, a: 1}
+  damagedHealthFraction: 0.66
   flashDuration: 0.08
+  criticalHealthFraction: 0.33
+  criticalTint: {r: 1, g: 0.25, b: 0.08, a: 1}
+  damagedSprite: {fileID: 0}
+  criticalSprite: {fileID: 0}
 --- !u!114 &3849970000624986415
 MonoBehaviour:
   m_ObjectHideFlags: 0

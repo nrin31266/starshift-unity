@@ -27,7 +27,7 @@ public static class VerifyPacingRefinement
     static async Task Until(Func<bool> p,int ms,string m){var end=Time.realtimeSinceStartup+ms/1000f;while(!p()&&Time.realtimeSinceStartup<end)await Task.Delay(15);Require(p(),m);}
     static async Task<string> Capture(string n){var p=System.IO.Path.GetFullPath("../.design/m5-refinement/screenshots/"+n+".png");ScreenCapture.CaptureScreenshot(p);await Task.Delay(160);return p;}
     static void Evidence(string name,object result)=>System.IO.File.WriteAllText("../.design/m5-refinement/"+name+".json",Newtonsoft.Json.JsonConvert.SerializeObject(result,Newtonsoft.Json.Formatting.Indented));
-    static LevelDefinition Level(int n)=>AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/RegionA/Mission0"+n+".asset");
+    static LevelDefinition Level(int n)=>StarShift.Editor.RegionAAssetPaths.Load<LevelDefinition>("Assets/StarShift/Data/RegionA/Mission0"+n+".asset");
     static void Start(Rig rig,int mission,int encounter,bool standalone=true){Runner.StopRun();Runner.Flow.LoadLevel(Level(mission));Runner.StartRun("ENCOUNTER_"+encounter,standalone,true,null,null);rig.Protect();rig.Place(new Vector2(0,-3.8f));}
     public static object BeginA(){_=A();return new{started=true};}
     static async Task A(){Evidence("batch-a",new{status="RUNNING"});try{using(var rig=new Rig(1600,6,true)){
@@ -145,7 +145,7 @@ public static class VerifyPacingRefinement
         await Capture("boss-post-defeat-"+width);
         await Until(()=>Runner.CompletionCount==completion+1,4000,"Boss death completion");var deathSeconds=Time.fixedTime-died;
         Require(deathSeconds>=2.35f&&deathSeconds<=2.6f,"Boss death signature changed: "+deathSeconds);
-        Require(UnityEngine.Object.FindObjectsByType<RewardPickup>().Any(p=>p.IsActive&&p.Crate!=null),"Boss crate missing");
+        Require(UnityEngine.Object.FindObjectsByType<RewardPickup>().Count(p=>p.IsActive&&p.Item!=null&&p.Crate==null)==2,"Boss direct pair missing");
         await Capture("boss-reward-before-travel-"+width);
         var journey=Runner.GetComponent<PlanetJourney>();var region=Runner.GetComponent<RegionCampaignFlow>();
         await Until(()=>journey.IsActive,7000,"Post-reward travel start");var began=Time.fixedTime;
@@ -197,7 +197,7 @@ public static class VerifyPacingRefinement
         Session.Pause();Require(owner.RetryEncounter(),"M2 retry");rig.Protect();Require(Runner.CurrentIndex==2&&Runner.GetComponent<RunRewards>().Score==123,"Retry checkpoint");
         owner.ExitIsolated();owner.UseTestStorage(path);Require(owner.Continue(),"Fresh storage Continue");rig.Protect();Require(Runner.Flow.Level.Id=="L2"&&Runner.CurrentIndex==2,"Fresh storage mission catalog");
         owner.ExitIsolated();data.Campaign.MissionId="L4";data.Campaign.Checkpoint.EncounterId="ENCOUNTER_2";Require(store.Write(data,validate),"Boss fixture write");owner.UseTestStorage(path);Require(owner.Continue(),"Boss Continue");rig.Protect();
-        await Until(()=>UnityEngine.Object.FindAnyObjectByType<BossPhaseRunner>()!=null,1500,"Boss retry spawn");var boss=UnityEngine.Object.FindAnyObjectByType<BossPhaseRunner>();boss.Health.ReceivePlayerHit(130,rig.Player);await Task.Delay(100);Require(boss.IsPhaseB,"Boss phase fixture");
+        await Until(()=>UnityEngine.Object.FindAnyObjectByType<BossPhaseRunner>()!=null,1500,"Boss retry spawn");var boss=UnityEngine.Object.FindAnyObjectByType<BossPhaseRunner>();boss.Health.ReceivePlayerHit(Mathf.CeilToInt(boss.Health.MaxHp*.51f),rig.Player);await Task.Delay(100);Require(boss.IsPhaseB,"Boss phase fixture");
         Session.Pause();Require(owner.RetryEncounter(),"Boss Retry");rig.Protect();await Until(()=>UnityEngine.Object.FindAnyObjectByType<BossPhaseRunner>()!=null,1500,"Boss Retry respawn");boss=UnityEngine.Object.FindAnyObjectByType<BossPhaseRunner>();Require(boss.Health.CurrentHp==boss.Health.MaxHp&&!boss.IsPhaseB,"Boss retry retained runtime HP/phase");
         owner.ExitIsolated();var original=System.IO.File.ReadAllText(path);Require(owner.BeginReplay(),"L4 Replay");rig.Protect();Require(rig.Player.GetComponent<WeaponLoadout>().Level(WeaponBranch.Homing)==1,"Replay preset");
         var enemy=EnemyHealth.Active.FirstOrDefault(e=>e.IsAlive);if(enemy!=null)enemy.ReceivePlayerHit(enemy.CurrentHp,rig.Player);owner.ExitIsolated();Require(original==System.IO.File.ReadAllText(path),"Replay modified campaign bytes");
@@ -229,7 +229,7 @@ public static class VerifyPacingRefinement
       view.RequestView(new GameplayViewSettings(7.5f,new Rect(0,0,1,1)),.1f);await Task.Delay(350);
       Require(view.ImpactRemaining<=0&&Mathf.Abs(Camera.main.projectionMatrix.m11-1/Camera.main.orthographicSize)<.001f,"Normal reserve projection did not recover");
       Start(rig,1,2);await Until(()=>Runner.BeatStartTime(1)>=0,8500,"Timeline fallback");await Until(()=>Runner.SpawnedCount==10,1500,"Full schedule");
-      var definition=UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<SingleFireDefinition>("Assets/StarShift/Data/Enemies/ScoutSingleFire.asset"));
+      var definition=UnityEngine.Object.Instantiate(StarShift.Editor.RegionAAssetPaths.Load<SingleFireDefinition>("Assets/StarShift/Data/Enemies/ScoutSingleFire.asset"));
       typeof(SingleFireDefinition).GetField("projectileSpeed",Fields).SetValue(definition,.1f);
       var muzzle=new GameObject("BoundedCleanupProbe");muzzle.transform.position=new Vector3(0,3,0);
       var shot=UnityEngine.Object.Instantiate(definition.ProjectilePrefab);shot.Launch(definition,muzzle.transform,null,rig.Player,p=>p.ResetForPool());
@@ -284,7 +284,7 @@ public static class VerifyPacingRefinement
           if(!paused && id=="L2" && Runner.CurrentIndex==1){Session.Pause();var t=Runner.Elapsed;await Task.Delay(250);Require(t==Runner.Elapsed,"Full run pause");Session.Resume();paused=true;}
           if(!died && id=="L2" && Runner.CurrentIndex==2 && Runner.Elapsed>3){rig.Unprotect();Require(rig.Player.GetComponent<PlayerDamageLifecycle>().TryReceiveHit(null),"Full death");await Until(()=>rig.Gate.State==PlayerGameplayState.PostEntryInvincibility,3000,"Full respawn");rig.Protect();died=true;}
           if(!switched && id=="L3" && rig.Gate.CanInput){
-             Runner.GetComponent<RewardDirector>().Spawn(AssetDatabase.LoadAssetAtPath<PickupDefinition>("Assets/StarShift/Data/Rewards/PlasmaCore.asset"),null,rig.Player.transform.position);
+             Runner.GetComponent<RewardDirector>().Spawn(StarShift.Editor.RegionAAssetPaths.Load<PickupDefinition>("Assets/StarShift/Data/Rewards/PlasmaCore.asset"),null,rig.Player.transform.position);
              await Task.Delay(100);var loadout=rig.Player.GetComponent<WeaponLoadout>();
              if(loadout.Level(WeaponBranch.Plasma)>0){loadout.Cycle();switched=true;}
           }
@@ -310,7 +310,7 @@ public static class VerifyPacingRefinement
       Session.Pause();var elapsed=(float)typeof(GameplayAnnouncement).GetField("elapsed",Fields).GetValue(title);
       await Task.Delay(250);Require(group.alpha==0&&(float)typeof(GameplayAnnouncement).GetField("elapsed",Fields).GetValue(title)==elapsed,"Pause destroyed/advanced cue");
       Session.Resume();await Task.Delay(100);Require(group.alpha>0,"Resume lost gameplay title");
-      Start(rig,2,3,false);await Until(()=>Runner.SpawnedCount==7,2000,"Mission ending setup");
+      Start(rig,2,3,false);await Until(()=>Runner.SpawnedCount==Runner.Current.EnemyCount,2000,"Mission ending setup");
       foreach(var e in EnemyHealth.Active.ToArray())if(e.IsAlive)e.ReceivePlayerHit(e.CurrentHp,rig.Player);
       foreach(var reward in UnityEngine.Object.FindObjectsByType<RewardPickup>())reward.Release();
       await Until(()=>Runner.GetComponent<RegionCampaignFlow>().IsMissionTravel,1500,"Mission travel setup");
@@ -331,7 +331,7 @@ public static class VerifyPacingRefinement
         public void Dispose(){owner.ExitIsolated();owner.UseTestStorage(originalPath);var current=System.IO.File.Exists(originalPath)?Convert.ToBase64String(System.IO.File.ReadAllBytes(originalPath)):null;Require(originalBytes==current,"Original save bytes changed");}
     }
 
-    sealed class Rig : IDisposable
+    public sealed class Rig : IDisposable
     {
         private readonly List<EntryHoldFlight> frozenFlights = new List<EntryHoldFlight>();
         public void Freeze(EnemyHealth enemy)
@@ -377,7 +377,7 @@ public static class VerifyPacingRefinement
             Place(new Vector2(0, -3.8f)); Protect();
             view = Camera.main.GetComponent<GameplayViewController>(); oldView = view.TargetView;
             view.RequestView(new GameplayViewSettings(size, new Rect(0, 0, 1, 1)), 0);
-            var type = typeof(EditorWindow).Assembly.GetType("UnityEditor.GameView"); gameView = EditorWindow.GetWindow(type);
+            var type = typeof(EditorWindow).Assembly.GetType("UnityEditor.GameView"); gameView = Resources.FindObjectsOfTypeAll(type).FirstOrDefault() ?? EditorWindow.GetWindow(type);
             selectedSize = type.GetProperty("selectedSizeIndex"); oldSize = selectedSize.GetValue(gameView);
             gameViewZoom = gameView.GetType().GetField("m_ZoomArea", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(gameView);
             oldGameViewZoom = (Vector2)gameViewZoom.GetType().GetProperty("scale").GetValue(gameViewZoom);
@@ -437,7 +437,7 @@ public static class VerifyPacingRefinement
             await MouseEvent(anchor,false);await MouseEvent(anchor,true);
             await MouseEvent(anchor+Vector2.ClampMagnitude(delta,650),true);
         }
-        static EncounterDefinition[] Configs() => new[] { "A", "B" }.Select(id => AssetDatabase.LoadAssetAtPath<EncounterDefinition>("Assets/StarShift/Data/Encounters/L1Encounter" + id + ".asset")).ToArray();
+        static EncounterDefinition[] Configs() => new[] { "A", "B" }.Select(id => StarShift.Editor.RegionAAssetPaths.Load<EncounterDefinition>("Assets/StarShift/Data/Fixtures/Encounters/L1Encounter" + id + ".asset")).ToArray();
         public void Dispose()
         {
             RestoreFlights();

@@ -8,6 +8,7 @@ namespace StarShift.Encounters
     [Serializable]
     public sealed class MissionIntroSettings
     {
+        [Tooltip("Intro đầu mission khi LEVEL_START. Chỉnh đúng asset Level trên LevelFlow; DevFastStart/Skip Intro có thể bỏ qua.")]
         public bool Enabled = true;
         [Min(.01f)] public float ContinueDelaySeconds = 1.8f;
         public string ArrivalTitle;
@@ -45,6 +46,8 @@ namespace StarShift.Encounters
         public string Id = "L1";
         public string DisplayName = "First Contact";
         [Min(1)] public int MissionNumber = 1;
+        [Min(1), Tooltip("Nhân HP quái thường theo mission, làm tròn lên; không áp Boss/thiên thạch.")]
+        public float EnemyHealthMultiplier = 1;
         public string RegionId = "astra-frontier";
         [Tooltip("Để trống khi chưa có tên location canonical; không suy diễn từ RegionId.")]
         public string LocationName;
@@ -69,7 +72,7 @@ namespace StarShift.Encounters
         public bool IsValid(out string error)
         {
             error = "Invalid level config: " + name;
-            if (string.IsNullOrWhiteSpace(Id) || string.IsNullOrWhiteSpace(RegionId) || MissionNumber < 1 ||
+            if (string.IsNullOrWhiteSpace(Id) || string.IsNullOrWhiteSpace(RegionId) || MissionNumber < 1 || !ConfigValue.Positive(EnemyHealthMultiplier) || EnemyHealthMultiplier < 1 ||
                 !Enum.IsDefined(typeof(PlayDirection), Direction) || Camera == null || !Camera.IsValid ||
                 Intro == null || !Intro.IsValid ||
                 Encounters == null || Encounters.Length == 0 || AdditionalStarts == null) return false;

@@ -31,13 +31,13 @@ public static class ConfigureEncounterFoundation
         if (Application.isPlaying) throw new InvalidOperationException("Edit Mode required.");
         var scene = SceneManager.GetActiveScene();
         if (scene.path != "Assets/StarShift/Scenes/02_Gameplay.unity") throw new InvalidOperationException("Saved gameplay scene required.");
-        foreach (var folder in new[] { "Levels", "Flights", "Cameras" })
-            if (!AssetDatabase.IsValidFolder(Data+"/"+folder)) AssetDatabase.CreateFolder(Data,folder);
+        foreach (var folder in new[] { "Fixtures", "Fixtures/Levels", "Flights", "Cameras" })
+            if (!AssetDatabase.IsValidFolder(Data+"/"+folder)) AssetDatabase.CreateFolder(System.IO.Path.GetDirectoryName(Data+"/"+folder).Replace('\\','/'),System.IO.Path.GetFileName(folder));
         var baseline = Asset<CameraProfile>(Data+"/Cameras/Normal.asset", x => x.View=GameplayViewSettings.Baseline);
         Asset<CameraProfile>(Data+"/Cameras/Wide.asset", x => x.View=new GameplayViewSettings(7.2f,new Rect(0,0,1,1)));
         Asset<CameraProfile>(Data+"/Cameras/LowerRegion.asset", x => x.View=new GameplayViewSettings(6,new Rect(0,0,1,.7f)));
-        var a = AssetDatabase.LoadAssetAtPath<EncounterDefinition>(Data+"/Encounters/L1EncounterA.asset");
-        var b = AssetDatabase.LoadAssetAtPath<EncounterDefinition>(Data+"/Encounters/L1EncounterB.asset");
+        var a = AssetDatabase.LoadAssetAtPath<EncounterDefinition>(Data+"/Fixtures/Encounters/L1EncounterA.asset");
+        var b = AssetDatabase.LoadAssetAtPath<EncounterDefinition>(Data+"/Fixtures/Encounters/L1EncounterB.asset");
         foreach (var encounter in new[] { a,b })
         {
             for (int i=0;i<encounter.Groups.Length;i++)
@@ -60,7 +60,7 @@ public static class ConfigureEncounterFoundation
             }
             EditorUtility.SetDirty(encounter);
         }
-        var level = Asset<LevelDefinition>(Data+"/Levels/L1.asset", x =>
+        var level = Asset<LevelDefinition>(Data+"/Fixtures/Levels/M4SystemTestbed.asset", x =>
         { x.Camera=baseline; x.Encounters=new[] { a,b }; });
         var root=GameObject.Find("L1Encounters");
         Add<ScenePrefabPool>(root); Add<EncounterCleanup>(root);
@@ -132,7 +132,7 @@ public static class ConfigureEncounterFoundation
             var p=new SerializedObject(c).GetIterator();
             while(p.NextVisible(true)) if(p.propertyType==SerializedPropertyType.ObjectReference && p.objectReferenceValue==null && p.objectReferenceEntityIdValue!=default) missing++;
         }
-        var level=AssetDatabase.LoadAssetAtPath<LevelDefinition>(Data+"/Levels/L1.asset");
+        var level=AssetDatabase.LoadAssetAtPath<LevelDefinition>(Data+"/Fixtures/Levels/M4SystemTestbed.asset");
         return new { valid=level.IsValid(out var error), error, level.Id, level.LocationName,
             encounters=level.Encounters.Select(e=>new {e.Id,e.EnemyCount, sequences=e.Groups.All(g=>g.Sequence!=null)}).ToArray(),
             missingReferences=missing,missingScripts=all.Sum(t=>GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(t.gameObject)),scene.isDirty };

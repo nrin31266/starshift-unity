@@ -56,7 +56,7 @@ hoặc mid-wave supply/drop objects. Definition và schedule được chạy l�
 - `Checkpoint.Lives`: 1..PlayerLives.MaximumLives.
 - `Checkpoint.Missiles`: 0..3 reserve; restore cùng checkpoint, ordinary death giữ nguyên.
 - `Checkpoint.ActiveWeapon`, `WeaponLevels`: ba branch levels; level 0 biểu diễn
-  locked branch, Pulse tối thiểu 1, active branch phải unlocked, max level 3.
+  locked branch, Pulse tối thiểu 1, active branch phải unlocked, max level 5. Schema 2 giữ nguyên shape ba branch; save Lv1–3 cũ vẫn hợp lệ, không reset/migrate loadout.
 - `Checkpoint.Stats`: Score, Shards collected, enemies destroyed, cores collected,
   supply captured, lives lost, playable seconds tại checkpoint.
 - `EncounterShardHighWater`: ledger riêng của checkpoint hiện tại; economy policy
@@ -228,3 +228,11 @@ preboss/Boss vẫn restore entry; không snapshot Boss HP/phase/attack timers.
 
 Dev-only `UseTestStorage(path, fixture)` nhận optional cloned catalog cho historical
 M4 verifier; không serialize fixture hoặc đưa test catalog vào production boot.
+
+
+M5 second feel pass không thêm persisted loot/world state hoặc schema version.
+Encounter quota/selection seed được dựng lại theo [reward owner](../content/weapons-items-drops.md#encounter-reward-floor-provisional).
+Retry/Continue reset asteroid variant HP, damage presentation, Boss phase/motion pause,
+beam charge/active bounds và pooled loot; weapon state vẫn restore checkpoint và
+Shard high-water vẫn preserved. DevFastStart và replay tiếp tục cùng write-permission
+boundary, không dùng seed override để cấp quyền ghi production.

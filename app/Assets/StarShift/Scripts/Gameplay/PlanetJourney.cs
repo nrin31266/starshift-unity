@@ -25,6 +25,7 @@ namespace StarShift.Gameplay
         private Vector3 departure;
         private Action completed;
         public PlanetJourneyPhase Phase { get; private set; }
+        public bool IsCinematic => IsActive && Phase < PlanetJourneyPhase.Approach;
         public bool IsActive => Phase != PlanetJourneyPhase.None;
         public bool IsAwaitingTap => Phase == PlanetJourneyPhase.AwaitingTap;
         public float HudOpacity => Phase == PlanetJourneyPhase.Brake ? Mathf.Clamp01(elapsed/.8f) : IsActive ? 0 : 1;
@@ -39,7 +40,10 @@ namespace StarShift.Gameplay
         public bool AcceptTap()
         {
             if(!IsAwaitingTap)return false;
-            player.GetComponent<InputSystemPointerInput>().CancelGesture();Enter(PlanetJourneyPhase.Approach);return true;
+            player.GetComponent<InputSystemPointerInput>().CancelGesture();
+            Enter(PlanetJourneyPhase.Approach);
+            presentation.Present(MissionIntroPhase.Approach,0,PlayDirection.Right);
+            flow.ReleaseApproach(PlayDirection.Right); return true;
         }
         private float Duration => Phase switch{
             PlanetJourneyPhase.Glide=>glideSeconds,PlanetJourneyPhase.Accelerate=>accelerationSeconds,PlanetJourneyPhase.Turn=>turnSeconds,
@@ -76,7 +80,7 @@ namespace StarShift.Gameplay
             else presentation.Present(Phase==PlanetJourneyPhase.Approach?MissionIntroPhase.Approach:Phase==PlanetJourneyPhase.Travel?MissionIntroPhase.Travel:MissionIntroPhase.Brake,t,PlayDirection.Right);
             if(IsAwaitingTap||elapsed<Duration)return;
             if(Phase!=PlanetJourneyPhase.Brake){Enter(Phase+1);return;}
-            Phase=PlanetJourneyPhase.None;presentation.Hide();flow.FinishRegionTravel();
+            Phase=PlanetJourneyPhase.None;presentation.Hide();flow.FinishRegionTravel(true);
             var callback=completed;completed=null;flow.NotifyPresentationChanged();callback?.Invoke();
         }
         public void Cancel(){Phase=PlanetJourneyPhase.None;completed=null;if(presentation!=null)presentation.Hide();}

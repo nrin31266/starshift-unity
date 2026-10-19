@@ -6,7 +6,7 @@ Owner của weapon patterns/config, pickups, Weapon Core, asteroids reward class
 
 ## Weapon philosophy và common config
 
-[LOCKED] Ba nhánh, mỗi nhánh ba level; precise sustained fire, coverage và tracking
+[LOCKED] Ba nhánh, mỗi nhánh năm level; precise sustained fire, coverage và tracking
 là các vai trò khác nhau. Branch level/unlock/active selection là runtime state;
 pattern/damage/cadence thuộc static weapon config.
 
@@ -33,8 +33,8 @@ Exact damage, interval, projectile speed/angles/range vẫn [TBD]; balance sau n
 
 ### Primary weapon heat — M3.5
 
-Heat là continuous runtime state của active weapon. Giữ primary fire tăng heat
-liên tục; chỉ khi chạm capacity/MAX mới latch `Overheated`. Warning/near-hot không
+Mỗi weapon branch có continuous runtime heat riêng. Chỉ active branch đang được
+phép bắn và giữ primary fire mới tăng heat; chỉ khi chạm capacity/MAX mới latch `Overheated`. Warning/near-hot không
 chặn fire. Release trước MAX không lock: sau cooling delay heat giảm và press lại
 bắn ngay. Đây là burst management, không có reload, input mới hoặc timing minigame.
 
@@ -45,7 +45,7 @@ State/time/reset semantics thuộc [player combat](../gameplay/player-combat.md#
 
 Thermal profile thuộc **weapon type**, tách khỏi progression level. Các Pulse Lv
 definition sau này cùng tham chiếu profile Pulse; không tạo thermal profile riêng
-cho Lv1/Lv2/Lv3. Plasma/Homing có thể author profile khác khi được implement;
+cho từng level. Plasma/Homing có thể author profile khác khi được implement;
 không mở thêm content/tuning của chúng trong M3.5.
 
 Pulse seed `[TUNABLE]`, không là balance cuối:
@@ -70,7 +70,7 @@ không rút ngắn cửa sổ sustained fire ở trên.
 
 ### Weapon count `[LOCKED]`
 
-Ba weapon branches, mỗi branch có Lv1, Lv2 và Lv3. Branch identity quyết vai trò
+Ba weapon branches, mỗi branch có Lv1–Lv5 (thay đổi có chủ ý theo feedback M5). Branch identity quyết vai trò
 combat; level pattern dưới đây là prototype seed, không phải final DPS balance.
 
 ### Pulse Laser
@@ -84,7 +84,9 @@ Prototype seed `[TUNABLE]`:
 |---|---|
 | Lv1 | 1 shot |
 | Lv2 | twin shot |
-| Lv3 | twin + center shot / stronger center |
+| Lv3 | 3 tia |
+| Lv4 | 4 tia |
+| Lv5 | 5 tia, cadence nhanh hơn |
 
 M2 Pulse Laser Lv1 seed `[TUNABLE]`, phục vụ VS-010/011 và chưa phải balance đã duyệt:
 
@@ -116,8 +118,10 @@ Prototype:
 | Level | Pattern |
 |---|---|
 | Lv1 | 3-way |
-| Lv2 | 5-way |
-| Lv3 | 5-way stronger / center-enhanced |
+| Lv2 | 4-way |
+| Lv3 | 5-way |
+| Lv4 | 6-way |
+| Lv5 | 7-way, cadence nhanh hơn |
 
 ### Homing Missile
 
@@ -131,6 +135,8 @@ Prototype:
 | Lv1 | 1 missile |
 | Lv2 | 2 missiles |
 | Lv3 | 3 missiles + small splash |
+| Lv4 | 4 missiles, splash .55 |
+| Lv5 | 5 missiles, splash .65 |
 
 ### Unlock
 
@@ -200,36 +206,36 @@ Definition assets chỉ chứa static config; không ghi level/heat/buff timer v
 
 ### Weapon progression prototype
 
-Ba branches dùng pattern seed ở trên với ba level thực. `WeaponLoadout` giữ unlock,
+Ba branches dùng pattern seed ở trên với năm level thực. `WeaponLoadout` giữ unlock,
 active branch và level riêng; bắt đầu chỉ Pulse Lv1. Core đúng branch unlock Lv1
-hoặc tăng một level tới Lv3. Core không tự switch; nút `Tn Lx` cycle các branch đã
+hoặc tăng một level tới Lv5, rồi **tự chuyển sang branch vừa nhặt**. Nút `Tn Lx` vẫn cycle các branch đã
 unlock theo Pulse → Plasma → Homing. Downgrade chỉ active branch theo
 [player contract](../gameplay/player-combat.md#weapon-penalty-on-death-locked).
 
 Seeds runtime `[TUNABLE]` bổ sung cho các pattern ở trên:
 
-| Branch | Cadence L1 / L2 / L3 | Damage mỗi projectile | Special |
+| Branch | Cadence L1 / L2 / L3 / L4 / L5 | Damage mỗi projectile | Special |
 |---|---|---|---|
-| Pulse | .17 / .17 / .17 s | 1; center Lv3 +1 | Tia mảnh/nhanh, speed 15; lateral spacing .22 world units |
-| Plasma | .25 / .25 / .22 s | 1; center Lv3 +2 | Hạt rộng/chậm, speed 10; full fan 32° / 48° / 58° |
-| Homing | .5 / .5 / .5 s | 2 | Speed 8, lifetime 3 s; fan 0°/28°/44° rồi tracking 110°/s trong range 18; Lv3 splash .85 |
+| Pulse | .18 / .18 / .18 / .17 / .16 s | 1 | Tia mảnh/nhanh, speed 15; lateral spacing .16 world units |
+| Plasma | .30 / .29 / .28 / .27 / .26 s | 1 | Speed 10; fan 30° / 36° / 42° / 48° / 54° |
+| Homing | .60 / .58 / .56 / .54 / .52 s | 2 | Speed 7.5, lifetime 4 s; fan 0°/16°/24°/32°/40°; tracking 210°/s, range 18; splash L3 .45/L4 .55/L5 .65 |
 
-Homing chọn nearest valid target phía trước lúc launch, turn có giới hạn, không
-reacquire nếu target chết hoặc instance đã được pool/reuse. Splash không damage
-trùng target chính. Các seed này chưa được cân cho boss; không implement boss mới.
+Homing chọn nearest hittable target phía trước lúc launch, turn có giới hạn; chỉ
+reacquire khi target cũ chết, chưa hittable hoặc instance đã được pool/reuse. Target
+ngoài màn/đang entry protection không được chọn. Splash không damage trùng target chính.
 Plasma lifetime 1.5 s. Ba branch có sprite placeholder riêng: Pulse capsule,
-Plasma energy orb, Homing rocket có nose/fins/exhaust. Visual scale Plasma (.475,.38),
+Plasma energy orb, Homing rocket có nose/fins/exhaust. Visual scale Plasma (.30,.24),
 Homing (.35,.48) nhân base sprite `[TUNABLE]`; Homing có trail .13 s. Plasma xòe từ
-cùng muzzle, Pulse/Homing dùng lateral spacing .22 world units, kể cả khi Homing
-đồng thời có fan angle. Sprite/scale/trail chỉ là presentation, không scale root/
+cùng muzzle, Pulse dùng lateral spacing .16 world units; Homing xòe từ cùng muzzle. Sprite/scale/trail chỉ là presentation, không scale root/
 collider. Pool reuse reset sprite, scale và xóa trail vertices trước launch mới;
 Support Drone/fallback config vẫn dùng sprite gốc khi không author override.
 Enemy HP không scale theo level.
 
-Mỗi branch có một thermal profile; ba level cùng đọc profile đó. Thermal values
+Mỗi branch có một thermal profile; năm level cùng đọc profile đó. Thermal values
 ở bảng thermal phía trên là tuning theo feedback, không là final balance.
-Switch giữ heat/latch riêng của từng branch; inactive branch không tick
-`[PROVISIONAL]`, tránh switch để reset nhiệt. Upgrade cùng branch giữ heat/latch.
+Switch giữ heat/latch riêng của từng branch; inactive branch vẫn nguội theo profile
+`[PROVISIONAL]`. Khóa bắn không khóa clock nguội: held intent lúc gate block được
+xem như không bắn. Upgrade và thả/nhấn cùng branch không reset heat/latch.
 Overdrive chỉ nhân cadence 1.6× `[TUNABLE]`; heat/s vẫn theo type profile, không bypass
 Overheated. Drone bắn phụ độc lập primary thermal, không mở khóa primary fire.
 
@@ -268,46 +274,51 @@ Reward grace/cleanup thuộc [encounter owner](levels-encounters.md#reward-grace
 ### Drop Director test policy
 
 `RewardDropTable` chọn Normal/Elite/MajorCrate/Resource, odds, weighted major list và
-optional guaranteed pickup cho authored test moment. Normal asset dùng .75% major,
-3.5% shard `[TUNABLE]`; chỉ roll shard nếu không ra major. Không loot shower toàn cục.
+optional guaranteed pickup cho authored test moment. Normal asset dùng 2.5% major,
+25% shard `[TUNABLE]`; chỉ roll shard nếu không ra major. Không loot shower toàn cục.
 Elite source dùng cùng configurable table/weights; chưa author Elite combat ở M4-A.
-Resource đảm bảo Shard. Supply target chết eject crate; reward chọn khi nhặt crate,
-không trao trực tiếp lúc destroy/exit. Không tăng score supply/resource khi exact
+Resource đảm bảo Shard. Supply target chết eject hai pickup trực tiếp: một Core hữu dụng
+và một support item; chỉ trao effect khi nhặt, không trao khi destroy/exit. Không tăng score supply/resource khi exact
 bonus vẫn TBD; score 0 tạm cho hai test targets.
 
 Major weights theo baseline phía trên, Core weight chia đều ba branch. Filter maxed
 core/Extra Life overflow; low-life defensive weight ×3, locked branch core weight ×2
-`[PROVISIONAL]`. Chưa có campaign-depth policy trước M4-B. Sau hai crate low-life
-không defensive, crate tiếp chọn Shield/Extra Life; defensive hoặc mở crate khi lives
-trên 1 reset history. History reset theo run. Không pity trên mọi enemy kill.
+`[PROVISIONAL]`. Chưa có campaign-depth policy trước M4-B. Sau hai supply low-life
+không defensive, support slot tiếp chọn Shield/Extra Life; defensive hoặc roll supply khi lives
+trên 1 reset history. History commit khi eject, cùng thời điểm deterministic roll. History reset theo run. Không pity trên mọi enemy kill.
 Guaranteed test tables chỉ phục vụ testbed, không chốt production drop distribution.
 
-Production dùng runtime RNG. Dev/test seed được reset sau RunStarted, không sửa
-asset/config hoặc disk. Đường test và release guard ở [dev owner](../systems/dev-debug.md).
+Fixture M4 giữ seeded test overrides; production Region A dùng deterministic Encounter seed
+theo [quota policy](#encounter-reward-floor-provisional). Dev/test seed không sửa asset/config hoặc disk. Đường test và release guard ở [dev owner](../systems/dev-debug.md).
 
 ## Supply Drone và Supply Crate
 
 ### Supply Drone concept `[LOCKED]`
 
-Supply Drone là cargo craft không người lái [LOCKED], tạo nguồn gốc hợp lý cho crate
+Supply Drone là cargo craft không người lái [LOCKED], tạo nguồn gốc hợp lý cho hai pickup
 thay vì hộp quà tự bay. Silhouette, material và reward accents thuộc
 [art direction](../presentation/art-direction.md#asteroid-supply-drone-và-crate).
 
 ### Behavior
 
 Drone bay qua màn hình, có HP và không cần tấn công. Việc nó rời screen tạo thời
-gian săn reward tự nhiên; event có thể chạy cùng Survive/Timeline. Major item được
-trao qua crate pickup sau ejection; bonus score của supply target theo economy owner.
+gian săn reward tự nhiên; event có thể chạy cùng Survive/Timeline. Hai item được
+nhặt trực tiếp sau ejection; bonus score của supply target theo economy owner.
 
 ```text
-Drone destroyed → crate ejected → crate drift → player pickup
+Drone destroyed → nổ nhẹ → Core + support eject hai phía → player nhặt từng item
 ```
 
 ### Crate
 
-Crate drift trong khoảng 6–8 s [TUNABLE], đủ để player có cơ hội pickup.
-Crate guaranteed major reward có ý nghĩa; không trả reward “rác” sau khi player
-đã săn được drone.
+Production không tạo pickup `BOX` trung gian. Roll Core từ các branch còn upgrade,
+roll support riêng (Shield/Overdrive/Drone/Ammo/Extra Life, vẫn filter khả dụng).
+Nếu mọi branch đã Lv5, Core slot dùng support thay thế `[PROVISIONAL]`; không convert
+Core đã rơi hoặc thêm currency. Hai item bật nhẹ hai phía trong .45 s `[TUNABLE]`,
+sau đó drift/lifetime/scope như direct pickup; small burst không AoE/shake.
+`MajorCrate` table/API cũ giữ compatibility cho fixture; production defeat path dùng pair.
+SupplyCaptured ghi một lần khi nhặt item đầu tiên trong pair; item thứ hai không
+ghi thêm. Không nhặt item nào thì không có capture stat.
 
 ### Scripted supply
 
@@ -338,9 +349,9 @@ readability. Boss và resource/supply moments mới là nguồn reward nổi b�
 
 | Source | Drop baseline |
 |---|---|
-| Normal enemy | Major item khoảng 0.5–1% [TUNABLE]; Shard thấp, khoảng vài % |
-| Elite | Major item khoảng 5–8% [TUNABLE] |
-| Boss | Guaranteed major reward/crate |
+| Normal enemy | Major item 2.5%, Shard 25% nếu không ra major [TUNABLE] |
+| Elite | Major item 10%, Shard 60% nếu không ra major [TUNABLE] |
+| Boss | Guaranteed Core + support pair và 28 Shards rải rộng [TUNABLE] |
 | Golden asteroid | Nguồn Shard rõ hơn normal enemy |
 
 ### Major reward baseline weights `[TUNABLE]`
@@ -349,7 +360,7 @@ Ví dụ khởi đầu:
 
 | Reward | Weight |
 |---|---:|
-| Weapon Core | 30 |
+| Weapon Core | 90 tổng (30 mỗi branch) |
 | Shield | 25 |
 | Overdrive | 18 |
 | Support Drone | 14 |
@@ -366,16 +377,16 @@ không gọi là AI trong sản phẩm. Các rule điều chỉnh:
 - player còn 1 life → Shield/Extra Life tăng;
 - weapon chưa unlock khi đã đi sâu campaign → Core thích hợp tăng;
 - weapon đã max → core branch đó weight giảm/0;
-- sau nhiều crate mà không có defensive reward trong low-life state → pity.
+- sau nhiều supply mà không có defensive reward trong low-life state → pity.
 
 ### Pity rule
 
 Prototype:
 
 ```text
-Nếu player còn 1 life và đã mở 2 major crate liên tiếp
-mà không nhận defensive reward,
-crate phù hợp tiếp theo ưu tiên/guarantee Shield hoặc Extra Life.
+Nếu player còn 1 life và đã eject 2 supply pair liên tiếp
+mà support slot không defensive,
+support slot kế tiếp ưu tiên/guarantee Shield hoặc Extra Life.
 ```
 
 Exact logic `[TUNABLE]`.
@@ -438,7 +449,7 @@ Unity giữ GUID. Testbed Encounter 4 guaranteed pickup nay cho ammo.
 | Rule | Current prototype |
 |---|---|
 | Reserve | Cap 3; starting 1 `[PROVISIONAL]`; ammo pickup +1 |
-| Activation | Bấm nút TÊN LỬA; chỉ khi gameplay input mở và Encounter đang Running |
+| Activation | Bấm nút `M`; chỉ khi gameplay input mở và Encounter đang Running/ExitDrain |
 | Cadence | .8 s cooldown `[TUNABLE]`, không tiêu quả tiếp do duplicate click hoặc khi còn missile đang bay |
 | Launch → detonation | Flight .32 s `[TUNABLE]` theo scaled simulation; stock trừ khi launch, damage/bullet clear chỉ khi detonate |
 | Hostile bullets | Clear trong cùng scene tại detonation, giữ friendly shots |
@@ -475,11 +486,53 @@ cue thuộc [presentation owner](../presentation/audio-vfx.md#reserve-missile-im
 
 ## M5 authored reward usage `[PROVISIONAL]`
 
-L1 production chỉ có một typed Pulse Core progression moment; không có guaranteed
-Shield/Drone/Homing/Extra Life test dump. Normal drop table giữ nguyên. M3 first
-Supply và M4 preboss Supply dùng crate major guarantee hiện có; escape không reward,
-không chặn Encounter. Elite table seed major 6.5%, shard 25% `[TUNABLE]`; Vanguard
-đảm bảo một major crate sau staged death. Crate vẫn cần pickup, không auto grant.
-Shard motion/lifetime/carry-over theo policy hiện có, không hard-clear ở minor handoff.
-Weapon Core typing, Shield stacking, Extra Life overflow và replay Shards vẫn TBD;
-M5 không khóa các quyết định này.
+Normal/Elite random odds được tăng nhẹ như policy phía trên; quota bên dưới bổ sung floor progression cho
+combat quan trọng thay vì gắn guaranteed Core lên một SpawnAction. M3 Supply và M4
+preboss Supply dùng MajorCrate table để eject pair; resource asteroid giữ Shard path; Vanguard eject
+một defeat pair sau staged death, kèm 28 Shards rải x .07–.93, y .58–.85 viewport.
+Chỉ enemy được classify Boss mới dùng `BossShardCount`; supply không rải vàng. Boss
+gold dùng visual .55, initial fall 1.2, gravity 4.5, max speed 3 `[TUNABLE]`.
+Collection grace/timing thuộc [level owner](levels-encounters.md#m5-region-a-authored-content-provisional). Escape của Supply/resource không nhận reward.
+Mỗi item vẫn cần pickup, không auto grant; Boss không tiêu common quota.
+Availability filter chỉ xét capacity/loadout, độc lập input gate: enemy/supply bị hạ
+khi Player đang respawn vẫn eject đồ; collection chờ gate mở như bình thường.
+
+## Encounter reward floor `[PROVISIONAL]`
+
+`EncounterDefinition.GuaranteedMajorCount` và `GuaranteeTable` author minimum drop
+opportunity. Production M1 Foundation floor **1**, Formation **2**; M2 Raider/Bomber
+và M3 Sine/Pincer floor **1**; M3 Elite **2**. Tổng authored combat floor là 9. Foundation guarantee TYPE là Pulse Core;
+các encounter còn lại draw từ ProgressionDrops (existing major weights, riêng Core
+weight 90 mỗi branch `[TUNABLE]`, giữ state filters/locked-branch bias). Storm/Boss có floor 0;
+Supply, resource và Boss defeat pair là reward paths độc lập.
+
+Runtime `RewardDirector` đếm eligible normal/Elite enemies, không gồm Boss,
+Supply/resource/normal asteroids. Seed dùng stable Mission ID + Encounter ID + base
+seed 410; không dùng frame clock hoặc process-random string hash. Dev reward seed
+chỉ thay runtime base seed. Cùng checkpoint/seed/player actions tái tạo normal roll,
+major selection và kill ordinal; enemy source không được author cố định.
+
+Sau mỗi eligible kill: normal roll trước; major phù hợp đã ra thì credit floor.
+Nếu chưa đạt, seeded remaining-kill selection chọn xác suất `remaining quota /
+remaining eligible population`, bắt buộc ở các kill cuối. Mỗi kill emit tối đa một
+selected direct item; quota không cộng thêm một major cạnh normal major vừa credit.
+Normal random drops sau khi đạt floor vẫn giữ odds đã author. Normal 2.5% major,
+Elite 10%; Shard Normal 25% / Elite 60% nếu major roll không ra; Core weight mỗi branch lần lượt 30/50, Progression 90 `[TUNABLE]`.
+Pity chỉ áp dụng support slot khi eject Supply/Boss pair, không chạy thêm cho quota item.
+
+Timeline fallback: nếu có ít nhất một eligible enemy đã bị hạ nhưng phần còn lại
+escape/hết cap, completion resolve phần floor thiếu tại vị trí của killed candidate
+cuối. Không kill nào thì không free reward. Floor là dropped opportunity, không
+phải auto collection hoặc bảo đảm đủ upgrade sau một run.
+
+Normal pickup clutter cap giữ 6 `[TUNABLE]`; authored floor và guaranteed Supply/Boss
+pair được cấp reserved overflow slot khi cap đã đầy để không mất guaranteed item. Không force thêm theo
+mỗi enemy; production combat floor 1–2 theo bảng trên. Các pickup còn lại vẫn chịu normal
+cap/lifetime/scope; kiểm tra actual density trước khi tăng quota. Đây là thay đổi
+prototype có chủ ý, không khóa final economy hoặc maxed-core conversion.
+
+Retry/Continue dựng lại seed/quota từ Encounter start, không snapshot loot giữa
+wave. Collected Core/loadout rollback cùng checkpoint; Shard high-water và Replay/
+DevTest write permission giữ theo [save owner](../systems/save-profile.md).
+Typed Core vẫn `[PROVISIONAL]`; Shield stacking, overflow và final replay economy
+còn TBD. Evidence và giới hạn test ở [dev/debug](../systems/dev-debug.md#m5-second-human-feel-pass-verification).

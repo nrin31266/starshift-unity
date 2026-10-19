@@ -70,7 +70,7 @@ public static class VerifyPersistence
             data=Fixture(); data.Campaign.MissionId="BAD"; Require(!Valid(data),"Bad mission");
             data=Fixture(); data.Campaign.Checkpoint.ActiveWeapon=(WeaponBranch)99; Require(!Valid(data),"Bad enum");
             data=Fixture(); data.Campaign.Checkpoint.Lives=0; Require(!Valid(data),"Bad lives");
-            data=Fixture(); data.Campaign.Checkpoint.WeaponLevels[1]=4; Require(!Valid(data),"Bad level");
+            data=Fixture(); data.Campaign.Checkpoint.WeaponLevels[1]=WeaponLoadout.MaximumLevel+1; Require(!Valid(data),"Bad level");
             data=Fixture(); data.Settings.MusicVolume=float.NaN; Require(!Valid(data),"Bad settings");
             data=Fixture(); Require(store.Write(data,Valid),"Replace invalid with explicit valid state");
             var service=new CampaignProgress(store,Valid);
@@ -124,7 +124,7 @@ public static class VerifyPersistence
     static LevelDefinition LegacyLevel()
     {
         if (legacyLevel != null) return legacyLevel;
-        legacyLevel = UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Levels/L1.asset"));
+        legacyLevel = UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Fixtures/Levels/M4SystemTestbed.asset"));
         legacyLevel.Id = "L1"; legacyLevel.hideFlags = HideFlags.DontSave; return legacyLevel;
     }
     static string UseFixture(int index)

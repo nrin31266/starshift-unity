@@ -59,7 +59,7 @@ không tăng khi enemy chết/eject reward.
 
 RunStarted reset hai counter; death/handoff giữ chúng. Clear/Game Over freeze counters
 cho presentation hiện tại. Có runtime counts enemies destroyed, cores collected và
-supply crates collected để verify loop; chưa là full Campaign Result tracking.
+supply opportunities collected (nhặt ít nhất một item; một source vẫn chỉ tính một) để verify loop; chưa là full Campaign Result tracking.
 HUD đọc giá trị thực theo [UI owner](../presentation/ui-ux.md#gameplay-hud).
 M4-A ban đầu chỉ có runtime counters. M4-B persist checkpoint counters và tách
 Profile balance theo [save owner](../systems/save-profile.md); HUD session Shards
@@ -157,3 +157,10 @@ mission-local stats reset cho Mission mới. Elite dùng ×2 base score. Vanguar
 seed 2500 `[TUNABLE]` để thử clear flow; final boss bonus formula vẫn `[TBD]`.
 Replay dùng [draft presets](../content/levels-encounters.md#mission-replay-presets)
 và không chain sang Mission kế; giữ nguyên isolation, chưa chốt replay economy.
+
+
+M5 second human-feel pass thêm [Encounter reward floor](../content/weapons-items-drops.md#encounter-reward-floor-provisional)
+`[PROVISIONAL]` để tạo nhiều progression opportunities; không đổi Score/Shard formula,
+weapon persistence hoặc anti-farm high-water. Floor là world pickup, không permanent
+credit lúc enemy chết. Retry rollback weapon level; Replay/DevTest không write Profile.
+Không coi automated upgrade/drop counts thành final economy hoặc manual balance approval.

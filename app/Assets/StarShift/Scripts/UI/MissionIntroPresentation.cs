@@ -19,6 +19,12 @@ namespace StarShift.UI
         private SpriteRenderer[] backdropRenderers;
         private Color[] backdropColors;
         private bool introVisible;
+        private bool gameplayApproach;
+        public Vector3 ShipPosition => ship.transform.position;
+        public void BeginGameplayApproach()
+        {
+            gameplayApproach = true; playerVisual.SetActive(visualWasActive); ship.gameObject.SetActive(false);
+        }
         private bool visualWasActive;
         private bool backdropWasActive;
         private bool cueVisible;
@@ -33,9 +39,12 @@ namespace StarShift.UI
         private Color environmentColor, planetColor;
         private Color[] environmentTints;
         private Vector3[] environmentPositions;
+        private StarShift.Player.RelativeDragMovement movement;
+        private float approachStart = .17f;
 
         private void Awake()
         {
+            movement = playerRoot.GetComponent<StarShift.Player.RelativeDragMovement>();
             starRenderers = stars.GetComponentsInChildren<SpriteRenderer>(true);
             backdropRenderers = gameplayBackdrop.GetComponentsInChildren<SpriteRenderer>(true);
             backdropColors = new Color[backdropRenderers.Length];
@@ -45,6 +54,12 @@ namespace StarShift.UI
         }
         public void Present(MissionIntroPhase nextPhase, float normalized, PlayDirection playDirection)
         {
+            if (journeyVisible && nextPhase == MissionIntroPhase.Approach)
+            {
+                var viewport = gameplayCamera.WorldToViewportPoint(playerRoot.position);
+                approachStart = playDirection == PlayDirection.Right ? viewport.x : viewport.y;
+            }
+            else if (nextPhase == MissionIntroPhase.Briefing) approachStart = .17f;
             journeyVisible = false;
             if (!introVisible)
             {
@@ -61,7 +76,7 @@ namespace StarShift.UI
             progress = normalized;
             direction = playDirection;
             stars.gameObject.SetActive(true);
-            ship.gameObject.SetActive(true);
+            ship.gameObject.SetActive(!gameplayApproach);
             ApplyVisuals(0);
         }
         public void PresentHandoff(float normalized, PlayDirection playDirection)
@@ -117,9 +132,9 @@ namespace StarShift.UI
                 planet.color = color;
             }
             var shipViewport = PlayDirectionSpace.Point(new Vector2(.5f,
-                phase == MissionIntroPhase.Briefing ? .17f : phase == MissionIntroPhase.Approach ? Mathf.Lerp(.17f,.29f,t) : .29f),direction);
+                phase == MissionIntroPhase.Briefing ? approachStart : phase == MissionIntroPhase.Approach ? Mathf.Lerp(approachStart,.29f,t) : .29f),direction);
             var shipPosition = World(shipViewport);
-            if (phase == MissionIntroPhase.Brake) shipPosition = Vector3.Lerp(shipPosition,playerRoot.position,t);
+            if (phase == MissionIntroPhase.Brake) shipPosition = Vector3.Lerp(shipPosition,movement.CheckpointPosition(direction),t);
             ship.transform.SetPositionAndRotation(shipPosition,Quaternion.Euler(0,0,PlayDirectionSpace.Rotation(direction)));
             var backdropAlpha = phase == MissionIntroPhase.Brake ? t : 0;
             gameplayBackdrop.SetActive(backdropWasActive && backdropAlpha > 0);
@@ -182,7 +197,7 @@ namespace StarShift.UI
         }
         public void Hide()
         {
-            journeyVisible=false;
+            journeyVisible=false; gameplayApproach=false;
             if (planet != null) planet.gameObject.SetActive(false);
             if (stars != null) stars.gameObject.SetActive(false);
             if (ship != null) ship.gameObject.SetActive(false);

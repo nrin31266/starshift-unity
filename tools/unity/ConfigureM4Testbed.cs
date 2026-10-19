@@ -70,17 +70,21 @@ public static class ConfigureM4Testbed
         if(Application.isPlaying || scene.isDirty || scene.path!="Assets/StarShift/Scenes/02_Gameplay.unity") throw new InvalidOperationException("Saved gameplay scene/Edit Mode required.");
         Folder("Assets/StarShift/Data","Rewards");Folder("Assets/StarShift/Prefabs","Rewards");
         var pulse=AssetDatabase.LoadAssetAtPath<PulseLaserDefinition>(Data+"Weapons/PulseLaserLv1.asset");
-        if(pulse.Pattern(2)==null) Set(pulse,"levels",new[]{
+        if(pulse.Pattern(WeaponLoadout.MaximumLevel)==null) Set(pulse,"levels",new[]{
             new WeaponLevelPattern {ProjectileCount=1},
             new WeaponLevelPattern {ProjectileCount=2},
-            new WeaponLevelPattern {ProjectileCount=3,CenterBonus=1}
+            new WeaponLevelPattern {ProjectileCount=3,CenterBonus=1},
+            new WeaponLevelPattern {ProjectileCount=3,Damage=2},
+            new WeaponLevelPattern {ProjectileCount=5,CenterBonus=3,FireInterval=.16f}
         });
         var plasma=Asset<PulseLaserDefinition>(Data+"Weapons/PlasmaSpread.asset",x=>{
             Set(x,"branch",WeaponBranch.Plasma);Set(x,"projectilePrefab",pulse.ProjectilePrefab);Set(x,"projectileColor",new Color(.8f,.4f,1));
             Set(x,"thermalProfile",Asset<WeaponThermalProfile>(Data+"Weapons/PlasmaThermal.asset",_=>{}));
             Set(x,"levels",new[]{new WeaponLevelPattern{ProjectileCount=3,SpreadDegrees=26,FireInterval=.25f},
                 new WeaponLevelPattern{ProjectileCount=5,SpreadDegrees=40,FireInterval=.25f},
-                new WeaponLevelPattern{ProjectileCount=5,SpreadDegrees=40,CenterBonus=2,FireInterval=.22f}});
+                new WeaponLevelPattern{ProjectileCount=5,SpreadDegrees=40,CenterBonus=2,FireInterval=.22f},
+                new WeaponLevelPattern{ProjectileCount=7,SpreadDegrees=66,LateralSpacing=0,CenterBonus=3,FireInterval=.22f},
+                new WeaponLevelPattern{ProjectileCount=7,SpreadDegrees=70,LateralSpacing=0,Damage=2,CenterBonus=1,FireInterval=.22f}});
         });
         var homing=Asset<PulseLaserDefinition>(Data+"Weapons/HomingMissile.asset",x=>{
             Set(x,"branch",WeaponBranch.Homing);Set(x,"projectilePrefab",pulse.ProjectilePrefab);Set(x,"projectileColor",new Color(1,.5f,.16f));
@@ -88,7 +92,9 @@ public static class ConfigureM4Testbed
             Set(x,"thermalProfile",Asset<WeaponThermalProfile>(Data+"Weapons/HomingThermal.asset",_=>{}));
             Set(x,"levels",new[]{new WeaponLevelPattern{ProjectileCount=1,Damage=2,FireInterval=.5f},
                 new WeaponLevelPattern{ProjectileCount=2,Damage=2,FireInterval=.5f},
-                new WeaponLevelPattern{ProjectileCount=3,Damage=2,FireInterval=.5f,SplashRadius=.85f}});
+                new WeaponLevelPattern{ProjectileCount=3,Damage=2,FireInterval=.5f,SplashRadius=.85f},
+                new WeaponLevelPattern{ProjectileCount=4,SpreadDegrees=50,Damage=2,FireInterval=.48f,SplashRadius=1},
+                new WeaponLevelPattern{ProjectileCount=5,SpreadDegrees=56,Damage=2,FireInterval=.45f,SplashRadius=1.1f}});
         });
         var shard=Item("StellarShard",PickupKind.Shard,"SS",Amber);
         var pulseCore=Item("PulseCore",PickupKind.WeaponCore,"T1+",Cyan);
@@ -157,11 +163,11 @@ public static class ConfigureM4Testbed
         var hold=Flight("M4Hold",new Vector2(.5f,1.12f),new Vector2(.5f,.73f),1,true);
         var fly=Flight("M4Arc",new Vector2(-.2f,.86f),new Vector2(.5f,.72f),9,false,FlightPath.ArcRight,new Vector2(.15f,.12f));
         var supplyFlight=Flight("M4Supply",new Vector2(-.1f,.56f),new Vector2(.5f,.55f),6);
-        var a=AssetDatabase.LoadAssetAtPath<EncounterDefinition>(Data+"Encounters/L1EncounterA.asset");
-        var b=AssetDatabase.LoadAssetAtPath<EncounterDefinition>(Data+"Encounters/L1EncounterB.asset");
-        var c=Asset<EncounterDefinition>(Data+"Encounters/L1EncounterC.asset",_=>{});
-        var d=Asset<EncounterDefinition>(Data+"Encounters/L1EncounterD.asset",_=>{});
-        var e=Asset<EncounterDefinition>(Data+"Encounters/L1EncounterE.asset",_=>{});
+        var a=AssetDatabase.LoadAssetAtPath<EncounterDefinition>(Data+"Fixtures/Encounters/L1EncounterA.asset");
+        var b=AssetDatabase.LoadAssetAtPath<EncounterDefinition>(Data+"Fixtures/Encounters/L1EncounterB.asset");
+        var c=Asset<EncounterDefinition>(Data+"Fixtures/Encounters/L1EncounterC.asset",_=>{});
+        var d=Asset<EncounterDefinition>(Data+"Fixtures/Encounters/L1EncounterD.asset",_=>{});
+        var e=Asset<EncounterDefinition>(Data+"Fixtures/Encounters/L1EncounterE.asset",_=>{});
         a.Groups=new[]{Group(scout,hold,5,0,0),Group(scout,hold,1,1.8f,-.2f,forced(pulseCore))};
         b.Groups=new[]{Group(scout,fly,6,0,0,normal,FormationLayout.V),Group(scout,fly,6,.4f,-.17f,normal,FormationLayout.Staggered),Group(scout,fly,1,4,-.28f,forced(plasmaCore))};
         c.Groups=new[]{Group(scout,fly,4,0,0),Group(scout,fly,1,1,-.17f,forced(shield)),Group(scout,fly,1,3,-.28f,forced(od)),Group(scout,fly,1,5,-.39f,forced(drone)),Group(scout,fly,4,9,0)};
@@ -176,7 +182,7 @@ public static class ConfigureM4Testbed
         }
         c.OptionalEvents=new[]{new OptionalEvent{Id="M4_SUPPLY",Kind=OptionalEventKind.SupplyDrone,TimeOffset=7,Group=Group(cargo,supplyFlight,1,0,0,major)}};
         e.OptionalEvents=new[]{new OptionalEvent{Id="M4_RESOURCE",Kind=OptionalEventKind.GoldenMeteor,TimeOffset=1,Group=Group(asteroid,supplyFlight,1,0,-.18f,resource)}};
-        var level=AssetDatabase.LoadAssetAtPath<LevelDefinition>(Data+"Levels/L1.asset");
+        var level=AssetDatabase.LoadAssetAtPath<LevelDefinition>(Data+"Fixtures/Levels/M4SystemTestbed.asset");
         level.Encounters=all;
         level.AdditionalStarts=new[]{new LevelStartPoint{Id="SYSTEM_DENSITY",Encounter=b},new LevelStartPoint{Id="SYSTEM_EFFECTS",Encounter=c},new LevelStartPoint{Id="SYSTEM_SURVIVAL",Encounter=d},new LevelStartPoint{Id="SYSTEM_REWARDS",Encounter=e}};
         EditorUtility.SetDirty(level);
@@ -195,13 +201,13 @@ public static class ConfigureM4Testbed
             while(iterator.NextVisible(true))
                 if(iterator.propertyType==SerializedPropertyType.ObjectReference && iterator.objectReferenceValue==null && iterator.objectReferenceEntityIdValue!=default)missingReferences++;
         }
-        var level=AssetDatabase.LoadAssetAtPath<LevelDefinition>(Data+"Levels/L1.asset");
+        var level=AssetDatabase.LoadAssetAtPath<LevelDefinition>(Data+"Fixtures/Levels/M4SystemTestbed.asset");
         var loadout=GameObject.Find("Player").GetComponent<WeaponLoadout>();
         foreach(var branch in new[]{WeaponBranch.Pulse,WeaponBranch.Plasma,WeaponBranch.Homing})
         {
             var weapon=loadout.Definition(branch);
             if(weapon==null || weapon.ThermalProfile==null || weapon.ProjectilePrefab==null)throw new InvalidOperationException("Missing weapon config: "+branch);
-            for(int i=1;i<=3;i++)if(weapon.Pattern(i)==null || weapon.Pattern(i).ProjectileCount<1 || weapon.Pattern(i).FireInterval<=0)throw new InvalidOperationException("Invalid weapon pattern");
+            for(int i=1;i<=WeaponLoadout.MaximumLevel;i++)if(weapon.Pattern(i)==null || weapon.Pattern(i).ProjectileCount<1 || weapon.Pattern(i).FireInterval<=0)throw new InvalidOperationException("Invalid weapon pattern");
         }
         var prefabs=AssetDatabase.FindAssets("t:Prefab",new[]{"Assets/StarShift/Prefabs"}).Select(AssetDatabase.GUIDToAssetPath).Select(AssetDatabase.LoadAssetAtPath<GameObject>).ToArray();
         var missingScripts=nodes.Sum(t=>GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(t.gameObject))+

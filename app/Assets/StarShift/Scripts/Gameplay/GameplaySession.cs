@@ -24,7 +24,7 @@ namespace StarShift.Gameplay
         public void RetryEncounter() => Persistence?.RetryEncounter();
         public LevelFlow Flow => runner.Flow;
         public bool HasActiveRun => runner.HasActiveRun || (Persistence != null && Persistence.IsAdvancingMission) || (region != null && region.IsTravelling);
-        public bool CanPause => (region == null || !region.IsTravelling || region.IsMissionTravel) && !IsTerminal && HasActiveRun && (Flow == null || !Flow.IsCinematic);
+        public bool CanPause => !IsTerminal && HasActiveRun && (Flow == null || !Flow.IsCinematic);
         public bool IsPaused { get; private set; }
         public bool IsTerminal => playerGate.State == PlayerGameplayState.Result || playerGate.State == PlayerGameplayState.GameOver;
         public bool IsClear => playerGate.State == PlayerGameplayState.Result;
@@ -84,7 +84,7 @@ namespace StarShift.Gameplay
             lifecycle.GetComponent<EmergencyMissileReserve>()?.CancelPending();
             lifecycle.GetComponent<EmergencyMissilePresentation>()?.ResetForSession();
             lifecycle.GetComponentInChildren<SupportDrone>()?.ResetForSession();
-            weapon.ResetForSession();
+            weapon.ResetForSession(preserveThermalState: preserveInput);
             ReleaseFriendlyProjectiles();
             RestoreClock();
             IsPaused = false;
@@ -112,9 +112,9 @@ namespace StarShift.Gameplay
             lifecycle.GetComponent<EmergencyMissilePresentation>()?.ResetForSession();
             lifecycle.GetComponent<PlayerTemporaryEffects>()?.ResetForSession();
         }
-        public void ShowRegionReady()
+        public void ShowRegionReady(bool preserveInput = false)
         {
-            RestoreClock();IsPaused=false;pointer.CancelGesture();playerGate.SetState(PlayerGameplayState.Active);playerGate.SetCinematicLock(false);enemyFireGate.Block();Changed?.Invoke();
+            RestoreClock();IsPaused=false;if(!preserveInput)pointer.CancelGesture();playerGate.SetState(PlayerGameplayState.Active);playerGate.SetCinematicLock(false);enemyFireGate.Block();Changed?.Invoke();
         }
         public void ShowRegionComplete() { playerGate.SetState(PlayerGameplayState.Result); EndCombat(); }
 

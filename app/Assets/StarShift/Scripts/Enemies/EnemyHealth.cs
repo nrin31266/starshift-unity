@@ -21,8 +21,29 @@ namespace StarShift.Enemies
         public int SpawnVersion { get; private set; }
         public int CurrentHp { get; private set; }
         public EnemyModifierDefinition Modifier { get; private set; }
-        public int MaxHp => definition != null ? Mathf.CeilToInt(definition.MaxHp * (Modifier != null ? Modifier.HpMultiplier : 1)) : 0;
-        public void ConfigureModifier(EnemyModifierDefinition modifier) => Modifier = modifier;
+        private int spawnHp;
+        private EntryHoldFlight flight;
+        private float visibleSeconds;
+        private bool protectEntry;
+        public bool CanReceiveDamage
+        {
+            get
+            {
+                if (!IsAlive || (flight != null && flight.IsOutsideView)) return false;
+                return !protectEntry || (visibleSeconds >= .2f && (Definition.MissileTier != MissileDamageTier.Boss || flight.IsHolding));
+            }
+        }
+        private void Awake()
+        {
+            flight = GetComponent<EntryHoldFlight>();
+            protectEntry = flight != null && definition != null && definition.BodyDamagesPlayer && GetComponent<AsteroidVisualMotion>() == null;
+        }
+        private void FixedUpdate()
+        {
+            if (flight != null && !flight.IsOutsideView) visibleSeconds += Time.fixedDeltaTime;
+        }
+        public int MaxHp => definition != null ? Mathf.CeilToInt((spawnHp > 0 ? spawnHp : definition.MaxHp) * (Modifier != null ? Modifier.HpMultiplier : 1)) : 0;
+        public void ConfigureModifier(EnemyModifierDefinition modifier, int hpOverride = 0) { Modifier = modifier; spawnHp = Mathf.Max(0, hpOverride); }
         public bool IsAlive => isActiveAndEnabled && CurrentHp > 0;
         public event Action Damaged;
         public event Action Died;
@@ -36,13 +57,14 @@ namespace StarShift.Enemies
                 return;
             }
             SpawnVersion++;
+            visibleSeconds = 0;
             CurrentHp = MaxHp;
             if (!active.Contains(this)) active.Add(this);
         }
 
         public void ReceivePlayerHit(int damage, GameObject owner)
         {
-            if (!IsAlive || damage <= 0) return;
+            if (!CanReceiveDamage || damage <= 0) return;
             CurrentHp = Mathf.Max(0, CurrentHp - damage);
             var lethal = CurrentHp == 0;
             try { Damaged?.Invoke(); }

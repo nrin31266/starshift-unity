@@ -241,15 +241,14 @@ Text có thời gian xuất hiện/đọc trước khi fade in lời nhắc nh�
 Không nút chữ nhật BẮT ĐẦU. Tap trái chuột hoặc touch hợp lệ ở bất kỳ điểm trong
 Game View tiếp tục; drag, cancel, right-click, hold dài và press bắt đầu trước lời
 nhắc không được tính. Không auto-launch khi hết thời gian đọc. Toàn bộ input của
-cinematic được consume; khi trả gameplay phải có press mới để move/fire. Detailed
+trước continue được consume; fresh press sau tap được move/fire ngay trong approach. Detailed
 ownership thuộc [player owner](../gameplay/player-combat.md#m2-ui-pointer-ownership).
 
 Ẩn combat HUD/Pause ở **major cinematic**: establishing intro hiện tại; future
 major boss reveal, major direction-shift cinematic và ending áp dụng cùng rule.
 Không mặc định mọi transition là major cinematic. Sau continue, giữ approach /
-acceleration / deceleration; camera và HUD trở về đồng thời với deceleration,
-không nhịp đứng chờ riêng hoặc menu/confirmation nữa.
-Khi Brake kết thúc, HUD/control trở lại và Mission title hiện upper-center, gồm
+acceleration / deceleration; HUD/control mở ngay, real Player giữ pose/held input
+qua cuối zoom. Khi Brake kết thúc Mission title hiện upper-center, gồm
 `NHIỆM VỤ NN` và mô tả ngắn một dòng. Title là overlay: first enemy entry bắt đầu
 trong lúc chữ còn hiện/fading, không chờ card hoàn tất và không yêu cầu tap nữa.
 Pause không nhận lệnh trong major cinematic; simulation vẫn chạy. Trên gameplay,
@@ -291,9 +290,11 @@ Input ownership chi tiết thuộc [player owner](../gameplay/player-combat.md#m
 
 ## Reserve missile HUD prototype
 
-CombatHud có nút TÊN LỬA với current/cap, nằm trong SafeArea góc dưới phải; tách khỏi
-weapon-cycle. Disable khi stock zero, cooldown, Pause, cinematic, dying/respawning,
-terminal hoặc không ở Running Encounter. Nút chỉ gửi intent tới reserve owner;
+CombatHud dùng ký hiệu tạm `M current/cap` (sau này thay icon), nằm cao hơn
+weapon-cycle với đáy nút tại y96 reference pixels, size 96×48 `[TUNABLE]`. Caption nhỏ giữa hai nút
+hiện T1/T2/T3 đã unlock, bracket active branch, `-` cho locked và `+N` số loại khác.
+Caption không raycast; các nút vẫn consume pointer riêng. Disable khi stock zero, cooldown, Pause, cinematic, dying/respawning,
+terminal hoặc không ở Running/ExitDrain Encounter. Nút chỉ gửi intent tới reserve owner;
 UI không trừ stock/damage hoặc lưu save. Pointer consumption dùng existing UI input
 boundary để bấm nút không khởi động drag/fire. Không thêm inventory/menu scene.
 
@@ -305,4 +306,10 @@ counters, không giant card hoặc common-enemy HP bar. Chỉ hiện khi Boss En
 Running và Boss sống; ẩn ngay defeat/reset/exit. Phase B thêm `GIAI ĐOẠN 2` để cue
 không chỉ phụ thuộc màu. Proper name Vanguard Frigate giữ English/provisional.
 Mission production dùng `NHIỆM VỤ 01`–`NHIỆM VỤ 04`; không expose internal IDs.
-Region-ready trả gameplay theo hướng Right sau cinematic/tap/approach, yêu cầu gesture mới; chưa có Mission 05/menu mới.
+Region-ready giữ gameplay theo hướng Right và gesture đang held sau approach; chưa có Mission 05/menu mới.
+
+
+M5 second feel pass giữ Boss HUD tại SafeArea top center, đưa track/name cao hơn để
+không chồng engine silhouette ở camera 9. Đây là placeholder composition; không thêm
+common-enemy HP bars. Beam warning/active khác nhau bằng full lane tint và bright core,
+không chỉ đổi màu. Exact combat geometry ở [enemy owner](../content/enemies-bosses.md#boss-1--vanguard-frigate-provisional).

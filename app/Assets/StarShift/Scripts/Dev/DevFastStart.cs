@@ -9,19 +9,19 @@ namespace StarShift.Dev
     [DisallowMultipleComponent, RequireComponent(typeof(EncounterRunner))]
     public sealed class DevFastStart : MonoBehaviour
     {
-        [SerializeField] private bool devModeEnabled;
+        [SerializeField, Tooltip("Bật để dùng Start Level/Start Point bên dưới; chạy isolated, không ghi CampaignSave.")] private bool devModeEnabled;
         [SerializeField] private string startPoint = "LEVEL_START";
         [SerializeField] private bool standalone;
 
         [SerializeField] private LevelDefinition startLevel;
-        [SerializeField] private bool skipIntro;
+        [SerializeField, Tooltip("Bỏ intro của Start Level khi Dev Mode Enabled bật. Chạy thường: sửa Intro/Enabled trên LevelFlow/Level thực tế.")] private bool skipIntro;
         [SerializeField] private bool overrideDirection;
         [SerializeField] private PlayDirection direction;
         [SerializeField] private CameraProfile cameraOverride;
 
         [SerializeField] private bool deterministicRewards;
         [SerializeField] private int rewardSeed = 410;
-        [SerializeField, Range(1, 3)] private int startingWeaponLevel = 1;
+        [SerializeField, Range(1, WeaponLoadout.MaximumLevel)] private int startingWeaponLevel = 1;
         [SerializeField] private bool unlockAllWeapons;
 
         private bool pendingBossPhaseB;
@@ -30,7 +30,7 @@ namespace StarShift.Dev
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (!pendingBossPhaseB) return;
             foreach (var enemy in StarShift.Enemies.EnemyHealth.Active)
-                if (enemy.IsAlive && enemy.GetComponent<StarShift.Enemies.BossPhaseRunner>() != null)
+                if (enemy.CanReceiveDamage && enemy.GetComponent<StarShift.Enemies.BossPhaseRunner>() != null)
                 {
                     pendingBossPhaseB = false;
                     enemy.ReceivePlayerHit(Mathf.CeilToInt(enemy.MaxHp * .51f), gameObject);
@@ -74,7 +74,8 @@ namespace StarShift.Dev
                 {
                     var branch = (WeaponBranch)i;
                     if (i > 0 && !unlockAllWeapons) continue;
-                    while (loadout.Level(branch) < startingWeaponLevel) loadout.ApplyCore(branch);
+                    while (loadout.Level(branch) < Mathf.Clamp(startingWeaponLevel, 1, WeaponLoadout.MaximumLevel))
+                        if (!loadout.ApplyCore(branch)) break;
                 }
 #endif
         }

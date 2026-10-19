@@ -571,7 +571,7 @@ public static class VerifyL1Encounters
 
     public static object Validate()
     {
-        var source = AssetDatabase.LoadAssetAtPath<EncounterDefinition>("Assets/StarShift/Data/Encounters/L1EncounterB.asset");
+        var source = AssetDatabase.LoadAssetAtPath<EncounterDefinition>("Assets/StarShift/Data/Fixtures/Encounters/L1EncounterB.asset");
         var clone = UnityEngine.Object.Instantiate(source);
         try
         {
@@ -701,7 +701,7 @@ public static class VerifyL1Encounters
     }
 
     static EncounterDefinition[] Definitions() => new[] { "A", "B" }.Select(id =>
-        AssetDatabase.LoadAssetAtPath<EncounterDefinition>("Assets/StarShift/Data/Encounters/L1Encounter" + id + ".asset")).ToArray();
+        AssetDatabase.LoadAssetAtPath<EncounterDefinition>("Assets/StarShift/Data/Fixtures/Encounters/L1Encounter" + id + ".asset")).ToArray();
     static async Task<string> SaveCapture(string name)
     {
         var directory = System.IO.Path.GetFullPath("Temp/StarShiftL1Checkpoint");

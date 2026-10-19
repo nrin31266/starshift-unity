@@ -13,14 +13,15 @@ using UnityEngine.SceneManagement;
 
 public static class ConfigureL1Encounters
 {
-    const string Folder = "Assets/StarShift/Data/Encounters";
+    const string Folder = "Assets/StarShift/Data/Fixtures/Encounters";
     public static object Configure()
     {
         var scene = SceneManager.GetActiveScene();
         if (EditorApplication.isPlayingOrWillChangePlaymode || scene.isDirty ||
             scene.path != "Assets/StarShift/Scenes/02_Gameplay.unity")
             throw new InvalidOperationException("Open saved gameplay scene in Edit Mode first.");
-        if (!AssetDatabase.IsValidFolder(Folder)) AssetDatabase.CreateFolder("Assets/StarShift/Data", "Encounters");
+        if (!AssetDatabase.IsValidFolder("Assets/StarShift/Data/Fixtures")) AssetDatabase.CreateFolder("Assets/StarShift/Data", "Fixtures");
+        if (!AssetDatabase.IsValidFolder(Folder)) AssetDatabase.CreateFolder("Assets/StarShift/Data/Fixtures", "Encounters");
         var a = LoadOrCreate("L1EncounterA", definition =>
         {
             definition.Id = "ENCOUNTER_1";

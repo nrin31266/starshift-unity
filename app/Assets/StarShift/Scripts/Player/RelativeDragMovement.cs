@@ -131,15 +131,19 @@ namespace StarShift.Player
             travelBias = appliedTravelBias = Vector2.zero;
             body.position = position; body.linearVelocity = Vector2.zero; transform.position = position;
         }
+        public Vector2 CheckpointPosition(PlayDirection direction)
+        {
+            var normalized = PlayableViewport.min + Vector2.Scale(PlayableViewport.size,
+                PlayDirectionSpace.Point(new Vector2(.5f, .18f), direction));
+            var depth = Vector3.Dot(transform.position - movementCamera.transform.position, movementCamera.transform.forward);
+            return movementBounds.ClampPosition(movementCamera.ViewportToWorldPoint(
+                new Vector3(normalized.x, normalized.y, depth)), movementCamera, PlayableViewport);
+        }
         public void ResetForCheckpoint(PlayDirection direction)
         {
             travelBias = appliedTravelBias = Vector2.zero;
             ResetInput();
-            var normalized = PlayableViewport.min + Vector2.Scale(PlayableViewport.size,
-                PlayDirectionSpace.Point(new Vector2(.5f, .18f), direction));
-            var depth = Vector3.Dot(transform.position - movementCamera.transform.position, movementCamera.transform.forward);
-            body.position = movementBounds.ClampPosition(movementCamera.ViewportToWorldPoint(
-                new Vector3(normalized.x, normalized.y, depth)), movementCamera, PlayableViewport);
+            body.position = CheckpointPosition(direction);
             body.linearVelocity = Vector2.zero;
             body.angularVelocity = 0;
             transform.position = new Vector3(body.position.x, body.position.y, transform.position.z);

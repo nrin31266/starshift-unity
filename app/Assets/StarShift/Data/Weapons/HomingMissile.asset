@@ -16,34 +16,48 @@ MonoBehaviour:
   levels:
   - ProjectileCount: 1
     SpreadDegrees: 0
-    LateralSpacing: 0.22
+    LateralSpacing: 0
     Damage: 2
     CenterBonus: 0
-    FireInterval: 0.5
+    FireInterval: 0.6
     SplashRadius: 0
   - ProjectileCount: 2
-    SpreadDegrees: 28
-    LateralSpacing: 0.22
+    SpreadDegrees: 16
+    LateralSpacing: 0
     Damage: 2
     CenterBonus: 0
-    FireInterval: 0.5
+    FireInterval: 0.58
     SplashRadius: 0
   - ProjectileCount: 3
-    SpreadDegrees: 44
-    LateralSpacing: 0.22
+    SpreadDegrees: 24
+    LateralSpacing: 0
     Damage: 2
     CenterBonus: 0
-    FireInterval: 0.5
-    SplashRadius: 0.85
+    FireInterval: 0.56
+    SplashRadius: 0.45
+  - ProjectileCount: 4
+    SpreadDegrees: 32
+    LateralSpacing: 0
+    Damage: 2
+    CenterBonus: 0
+    FireInterval: 0.54
+    SplashRadius: 0.55
+  - ProjectileCount: 5
+    SpreadDegrees: 40
+    LateralSpacing: 0
+    Damage: 2
+    CenterBonus: 0
+    FireInterval: 0.52
+    SplashRadius: 0.65
   projectileColor: {r: 1, g: 0.8, b: 0.55, a: 1}
-  trackingDegreesPerSecond: 110
+  trackingDegreesPerSecond: 210
   trackingRange: 18
   projectileScale: {x: 0.35, y: 0.48}
   projectileSprite: {fileID: 21300000, guid: 7525dcea8f719e6f99a1484a056a3c1d, type: 3}
   trailSeconds: 0.13
   projectilePrefab: {fileID: 6313352160549666604, guid: 689fd7f0b61bc39b798a1aea031257f6, type: 3}
   fireInterval: 0.2
-  projectileSpeed: 8
+  projectileSpeed: 7.5
   damage: 1
-  projectileLifetime: 3
+  projectileLifetime: 4
   thermalProfile: {fileID: 11400000, guid: 69152828be7633fd4a3eb565870fee01, type: 2}

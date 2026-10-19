@@ -59,7 +59,7 @@ public static class VerifyM4Testbed
             {
                 if(loadout.Level(branch)==0)loadout.ApplyCore(branch);
                 while(loadout.ActiveBranch!=branch)loadout.Cycle();
-                for(int level=1;level<=3;level++)
+                for(int level=1;level<=WeaponLoadout.MaximumLevel;level++)
                 {
                     if(level>1)loadout.ApplyCore(branch);
                     await rig.MouseEvent(new Vector2(400,200),false);
@@ -70,10 +70,10 @@ public static class VerifyM4Testbed
                 }
             }
             rig.Unprotect();var lifecycle=rig.Player.GetComponent<PlayerDamageLifecycle>();
-            Require(lifecycle.TryReceiveHit(null),"Death rejected");Require(loadout.Level(WeaponBranch.Homing)==2 && loadout.Level(WeaponBranch.Pulse)==3 && loadout.Level(WeaponBranch.Plasma)==3,"Active-only downgrade failed");
+            Require(lifecycle.TryReceiveHit(null),"Death rejected");Require(loadout.Level(WeaponBranch.Homing)==4 && loadout.Level(WeaponBranch.Pulse)==5 && loadout.Level(WeaponBranch.Plasma)==5,"Active-only downgrade failed");
             Require(weapon.Heat==0 && !weapon.IsOverheated,"Death thermal reset failed");
             await Until(()=>rig.Gate.State==PlayerGameplayState.PostEntryInvincibility,2500,"Respawn failed");
-            rig.Protect();weapon.ApplyDeathDowngrade();weapon.ApplyDeathDowngrade();Require(loadout.ActiveLevel==1,"Death minimum failed");
+            rig.Protect();for(int i=0;i<WeaponLoadout.MaximumLevel;i++)weapon.ApplyDeathDowngrade();Require(loadout.ActiveLevel==1,"Death minimum failed");
             Restart(rig,"ENCOUNTER_2");
             await rig.MouseEvent(new Vector2(400,200),true);await Task.Delay(700);await rig.MouseEvent(new Vector2(400,200),false);
             Require(weapon.Heat>0 && !weapon.IsOverheated,"Burst incorrectly locked");
@@ -157,7 +157,7 @@ public static class VerifyM4Testbed
                 var a=one.RollDirect(table,receiver,rig.Lives,loadout);var b=two.RollDirect(table,receiver,rig.Lives,loadout);Require(a==b,"Seed was not deterministic");
                 if(a!=null){if(a.Kind==PickupKind.Shard)shards++;else major++;}
             }
-            Require(major>5 && major<90 && shards>60 && shards<230,"Normal drop rate out of broad smoke band");
+            Require(major>50 && major<150 && shards>60 && shards<230,"Normal drop rate out of broad smoke band");
             typeof(PlayerLives).GetField("<CurrentLives>k__BackingField",Fields).SetValue(rig.Lives,1);
             var majorTable=AssetDatabase.LoadAssetAtPath<RewardDropTable>("Assets/StarShift/Data/Rewards/SupplyCrateDrops.asset");
             one.RecordCrate(Item("Overdrive"),1);one.RecordCrate(Item("SupportDrone"),1);
@@ -166,7 +166,7 @@ public static class VerifyM4Testbed
             one.RecordCrate(defense,1);
             Require(Enumerable.Range(0,80).Select(_=>one.SelectMajor(majorTable,receiver,rig.Lives,loadout,true)).Any(x=>x.Kind!=PickupKind.Shield && x.Kind!=PickupKind.ExtraLife),"Pity did not reset");
             typeof(PlayerLives).GetField("<CurrentLives>k__BackingField",Fields).SetValue(rig.Lives,5);
-            foreach(var branch in new[]{WeaponBranch.Pulse,WeaponBranch.Plasma,WeaponBranch.Homing})while(loadout.Level(branch)<3)loadout.ApplyCore(branch);
+            foreach(var branch in new[]{WeaponBranch.Pulse,WeaponBranch.Plasma,WeaponBranch.Homing})while(loadout.Level(branch)<WeaponLoadout.MaximumLevel)loadout.ApplyCore(branch);
             for(int i=0;i<100;i++) {var item=one.SelectMajor(majorTable,receiver,rig.Lives,loadout,true);Require(item!=null && item.Kind!=PickupKind.WeaponCore && item.Kind!=PickupKind.ExtraLife,"Maxed reward was not filtered");}
             Restart(rig,"ENCOUNTER_2");await Task.Delay(2100);
             var targets=Enemies.Take(2).ToArray();
@@ -183,12 +183,12 @@ public static class VerifyM4Testbed
             Restart(rig,"ENCOUNTER_3");
             await Until(()=>Enemies.Any(e=>e.name.StartsWith("SupplyDrone")),10000,"Supply did not spawn");
             var supply=Enemies.First(e=>e.name.StartsWith("SupplyDrone"));Require(!supply.Definition.BodyDamagesPlayer && !supply.GetComponent<SingleFireAttack>().enabled,"Supply is hostile");
-            supply.ReceivePlayerHit(supply.CurrentHp,rig.Player);await Task.Delay(50);var crate=Pickups.FirstOrDefault(p=>p.Crate!=null);Require(crate!=null,"No ejected crate");
-            rig.Place(crate.transform.position);await Task.Delay(100);Require(rewards.SupplyCaptured==1 && Director.PickupsCollected==1,"Crate collection failed");
+            supply.ReceivePlayerHit(supply.CurrentHp,rig.Player);await Task.Delay(50);var pair=Pickups;Require(pair.Length==2 && pair.All(p=>p.Crate==null) && pair.Any(p=>p.Item.Kind==PickupKind.WeaponCore),"No direct supply pair");
+            foreach(var item in pair)Require(item.TryCollect(),"Supply pickup collection");Require(rewards.SupplyCaptured==1 && Director.PickupsCollected==2,"Supply pair counted twice");
             Restart(rig,"ENCOUNTER_3");
             await Until(()=>Enemies.Any(e=>e.name.StartsWith("SupplyDrone")),10000,"Supply escape setup missing");
             supply=Enemies.First(e=>e.name.StartsWith("SupplyDrone"));
-            await Until(()=>!supply.gameObject.activeSelf,14000,"Supply never escaped");Require(!Pickups.Any(p=>p.Crate!=null) && rewards.SupplyCaptured==0,"Escaped supply granted reward");
+            await Until(()=>!supply.gameObject.activeSelf,14000,"Supply never escaped");Require(Pickups.Length==0 && rewards.SupplyCaptured==0,"Escaped supply granted reward");
             Restart(rig,"ENCOUNTER_5");await Until(()=>Enemies.Any(e=>e.name.StartsWith("ResourceAsteroid")),3000,"Resource did not spawn");
             var rock=Enemies.First(e=>e.name.StartsWith("ResourceAsteroid"));rock.ReceivePlayerHit(rock.CurrentHp,rig.Player);await Task.Delay(50);
             var shard=Pickups.FirstOrDefault(p=>p.Item==Item("StellarShard"));Require(shard!=null,"Resource has no guaranteed shard");rig.Place(shard.transform.position);await Task.Delay(100);Require(rewards.Shards==1,"Resource shard uncollectible");
@@ -485,7 +485,7 @@ public static class VerifyM4Testbed
             Require(defense.Kind==PickupKind.Shield || defense.Kind==PickupKind.ExtraLife,"Pity missing");roller.RecordCrate(defense,1);
             Require(Enumerable.Range(0,80).Select(_=>roller.SelectMajor(table,receiver,rig.Lives,loadout,true)).Any(x=>x.Kind!=PickupKind.Shield && x.Kind!=PickupKind.ExtraLife),"Pity did not reset");
             typeof(PlayerLives).GetField("<CurrentLives>k__BackingField",Fields).SetValue(rig.Lives,5);
-            foreach(var branch in new[]{WeaponBranch.Pulse,WeaponBranch.Plasma,WeaponBranch.Homing})while(loadout.Level(branch)<3)loadout.ApplyCore(branch);
+            foreach(var branch in new[]{WeaponBranch.Pulse,WeaponBranch.Plasma,WeaponBranch.Homing})while(loadout.Level(branch)<WeaponLoadout.MaximumLevel)loadout.ApplyCore(branch);
             for(int i=0;i<100;i++){var item=roller.SelectMajor(table,receiver,rig.Lives,loadout,true);Require(item!=null && item.Kind!=PickupKind.WeaponCore && item.Kind!=PickupKind.ExtraLife,"Maxed reward not filtered");}
             return new{pass=true,pityReset=true,maxedFilters=true};
         }
@@ -628,7 +628,7 @@ public static class VerifyM4Testbed
             Require(Application.isPlaying, "Play Mode required.");
             Session.enabled = false; Runner.StopRun(); Time.timeScale = 1; AudioListener.pause = false; Session.enabled = true;
             previousLevel = Runner.Flow.Level;
-            Runner.Flow.LoadLevel(AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Levels/L1.asset"));
+            Runner.Flow.LoadLevel(AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Fixtures/Levels/M4SystemTestbed.asset"));
             Gate = Player.GetComponent<PlayerGameplayGate>(); Lives = Player.GetComponent<PlayerLives>(); Input = Player.GetComponent<InputSystemPointerInput>();
             var life = Player.GetComponent<PlayerDamageLifecycle>(); life.enabled = false; life.enabled = true;
             Place(new Vector2(0, -3.8f)); Protect();
@@ -694,7 +694,7 @@ public static class VerifyM4Testbed
             await MouseEvent(anchor,false);await MouseEvent(anchor,true);
             await MouseEvent(anchor+Vector2.ClampMagnitude(delta,650),true);
         }
-        static EncounterDefinition[] Configs() => new[] { "A", "B" }.Select(id => AssetDatabase.LoadAssetAtPath<EncounterDefinition>("Assets/StarShift/Data/Encounters/L1Encounter" + id + ".asset")).ToArray();
+        static EncounterDefinition[] Configs() => new[] { "A", "B" }.Select(id => AssetDatabase.LoadAssetAtPath<EncounterDefinition>("Assets/StarShift/Data/Fixtures/Encounters/L1Encounter" + id + ".asset")).ToArray();
         public void Dispose()
         {
             RestoreFlights();

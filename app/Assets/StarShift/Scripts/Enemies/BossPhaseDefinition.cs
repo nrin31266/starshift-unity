@@ -9,10 +9,12 @@ namespace StarShift.Enemies
         [Min(.1f)] public float PhaseARestSeconds = 1.9f;
         [Min(.1f)] public float PhaseBRestSeconds = 1.55f;
         [Min(.1f)] public float TransitionSeconds = 1.2f;
+        public Vector2 PhaseBOffset = new Vector2(-.08f,.015f);
+        [Min(.1f)] public float PhaseBMotionMultiplier = 1.25f;
         public bool IsValid(int moduleCount)
         {
             bool OrderValid(int[] order) => order != null && order.Length > 0 && System.Array.TrueForAll(order, i => i >= 0 && i < moduleCount);
-            return PhaseBThreshold > 0 && PhaseBThreshold < 1 && PhaseARestSeconds > 0 && PhaseBRestSeconds > 0 && TransitionSeconds > 0 && OrderValid(PhaseAOrder) && OrderValid(PhaseBOrder);
+            return StarShift.Encounters.ConfigValue.Finite(PhaseBOffset) && StarShift.Encounters.ConfigValue.Positive(PhaseBMotionMultiplier) && PhaseBThreshold > 0 && PhaseBThreshold < 1 && PhaseARestSeconds > 0 && PhaseBRestSeconds > 0 && TransitionSeconds > 0 && OrderValid(PhaseAOrder) && OrderValid(PhaseBOrder);
         }
         public int[] PhaseAOrder = { 0, 0, 1 };
         public int[] PhaseBOrder = { 0, 1, 2, 0 };

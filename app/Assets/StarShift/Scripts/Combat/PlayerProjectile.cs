@@ -21,6 +21,18 @@ namespace StarShift.Combat
         private bool flying;
         private EnemyHealth trackingTarget;
         private float turnRate;
+        private float trackingRange;
+        private void AcquireTarget(Vector2 position)
+        {
+            trackingTarget = null;
+            var nearest = trackingRange * trackingRange;
+            foreach (var enemy in EnemyHealth.Active)
+            {
+                var delta = (Vector2)enemy.transform.position - position;
+                if (!enemy.CanReceiveDamage || enemy.gameObject.scene != gameObject.scene || Vector2.Dot(direction, delta) <= 0 || delta.sqrMagnitude >= nearest) continue;
+                nearest = delta.sqrMagnitude; trackingTarget = enemy; trackingVersion = enemy.SpawnVersion;
+            }
+        }
         private int trackingVersion;
         private float splashRadius;
         private SpriteRenderer visual;
@@ -53,18 +65,8 @@ namespace StarShift.Combat
             splashRadius = splash;
             turnRate = definition.TrackingDegreesPerSecond;
             trackingTarget = null;
-            if (turnRate > 0)
-            {
-                var nearest = definition.TrackingRange * definition.TrackingRange;
-                foreach (var enemy in EnemyHealth.Active)
-                {
-                    var delta = (Vector2)(enemy.transform.position - position);
-                    if (!enemy.IsAlive || enemy.gameObject.scene != gameObject.scene || Vector2.Dot(direction, delta) <= 0 || delta.sqrMagnitude >= nearest) continue;
-                    nearest = delta.sqrMagnitude;
-                    trackingTarget = enemy;
-                    trackingVersion = enemy.SpawnVersion;
-                }
-            }
+            trackingRange = definition.TrackingRange;
+            if (turnRate > 0) AcquireTarget(position);
             if (visual != null)
             {
                 visual.color = definition.ProjectileColor;
@@ -96,7 +98,8 @@ namespace StarShift.Combat
         {
             if (!flying) return;
             var step = Mathf.Min(Time.fixedDeltaTime, remainingLifetime);
-            if (trackingTarget != null && trackingTarget.IsAlive && trackingTarget.SpawnVersion == trackingVersion)
+            if (turnRate > 0 && (trackingTarget == null || !trackingTarget.CanReceiveDamage || trackingTarget.SpawnVersion != trackingVersion)) AcquireTarget(body.position);
+            if (trackingTarget != null && trackingTarget.CanReceiveDamage && trackingTarget.SpawnVersion == trackingVersion)
             {
                 var targetDirection = (Vector2)trackingTarget.transform.position - body.position;
                 var angle = Vector2.SignedAngle(direction, targetDirection);
@@ -134,7 +137,8 @@ namespace StarShift.Combat
         private IPlayerProjectileTarget FindTarget(Collider2D other)
         {
             if (other == null || (Owner != null && other.transform.IsChildOf(Owner.transform))) return null;
-            return other.GetComponentInParent<IPlayerProjectileTarget>();
+            var target = other.GetComponentInParent<IPlayerProjectileTarget>();
+            return target is EnemyHealth enemy && !enemy.CanReceiveDamage ? null : target;
         }
 
         private void FinishFlight(IPlayerProjectileTarget target = null)

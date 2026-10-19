@@ -39,10 +39,10 @@ namespace StarShift.Gameplay
             if(NextMission==null)
             {
                 session.PrepareMajorTravel();journey.Begin(()=>{
-                    IsTravelling=false;DestinationReady=true;persistence.CompleteRegionTravel();session.ShowRegionReady();
+                    IsTravelling=false;DestinationReady=true;persistence.CompleteRegionTravel();session.ShowRegionReady(true);
                 });
             }
-            else runner.Flow.NotifyPresentationChanged();
+            else { runner.Flow.PrepareMissionTravel(NextMission, missionClearSeconds); runner.Flow.NotifyPresentationChanged(); }
             return true;
         }
         private void FixedUpdate()

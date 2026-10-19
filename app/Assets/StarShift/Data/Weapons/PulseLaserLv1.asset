@@ -16,24 +16,38 @@ MonoBehaviour:
   levels:
   - ProjectileCount: 1
     SpreadDegrees: 0
-    LateralSpacing: 0.22
+    LateralSpacing: 0.16
     Damage: 1
     CenterBonus: 0
-    FireInterval: 0.17
+    FireInterval: 0.18
     SplashRadius: 0
   - ProjectileCount: 2
     SpreadDegrees: 0
-    LateralSpacing: 0.22
+    LateralSpacing: 0.16
+    Damage: 1
+    CenterBonus: 0
+    FireInterval: 0.18
+    SplashRadius: 0
+  - ProjectileCount: 3
+    SpreadDegrees: 0
+    LateralSpacing: 0.16
+    Damage: 1
+    CenterBonus: 0
+    FireInterval: 0.18
+    SplashRadius: 0
+  - ProjectileCount: 4
+    SpreadDegrees: 0
+    LateralSpacing: 0.16
     Damage: 1
     CenterBonus: 0
     FireInterval: 0.17
     SplashRadius: 0
-  - ProjectileCount: 3
+  - ProjectileCount: 5
     SpreadDegrees: 0
-    LateralSpacing: 0.22
+    LateralSpacing: 0.16
     Damage: 1
-    CenterBonus: 1
-    FireInterval: 0.17
+    CenterBonus: 0
+    FireInterval: 0.16
     SplashRadius: 0
   projectileColor: {r: 0.3, g: 0.9, b: 1, a: 1}
   trackingDegreesPerSecond: 0
