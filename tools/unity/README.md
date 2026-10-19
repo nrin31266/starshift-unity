@@ -423,3 +423,13 @@ Trong Play Mode: `VerifyHeatLifecycle.Begin` kiểm tra press/release, blocked c
 shared heat/delay/latch qua nhặt Core, upgrade và cycle, Pause, overheat recovery,
 death/session reset và live Mission handoff; evidence ở `.design/m5-shared-heat/`. Sau targeted PASS,
 `VerifyHeatLifecycle.BeginFullRegion` chạy một integration flow trên bản cuối.
+
+
+### Pickup bounce consistency
+
+Trong Play Mode, chạy `VerifyPickupMotion.Run` qua `run_script` trên file
+`tools/unity/VerifyPickupMotion.cs` (Unity-root relative: `../tools/unity/VerifyPickupMotion.cs`).
+Kiểm tra cùng quỹ đạo normal/grace, đúng hai lần nảy rồi viewport exit, late grace
+không kéo xu lên, pool reset, 28 boss gold trajectories, Core/support retention,
+Pause/Resume và collection không trùng. Motion regressions step trực tiếp physics
+callback; Pause/Resume chạy qua frame thật. Evidence `.design/m5-pickup-motion/result.json`.

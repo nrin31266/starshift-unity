@@ -96,9 +96,10 @@ namespace StarShift.Rewards
             {
                 var viewport = gameplayCamera.WorldToViewportPoint(position);
                 viewport.x = Mathf.Clamp(viewport.x, .05f, .95f);
-                viewport.y = Mathf.Max(.09f, viewport.y);
+                // Xu giữ quỹ đạo nảy hai lần rồi rơi ra, kể cả trong thời gian nhặt thưởng.
+                if (!shard) viewport.y = Mathf.Max(.09f, viewport.y);
                 position = gameplayCamera.ViewportToWorldPoint(viewport);
-                if (viewport.y <= .09f) fallVelocity = 0;
+                if (!shard && viewport.y <= .09f) fallVelocity = 0;
             }
             transform.position = position;
             // Sweep đường đi của Player để drag nhanh vẫn nhận contact; không hút pickup.

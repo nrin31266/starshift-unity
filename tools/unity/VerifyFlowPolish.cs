@@ -98,8 +98,9 @@ public static class VerifyFlowPolish
                 Check(pickups.Count(p=>p.Item?.Kind==PickupKind.Shard)==28&&pickups.Length==30&&pickups.All(p=>p.Crate==null),"Boss gold/pair count");
                 Check(pickups.All(p=>p.GetComponentInChildren<SpriteRenderer>().transform.lossyScale.x>0),"Pickup sprite has zero scale");
                 await Capture("boss-gold-rain");S.Pause();var positions=pickups.Select(p=>p.transform.position).ToArray();await Task.Delay(200);Check(pickups.Select((p,i)=>Vector3.Distance(p.transform.position,positions[i])<.001f).All(x=>x),"Reward Pause");S.Resume();rig.Protect();
-                await Task.Delay(6500);Check(R.Stage==EncounterStage.RewardGrace&&R.GetComponent<RewardDirector>().PickupsExpired==0,"Reward expired too soon");Check(pickups.Where(p=>p.IsActive).All(p=>Camera.main.WorldToViewportPoint(p.transform.position).y>=.085f),"Reward fell out of collection window");await Capture("boss-reward-floor");
-                foreach(var p in pickups)if(p.IsActive&&p.Item.Kind==PickupKind.Shard)Check(p.TryCollect(),"Gold collection");
+                Check(pickups.First(p=>p.Item?.Kind==PickupKind.Shard).TryCollect(),"Gold collection");
+                await Task.Delay(6500);Check(R.Stage==EncounterStage.RewardGrace&&R.GetComponent<RewardDirector>().PickupsExpired==0,"Reward expired too soon");Check(pickups.Where(p=>p.IsActive&&p.Item.Kind!=PickupKind.Shard).All(p=>Camera.main.WorldToViewportPoint(p.transform.position).y>=.085f),"Reward fell out of collection window");await Capture("boss-reward-floor");
+                await Until(()=>pickups.All(p=>!p.IsActive||p.Item.Kind!=PickupKind.Shard),3500,"Gold stayed at reward floor");
                 await Until(()=>!R.HasActiveRun,6500,"Reward phase did not finish");results.Add(new{bossEntryProtected=true,bossGold=28,pair=2,rewardPause=true,rewardRetained=true});
             }
             Evidence("targeted",new{status="PASS",results});

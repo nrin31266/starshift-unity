@@ -264,7 +264,8 @@ Collection dùng swept contact với đường di chuyển Player, bán kính .6
 Power-up/crate drift xuống .8 world units/s và release khi qua viewport y -.06;
 không đọng thành hàng ở đáy màn. Shard bắt đầu fall speed 3.2, gravity 11, terminal
 speed 6.4 world units/s; nảy hai lần tại viewport y .06 với bounce height .06 × view
-height rồi .35 × lần đầu, sau đó rơi ra và recycle. Lifetime Shard 5 s, major trực
+height rồi .35 × lần đầu, sau đó rơi ra và recycle, kể cả trong reward grace;
+không khóa xu ở đáy hoặc kéo xu ngược lên khi bắt đầu grace. Lifetime Shard 5 s, major trực
 tiếp 12 s, crate 8 s, cap active 6 `[TUNABLE]`. Relative swept contact xử lý chuyển
 động cả Player và pickup, không teleport/magnetism. Đây là test policy
 `[PROVISIONAL]`, không chốt lifetime/cap/magnetism ngoài phase. Full-viewport drop

@@ -1042,8 +1042,10 @@ Hết Timeline/Survive thì dừng spawn/fire mới, sang ExitDrain: asteroid ti
 Sau 8 s chỉ ép retreat cho đối tượng chưa vào Exit, không release giữa viewport.
 Kill/reward còn hợp lệ trong ExitDrain; sau đó mới projectile grace và handoff.
 Reward giữ qua minor handoff; cuối Mission có grace tối đa 2.5 s nếu còn đồ, Boss
-12 s `[TUNABLE]`. Trong grace, reward giữ trong viewport tại floor y .09 và fade
-trước khi hết timer; kết thúc sớm nếu hết đồ rồi mới Mission/Planet travel.
+12 s `[TUNABLE]`. Trong grace, Core/support giữ trong viewport tại floor y .09
+và fade trước khi hết timer. Shard vẫn nảy hai lần rồi rơi khỏi màn theo
+[pickup motion](weapons-items-drops.md#pickup-và-effect-test-policy), không bị kéo
+ngược lên hoặc giữ đáy. Kết thúc sớm nếu hết đồ rồi mới Mission/Planet travel.
 
 Same-planet Mission travel `[TUNABLE]`: 2.3 s, settle .3 s rồi bias lùi xuống tối đa
 .04 viewport, sao tăng tốc và bias quay về 0. Title hiện ở T1.95 trong travel, visible

@@ -1484,3 +1484,14 @@ death và session reset về zero/unlatched. Compile PASS, native Console zero e
 và warnings. Evidence local `.design/m5-shared-heat/heat.json`.
 Không chạy lại full Region hoặc Android cho sửa thermal state này; full Region
 ở checkpoint trước không được coi là runtime evidence của bản shared heat.
+
+
+### Pickup bounce consistency — 2026-10-20
+
+`VerifyPickupMotion.Run` PASS trong Unity: normal/grace cùng quỹ đạo và nảy hai lần;
+late grace không kéo xu ngược lên; 28 boss gold trajectories nảy hai lần rồi viewport
+exit; pooled state reset. Core/support vẫn giữ trong grace, Pause/Resume và collect
+một lần PASS qua frame thật. Motion dùng controlled physics callback stepping;
+không coi đây là full boss fight hoặc device evidence. Compile PASS và native Console
+zero errors/warnings. Reproduction ở [tool README](../../tools/unity/README.md#pickup-bounce-consistency),
+evidence local `.design/m5-pickup-motion/result.json`.
