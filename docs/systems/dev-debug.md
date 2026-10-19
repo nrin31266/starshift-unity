@@ -1495,3 +1495,19 @@ một lần PASS qua frame thật. Motion dùng controlled physics callback step
 không coi đây là full boss fight hoặc device evidence. Compile PASS và native Console
 zero errors/warnings. Reproduction ở [tool README](../../tools/unity/README.md#pickup-bounce-consistency),
 evidence local `.design/m5-pickup-motion/result.json`.
+
+
+### Respawn projectile and held-input continuity — 2026-10-20
+
+`VerifyFlowPolish.RespawnContinuity` PASS trong Unity Play Mode qua combined script
+của `ConfigureFlowPolish.PrepareVerification`. Với mouse và synthetic touch: giữ
+pointer xuyên Dying/entrance; delta bị khóa không teleport; sau entrance kéo
+30×20 px nhận đúng 30×20 px, held fire tự tiếp tục. Accepted death giữ hostile và
+friendly shots đang bay, hostile tiếp tục di chuyển; duplicate hit không trừ thêm
+life và post-entry protection vẫn chặn damage. Pause còn yêu cầu fresh press;
+Game Over vẫn cleanup đạn. Evidence `.design/m5-respawn-continuity/result.json`.
+`VerifyPlayerDrag.Run` PASS short/long/release, projection 16:9/20:9 × ba zoom,
+held drag sau movement re-enable và touch/second-finger isolation. Cần bắt đầu run
+skip-intro trước suite này; chạy ngay sau terminal fixture với overlay còn mở sẽ
+bị UI chặn pointer. Compile và native Console không có error/warning mới.
+Không chạy lại full campaign hoặc Android cho sửa này.

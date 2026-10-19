@@ -58,13 +58,14 @@ API hoặc lấy intent từ movement component.
 
 Gate block hủy anchor/pending movement nhưng giữ held intent của gameplay pointer
 còn giữ. Resume trong khi pointer vẫn held cho fire tiếp tục, không bắn bù cadence;
-movement vẫn yêu cầu release/press mới theo contract tránh stale drag. Mất focus
-hoặc disable input adapter hủy cả gesture/fire intent; cần press mới sau đó.
+movement tự đặt lại anchor tại vị trí pointer hiện tại rồi nhận delta mới, không
+kéo bù đoạn trong lúc bị khóa. Mất focus hoặc disable input adapter hủy cả gesture/fire intent; cần press mới sau đó.
 Disable movement chỉ hủy drag, không hủy fire intent.
 
 Death/respawn giữ cùng rule: pointer còn held không tạo movement từ delta cũ; input/
 fire bị chặn suốt Dying/entrance. Sau entrance, held pointer còn hợp lệ cho fire tiếp,
-nhưng drag cần release/press mới. Root/input adapter disable hủy cả held intent.
+drag cũng tiếp tục từ anchor mới mà không cần release/press. Root/input adapter
+disable hủy cả held intent.
 
 Fire permission bị khóa trong:
 
@@ -185,17 +186,17 @@ Fatal hit
 → death VFX/audio
 → lives -1
 → active weapon downgrade
-→ clear hostile bullets theo rule
+→ giữ đạn đang bay, tạm block hostile fire mới
 → pause enemy fire ngắn
 → nếu lives > 0: respawn
 → nếu lives == 0: Game Over
 ```
 
 VS-018 khóa state Dying trước callback, rồi synchronously trừ đúng một life, áp
-active-weapon penalty và clear/block hostile combat. Dying state yêu cầu placeholder
-death cue; presentation không được quyết khi nào trừ life hoặc cho phép hit tiếp.
+active-weapon penalty và block hostile fire mới, giữ projectile đang bay. Dying state
+yêu cầu placeholder death cue; presentation không được quyết khi nào trừ life hoặc cho phép hit tiếp.
 Death phase trước entrance dùng 0.6 s `[TUNABLE]`; clock scaled, callback feedback
-lỗi không được bỏ qua mandatory life/cleanup work hoặc giữ sequence mắc kẹt.
+lỗi không được bỏ qua mandatory life/fire-gate work hoặc giữ sequence mắc kẹt.
 
 ### Weapon penalty on death `[LOCKED]`
 
@@ -258,17 +259,16 @@ biệt state này với damage flash; effect không quyết protection window.
 
 ### Respawn fairness
 
-Khi chết, clear hostile projectiles đang gây nguy cơ unfair [LOCKED] nhưng không
-xóa enemy. Enemy fire tạm dừng khoảng **1 s [TUNABLE]**; cùng entrance an toàn và
-invincibility, khoảng nghỉ này tránh tình trạng vừa respawn đã chết lại.
-Enemy-fire grace là tunable riêng, không thay thế protection của respawn entrance
-hoặc post-entry invincibility.
-Cleanup scope của M2 được làm rõ bên dưới; hazard cleanup riêng chưa implement.
+Khi chết còn life để hồi sinh, giữ cả hostile/friendly projectiles đang bay; chúng
+kết thúc bằng hit/viewport exit/lifetime bình thường theo feedback mới. Không xóa
+enemy. Protection trong entrance và post-entry invincibility bảo vệ Player.
+Enemy-fire grace khoảng **1 s [TUNABLE]** sau entrance là tunable riêng, không thay
+thế protection của respawn entrance hoặc post-entry invincibility.
 
-VS-021 chốt scope slice: release **mọi EnemyProjectile active trong cùng gameplay
-scene** khi damage được chấp nhận và khi Game Over; không clear PlayerProjectile,
-enemy hoặc snapshot/save. Release dùng callback về pool, reset ownership/target,
-hit flag, timer, velocity/simulation và callback trước reuse.
+Game Over vẫn release mọi `EnemyProjectile` active trong cùng gameplay scene;
+terminal session cũng cleanup friendly shots theo architecture. Không sửa enemy,
+snapshot/save. Release dùng callback về pool, reset ownership/target, hit flag,
+timer, velocity/simulation và callback trước reuse.
 
 Enemy-fire permission bị block suốt Dying và entrance. Khi safe entrance kết thúc,
 bắt đầu enemy-fire grace ở trên, độc lập post-entry invincibility; enemy movement

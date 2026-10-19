@@ -433,3 +433,13 @@ Kiểm tra cùng quỹ đạo normal/grace, đúng hai lần nảy rồi viewpor
 không kéo xu lên, pool reset, 28 boss gold trajectories, Core/support retention,
 Pause/Resume và collection không trùng. Motion regressions step trực tiếp physics
 callback; Pause/Resume chạy qua frame thật. Evidence `.design/m5-pickup-motion/result.json`.
+
+
+### Respawn continuity
+
+Chạy `ConfigureFlowPolish.PrepareVerification` ở Edit Mode; trong Play Mode chạy
+`VerifyFlowPolish.RespawnContinuity` từ `.design/m5-flow-polish/Verification.cs`.
+Kiểm tra death giữ projectiles, mouse/touch đang held nối lại drag/fire tại safe
+entrance pose, không replay delta bị khóa, protection và terminal cleanup.
+Evidence `.design/m5-respawn-continuity/result.json`. Nearby regression
+`VerifyPlayerDrag.Run` cần run đã skip intro và không còn terminal overlay.

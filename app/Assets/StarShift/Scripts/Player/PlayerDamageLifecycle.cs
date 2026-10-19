@@ -79,11 +79,7 @@ namespace StarShift.Player
             {
                 lives.LoseLife();
                 try { weapon.ApplyDeathDowngrade(); }
-                finally
-                {
-                    try { enemyFireGate.Block(); }
-                    finally { enemyFireGate.ClearProjectiles(); }
-                }
+                finally { enemyFireGate.Block(); }
             }
             return true;
         }

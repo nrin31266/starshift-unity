@@ -43,6 +43,81 @@ public static class VerifyFlowPolish
   finally{runner.StopRun();EditorJsonUtility.FromJsonOverwrite(config,dev);}
   File.WriteAllText("../.design/m5-flow-polish/dev-route.json",Newtonsoft.Json.JsonConvert.SerializeObject(result,Newtonsoft.Json.Formatting.Indented));
  }
+    public static async Task<object> RespawnContinuity()
+    {
+        using (var rig = new Rig(1600, 6))
+        {
+            var life = rig.Player.GetComponent<PlayerDamageLifecycle>();
+            var weapon = rig.Player.GetComponent<PulseLaserWeapon>();
+            var enemyGate = UnityEngine.Object.FindAnyObjectByType<EnemyFireGate>();
+            var profile = AssetDatabase.LoadAssetAtPath<SingleFireDefinition>("Assets/StarShift/Data/Enemies/ScoutSingleFire.asset");
+            var owner = new GameObject("RespawnContinuityOwner");
+            var shots = new List<EnemyProjectile>();
+            var results = new List<object>();
+            try
+            {
+                foreach (bool touch in new[] { false, true })
+                {
+                    async Task Pointer(Vector2 position, bool held, bool begin = false)
+                    {
+                        if (touch) await rig.TouchEvent(31, held ? (begin ? UnityEngine.InputSystem.TouchPhase.Began : UnityEngine.InputSystem.TouchPhase.Moved) : UnityEngine.InputSystem.TouchPhase.Ended, position);
+                        else await rig.MouseEvent(position, held);
+                    }
+                    rig.Unprotect();
+                    await Pointer(new Vector2(400, 300), true, true);
+                    await Task.Delay(100);
+                    var friendly = UnityEngine.Object.FindObjectsByType<PlayerProjectile>().ToArray();
+                    Check(friendly.Length > 0 && rig.Input.FireHeld, "Held fire fixture unavailable");
+                    var shot = UnityEngine.Object.Instantiate(profile.ProjectilePrefab); shots.Add(shot);
+                    owner.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(.1f, .9f, -Camera.main.transform.position.z));
+                    shot.Launch(profile, owner.transform, owner, rig.Player, p => p.ResetForPool());
+                    var beforeShot = shot.transform.position;
+                    Check(life.TryReceiveHit(owner), "Death rejected");
+                    Check(shot.gameObject.activeSelf && friendly.All(p => p.gameObject.activeSelf), "Death cleared flying projectiles");
+                    Check(!rig.Gate.CanInput && !rig.Gate.CanFire && !enemyGate.CanFire, "Death permissions stayed open");
+                    var lives = rig.Lives.CurrentLives;
+                    Check(!life.TryReceiveHit(owner) && rig.Lives.CurrentLives == lives, "Duplicate death consumed life");
+                    await Pointer(new Vector2(900, 600), true);
+                    Check(shot.gameObject.activeSelf && Vector3.Distance(shot.transform.position, beforeShot) > .01f, "Surviving enemy projectile froze");
+                    await Until(() => rig.Gate.State == PlayerGameplayState.PostEntryInvincibility, 2200, "Respawn did not return control");
+                    var safePose = rig.Player.transform.position;
+                    await Pointer(new Vector2(900, 600), true);
+                    Check(Vector3.Distance(rig.Player.transform.position, safePose) < .01f, "Blocked drag teleported respawn");
+                    var before = Camera.main.WorldToScreenPoint(rig.Player.transform.position);
+                    var fired = weapon.ShotsFired;
+                    await Pointer(new Vector2(930, 620), true);
+                    var delta = (Vector2)(Camera.main.WorldToScreenPoint(rig.Player.transform.position) - before);
+                    Check((delta - new Vector2(30, 20)).sqrMagnitude < 2, "Held drag did not resume: " + delta);
+                    await Task.Delay(220);
+                    Check(rig.Input.FireHeld && weapon.ShotsFired > fired, "Held fire required a fresh press");
+                    Check(!rig.Gate.CanTakeDamage && !life.TryReceiveHit(owner) && rig.Lives.CurrentLives == lives, "Respawn protection missing");
+                    await Pointer(new Vector2(930, 620), false);
+                    results.Add(new { input = touch ? "touch" : "mouse", heldDragDelta = delta.ToString(), heldFire = true, projectilesPreserved = true, protectedRespawn = true });
+                }
+                // Pause vẫn hủy gesture; chỉ death/respawn nối lại pointer còn hợp lệ.
+                await rig.MouseEvent(new Vector2(400, 300), true);
+                S.Pause(); S.Resume();
+                await rig.MouseEvent(new Vector2(450, 320), true);
+                Check(!rig.Input.FireHeld, "Pause accepted an old gesture");
+                await rig.MouseEvent(new Vector2(450, 320), false);
+                rig.Unprotect(); rig.Lives.RestoreCheckpoint(1);
+                var terminalShot = UnityEngine.Object.Instantiate(profile.ProjectilePrefab); shots.Add(terminalShot);
+                terminalShot.Launch(profile, owner.transform, owner, rig.Player, p => p.ResetForPool());
+                Check(life.TryReceiveHit(owner) && terminalShot.gameObject.activeSelf, "Last death prematurely cleared shots");
+                await Until(() => rig.Gate.State == PlayerGameplayState.GameOver, 1500, "Game Over did not finish");
+                Check(!terminalShot.gameObject.activeSelf && UnityEngine.Object.FindObjectsByType<PlayerProjectile>().Length == 0, "Terminal cleanup regressed");
+                var result = new { status = "PASS", results, pauseRequiresFreshPress = true, gameOverCleanup = true };
+                Directory.CreateDirectory("../.design/m5-respawn-continuity");
+                File.WriteAllText("../.design/m5-respawn-continuity/result.json", Newtonsoft.Json.JsonConvert.SerializeObject(result, Newtonsoft.Json.Formatting.Indented));
+                return result;
+            }
+            finally
+            {
+                foreach (var shot in shots) if (shot != null) UnityEngine.Object.DestroyImmediate(shot.gameObject);
+                UnityEngine.Object.DestroyImmediate(owner);
+            }
+        }
+    }
     public static object BeginFullRegion()
     {
         Check(Newtonsoft.Json.Linq.JObject.Parse(File.ReadAllText(O+"targeted.json"))["status"].ToString()=="PASS","Targeted prerequisites");

@@ -379,8 +379,8 @@ fire/pending telegraph, `ResumeAfter(seconds)` đếm scaled grace, `ClearProjec
 release active hostile projectiles cùng scene qua existing pool callback. Producers
 bind scene reference hoặc fallback tìm gate một lần; không có gate thì fail closed.
 Nó không chọn shooter, không đóng băng movement và không là encounter/FireDirector.
-Lifecycle giữ block qua death/entrance, request grace khi entrance hoàn tất và block
-terminal ở Game Over. M2 session nối Result sau full L1; general transition chưa có;
+Lifecycle giữ block qua death/entrance nhưng không clear đạn đang bay; request
+grace khi entrance hoàn tất và block terminal ở Game Over. M2 session nối Result sau full L1; general transition chưa có;
 owner sau có thể dùng cùng safety boundary, không suy từ Player `CanFire`.
 
 `PlayerDamagePresentation` chỉ đọc gate để death flash, protection blink/tint và
