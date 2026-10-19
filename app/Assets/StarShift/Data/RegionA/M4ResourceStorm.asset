@@ -15,50 +15,18 @@ MonoBehaviour:
   Id: ENCOUNTER_1
   Completion: 2
   CompleteWhenScheduleExhausted: 0
+  EntryBeats: []
+  EntryLeadSeconds: 0.5
+  TitleSeconds: 1.3
+  HazardStream: {fileID: 11400000, guid: a9530867cd40c8e598c3d165149063dd, type: 2}
   ScoutPrefab: {fileID: 0}
   Duration: 16
   Groups:
-  - Count: 3
-    StartTime: 0
-    Stagger: 0.24
-    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
-    EnemyDefinition: {fileID: 11400000, guid: f3953511964357f80b6e921f6984eadb, type: 2}
-    RewardOverride: {fileID: 0}
-    Elite: {fileID: 0}
-    Required: 1
-    Formation: 1
-    Anchor: {x: 0, y: 0}
-    SlotStep: {x: 0.115, y: 0.075}
-    FormationRise: 0.035
-    Sequence: {fileID: 11400000, guid: 4d6959467058542c3bdd04069b0cb0c5, type: 2}
-    EntryAnchor: {x: 0.5, y: 1.12}
-    HoldAnchor: {x: 0.5, y: 0.78}
-    EntryCurve: {x: 0, y: 0}
-    EntryDuration: 1.2
-    HoldDuration: 3
-    ExitAnchor: {x: 1.18, y: 0.3}
-    ExitDuration: 3
-  - Count: 2
-    StartTime: 7
-    Stagger: 0.24
-    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
-    EnemyDefinition: {fileID: 11400000, guid: f3953511964357f80b6e921f6984eadb, type: 2}
-    RewardOverride: {fileID: 0}
-    Elite: {fileID: 0}
-    Required: 1
-    Formation: 1
-    Anchor: {x: 0.25, y: 0}
-    SlotStep: {x: 0.115, y: 0.075}
-    FormationRise: 0.035
-    Sequence: {fileID: 11400000, guid: 4d6959467058542c3bdd04069b0cb0c5, type: 2}
-    EntryAnchor: {x: 0.5, y: 1.12}
-    HoldAnchor: {x: 0.5, y: 0.78}
-    EntryCurve: {x: 0, y: 0}
-    EntryDuration: 1.2
-    HoldDuration: 3
-    ExitAnchor: {x: 1.18, y: 0.3}
-    ExitDuration: 3
-  - Count: 1
+  - EntryBeat: 0
+    SpawnScale: 1
+    VisualSpin: 0
+    ContinuousTransit: 0
+    Count: 1
     StartTime: 2
     Stagger: 0.24
     EnemyPrefab: {fileID: 1863935525804757048, guid: cef18b7c2480ba7b083fc4938730cfcb, type: 3}
@@ -67,10 +35,10 @@ MonoBehaviour:
     Elite: {fileID: 0}
     Required: 1
     Formation: 1
-    Anchor: {x: 0, y: 0}
+    Anchor: {x: -0, y: 0}
     SlotStep: {x: 0.115, y: 0.075}
     FormationRise: 0.035
-    Sequence: {fileID: 11400000, guid: 4d6959467058542c3bdd04069b0cb0c5, type: 2}
+    Sequence: {fileID: 11400000, guid: 1516ef3f6d3f0d192b49123c7023b6a8, type: 2}
     EntryAnchor: {x: 0.5, y: 1.12}
     HoldAnchor: {x: 0.5, y: 0.78}
     EntryCurve: {x: 0, y: 0}
@@ -78,7 +46,11 @@ MonoBehaviour:
     HoldDuration: 3
     ExitAnchor: {x: 1.18, y: 0.3}
     ExitDuration: 3
-  - Count: 1
+  - EntryBeat: 0
+    SpawnScale: 1
+    VisualSpin: 0
+    ContinuousTransit: 0
+    Count: 1
     StartTime: 8
     Stagger: 0.24
     EnemyPrefab: {fileID: 1863935525804757048, guid: cef18b7c2480ba7b083fc4938730cfcb, type: 3}
@@ -87,10 +59,10 @@ MonoBehaviour:
     Elite: {fileID: 0}
     Required: 1
     Formation: 1
-    Anchor: {x: 0.28, y: 0}
+    Anchor: {x: -0.25, y: 0}
     SlotStep: {x: 0.115, y: 0.075}
     FormationRise: 0.035
-    Sequence: {fileID: 11400000, guid: 4d6959467058542c3bdd04069b0cb0c5, type: 2}
+    Sequence: {fileID: 11400000, guid: 1516ef3f6d3f0d192b49123c7023b6a8, type: 2}
     EntryAnchor: {x: 0.5, y: 1.12}
     HoldAnchor: {x: 0.5, y: 0.78}
     EntryCurve: {x: 0, y: 0}
@@ -103,7 +75,14 @@ MonoBehaviour:
     Kind: 0
     TimeOffset: 4
     Condition: 0
+    UsePressureWindow: 0
+    MaximumActiveEnemies: 2
+    FallbackTime: 12
     Group:
+      EntryBeat: 0
+      SpawnScale: 1
+      VisualSpin: 0
+      ContinuousTransit: 0
       Count: 1
       StartTime: 0
       Stagger: 0.24
@@ -129,12 +108,13 @@ MonoBehaviour:
   ShotSpacing: 0.85
   ShotsPerVolley: 2
   VolleyPause: 2.2
-  ClearPauseSeconds: 1
-  HandoffTravelSeconds: 1.5
+  ClearPauseSeconds: 0.7
+  HandoffTravelSeconds: 0.85
   HandoffDelay: 2
-  ProjectileGraceSeconds: 0.65
-  ProjectileFadeSeconds: 0.3
-  TransitionTitle:
-  TransitionDescription:
+  ProjectileGraceSeconds: 0.45
+  ProjectileFadeSeconds: 0.25
+  TransitionTitle: "\u0110\u1EE2T 1 \xB7 V\xC0NH \u0110AI H\u1ED6N LO\u1EA0N"
+  TransitionDescription: "Thu th\u1EADp t\xE0i nguy\xEAn tr\u01B0\u1EDBc tr\u1EADn
+    \u0111\xE1nh l\u1EDBn."
   RewardGraceSeconds: 2.5
   BossPostDeathSeconds: 1

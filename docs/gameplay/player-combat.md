@@ -380,7 +380,9 @@ Pause/Resume là boundary hủy **cả gesture và fire intent**, yêu cầu pre
 Resume. Đây là ngoại lệ có chủ ý cho generic gate block giữ held intent ở trên;
 death/respawn và ordinary handoff giữ contract cũ. Major establishing intro consume
 continue tap và gesture còn giữ, yêu cầu press mới khi trả gameplay. Full mission start/reset và terminal
-cũng cancel gesture. Không dùng lại drag delta hoặc cadence từ trước overlay.
+cũng cancel gesture. Ngoại lệ same-planet Mission handoff giữ held gesture và relative
+drag đang hoạt động; movement owner compose travel bias nhỏ vào displacement, không
+hard-animation hoặc reset pose. Major Planet travel vẫn lock và consume tap. Không dùng lại drag delta hoặc cadence từ trước overlay.
 
 
 ## Gameplay feel follow-up

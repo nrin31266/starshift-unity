@@ -10,6 +10,10 @@ namespace StarShift.Encounters
     [Serializable]
     public class SpawnAction
     {
+        [Min(0)] public int EntryBeat;
+        [Min(.1f)] public float SpawnScale = 1;
+        public float VisualSpin;
+        public bool ContinuousTransit;
         [Min(1)] public int Count = 3;
         [Min(0)] public float StartTime;
         [Min(0)] public float Stagger = .35f;
@@ -24,7 +28,7 @@ namespace StarShift.Encounters
         [Min(0)] public float FormationRise;
         public FlightSequence Sequence;
 
-        // Dữ liệu cũ chỉ dành cho sandbox/builders M2; asset M3 dùng Sequence.
+        // Transit trực tiếp cho hazard stream; formation phức tạp dùng Sequence.
         [HideInInspector] public Vector2 EntryAnchor = new Vector2(.5f, 1.12f);
         [HideInInspector] public Vector2 HoldAnchor = new Vector2(.5f, .78f);
         [HideInInspector] public Vector2 EntryCurve;
@@ -66,7 +70,7 @@ namespace StarShift.Encounters
         {
             error = "Invalid spawn action.";
             var prefab = EnemyPrefab != null ? EnemyPrefab : fallback;
-            if (Count < 1 || !ConfigValue.Nonnegative(StartTime) || !ConfigValue.Nonnegative(Stagger) ||
+            if (EntryBeat < 0 || !ConfigValue.Positive(SpawnScale) || !float.IsFinite(VisualSpin) || Count < 1 || !ConfigValue.Nonnegative(StartTime) || !ConfigValue.Nonnegative(Stagger) ||
                 !ConfigValue.Finite(Anchor) || !ConfigValue.Finite(SlotStep) || !ConfigValue.Nonnegative(FormationRise) ||
                 !Enum.IsDefined(typeof(FormationLayout), Formation) || prefab == null ||
                 prefab.GetComponent<EnemyHealth>() == null || prefab.GetComponent<EntryHoldFlight>() == null ||

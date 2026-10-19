@@ -65,7 +65,8 @@ hoặc mid-wave supply/drop objects. Definition và schedule được chạy l�
 
 Stats hiện chỉ phục vụ M4 runtime owners; chưa là full Campaign Result schema.
 Playable seconds đếm fixed gameplay time khi run active và không cinematic/terminal;
-Pause không có physics ticks. Mission card và handoff playable được tính. Retry/
+Pause không có physics ticks. Mission title overlay và handoff playable trong active run được tính; between-run travel
+không tự cộng Mission-local timer. Retry/
 Continue rollback timer/stats cùng snapshot. Full campaign aggregation vẫn [TBD].
 
 ### Restore, reset, preserve `[PROVISIONAL]`
@@ -212,9 +213,11 @@ levels, active branch, reserve; reset mission-local stats. Không ghi checkpoint
 Mission kế vào Mission cũ. Transaction atomic/idempotence tiếp tục theo storage trên.
 
 Clear L4: record + capture final resolved Player state + `RegionTransition` trong
-một transaction. Continue marker này chỉ chạy lại cinematic, không spawn Boss hoặc
+một transaction. Continue marker này reset departure environment/Up pose rồi chạy lại cinematic,
+bao gồm Planet reveal chờ tap và approach; không spawn Boss hoặc
 regrant death/clear rewards. Khi destination framing Right sẵn sàng, ghi `RegionReady`.
-Continue `RegionReady` dựng destination skeleton trực tiếp, không chạy fight/clear lần
+Continue `RegionReady` dựng destination skeleton Right và trả control trực tiếp,
+yêu cầu gesture mới; không chạy fight/clear lần
 nữa. Marker dùng checkpoint Encounter thật của L4, không tạo L5/fake Encounter ID.
 Validator chỉ chấp nhận region markers ở Boss checkpoint của Mission cuối catalog.
 Schema vẫn 2; thêm enum statuses, không thay shape DTO hoặc đổi storage path.

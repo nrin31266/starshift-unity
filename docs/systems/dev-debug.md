@@ -1160,3 +1160,58 @@ RA-019 Blocked, không claim Android touch/FPS/audio. Ponytail không có callab
 trong chat này dù config enabled; không claim review đã chạy. Không chạy pr-review.
 Tracker live TSV đã đọc RA-001–019; connector cần reauthentication nên không ghi Sheet.
 Dùng lại duy nhất `.design/m4-a/tracker-updates.tsv` cho evidence/status updates.
+
+
+## M5 gameplay pacing refinement verification
+
+2026-10-19 follow-up sau M5 checkpoint `c75634d8`; checkpoint trước sửa `6646ebcf`.
+Current production pacing thay seed cũ ở section trước; timing/composition canonical
+ở [levels](../content/levels-encounters.md#m5-region-a-authored-content-provisional).
+`tools/unity/VerifyPacingRefinement.cs` chạy qua Pipeline/run_script trong Play Mode.
+Begin methods trả ngay; chỉ một runtime probe, chờ JSON terminal trước probe khác.
+FullRegionStatus đọc Task handle live trong Editor; không restart khi chỉ chậm quan sát.
+Evidence local ở `.design/m5-refinement/`, không phải production save hoặc tracker mới.
+
+| Probe | Evidence và phạm vi |
+|---|---|
+| A | Initial virtual tap/3.3 s approach, title còn hiện lúc spawn, M1 fast-clear .54 s, một survivor không chặn beat sau, slow fallback 7 s, natural exit |
+| B + Storm correction | Mirrored Raider .52 s fast-clear gap; real Pulse kill Bomber; no-shoot M2/M4 còn 3 lives, normal count 20/24, visible peak gồm resource/Supply 7/8, runtime flow deviation <3°, deterministic seed, hazard cleanup |
+| C | Sine .52 s fast-clear gap, pincer đồng bộ, Supply T2.52 khi giảm pressure; real Pulse destroy → crate/collect và escape → reinforcement |
+| D | M1→M2 và M2→M3 first spawn 2.84 s; title overlap, relative drag/held input, Pause freeze, no teleport; minor transition 2.14–2.16 s gồm entry lead |
+| E + Wide journey | Native 1600×900 và 2000×900: Boss death 2.40–2.42 s, reward crate, glide/accelerate/bank/turn/palette/decelerate/reveal 7.28 s, stable tap, actual UI tap, approach .7/1.8/.8, consumed input/fresh press, Right-ready, automatic projection |
+| Bounded cleanup | Normal combat reserve visible impact/projection recovery; lingering visible projectile natural bound 244.77 s bị bounded grace/fade dọn trong .70 s ở final Timeline; Pause freeze, damage off trước release |
+| Integration | Temp save: later M2 Continue/fresh store, Retry, Boss Retry reset phase/HP, replay exact disk-byte isolation, RegionTransition resume qua reveal/tap/approach, RegionReady direct restore; original storage bytes unchanged |
+| Visuals/reviews | One design-review sau native tuning ở hai landscape aspects; unity-scriptdesign về config/runtime boundaries, lifecycle và ownership. Không Ponytail callable tool; không pr-review |
+
+Protected fixture tests và virtual/manual interaction không thay representative human
+balance. RA-018 giữ Partial, RA-019 giữ Blocked; không claim Android touch/FPS/audio.
+Same tracker artifact `.design/m4-a/tracker-updates.tsv`; live Sheet TSV read đã đối
+chiếu RA-001–019, không claim Sheet write khi connector cần reauthentication.
+
+Final integration sau toàn bộ batches/review: **đúng một full Region run**, PASS.
+L1 26.72 s, L2 37.14 s, L3 38.40 s, L4/Boss/Planet travel/approach 66.88 s;
+tổng 169.14 s fixed simulation (2 phút 49 giây), không thêm idle để kéo stopwatch.
+Sáu empty-active-field samples giữa các combat beats: trung bình .38 s, max .80 s;
+không tính intentional entry/title/reward/cinematic windows vào mean này. Các samples
+đếm active enemy roots, không phải phép đo pixel-visibility hoặc human feel.
+Peak visible 8; có forced death/respawn, Pause, reserve use, weapon switch và reward
+collection; một Plasma Core QA được thêm để chắc chắn có switch coverage. Save trong
+temp path, bốn Mission records/unlocks, RegionReady; không dùng protected bot để claim
+representative balance, target 6–9 phút hoặc device PASS.
+
+Closure: compile completed/no errors; Console 0 errors/warnings sau full run;
+production catalog 4 Missions/10 Encounters, retained M4 fixture 5 Encounters,
+saved DevFastStart off; 0 missing scripts/references. Docs checker/diff check được
+ghi cùng closure evidence. User-only L1 intro delay và runInBackground giữ uncommitted.
+
+Post-full narrow regression: sửa lifetime cue khi Pause sau Mission title đã hiện
+(trên gameplay và cuối same-planet travel): tạm hide/freeze, Resume tiếp tục remaining
+time và giữ overlap tới entry. Không thay layout, spawn/transition/gameplay clocks;
+chỉ chạy targeted title-pause regression, không chạy lại full Region.
+
+Một intermediate Editor reload session phát sinh private projectile-pool null ở
+PulseLaserWeapon trước fresh QA; log lưu riêng trong intermediate-editor-console.json.
+Đã stop, xác nhận Edit Mode/compile completed, rồi fresh Play để dựng lại runtime;
+title-pause regression còn yêu cầu actual Pulse fire. Final fresh session Console
+0 errors/warnings. Không sửa weapon runtime hoặc claim live hot-reload support trong
+refinement này; full integration trước đó cũng không có lỗi Console.

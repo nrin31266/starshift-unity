@@ -241,3 +241,9 @@ sprites; không generate final raster art hoặc texture batch.
 M4 fixture giữ level/encounter/reward assets riêng; production definitions trong
 Data/RegionA. New `.meta` do Unity tạo, phải đi cùng assets. Device visual-family
 approval chưa có, không coi placeholder thành locked/final art.
+
+
+`ConfigurePacingRefinement.Configure` cập nhật production choreography/stream/copy
+qua Unity API; `ConfigureTravel` wire PlanetJourney trên saved Gameplay scene. Cả hai
+chạy Edit Mode qua Pipeline, giữ GUID; không chạy baseline builder để reset tuning.
+`Report` chỉ đọc config và ghi snapshot evidence, không author asset hoặc save gameplay.

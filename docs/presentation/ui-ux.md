@@ -249,31 +249,24 @@ major boss reveal, major direction-shift cinematic và ending áp dụng cùng r
 Không mặc định mọi transition là major cinematic. Sau continue, giữ approach /
 acceleration / deceleration; camera và HUD trở về đồng thời với deceleration,
 không nhịp đứng chờ riêng hoặc menu/confirmation nữa.
-Khi camera đã về khung gameplay, HUD hiện đủ và điều khiển mở, mới hiện Mission card.
-Mission card **căn giữa**, gồm hai dòng: “Mission 01” và “Encounter 01” nhỏ hơn ngay
-bên dưới. Mission không có câu mô tả. Encounter đầu được gộp vào card này để có
-thời gian đọc, không phát thêm announcement đầu tiên cạnh tranh với Mission card.
-Title Mission từ Intro config, subtitle Encounter lấy từ index đang vào trong Mission;
-normal start là 01, dev encounter jump phải phản ánh đúng index đã chọn.
-Card giữ lâu hơn minor handoff; nhịp dừng/hiển thị theo
-[audio/VFX](audio-vfx.md#level-intro-warning-và-dynamic-audio). Không trở thành hero
-location title hoặc yêu cầu tap lần nữa. Pause không nhận lệnh trong
-major intro; simulation vẫn chạy. HUD fade về trong Brake; hết Brake mở control rồi
-hiện card trên gameplay. Người chơi có thể kéo/bắn/Pause trong nhịp đọc, nhưng first
-spawn đợi card hoàn tất. Resume từ Pause hiện lại card với thời gian còn lại.
+Khi Brake kết thúc, HUD/control trở lại và Mission title hiện upper-center, gồm
+`NHIỆM VỤ NN` và mô tả ngắn một dòng. Title là overlay: first enemy entry bắt đầu
+trong lúc chữ còn hiện/fading, không chờ card hoàn tất và không yêu cầu tap nữa.
+Pause không nhận lệnh trong major cinematic; simulation vẫn chạy. Trên gameplay,
+Pause dừng scaled title/entry clocks; Resume cần thao tác mới theo input owner.
 
-Sau khi gameplay bắt đầu, HUD luôn hiện xuyên suốt ordinary A → B / formation
-transitions. Pause và gameplay permissions vẫn theo gameplay/lifecycle bình thường;
-minor handoff không tự khóa input hoặc ẩn Pause. Không Continue/forced confirmation.
-Minor title + một câu mô tả nằm **giữa màn hình**, dùng cùng announcement với layout
-căn giữa rồi auto fade; không chung vị trí/layout với major establishing. Incoming
-encounter config có thể để trống cả hai. M4-A testbed dùng “Encounter NN” và description trống để debug đúng cấp, chưa dùng nhãn hoa mỹ. Nhãn cấp thống nhất
-`Mission NN` / `Encounter NN`; câu mô tả tiếng Việt, không dùng lại “đợt” làm title.
-Minor announcement nhận duration bằng phần handoff còn lại sau projectile cleanup do
-[level owner](../content/levels-encounters.md#level-1--first-contact-provisional) quy định,
-để chữ và cue bay kết thúc cùng nhịp. Fallback cho announcement không truyền duration
-là 1.6 s, fade .2 s `[TUNABLE]`; Pause/terminal/reset ẩn nó.
-Announcement chỉ render copy, không sở hữu gameplay authority.
+Ordinary Encounter/Mission handoff giữ HUD, relative drag, hold-to-fire và Pause;
+không Continue/forced confirmation. Player-facing Encounter là `ĐỢT N · TÊN NGẮN`,
+subtitle ngắn một dòng; Boss dùng `CẢNH BÁO` / `VANGUARD FRIGATE`. Internal IDs vẫn
+English và không xuất hiện trong HUD. Fixture lịch sử chỉ dùng cho DevTest.
+
+Mission title và Đợt dùng hai announcement instances: Mission upper-center lớn/bold,
+Đợt nhỏ hơn ở phía trên; không có modal/raycast blocker hoặc card nền. Typography
+seeds `[TUNABLE]`: Mission 42/bold + subtitle 22, Đợt 25/normal + subtitle 18.
+Visible duration/entry lead độc lập theo [level owner](../content/levels-encounters.md#m5-region-a-authored-content-provisional).
+Fallback announcement không truyền duration là 1.6 s, fade .2 s `[TUNABLE]`.
+Announcement chỉ render copy, không sở hữu gameplay authority; atomic Mission launch
+không được hide title chỉ vì outgoing run vừa Idle. Pause tạm ẩn cue và giữ remaining time để Resume; terminal/reset hủy cue.
 
 Pause hiện “TẠM DỪNG”; “TIẾP TỤC” hoạt động. M4-B nối “CHƠI LẠI ĐỢT” tới
 current Encounter checkpoint khi backend báo CanRetry. “CÀI ĐẶT”, “VỀ MENU CHÍNH”
@@ -312,4 +305,4 @@ counters, không giant card hoặc common-enemy HP bar. Chỉ hiện khi Boss En
 Running và Boss sống; ẩn ngay defeat/reset/exit. Phase B thêm `GIAI ĐOẠN 2` để cue
 không chỉ phụ thuộc màu. Proper name Vanguard Frigate giữ English/provisional.
 Mission production dùng `NHIỆM VỤ 01`–`NHIỆM VỤ 04`; không expose internal IDs.
-Region-ready dừng tại compact clear presentation, chưa có Mission 05/menu mới.
+Region-ready trả gameplay theo hướng Right sau cinematic/tap/approach, yêu cầu gesture mới; chưa có Mission 05/menu mới.

@@ -17,7 +17,8 @@ MonoBehaviour:
   MissionNumber: 3
   RegionId: astra-frontier
   LocationName:
-  MissionBriefing:
+  MissionBriefing: "Ph\xE1 v\xF2ng v\xE2y v\xE0 ch\u1EB7n m\u1EE5c ti\xEAu ti\u1EBFp
+    t\u1EBF."
   Direction: 0
   Camera: {fileID: 11400000, guid: f15e6f16905e5380b9f1a05f63962ceb, type: 2}
   ReplayPreset:
@@ -29,7 +30,8 @@ MonoBehaviour:
     Enabled: 1
     ContinueDelaySeconds: 1.8
     ArrivalTitle: "NHI\u1EC6M V\u1EE4 03"
-    MissionTitleSeconds: 2.8
+    MissionTitleSeconds: 2.1
+    MissionEntryLeadSeconds: 0.75
     ApproachView:
       orthographicSize: 8
       playableViewport:

@@ -435,12 +435,13 @@ kết thúc hoặc reset. Không tạo writer thứ hai trên Player Rigidbody.
 Canvas/uGUI pointer handlers; transparent raycast area chỉ bật trong intro. Tap
 chỉ arm khi prompt sẵn sàng; drag/cancel/hold dài không launch. Không poll input
 thứ hai hoặc tạo menu mới. `GameplayAnnouncement` giữ title/description và fade/
-duration; cùng một component đổi anchor/alignment cho major establishing và centered
-minor title. Loại title không suy từ HUD lock. LevelFlow giữ phase MissionTitle sau
-Brake: cinematic đã hide, HUD/control/Pause mở, runner vẫn chờ trước first spawn.
-Phase này dùng scaled timer; Resume refresh card với thời gian còn lại. Mission card dùng duration từ Intro config, subtitle lấy từ
-starting encounter index do runner truyền vào; không có ArrivalDescription hoặc một
-first-Encounter announcement riêng. `SafeAreaLayout` chỉ cập nhật anchors khi safe area/resolution đổi.
+duration; component đổi layout theo major establishing, Mission hoặc Đợt. Mission và
+Đợt có presentation instances riêng để chồng thời gian entry. LevelFlow giữ phase
+MissionTitle sau Brake chỉ tới spawn lead, độc lập visible duration; cinematic đã
+hide, HUD/control/Pause mở. Title và subtitle Mission lấy từ LevelDefinition,
+EncounterCuePresentation đọc Đợt từ EncounterDefinition; không dùng subtitle Encounter
+thay cho Mission briefing. Scaled clocks freeze trong Pause. SafeAreaLayout chỉ cập
+nhật anchors khi safe area/resolution đổi.
 Canvas/RectTransform/buttons/EventSystem được author bằng `ConfigureGameplayUi` qua
 Unity; không dựng UI runtime từng frame. Default execution order đặt session trước
 HUD để đọc dependency sau Awake; announcement cũng initialize trước HUD. Không thêm
@@ -738,3 +739,19 @@ RegionCampaignFlow chỉ orchestration L1–L4 và destination skeleton, tham ch
 rõ. CampaignLifecycle giữ write permission/restore; CampaignProgress mutate DTO và
 atomic transaction. GameplaySession vẫn giữ clock/terminal/Pause. BossHud chỉ đọc
 health/name/phase; không quyết Boss lifecycle. Không thêm event bus hoặc scene thứ hai.
+
+
+## M5 pacing refinement boundaries
+
+EncounterDefinition giữ entry lead/title duration/adaptive beat rules; SpawnAction
+giữ beat index/subgroup offset/stagger. Runner giữ beat-start clocks và enemy pressure;
+không mutate definition. HazardStreamSchedule là plain seeded schedule builder,
+HazardStreamDefinition giữ cone/density/size/speed; EntryHoldFlight thực thi continuous
+unclamped transit, AsteroidVisualMotion chỉ xoay visual. Không có từng asteroid prefab copy.
+
+RegionCampaignFlow giữ same-planet travel; RelativeDragMovement compose bias và pointer
+delta. CampaignLifecycle đánh dấu atomic Mission advance để HUD không nhầm idle giữa
+hai runs thành terminal/hide title; preserve input/pose là explicit launch option.
+PlanetJourney giữ scaled major cinematic phase/callback generation; LevelFlow nối existing
+intro presentation và Up/Right boundary. GameplaySession giữ input/clock cleanup;
+presentation không cấp damage hoặc persistence writes. Timing thuộc level/audio owners.

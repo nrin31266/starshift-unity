@@ -24,13 +24,14 @@ namespace StarShift.Enemies
         private Vector2 exitViewport;
         private float holdDuration;
         private float exitDuration;
+        private bool continuousTransit;
 
         private FlightSequence sequence;
         private Vector2 slotOffset;
         private PlayDirection direction;
         private int phaseIndex;
         private bool sequenceFinished;
-        public int PhaseIndex => phaseIndex;
+        public int PhaseIndex => sequence != null ? phaseIndex : elapsed < entryDuration ? 0 : 2;
 
         public bool IsHolding => sequence != null ? !sequenceFinished && (sequence.Phases[phaseIndex].Kind == FlightPhaseKind.Hold || sequence.Phases[phaseIndex].Kind == FlightPhaseKind.Combat) : elapsed >= entryDuration && (exitDuration <= 0 || elapsed < entryDuration + holdDuration);
         public bool IsExiting => sequence != null ? sequence.Phases[phaseIndex].Kind == FlightPhaseKind.Exit : exitDuration > 0 && elapsed >= entryDuration + holdDuration;
@@ -55,9 +56,10 @@ namespace StarShift.Enemies
         }
 
         public void Configure(Vector2 entry, Vector2 hold, Vector2 curve, float entrySeconds,
-            Vector2 exit, float holdSeconds, float exitSeconds)
+            Vector2 exit, float holdSeconds, float exitSeconds, bool continuous = false)
         {
             sequence = null;
+            continuousTransit = continuous;
             entryViewport = entry;
             holdViewport = hold;
             entryCurve = curve;
@@ -70,6 +72,7 @@ namespace StarShift.Enemies
         public void ConfigureSequence(FlightSequence config, Vector2 offset, PlayDirection playDirection)
         {
             sequence = config;
+            continuousTransit = false;
             slotOffset = offset;
             direction = playDirection;
             phaseIndex = 0;
@@ -112,6 +115,15 @@ namespace StarShift.Enemies
             if (flightCamera == null || !flightCamera.isActiveAndEnabled) return;
             if (sequence != null) { ApplySequencePosition(); return; }
             var depth = Vector3.Dot(transform.position - flightCamera.transform.position, flightCamera.transform.forward);
+            if (continuousTransit)
+            {
+                // Luồng xuyên màn hình không clamp mốc giữa hoặc dừng ở biên viewport.
+                var transit = Vector2.Lerp(entryViewport, exitViewport, elapsed / (entryDuration + holdDuration + exitDuration));
+                var world = flightCamera.ViewportToWorldPoint(new Vector3(transit.x, transit.y, depth));
+                body.position = world;
+                transform.position = world;
+                return;
+            }
             var hold = new Vector3(holdViewport.x, holdViewport.y, depth);
             var rootViewport = flightCamera.WorldToViewportPoint(transform.position);
             GetViewportEnvelope(out var minimum, out var maximum);

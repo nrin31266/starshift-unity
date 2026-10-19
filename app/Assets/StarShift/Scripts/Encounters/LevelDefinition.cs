@@ -11,13 +11,14 @@ namespace StarShift.Encounters
         public bool Enabled = true;
         [Min(.01f)] public float ContinueDelaySeconds = 1.8f;
         public string ArrivalTitle;
-        [Min(.01f)] public float MissionTitleSeconds = 2.8f;
+        [Min(.01f)] public float MissionTitleSeconds = 2.1f;
+        [Min(0)] public float MissionEntryLeadSeconds = .75f;
         public GameplayViewSettings ApproachView = new GameplayViewSettings(8, new Rect(0,0,1,1));
         public GameplayViewSettings TravelView = new GameplayViewSettings(9, new Rect(0,0,1,1));
         [Min(.01f)] public float ApproachSeconds = .7f;
         [Min(.01f)] public float TravelSeconds = 1.8f;
         [Min(.01f)] public float BrakeSeconds = .8f;
-        public bool IsValid => ConfigValue.Positive(MissionTitleSeconds) &&
+        public bool IsValid => ConfigValue.Positive(MissionTitleSeconds) && ConfigValue.Nonnegative(MissionEntryLeadSeconds) &&
             ConfigValue.Positive(ContinueDelaySeconds) && ConfigValue.Positive(ApproachSeconds) && ConfigValue.Positive(TravelSeconds) &&
             ConfigValue.Positive(BrakeSeconds) && ConfigValue.Positive(ApproachView.OrthographicSize) && ConfigValue.Positive(TravelView.OrthographicSize);
     }

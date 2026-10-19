@@ -132,7 +132,7 @@ namespace StarShift.UI
             pauseButton.interactable = !session.IsPaused && session.CanPause;
             gameplayHud.blocksRaycasts = gameplayHud.interactable = !cinematic;
             if (announcement.IsPersistent && !awaitingStart) announcement.Hide();
-            if (!session.HasActiveRun || session.IsPaused || session.IsTerminal) announcement.Hide();
+            if (!session.HasActiveRun || session.IsTerminal) announcement.Hide();
         }
 
         private void Update()

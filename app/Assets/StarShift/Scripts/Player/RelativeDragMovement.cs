@@ -24,6 +24,8 @@ namespace StarShift.Player
         private GameplayViewController gameplayView;
         private PlayerRespawnEntrance respawnEntrance;
         private Vector2 pendingPointerDelta;
+        private Vector2 travelBias, appliedTravelBias;
+        public void SetTravelBias(Vector2 normalizedOffset) => travelBias = normalizedOffset;
 
         private void Awake()
         {
@@ -96,7 +98,10 @@ namespace StarShift.Player
             var horizontal = pendingPointerDelta.x / movementCamera.pixelWidth * worldHeight * movementCamera.aspect;
             var vertical = pendingPointerDelta.y / movementCamera.pixelHeight * worldHeight;
             var worldDelta = movementCamera.transform.right * horizontal + movementCamera.transform.up * vertical;
-            var proposedPosition = body.position + (Vector2)worldDelta * sensitivity;
+            var biasDelta = travelBias - appliedTravelBias;
+            appliedTravelBias = travelBias;
+            var travelDelta = new Vector2(biasDelta.x * worldHeight * movementCamera.aspect, biasDelta.y * worldHeight);
+            var proposedPosition = body.position + (Vector2)worldDelta * sensitivity + travelDelta;
             body.position = movementBounds.isActiveAndEnabled
                 ? movementBounds.ClampPosition(proposedPosition, movementCamera, PlayableViewport)
                 : proposedPosition;
@@ -123,10 +128,12 @@ namespace StarShift.Player
 
         public void SetCinematicPosition(Vector3 position)
         {
+            travelBias = appliedTravelBias = Vector2.zero;
             body.position = position; body.linearVelocity = Vector2.zero; transform.position = position;
         }
         public void ResetForCheckpoint(PlayDirection direction)
         {
+            travelBias = appliedTravelBias = Vector2.zero;
             ResetInput();
             var normalized = PlayableViewport.min + Vector2.Scale(PlayableViewport.size,
                 PlayDirectionSpace.Point(new Vector2(.5f, .18f), direction));

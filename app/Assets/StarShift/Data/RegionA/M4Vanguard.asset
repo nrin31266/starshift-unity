@@ -15,10 +15,18 @@ MonoBehaviour:
   Id: ENCOUNTER_2
   Completion: 3
   CompleteWhenScheduleExhausted: 0
+  EntryBeats: []
+  EntryLeadSeconds: 0.5
+  TitleSeconds: 1.4
+  HazardStream: {fileID: 0}
   ScoutPrefab: {fileID: 0}
   Duration: 120
   Groups:
-  - Count: 1
+  - EntryBeat: 0
+    SpawnScale: 1
+    VisualSpin: 0
+    ContinuousTransit: 0
+    Count: 1
     StartTime: 0
     Stagger: 0.24
     EnemyPrefab: {fileID: 8548296509711498527, guid: 3d9b9c4fe24440c4e9b1e4a7848102f7, type: 3}

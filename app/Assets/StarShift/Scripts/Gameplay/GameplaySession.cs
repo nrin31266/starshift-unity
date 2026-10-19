@@ -23,8 +23,8 @@ namespace StarShift.Gameplay
         public bool CanRetry => Persistence != null && Persistence.CanRetry;
         public void RetryEncounter() => Persistence?.RetryEncounter();
         public LevelFlow Flow => runner.Flow;
-        public bool HasActiveRun => runner.HasActiveRun;
-        public bool CanPause => (region == null || !region.IsTravelling) && !IsTerminal && runner.HasActiveRun && (Flow == null || !Flow.IsCinematic);
+        public bool HasActiveRun => runner.HasActiveRun || (Persistence != null && Persistence.IsAdvancingMission) || (region != null && region.IsTravelling);
+        public bool CanPause => (region == null || !region.IsTravelling || region.IsMissionTravel) && !IsTerminal && HasActiveRun && (Flow == null || !Flow.IsCinematic);
         public bool IsPaused { get; private set; }
         public bool IsTerminal => playerGate.State == PlayerGameplayState.Result || playerGate.State == PlayerGameplayState.GameOver;
         public bool IsClear => playerGate.State == PlayerGameplayState.Result;
@@ -77,7 +77,7 @@ namespace StarShift.Gameplay
             if (Flow != null) Flow.RefreshMissionTitle();
         }
 
-        public void ResetRuntime()
+        public void ResetRuntime(bool preserveInput = false)
         {
             region?.Cancel();
             lifecycle.GetComponent<PlayerTemporaryEffects>()?.ResetForSession();
@@ -88,14 +88,14 @@ namespace StarShift.Gameplay
             ReleaseFriendlyProjectiles();
             RestoreClock();
             IsPaused = false;
-            pointer.CancelGesture();
+            if(!preserveInput)pointer.CancelGesture();
             Changed?.Invoke();
         }
 
         private void OnRunStarted()
         {
-            ResetRuntime();
-            MissionStarted?.Invoke();
+            ResetRuntime(runner.PreservePlayerInput);
+            if(!runner.PreservePlayerInput)MissionStarted?.Invoke();
         }
 
         private void OnMissionCompleted()
@@ -105,6 +105,17 @@ namespace StarShift.Gameplay
             ShowRegionComplete();
         }
 
+        public void PrepareMajorTravel()
+        {
+            pointer.CancelGesture();enemyFireGate.Block();ReleaseFriendlyProjectiles();
+            lifecycle.GetComponent<EmergencyMissileReserve>()?.CancelPending();
+            lifecycle.GetComponent<EmergencyMissilePresentation>()?.ResetForSession();
+            lifecycle.GetComponent<PlayerTemporaryEffects>()?.ResetForSession();
+        }
+        public void ShowRegionReady()
+        {
+            RestoreClock();IsPaused=false;pointer.CancelGesture();playerGate.SetState(PlayerGameplayState.Active);playerGate.SetCinematicLock(false);enemyFireGate.Block();Changed?.Invoke();
+        }
         public void ShowRegionComplete() { playerGate.SetState(PlayerGameplayState.Result); EndCombat(); }
 
         private void OnGameOver() => EndCombat();
