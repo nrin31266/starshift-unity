@@ -473,9 +473,9 @@ Encounter B — `Timeline`
 
 #### M4-A Mission 01 system testbed `[PROVISIONAL]`
 
-Content hiện tại là SYSTEM TESTBED, không là final Level 1. Mục tiêu final tutorial
-phía trên sẽ được author/tune lại ở content phase; không dùng testbed làm campaign
-production. M3 data-driven foundation tiếp tục sở hữu mọi schedule/path/completion.
+Fixture lịch sử M4 giữ tại `Data/Levels/L1.asset`, ID `M4_FIXTURE`; không còn là
+campaign production. L1 production nằm tại `Data/RegionA/Mission01.asset`. M3
+data-driven foundation tiếp tục sở hữu mọi schedule/path/completion.
 
 | Encounter | Mode / authored main enemies | Mục tiêu |
 |---|---|---|
@@ -915,11 +915,13 @@ Không tạo fake wave để mọi level cùng schema start point.
 
 | Level | Loadout preset |
 |---|---|
-| L1–L4 | [TBD] từng level: unlocks, active weapon, branch levels, lives |
+| L1 | Pulse L1; Plasma/Homing locked; lives 3; reserve 1 |
+| L2 | Pulse L2; Plasma/Homing locked; lives 3; reserve 1 |
+| L3–L4 | Pulse L2, Plasma L1, Homing L1; active Pulse; lives 3; reserve 1 |
 | L5–L8 | [TBD] từng level: unlocks, active weapon, branch levels, lives |
 | L9–L12 | [TBD] từng level: unlocks, active weapon, branch levels, lives |
 
-Exact preset chưa được thiết kế chốt. Replay policy thuộc
+L1–L4 là draft `[PROVISIONAL]` trong `LevelDefinition.ReplayPreset`; không lấy late-game loadout. L5–L12 chưa có preset. Replay policy thuộc
 [progression/economy](../gameplay/progression-economy.md).
 Enemy stats/behavior ở [enemies/bosses](enemies-bosses.md);
 weapon, core và supply/drop contract ở [weapons/items/drops](weapons-items-drops.md).
@@ -927,7 +929,7 @@ weapon, core và supply/drop contract ở [weapons/items/drops](weapons-items-dr
 
 ## Testbed flight và pacing follow-up `[PROVISIONAL]`
 
-Mission 01 vẫn là system testbed. Encounter 2 dùng top retreat/right sweep xen kẽ;
+Fixture M4 vẫn giữ system testbed. Encounter 2 dùng top retreat/right sweep xen kẽ;
 Encounter 3 dùng diagonal/top retreat; Encounter 4 dùng straight top dive/right sweep;
 Encounter 5 có right-entry terminal hold. Encounter 1 giữ top entry. Required targets
 của Eliminate vẫn phải kill; không bay đi để giả completion.
@@ -943,3 +945,30 @@ thì chưa kết thúc sớm; optional Supply vẫn được chạy. Sau enemy c
 bounded projectile grace/fade, rồi minor handoff theo [testbed tuning](#m4-a-mission-01-system-testbed-provisional) giữ pickup như
 1 → 2. Không đợi timer 20/24 s thêm khi world đã hết mục tiêu và schedule đã xong.
 Survive giữ timer đầy đủ. Early exhaustion không tính escaped enemy là kill/drop.
+
+
+## M5 Region A authored content `[PROVISIONAL]`
+
+Production definitions nằm trong `Data/RegionA/Mission01–04.asset`, dùng scene
+Gameplay chung. Fixture M4 giữ nguyên encounter/reward coverage riêng; không đưa
+SYSTEM_* aliases hoặc guaranteed effect drops vào campaign. Định hướng L1–L4 ở trên
+là target; bảng dưới là authored runtime seed `[TUNABLE]` hiện tại.
+
+| Mission | Encounter | Composition |
+|---|---|---|
+| 01 | Eliminate → Timeline | 3 Scout + một authored Pulse Core target; hai formation 5 Scout arc/V/staggered |
+| 02 | Timeline → Survive 14 s → Eliminate | Raider arc trái/phải + Scout; diagonal storm với hai resource targets; 2 Bomber + 5 Scout |
+| 03 | Timeline → Timeline → Eliminate | Hai nhóm Raider sine/staggered; pincer cao và cross với Supply lúc giảm pressure; một Elite Bomber + Raider escort |
+| 04 | Survive 16 s → Boss | Resource storm với hai resource targets + optional Supply; Vanguard Frigate |
+
+Active shooter limit 1; shot spacing .85 s, volley 2, volley pause 2.2 s. Timeline
+opt-in schedule exhaustion chỉ sau mọi scheduled group/optional event resolve.
+Pincer giữ combat phía trên, exit hướng lên; không chạy qua safe start phía dưới.
+Clear pause 1 s và gentle travel 1.5 s là hai fields riêng, giữ tuning main.
+Boss camera 7.5; các encounter khác dùng Normal 6.0, không tự áp camera seed cũ từ
+tracker để thay baseline đã tune. Exact difficulty/duration cần representative playtest;
+6–9 phút Region A vẫn là mục tiêu, chưa coi automated clear là balance approval.
+
+Sau L4, production flow chạy 8 s travel placeholder, lock input/fire, đổi Up → Right,
+reposition sang left-center rồi dừng ở destination-ready skeleton. Không có L5
+Encounter hoặc Mission 05 giả. Resume markers do [save owner](../systems/save-profile.md#m5-mission-và-region-boundaries-provisional) sở hữu.

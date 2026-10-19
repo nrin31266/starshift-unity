@@ -194,7 +194,7 @@ Weapon Core unlock weapon mới hoặc tăng level đúng branch. Exact core typ
 
 ## M4-A runtime test semantics `[PROVISIONAL]`
 
-Mission 01 hiện là [system testbed](levels-encounters.md#m4-a-mission-01-system-testbed-provisional).
+Fixture M4 Mission 01 là [system testbed](levels-encounters.md#m4-a-mission-01-system-testbed-provisional).
 Các lựa chọn dưới đủ để kiểm tra runtime; không chốt các quyết định TBD ở cuối file.
 Definition assets chỉ chứa static config; không ghi level/heat/buff timer vào asset.
 
@@ -471,3 +471,15 @@ Reserve là campaign runtime state: ordinary death giữ số còn lại; checkp
 Retry/Continue restore theo [save owner](../systems/save-profile.md). NewGame/Replay/
 Dev entry có preset riêng. Không persist cooldown, burst hoặc shake. Visual/audio
 cue thuộc [presentation owner](../presentation/audio-vfx.md#reserve-missile-impact-cue).
+
+
+## M5 authored reward usage `[PROVISIONAL]`
+
+L1 production chỉ có một typed Pulse Core progression moment; không có guaranteed
+Shield/Drone/Homing/Extra Life test dump. Normal drop table giữ nguyên. M3 first
+Supply và M4 preboss Supply dùng crate major guarantee hiện có; escape không reward,
+không chặn Encounter. Elite table seed major 6.5%, shard 25% `[TUNABLE]`; Vanguard
+đảm bảo một major crate sau staged death. Crate vẫn cần pickup, không auto grant.
+Shard motion/lifetime/carry-over theo policy hiện có, không hard-clear ở minor handoff.
+Weapon Core typing, Shield stacking, Extra Life overflow và replay Shards vẫn TBD;
+M5 không khóa các quyết định này.

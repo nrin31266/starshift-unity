@@ -1,0 +1,115 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f1d586d44955cc0fa3b4b57b2d5444f, type: 3}
+  m_Name: M2Storm
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Encounters.EncounterDefinition
+  Id: ENCOUNTER_2
+  Completion: 2
+  CompleteWhenScheduleExhausted: 0
+  ScoutPrefab: {fileID: 0}
+  Duration: 14
+  Groups:
+  - Count: 3
+    StartTime: 0
+    Stagger: 0.24
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 11400000, guid: f3953511964357f80b6e921f6984eadb, type: 2}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 1
+    Formation: 1
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.115, y: 0.075}
+    FormationRise: 0.035
+    Sequence: {fileID: 11400000, guid: 4d6959467058542c3bdd04069b0cb0c5, type: 2}
+    EntryAnchor: {x: 0.5, y: 1.12}
+    HoldAnchor: {x: 0.5, y: 0.78}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 3
+    ExitAnchor: {x: 1.18, y: 0.3}
+    ExitDuration: 3
+  - Count: 3
+    StartTime: 5
+    Stagger: 0.24
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 11400000, guid: f3953511964357f80b6e921f6984eadb, type: 2}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 1
+    Formation: 1
+    Anchor: {x: 0.25, y: 0}
+    SlotStep: {x: 0.115, y: 0.075}
+    FormationRise: 0.035
+    Sequence: {fileID: 11400000, guid: 4d6959467058542c3bdd04069b0cb0c5, type: 2}
+    EntryAnchor: {x: 0.5, y: 1.12}
+    HoldAnchor: {x: 0.5, y: 0.78}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 3
+    ExitAnchor: {x: 1.18, y: 0.3}
+    ExitDuration: 3
+  - Count: 1
+    StartTime: 2
+    Stagger: 0.24
+    EnemyPrefab: {fileID: 1863935525804757048, guid: cef18b7c2480ba7b083fc4938730cfcb, type: 3}
+    EnemyDefinition: {fileID: 11400000, guid: a5b258a4b397a9a3fa2edc1d7e575060, type: 2}
+    RewardOverride: {fileID: 11400000, guid: 4bef1defd37ed76e2a3bcb1144caff3f, type: 2}
+    Elite: {fileID: 0}
+    Required: 1
+    Formation: 1
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.115, y: 0.075}
+    FormationRise: 0.035
+    Sequence: {fileID: 11400000, guid: 4d6959467058542c3bdd04069b0cb0c5, type: 2}
+    EntryAnchor: {x: 0.5, y: 1.12}
+    HoldAnchor: {x: 0.5, y: 0.78}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 3
+    ExitAnchor: {x: 1.18, y: 0.3}
+    ExitDuration: 3
+  - Count: 1
+    StartTime: 7
+    Stagger: 0.24
+    EnemyPrefab: {fileID: 1863935525804757048, guid: cef18b7c2480ba7b083fc4938730cfcb, type: 3}
+    EnemyDefinition: {fileID: 11400000, guid: a5b258a4b397a9a3fa2edc1d7e575060, type: 2}
+    RewardOverride: {fileID: 11400000, guid: 4bef1defd37ed76e2a3bcb1144caff3f, type: 2}
+    Elite: {fileID: 0}
+    Required: 1
+    Formation: 1
+    Anchor: {x: 0.35, y: 0}
+    SlotStep: {x: 0.115, y: 0.075}
+    FormationRise: 0.035
+    Sequence: {fileID: 11400000, guid: 4d6959467058542c3bdd04069b0cb0c5, type: 2}
+    EntryAnchor: {x: 0.5, y: 1.12}
+    HoldAnchor: {x: 0.5, y: 0.78}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 3
+    ExitAnchor: {x: 1.18, y: 0.3}
+    ExitDuration: 3
+  OptionalEvents: []
+  CameraOverride: {fileID: 0}
+  ActiveShooterLimit: 1
+  ShotSpacing: 0.85
+  ShotsPerVolley: 2
+  VolleyPause: 2.2
+  ClearPauseSeconds: 1
+  HandoffTravelSeconds: 1.5
+  HandoffDelay: 2
+  ProjectileGraceSeconds: 0.65
+  ProjectileFadeSeconds: 0.3
+  TransitionTitle:
+  TransitionDescription:
+  RewardGraceSeconds: 2.5
+  BossPostDeathSeconds: 1

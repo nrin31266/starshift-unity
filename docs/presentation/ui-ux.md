@@ -303,3 +303,13 @@ weapon-cycle. Disable khi stock zero, cooldown, Pause, cinematic, dying/respawni
 terminal hoặc không ở Running Encounter. Nút chỉ gửi intent tới reserve owner;
 UI không trừ stock/damage hoặc lưu save. Pointer consumption dùng existing UI input
 boundary để bấm nút không khởi động drag/fire. Không thêm inventory/menu scene.
+
+
+## M5 Boss HUD `[PROVISIONAL]`
+
+BossHud được author dưới GameplayUI/SafeArea: compact centered name và HP bar dưới
+counters, không giant card hoặc common-enemy HP bar. Chỉ hiện khi Boss Encounter đang
+Running và Boss sống; ẩn ngay defeat/reset/exit. Phase B thêm `GIAI ĐOẠN 2` để cue
+không chỉ phụ thuộc màu. Proper name Vanguard Frigate giữ English/provisional.
+Mission production dùng `NHIỆM VỤ 01`–`NHIỆM VỤ 04`; không expose internal IDs.
+Region-ready dừng tại compact clear presentation, chưa có Mission 05/menu mới.

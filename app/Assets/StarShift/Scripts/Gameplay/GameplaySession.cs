@@ -15,6 +15,7 @@ namespace StarShift.Gameplay
         private PlayerGameplayGate playerGate;
         private InputSystemPointerInput pointer;
         private PulseLaserWeapon weapon;
+        private RegionCampaignFlow region;
         private float previousScale;
         private bool previousAudioPause;
         private bool ownsClock;
@@ -23,7 +24,7 @@ namespace StarShift.Gameplay
         public void RetryEncounter() => Persistence?.RetryEncounter();
         public LevelFlow Flow => runner.Flow;
         public bool HasActiveRun => runner.HasActiveRun;
-        public bool CanPause => !IsTerminal && runner.HasActiveRun && (Flow == null || !Flow.IsCinematic);
+        public bool CanPause => (region == null || !region.IsTravelling) && !IsTerminal && runner.HasActiveRun && (Flow == null || !Flow.IsCinematic);
         public bool IsPaused { get; private set; }
         public bool IsTerminal => playerGate.State == PlayerGameplayState.Result || playerGate.State == PlayerGameplayState.GameOver;
         public bool IsClear => playerGate.State == PlayerGameplayState.Result;
@@ -33,6 +34,7 @@ namespace StarShift.Gameplay
 
         private void Awake()
         {
+            region = GetComponent<RegionCampaignFlow>();
             playerGate = lifecycle.GetComponent<PlayerGameplayGate>();
             pointer = lifecycle.GetComponent<InputSystemPointerInput>();
             weapon = lifecycle.GetComponent<PulseLaserWeapon>();
@@ -77,6 +79,7 @@ namespace StarShift.Gameplay
 
         public void ResetRuntime()
         {
+            region?.Cancel();
             lifecycle.GetComponent<PlayerTemporaryEffects>()?.ResetForSession();
             lifecycle.GetComponent<EmergencyMissileReserve>()?.CancelPending();
             lifecycle.GetComponent<EmergencyMissilePresentation>()?.ResetForSession();
@@ -98,9 +101,11 @@ namespace StarShift.Gameplay
         private void OnMissionCompleted()
         {
             if (lifecycle.GetComponent<PlayerLives>().CurrentLives <= 0 || IsTerminal) return;
-            playerGate.SetState(PlayerGameplayState.Result);
-            EndCombat();
+            if (region != null && region.QueueAdvance()) return;
+            ShowRegionComplete();
         }
+
+        public void ShowRegionComplete() { playerGate.SetState(PlayerGameplayState.Result); EndCombat(); }
 
         private void OnGameOver() => EndCombat();
 

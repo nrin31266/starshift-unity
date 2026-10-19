@@ -321,7 +321,22 @@ resolve. Boss identity/phase trong file này không mang nghĩa có prefab/scene
 
 `EnemyDefinition.MissileTier` có Normal / Large / Boss `[PROVISIONAL]`. Đây là
 explicit authored classification, không đoán boss từ HP hoặc coi mọi minion trong
-boss Encounter là boss. Current Scout default Normal. Chưa author Large/Boss combat
-mới; verification dùng synthetic definitions. Non-hostile supply/resource giữ
+boss Encounter là boss. Current Scout default Normal. M5 author Bomber Large và Vanguard Boss; fixture synthetic vẫn phục vụ regression. Non-hostile supply/resource giữ
 BodyDamagesPlayer=false và không bị missile auto-clear. Percent damage và viewport
 eligibility thuộc [weapon/item owner](weapons-items-drops.md#tên-lửa-dự-trữ).
+
+
+## M5 runtime seeds `[TUNABLE]`
+
+Raider reuse flight/attack profile với burst hai shot cách .22 s sau telegraph; Bomber HP 6 với thân rộng và hai pod, spread ba
+viên/40°, telegraph .7 s, cooldown 3.6 s. Không có common HP bar. Elite compose trên
+SpawnAction: HP ×1.75, cooldown ×.8, scale ×1.12 và amber accent; không copy prefab.
+Score/reward thuộc các owner economy và items.
+
+Vanguard placeholder HP 240; Phase A tuần tự twin cannon, twin cannon, missile fan.
+Phase B tại 50% HP, nghỉ 1.55 s thay vì 1.9 s, thêm 5-way side spread 64° và cue
+amber 1.2 s. Missile telegraph 1 s; sweep .85 s; không chạy mọi module đồng thời.
+Flight terminal sine lặp 7 s, amplitude viewport .16. HP/timing chưa final balance.
+Health vẫn do EnemyHealth giữ; phase runner và attack modules không mutate definition.
+Boss tier explicit áp [reserve policy](weapons-items-drops.md#tên-lửa-dự-trữ).
+Death/handoff choreography thuộc [audio/VFX](../presentation/audio-vfx.md#m5-vanguard-placeholder).

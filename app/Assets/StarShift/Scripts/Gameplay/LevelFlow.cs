@@ -42,7 +42,7 @@ namespace StarShift.Gameplay
             level = definition;
         }
 
-        public void Begin(bool withIntro, PlayDirection? directionOverride = null, CameraProfile cameraOverride = null, int encounterIndex = 0)
+        public void Begin(bool withIntro, PlayDirection? directionOverride = null, CameraProfile cameraOverride = null, int encounterIndex = 0, bool missionArrival = false)
         {
             startingEncounterIndex = encounterIndex;
             Direction = directionOverride ?? level.Direction;
@@ -51,7 +51,12 @@ namespace StarShift.Gameplay
             player.GetComponent<PlayerRespawnEntrance>().Direction = Direction;
             player.transform.rotation = Quaternion.Euler(0,0,PlayDirectionSpace.Rotation(Direction));
             elapsed = phaseElapsed = 0;
-            if (withIntro && level.Intro.Enabled)
+            if (missionArrival)
+            {
+                presentation.Hide(); view.RequestView(Baseline.View, 0);
+                EnterPhase(MissionIntroPhase.MissionTitle);
+            }
+            else if (withIntro && level.Intro.Enabled)
             {
                 player.SetState(PlayerGameplayState.Entry);
                 player.SetCinematicLock(true);
@@ -163,6 +168,29 @@ namespace StarShift.Gameplay
         {
             var profile = encounter.CameraOverride != null ? encounter.CameraOverride : Baseline;
             view.RequestView(profile.View, profile.TransitionSeconds);
+        }
+        public void Announce(string title, string description, float seconds) => TitleRequested?.Invoke(title, description, seconds);
+
+        public void PresentRegionTravel(float progress, Vector3 departure)
+        {
+            player.SetCinematicLock(true);
+            presentation.PresentHandoff(Mathf.Clamp01(progress), Direction);
+            var t = Mathf.SmoothStep(0, 1, progress);
+            var destination = Camera.main.ViewportToWorldPoint(new Vector3(.18f,.5f, -Camera.main.transform.position.z));
+            player.GetComponent<RelativeDragMovement>().SetCinematicPosition(Vector3.Lerp(departure, destination, t) + Vector3.up * Mathf.Sin(t * Mathf.PI) * 2);
+            player.transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(0, -90, t));
+            if (progress < .04f) view.RequestView(level.Intro.TravelView, 1);
+            if (progress > .65f) view.RequestView(Baseline.View, .5f);
+        }
+        public void FinishRegionTravel()
+        {
+            Direction = PlayDirection.Right;
+            view.SetBaseline(level.Camera.View); view.RequestView(level.Camera.View, 0);
+            player.GetComponent<PlayerRespawnEntrance>().Direction = Direction;
+            player.GetComponent<RelativeDragMovement>().ResetForCheckpoint(Direction);
+            player.transform.rotation = Quaternion.Euler(0,0,PlayDirectionSpace.Rotation(Direction));
+            presentation.Hide();
+            PresentationChanged?.Invoke();
         }
         public void Cancel()
         {

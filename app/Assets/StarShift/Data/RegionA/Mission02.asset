@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4179b97c92ab72e0bcc1e13a4938118, type: 3}
+  m_Name: Mission02
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Encounters.LevelDefinition
+  Id: L2
+  DisplayName: "NHI\u1EC6M V\u1EE4 02"
+  MissionNumber: 2
+  RegionId: astra-frontier
+  LocationName:
+  MissionBriefing:
+  Direction: 0
+  Camera: {fileID: 11400000, guid: f15e6f16905e5380b9f1a05f63962ceb, type: 2}
+  ReplayPreset:
+    Lives: 3
+    Missiles: 1
+    ActiveWeapon: 0
+    WeaponLevels: 020000000000000000000000
+  Intro:
+    Enabled: 1
+    ContinueDelaySeconds: 1.8
+    ArrivalTitle: "NHI\u1EC6M V\u1EE4 02"
+    MissionTitleSeconds: 2.8
+    ApproachView:
+      orthographicSize: 8
+      playableViewport:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1
+        height: 1
+    TravelView:
+      orthographicSize: 9
+      playableViewport:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1
+        height: 1
+    ApproachSeconds: 0.7
+    TravelSeconds: 1.8
+    BrakeSeconds: 0.8
+  Encounters:
+  - {fileID: 11400000, guid: eb67120fe9bf11f379df517af6edfa51, type: 2}
+  - {fileID: 11400000, guid: 6e9b2a706e07c1eccb3a3acb63690108, type: 2}
+  - {fileID: 11400000, guid: 0c38a4b2b812560c390b19f5795995a9, type: 2}
+  AdditionalStarts: []

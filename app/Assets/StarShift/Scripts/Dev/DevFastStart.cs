@@ -24,6 +24,20 @@ namespace StarShift.Dev
         [SerializeField, Range(1, 3)] private int startingWeaponLevel = 1;
         [SerializeField] private bool unlockAllWeapons;
 
+        private bool pendingBossPhaseB;
+        private void FixedUpdate()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (!pendingBossPhaseB) return;
+            foreach (var enemy in StarShift.Enemies.EnemyHealth.Active)
+                if (enemy.IsAlive && enemy.GetComponent<StarShift.Enemies.BossPhaseRunner>() != null)
+                {
+                    pendingBossPhaseB = false;
+                    enemy.ReceivePlayerHit(Mathf.CeilToInt(enemy.MaxHp * .51f), gameObject);
+                    break;
+                }
+#endif
+        }
         public bool TryStart()
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -49,7 +63,10 @@ namespace StarShift.Dev
             player.enabled = true;
             player.GetComponent<PlayerPointerInput>().ResetDrag();
             if (startLevel != null) runner.Flow.LoadLevel(startLevel);
-            runner.StartRun(startPoint, standalone, skipIntro, overrideDirection ? direction : (PlayDirection?)null, cameraOverride);
+            var transition = startPoint == "TRANSITION";
+            pendingBossPhaseB = startPoint == "BOSS_PHASE_B";
+            runner.StartRun(transition ? "BOSS" : startPoint, standalone, skipIntro, overrideDirection ? direction : (PlayDirection?)null, cameraOverride);
+            if (transition) { runner.StopRun(); GetComponent<RegionCampaignFlow>().QueueAdvance(); }
             if (deterministicRewards) GetComponent<StarShift.Rewards.RewardDirector>()?.SetTestSeed(rewardSeed);
             var loadout = player.GetComponent<WeaponLoadout>();
             if (loadout != null)

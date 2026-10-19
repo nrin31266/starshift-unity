@@ -23,6 +23,15 @@ namespace StarShift.Encounters
     }
 
     [Serializable]
+    public sealed class ReplayLoadoutPreset
+    {
+        public int Lives = 3;
+        public int Missiles = 1;
+        public StarShift.Combat.WeaponBranch ActiveWeapon;
+        public int[] WeaponLevels = { 1, 0, 0 };
+    }
+
+    [Serializable]
     public sealed class LevelStartPoint
     {
         public string Id;
@@ -41,6 +50,7 @@ namespace StarShift.Encounters
         [TextArea] public string MissionBriefing;
         public PlayDirection Direction;
         public CameraProfile Camera;
+        public ReplayLoadoutPreset ReplayPreset;
         public MissionIntroSettings Intro = new MissionIntroSettings();
         public EncounterDefinition[] Encounters = Array.Empty<EncounterDefinition>();
         public LevelStartPoint[] AdditionalStarts = Array.Empty<LevelStartPoint>();

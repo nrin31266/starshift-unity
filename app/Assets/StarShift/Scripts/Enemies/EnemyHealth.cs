@@ -20,7 +20,9 @@ namespace StarShift.Enemies
         public EnemyDefinition Definition => definition;
         public int SpawnVersion { get; private set; }
         public int CurrentHp { get; private set; }
-        public int MaxHp => definition != null ? definition.MaxHp : 0;
+        public EnemyModifierDefinition Modifier { get; private set; }
+        public int MaxHp => definition != null ? Mathf.CeilToInt(definition.MaxHp * (Modifier != null ? Modifier.HpMultiplier : 1)) : 0;
+        public void ConfigureModifier(EnemyModifierDefinition modifier) => Modifier = modifier;
         public bool IsAlive => isActiveAndEnabled && CurrentHp > 0;
         public event Action Damaged;
         public event Action Died;
@@ -34,7 +36,7 @@ namespace StarShift.Enemies
                 return;
             }
             SpawnVersion++;
-            CurrentHp = definition.MaxHp;
+            CurrentHp = MaxHp;
             if (!active.Contains(this)) active.Add(this);
         }
 
@@ -51,7 +53,7 @@ namespace StarShift.Enemies
         {
             // HP đã khóa damage trước callback; release không phụ thuộc presentation.
             try { Died?.Invoke(); }
-            finally { gameObject.SetActive(false); }
+            finally { if (GetComponent<BossDeathSequence>() == null) gameObject.SetActive(false); }
         }
     }
 }

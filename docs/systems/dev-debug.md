@@ -1113,3 +1113,50 @@ docs/diff checks PASS; final Console ground truth 0 errors/0 warnings, scene kh�
 dirty và 0 missing scripts/references. Logs retained đều từ trước lượt fix này.
 Không chạy lại historical matrix hoặc `pr-review`; verification theo phạm vi hai
 findings. Thermal/lifecycle contract không thay đổi.
+
+
+## M5 Region A verification
+
+Production starts: Mission01–03 LEVEL_START / ENCOUNTER_1–3 theo số encounter thật;
+Mission01 chỉ có hai Encounter. Mission04 thêm PRE_BOSS, BOSS, BOSS_PHASE_B.
+DevFastStart TRANSITION chạy context handoff thật của Mission04, không alias vào wave
+hoặc Mission05 giả. Phase B seed gây damage qua health owner một lần sau spawn;
+đây là DevTest, không snapshot/restore Boss phase vào campaign.
+
+`VerifyRegionA.BeginBatch(2/3)`, `BeginBossChecks`, `BeginIntegrationChecks`,
+`BeginContentChecks`, `BeginFullRegion` chạy qua Pipeline/run_script trong Play Mode.
+Entry Begin trả ngay; chờ `.design/m5/batch-progress.json` terminal trước probe khác.
+Không chạy hai runtime probes đồng thời. `InspectRegionA.Inspect` kiểm production
+catalog, retained fixture, missing scripts/references và saved dev flag.
+
+Evidence Editor ngày 2026-10-19:
+
+- M2 integrated Pulse: 55.68 s simulation, peak 6; M3: 74.38 s, peak 7; protected bot.
+- Boss targeted PASS: Phase A/B/sweep, Pause, real target reserve 10% max HP,
+  projection reset sau đổi framing, death/respawn, staged death, crate, completion once,
+  Up→Right destination. Chưa physical-device/readability/fun verified.
+- Một full production Region run 1× PASS: L1 35.72 s, L2 52.46 s, L3 66.66 s,
+  L4/Boss/transition 82.76 s; tổng 237.60 s. Bot được bảo vệ, có một death/respawn,
+  Pause, reserve use và pickup; thêm một Plasma Core test pickup để đảm bảo switch
+  coverage. Không dùng số này để claim representative human balance hoặc target 6–9 phút.
+- Grouped closure fix sau full run: arrival card trước spawn, Raider short burst,
+  hazard entry/Supply cues và movement-owner cinematic pose. Targeted content pass:
+  Supply destroy→crate→major, Supply escape không gate, Elite HP/scale/pool reset,
+  steady enemy instance reuse, Boss captures 1600×900 và 2000×900.
+- Persistence PASS: M2 Encounter 3 Continue/fresh storage, Retry, Boss Retry reset
+  HP/phase, replay preset + exact disk bytes isolation, transition/ready reload không
+  spawn Boss/duplicate records. Temp storage riêng, không sửa production save.
+- Compile PASS; Console 0 errors/warnings tại checks; 0 missing scripts/references.
+  Docs checker và final diff check được ghi trong phase closure evidence.
+
+`UseTestStorage(path, fixture)` chỉ có hiệu lực Editor/Development và cho phép clone
+M4 fixture catalog riêng. VerifyPersistence giữ fixtures L1 năm Encounter trong memory,
+không trộn vào production catalog. Legacy Core + Retry(5) đã PASS sau M5. VerifyM4Testbed
+Rig tự mount M4 fixture và restore previous level khi dispose. Không rerun historical
+M4 giant suite trong M5.
+
+Balance RA-018 vẫn Partial: cần manual Region A feel/duration pass. ADB không có device;
+RA-019 Blocked, không claim Android touch/FPS/audio. Ponytail không có callable skill/tool
+trong chat này dù config enabled; không claim review đã chạy. Không chạy pr-review.
+Tracker live TSV đã đọc RA-001–019; connector cần reauthentication nên không ghi Sheet.
+Dùng lại duy nhất `.design/m4-a/tracker-updates.tsv` cho evidence/status updates.

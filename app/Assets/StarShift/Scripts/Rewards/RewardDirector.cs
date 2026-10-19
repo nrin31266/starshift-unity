@@ -47,7 +47,7 @@ namespace StarShift.Rewards
         }
         private void OnEnemyDefeated(EnemyHealth enemy, RewardDropTable table, Vector3 position)
         {
-            rewards.AddKill(enemy.Definition.Score);
+            rewards.AddKill(enemy.Definition.Score * (enemy.Modifier != null ? 2 : 1));
             table = table != null ? table : defaultDrops;
             if (table.Source == RewardSource.MajorCrate) Spawn(null, table, position);
             else
@@ -58,7 +58,7 @@ namespace StarShift.Rewards
         }
         public RewardPickup Spawn(PickupDefinition item, RewardDropTable crate, Vector3 position)
         {
-            if ((item == null && crate == null) || ActivePickups >= activePickupLimit || runner.Stage != EncounterStage.Running) return null;
+            if ((item == null && crate == null) || ActivePickups >= activePickupLimit || (runner.Stage != EncounterStage.Running && runner.Stage != EncounterStage.BossPostDeath)) return null;
             var pickup = pool.Rent(pickupPrefab.gameObject).GetComponent<RewardPickup>();
             pickup.transform.SetParent(transform, false);
             // Giữ reward trong viewport; drop ngoài edge vẫn có cơ hội collection.

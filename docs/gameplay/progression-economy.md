@@ -147,3 +147,13 @@ New Game; clear L1 không fabricate Mission 02 hoặc đánh dấu toàn campaig
 Replay M4-B dùng hoàn toàn isolated runtime, không ghi records hay wallet. Đây là
 boundary test theo brief, không chốt SYS-028; persistent replay Shards và final
 record writeback vẫn cần User decision. Dev/Test cũng không writeback.
+
+
+## M5 campaign progression `[PROVISIONAL]`
+
+Clear Mission 01–03 cập nhật record và unlock Mission kế tiếp, đồng thời đặt checkpoint
+entry của Mission đó trong cùng transaction. Lives/weapon levels/reserve được carry;
+mission-local stats reset cho Mission mới. Elite dùng ×2 base score. Vanguard runtime
+seed 2500 `[TUNABLE]` để thử clear flow; final boss bonus formula vẫn `[TBD]`.
+Replay dùng [draft presets](../content/levels-encounters.md#mission-replay-presets)
+và không chain sang Mission kế; giữ nguyên isolation, chưa chốt replay economy.

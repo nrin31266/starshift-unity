@@ -622,10 +622,13 @@ public static class VerifyM4Testbed
         readonly string[] definitions;
         Vector2 pointer = new Vector2(400, 220);
         readonly CameraProfile profile;
+        readonly LevelDefinition previousLevel;
         public Rig(int width, float size, bool intro = false)
         {
             Require(Application.isPlaying, "Play Mode required.");
             Session.enabled = false; Runner.StopRun(); Time.timeScale = 1; AudioListener.pause = false; Session.enabled = true;
+            previousLevel = Runner.Flow.Level;
+            Runner.Flow.LoadLevel(AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Levels/L1.asset"));
             Gate = Player.GetComponent<PlayerGameplayGate>(); Lives = Player.GetComponent<PlayerLives>(); Input = Player.GetComponent<InputSystemPointerInput>();
             var life = Player.GetComponent<PlayerDamageLifecycle>(); life.enabled = false; life.enabled = true;
             Place(new Vector2(0, -3.8f)); Protect();
@@ -701,6 +704,7 @@ public static class VerifyM4Testbed
             if (oldMouse != null && oldMouse.added) oldMouse.MakeCurrent();
             InputSystem.settings.editorInputBehaviorInPlayMode = oldEditor; InputSystem.settings.backgroundBehavior = oldBackground;
             var life = Player.GetComponent<PlayerDamageLifecycle>(); life.enabled = false; life.enabled = true; Input.CancelGesture();
+            Runner.Flow.LoadLevel(previousLevel);
             view.SetBaseline(Runner.Flow.Level.Camera.View); view.RequestView(oldView, 0); gameView.GetType().GetMethod("SizeSelectionCallback").Invoke(gameView, new object[] { oldSize, null });
             gameViewZoom.GetType().GetMethod("SetTransform").Invoke(gameViewZoom, new object[] { oldGameViewPan, oldGameViewZoom });
             UnityEngine.Object.Destroy(profile);

@@ -16,6 +16,7 @@ namespace StarShift.Encounters
         public GameObject EnemyPrefab;
         public EnemyDefinition EnemyDefinition;
         public RewardDropTable RewardOverride;
+        public EnemyModifierDefinition Elite;
         public bool Required = true;
         public FormationLayout Formation;
         public Vector2 Anchor;

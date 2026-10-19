@@ -156,9 +156,10 @@ namespace StarShift.Enemies
             bool toClamp = phase.ClampToView || (phaseIndex + 1 < sequence.Phases.Length && sequence.Phases[phaseIndex+1].ClampToView);
             var from = Project(phase.From, fromClamp);
             var to = Project(phase.To, toClamp);
-            var local = phase.Evaluate(clock / phase.Duration, phase.From, phase.To);
-            var linear = Vector2.Lerp(phase.From, phase.To, phase.Smooth ? Mathf.SmoothStep(0,1,clock/phase.Duration) : Mathf.Clamp01(clock/phase.Duration));
-            var t = phase.Smooth ? Mathf.SmoothStep(0,1,clock/phase.Duration) : Mathf.Clamp01(clock/phase.Duration);
+            var progress = phase.RepeatMotion ? Mathf.Repeat(clock / phase.Duration, 1) : clock / phase.Duration;
+            var local = phase.Evaluate(progress, phase.From, phase.To);
+            var linear = Vector2.Lerp(phase.From, phase.To, phase.Smooth ? Mathf.SmoothStep(0,1,progress) : Mathf.Clamp01(progress));
+            var t = phase.Smooth ? Mathf.SmoothStep(0,1,progress) : Mathf.Clamp01(progress);
             var viewport = Vector2.Lerp(from, to, t) + PlayDirectionSpace.Offset(local - linear, direction);
             var position = flightCamera.ViewportToWorldPoint(new Vector3(viewport.x, viewport.y, depth));
             body.position = position;

@@ -25,6 +25,7 @@ namespace StarShift.Enemies
         private float remaining;
         private bool shuttingDown;
         private bool encounterControlled;
+        private int shotsRemaining;
 
         public bool IsTelegraphing { get; private set; }
         private bool CanRequestAttack => isActiveAndEnabled && Eligible && !IsTelegraphing && remaining <= .000001f;
@@ -42,6 +43,7 @@ namespace StarShift.Enemies
         {
             if (!CanRequestAttack) return false;
             IsTelegraphing = true;
+            shotsRemaining = definition.BurstCount;
             remaining = definition.TelegraphDuration;
             return true;
         }
@@ -97,15 +99,20 @@ namespace StarShift.Enemies
                 if (!encounterControlled) TryRequestAttack();
                 return;
             }
-            var projectile = projectiles.Get();
-            projectile.Launch(definition, muzzle, gameObject, target.gameObject, ReleaseProjectile);
+            for (int i = 0; i < definition.ProjectileCount; i++)
+            {
+                float offset = definition.ProjectileCount == 1 ? 0 : definition.SpreadDegrees * (i / (float)(definition.ProjectileCount - 1) - .5f);
+                projectiles.Get().Launch(definition, muzzle, gameObject, target.gameObject, ReleaseProjectile, offset);
+            }
+            if (--shotsRemaining > 0) { remaining = definition.BurstInterval; return; }
             IsTelegraphing = false;
             // Không giữ backlog để resume hoặc frame chậm tạo burst.
-            remaining = definition.Cooldown;
+            remaining = definition.Cooldown * (health.Modifier != null ? health.Modifier.FireIntervalMultiplier : 1);
         }
 
         private void ResetSequence()
         {
+            shotsRemaining = 0;
             IsTelegraphing = false;
             remaining = definition != null ? definition.InitialDelay : 0;
         }

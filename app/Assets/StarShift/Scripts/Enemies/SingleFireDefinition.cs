@@ -13,6 +13,14 @@ namespace StarShift.Enemies
         [SerializeField, Min(.01f)] private float projectileSpeed = 4f;
         [SerializeField, Min(.02f)] private float projectileLifetime = 6f;
 
+        [SerializeField, Range(1, 5)] private int projectileCount = 1;
+        [SerializeField, Range(0, 80)] private float spreadDegrees;
+        [SerializeField, Range(1, 3)] private int burstCount = 1;
+        [SerializeField, Min(.1f)] private float burstInterval = .22f;
+        public int BurstCount => burstCount;
+        public float BurstInterval => burstInterval;
+        public int ProjectileCount => projectileCount;
+        public float SpreadDegrees => spreadDegrees;
         public EnemyProjectile ProjectilePrefab => projectilePrefab;
         public float InitialDelay => initialDelay;
         public float TelegraphDuration => telegraphDuration;

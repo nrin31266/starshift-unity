@@ -357,3 +357,13 @@ MissileCancellation kiểm Retry/exit/StopRun giữa flight; không chạy probe
 `ConfigureGameplayFeel.TuneFallExitAndCooling` là targeted Edit Mode tuning cho
 Shard, timed Exit, thermal cooling và E4 timer allowance. Verify bằng Thermal,
 Pickups, EmptyEncounter và nearby PickupCarryOver; không cần full closure suite.
+
+
+## M5 Region A
+
+`ConfigureRegionA.BatchAB`, `.BatchC`, `.CuesAndBurst` author assets/wiring qua Unity
+API trong saved Gameplay scene/Edit Mode. Không rerun để reset tuning đã author.
+`VerifyRegionA.BeginBatch(2/3)`, `.BeginBossChecks`, `.BeginIntegrationChecks`,
+`.BeginContentChecks`, `.BeginFullRegion` chạy Play Mode; chờ một terminal progress
+trước entry khác. `InspectRegionA.Inspect` kiểm catalog/references.
+Evidence/cost/limits nằm ở [dev owner](../../docs/systems/dev-debug.md#m5-region-a-verification).

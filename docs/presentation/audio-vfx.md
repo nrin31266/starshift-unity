@@ -259,3 +259,19 @@ zoom, playable viewport, drag conversion, collider, damage hoặc gameplay timer
 Không thêm camera system thứ hai. Pause freeze impulse clock và render neutral;
 NewGame/Retry/Continue/exit clear rocket/trail/flash và pending impact/burst. Respect ScreenShakeEnabled
 trong persisted Settings. Animation/impulse observer không quyết damage hoặc stock.
+
+
+## M5 Vanguard placeholder
+
+`[TUNABLE]` Death beats chạy 2.4 s scaled time: bốn small burst xen kẽ → core/main
+burst → short final impact → crate. Hostile damage đã bị khóa trước beats, timing
+không quyết HP hoặc phase. Phase transition có amber core cue 1.2 s; strong attacks
+có module glow trước launch. Không final VFX/music/audio pack mới.
+
+Reserve missile vẫn dùng impact/projection restore hiện có; Homing primary không
+phát impact đó. Boss death tạm reuse short reserve impulse, chưa có strong final
+explosion/shake mix. Region travel dùng backdrop/handoff animation và arc/reorientation
+placeholder trong 8 s; full orbit/planet/warp art và audio polish còn chưa hoàn tất.
+
+Asteroid/resource entry có amber edge marker trước khi hazard vào view. Supply event
+hiện cue `TIẾP TẾ` ngắn; không mở tutorial panel hoặc chặn Encounter.

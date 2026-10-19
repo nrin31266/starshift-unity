@@ -227,3 +227,17 @@ seed trong script. Script chỉ tạo khi asset chưa tồn tại, giữ GUID/im
 Đây là test presentation theo [placeholder-first](#placeholder-first), không lock
 visual family hoặc tên hành tinh. Choreography thuộc
 [audio/VFX](../presentation/audio-vfx.md#level-intro-warning-và-dynamic-audio).
+
+
+## M5 placeholder authoring
+
+`tools/unity/ConfigureRegionA.cs` chạy qua Unity Pipeline trong saved Gameplay scene,
+Edit Mode. BatchAB author Mission 01–03/preboss; BatchC author Vanguard/modules,
+Mission 04 và Boss HUD/catalog. Builders tạo asset bằng Unity API, giữ GUID của asset
+đã có và không overwrite later tuning khi rerun. Không chạy baseline M4 builder
+trên production scene để reset content. New sprite renderers reuse placeholder
+sprites; không generate final raster art hoặc texture batch.
+
+M4 fixture giữ level/encounter/reward assets riêng; production definitions trong
+Data/RegionA. New `.meta` do Unity tạo, phải đi cùng assets. Device visual-family
+approval chưa có, không coi placeholder thành locked/final art.

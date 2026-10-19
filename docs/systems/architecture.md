@@ -718,3 +718,23 @@ projectile reuse xóa trail và restore sprite/scale, không đổi physics root
 GameplayViewController áp impulse trong render callback rồi restore projection;
 không dịch Transform của camera đang được movement/bounds/flight dùng làm authority.
 Các tunables thuộc [presentation owner](../presentation/audio-vfx.md#reserve-missile-impact-cue).
+
+
+## M5 composition boundaries `[PROVISIONAL]`
+
+EnemyDefinition giữ archetype, FlightSequence giữ path, SingleFireDefinition giữ
+attack. Burst count/spacing và spread count/fan là attack data, không có Bomber mission controller. Elite
+modifier giữ HP/cadence/scale/accent config; EnemyHealth nhận modifier khi spawn,
+EnemyModifierPresentation đọc state và reset scale/accent khi pool return.
+
+Vanguard reuse EnemyHealth/EntryHoldFlight. BossPhaseRunner chỉ chọn module/phase;
+BossAttackModule giữ telegraph và pooled projectiles. BossDeathSequence chỉ giữ scaled
+presentation timer/callback. Runner giữ defeat boundary/generation/completion, khóa
+producers và clear hostile shots ngay khi zero HP, giữ dying boss root tới cuối
+sequence. Reward callback chạy sau beats, trước completion/reward grace. Stop/Retry
+hủy callback và thu hồi root; không để presentation cấp quyền damage.
+
+RegionCampaignFlow chỉ orchestration L1–L4 và destination skeleton, tham chiếu catalog
+rõ. CampaignLifecycle giữ write permission/restore; CampaignProgress mutate DTO và
+atomic transaction. GameplaySession vẫn giữ clock/terminal/Pause. BossHud chỉ đọc
+health/name/phase; không quyết Boss lifecycle. Không thêm event bus hoặc scene thứ hai.

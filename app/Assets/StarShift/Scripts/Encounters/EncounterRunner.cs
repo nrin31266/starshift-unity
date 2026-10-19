@@ -35,6 +35,7 @@ namespace StarShift.Encounters
         private int generation;
         private bool bossDefeated;
         private bool completionSent;
+        private EnemySlot dyingBoss;
         public EncounterDefinition Current => Definitions[CurrentIndex];
         private EncounterDefinition[] Definitions => levelFlow != null ? levelFlow.Level.Encounters : encounters;
         public LevelFlow Flow => levelFlow;
@@ -94,7 +95,7 @@ namespace StarShift.Encounters
             => StartRun(startPoint, singleEncounter, false, null, null);
 
         public void StartRun(string startPoint, bool singleEncounter, bool skipIntro,
-            PlayDirection? directionOverride, CameraProfile cameraOverride, Action restoreState = null)
+            PlayDirection? directionOverride, CameraProfile cameraOverride, Action restoreState = null, bool missionArrival = false)
         {
             GetComponent<StarShift.Persistence.CampaignLifecycle>()?.OnRunnerStarting();
             StopRun();
@@ -122,7 +123,7 @@ namespace StarShift.Encounters
             if (token != generation) return;
             if (levelFlow != null)
             {
-                levelFlow.Begin(startPoint == "LEVEL_START" && !skipIntro, directionOverride, cameraOverride, index);
+                levelFlow.Begin(startPoint == "LEVEL_START" && !skipIntro, directionOverride, cameraOverride, index, missionArrival);
                 if (token != generation) return;
                 if (levelFlow.IsIntroducing) { Stage = EncounterStage.Intro; return; }
             }
@@ -141,6 +142,7 @@ namespace StarShift.Encounters
             foreach (var action in Current.Groups) schedule.Add(new ScheduledGroup { Action = action, Start = action.StartTime });
             optionalFired = new bool[Current.OptionalEvents.Length];
             bossDefeated = completionSent = false;
+            dyingBoss = null;
             Stage = EncounterStage.Running;
             coordinator.Begin(Current, safetyGate);
             if (levelFlow != null) levelFlow.ApplyEncounter(Current);
@@ -191,7 +193,7 @@ namespace StarShift.Encounters
             if (Stage == EncounterStage.BossPostDeath)
             {
                 remaining -= Time.fixedDeltaTime;
-                if (remaining <= 0) CompleteEncounter();
+                if (remaining <= 0 && dyingBoss == null) CompleteEncounter();
                 return;
             }
             Elapsed += Time.fixedDeltaTime;
@@ -269,6 +271,7 @@ namespace StarShift.Encounters
             var root = pool.Rent(group.EnemyPrefab != null ? group.EnemyPrefab : Current.ScoutPrefab);
             var slot = new EnemySlot { Health = root.GetComponent<EnemyHealth>(), Flight = root.GetComponent<EntryHoldFlight>(),
                 Attack = root.GetComponent<SingleFireAttack>(), Required = required };
+            slot.Health.ConfigureModifier(group.Elite);
             var direction = levelFlow != null ? levelFlow.Direction : PlayDirection.Up;
             if (group.Sequence != null) slot.Flight.ConfigureSequence(group.Sequence, group.Anchor + group.SlotOffset(index), direction);
             else
@@ -288,7 +291,20 @@ namespace StarShift.Encounters
             {
                 if (rewarded || slot.Resolved || token != generation || Stage != EncounterStage.Running) return;
                 rewarded = true;
-                EnemyDefeated?.Invoke(slot.Health, group.RewardOverride, slot.Health.transform.position);
+                var death = slot.Health.GetComponent<BossDeathSequence>();
+                if (death != null && Current.Completion == EncounterCompletion.Boss)
+                {
+                    dyingBoss = slot;
+                    NotifyBossDefeated(token);
+                    death.Begin(() =>
+                    {
+                        if (token != generation || Stage != EncounterStage.BossPostDeath) return;
+                        EnemyDefeated?.Invoke(slot.Health, group.RewardOverride, slot.Health.transform.position);
+                        dyingBoss = null;
+                        NotifyBossPresentationComplete(token);
+                    });
+                }
+                else EnemyDefeated?.Invoke(slot.Health, group.RewardOverride, slot.Health.transform.position);
             };
             slot.Health.Died += slot.DeathHandler;
             root.SetActive(true);
@@ -306,7 +322,7 @@ namespace StarShift.Encounters
         private void CloseProducers()
         {
             coordinator.Stop();
-            foreach (var slot in spawned) if (!slot.Resolved) Release(slot);
+            foreach (var slot in spawned) if (!slot.Resolved && slot != dyingBoss) Release(slot);
             cleanup.CloseHostiles();
         }
         private void ResolveEncounter()
@@ -389,6 +405,7 @@ namespace StarShift.Encounters
         {
             generation++;
             Stage = EncounterStage.Idle;
+            dyingBoss = null;
             clearPauseRemaining = travelRemaining = 0;
             travelStarted = false;
             if (levelFlow != null) levelFlow.Cancel();

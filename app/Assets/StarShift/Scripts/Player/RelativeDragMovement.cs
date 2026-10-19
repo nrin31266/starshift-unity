@@ -121,6 +121,10 @@ namespace StarShift.Player
             if (clamped != body.position) body.position = clamped;
         }
 
+        public void SetCinematicPosition(Vector3 position)
+        {
+            body.position = position; body.linearVelocity = Vector2.zero; transform.position = position;
+        }
         public void ResetForCheckpoint(PlayDirection direction)
         {
             ResetInput();

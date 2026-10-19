@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4179b97c92ab72e0bcc1e13a4938118, type: 3}
   m_Name: L1
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Encounters.LevelDefinition
-  Id: L1
+  Id: M4_FIXTURE
   DisplayName: First Contact
   MissionNumber: 1
   RegionId: astra-frontier

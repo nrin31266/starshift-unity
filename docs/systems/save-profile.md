@@ -50,8 +50,8 @@ hoặc mid-wave supply/drop objects. Definition và schedule được chạy l�
 
 ### Serialized campaign fields `[PROVISIONAL]`
 
-- `MissionId`: stable LevelDefinition ID; current content chỉ L1.
-- `Status`: Active hoặc MissionCleared; chưa có next Mission content thì giữ cleared marker.
+- `MissionId`: stable LevelDefinition ID; catalog production M5 gồm L1–L4.
+- `Status`: Active, MissionCleared, RegionTransition hoặc RegionReady; xem M5 boundary bên dưới.
 - `Checkpoint.EncounterId`: exact Encounter ID thuộc Mission, không lưu index/alias.
 - `Checkpoint.Lives`: 1..PlayerLives.MaximumLives.
 - `Checkpoint.Missiles`: 0..3 reserve; restore cùng checkpoint, ordinary death giữ nguyên.
@@ -101,8 +101,8 @@ Score không là currency. Weapon unlock/level thuộc campaign loadout, không 
 vào Profile. New Game giữ unlocks/records/balance; L1 entry được unlock nếu chưa có.
 
 Conceptual target còn level unlocks, campaignCompleted và full campaign statistics.
-Chưa có Mission 02/final campaign consumer; không đánh dấu campaign complete chỉ
-vì system-test L1 clear và không fabricate next-level unlock. Eligibility/unlock
+M5 có Mission 02–04 consumer; không đánh dấu toàn bộ 12-level campaign complete
+chỉ vì Region A clear. Eligibility/unlock
 cuối cùng và future records thuộc economy owner, không tự lock trong serializer.
 
 ## Settings
@@ -165,7 +165,7 @@ OS flush/device crash durability đã được kiểm trên Android.
 
 Clear commit idempotent theo campaign Status. Profile record và cleared marker
 cùng envelope; reload/Continue không regrant clear. Chưa có clear bonus amount.
-Boss death/region transition resume marker vẫn [TBD], không implement future content.
+M5 Region A resume marker theo section bên dưới; future region/final campaign marker vẫn [TBD].
 
 ## Schema, corruption và migration
 
@@ -193,6 +193,35 @@ OS-level atomicity trên mọi filesystem chưa được chứng minh.
 - Full campaignRunStats, campaign aggregation và retry record eligibility [TBD].
 - Final reward transaction policy và replay Shards/records [TBD]; M4 test policy ở economy owner.
 - Final effect carry-over và level-boundary restore [TBD].
-- Boss/transition resume marker, full campaign unlock/completion [TBD].
+- Final multi-region/campaign unlock/completion [TBD]; Region A marker theo M5 bên dưới.
 - Android pause/kill/filesystem behavior chưa device verified; M4-B Editor evidence
   ở [dev/debug](dev-debug.md#m4-b-persistence-verification).
+
+
+## M5 mission và region boundaries `[PROVISIONAL]`
+
+Catalog validation tra L1–L4 từ RegionCampaignFlow, không phụ thuộc level đang mở.
+Continue load đúng definition trước restore checkpoint. Production L1 có hai Encounter;
+legacy testbed L1 checkpoints 3–5 không có production mapping tự động, không đoán
+state hoặc reset Profile để hợp thức hóa save invalid. Fixture cũ ID `M4_FIXTURE`
+chỉ dùng DevTest. Migration old test saves ngoài supported catalog vẫn chưa chốt.
+
+Clear L1–L3: CommitClear record → unlock next Mission + active entry checkpoint
+trong cùng envelope → flush → travel ngắn → launch next. Entry carry lives, weapon
+levels, active branch, reserve; reset mission-local stats. Không ghi checkpoint của
+Mission kế vào Mission cũ. Transaction atomic/idempotence tiếp tục theo storage trên.
+
+Clear L4: record + capture final resolved Player state + `RegionTransition` trong
+một transaction. Continue marker này chỉ chạy lại cinematic, không spawn Boss hoặc
+regrant death/clear rewards. Khi destination framing Right sẵn sàng, ghi `RegionReady`.
+Continue `RegionReady` dựng destination skeleton trực tiếp, không chạy fight/clear lần
+nữa. Marker dùng checkpoint Encounter thật của L4, không tạo L5/fake Encounter ID.
+Validator chỉ chấp nhận region markers ở Boss checkpoint của Mission cuối catalog.
+Schema vẫn 2; thêm enum statuses, không thay shape DTO hoặc đổi storage path.
+
+Replay lấy preset của selected Mission, không chain qua Mission kế; Profile/Campaign
+bytes vẫn không writeback. Dev TRANSITION/Phase B giữ isolated boundary. Retry trong
+preboss/Boss vẫn restore entry; không snapshot Boss HP/phase/attack timers.
+
+Dev-only `UseTestStorage(path, fixture)` nhận optional cloned catalog cho historical
+M4 verifier; không serialize fixture hoặc đưa test catalog vào production boot.

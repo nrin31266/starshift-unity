@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f1d586d44955cc0fa3b4b57b2d5444f, type: 3}
+  m_Name: M2RaiderArcs
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Encounters.EncounterDefinition
+  Id: ENCOUNTER_1
+  Completion: 1
+  CompleteWhenScheduleExhausted: 1
+  ScoutPrefab: {fileID: 0}
+  Duration: 38
+  Groups:
+  - Count: 5
+    StartTime: 0
+    Stagger: 0.24
+    EnemyPrefab: {fileID: 6611317040080042917, guid: 9d316cc2f8530d4c0b69980929d92525, type: 3}
+    EnemyDefinition: {fileID: 11400000, guid: 97225e4379e67b2799306e7a3e546255, type: 2}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 1
+    Formation: 3
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.115, y: 0.075}
+    FormationRise: 0.035
+    Sequence: {fileID: 11400000, guid: 35500f414a5d89d449e82adf0e6e5ce3, type: 2}
+    EntryAnchor: {x: 0.5, y: 1.12}
+    HoldAnchor: {x: 0.5, y: 0.78}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 3
+    ExitAnchor: {x: 1.18, y: 0.3}
+    ExitDuration: 3
+  - Count: 5
+    StartTime: 15
+    Stagger: 0.24
+    EnemyPrefab: {fileID: 6611317040080042917, guid: 9d316cc2f8530d4c0b69980929d92525, type: 3}
+    EnemyDefinition: {fileID: 11400000, guid: 97225e4379e67b2799306e7a3e546255, type: 2}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 1
+    Formation: 5
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.115, y: 0.075}
+    FormationRise: 0.035
+    Sequence: {fileID: 11400000, guid: 0f9c89aa22925ee1c8a95728957aa565, type: 2}
+    EntryAnchor: {x: 0.5, y: 1.12}
+    HoldAnchor: {x: 0.5, y: 0.78}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 3
+    ExitAnchor: {x: 1.18, y: 0.3}
+    ExitDuration: 3
+  - Count: 3
+    StartTime: 21
+    Stagger: 0.24
+    EnemyPrefab: {fileID: 2966396641657307375, guid: 01a518f29274925a191b17ec41cf6a99, type: 3}
+    EnemyDefinition: {fileID: 11400000, guid: 2c37a090b272d820c9642dfd8f189abe, type: 2}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 1
+    Formation: 1
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.115, y: 0.075}
+    FormationRise: 0.035
+    Sequence: {fileID: 11400000, guid: 35500f414a5d89d449e82adf0e6e5ce3, type: 2}
+    EntryAnchor: {x: 0.5, y: 1.12}
+    HoldAnchor: {x: 0.5, y: 0.78}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 3
+    ExitAnchor: {x: 1.18, y: 0.3}
+    ExitDuration: 3
+  OptionalEvents: []
+  CameraOverride: {fileID: 0}
+  ActiveShooterLimit: 1
+  ShotSpacing: 0.85
+  ShotsPerVolley: 2
+  VolleyPause: 2.2
+  ClearPauseSeconds: 1
+  HandoffTravelSeconds: 1.5
+  HandoffDelay: 2
+  ProjectileGraceSeconds: 0.65
+  ProjectileFadeSeconds: 0.3
+  TransitionTitle:
+  TransitionDescription:
+  RewardGraceSeconds: 2.5
+  BossPostDeathSeconds: 1

@@ -58,7 +58,7 @@ namespace StarShift.Persistence
         }
         public void CommitClear(int score, float playSeconds = 0)
         {
-            if (data.Campaign.Status == CampaignStatus.MissionCleared) return;
+            if (data.Campaign.Status != CampaignStatus.Active) return;
             data.Campaign.Status = CampaignStatus.MissionCleared;
             data.Profile.HighScore = Math.Max(data.Profile.HighScore, score);
             var records = new List<MissionRecord>(data.Profile.Records);
@@ -70,6 +70,15 @@ namespace StarShift.Persistence
             data.Profile.Records = records.ToArray();
             Dirty = true;
         }
+        public void AdvanceMission(string mission, CheckpointData checkpoint)
+        {
+            var unlocked = new List<string>(data.Profile.UnlockedMissions);
+            if (!unlocked.Contains(mission)) unlocked.Add(mission);
+            data.Profile.UnlockedMissions = unlocked.ToArray();
+            data.Campaign = new CampaignSave { MissionId = mission, Checkpoint = Copy(checkpoint) };
+            Dirty = true;
+        }
+        public void SetRegionStatus(CampaignStatus status) { data.Campaign.Status = status; Dirty = true; }
         public bool SetSettings(SettingsData settings)
         {
             if (data == null || !SaveValidation.IsValid(settings)) return false;

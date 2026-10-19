@@ -120,12 +120,19 @@ public static class VerifyPersistence
         finally {if(Directory.Exists(directory))Directory.Delete(directory,true);}
     }
 
+    static LevelDefinition legacyLevel;
+    static LevelDefinition LegacyLevel()
+    {
+        if (legacyLevel != null) return legacyLevel;
+        legacyLevel = UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Levels/L1.asset"));
+        legacyLevel.Id = "L1"; legacyLevel.hideFlags = HideFlags.DontSave; return legacyLevel;
+    }
     static string UseFixture(int index)
     {
         var directory=Path.Combine(Path.GetTempPath(),"starshift-runtime-"+Guid.NewGuid().ToString("N"));
         var path=Path.Combine(directory,"save.json");
         Require(new JsonSaveStore(path).Write(Fixture(index),Valid),"Runtime fixture");
-        Owner.UseTestStorage(path); Require(Owner.Continue(),"Continue fixture "+Owner.Diagnostic);
+        Owner.UseTestStorage(path, LegacyLevel()); Require(Owner.Continue(),"Continue fixture "+Owner.Diagnostic);
         return path;
     }
     static async Task UntilWithKills(Func<bool> condition,float seconds,PickupDefinition keepReward=null)
@@ -180,7 +187,7 @@ public static class VerifyPersistence
             Require(receiver.TryCollect(shard),"Retry shard collect");Require(Owner.PersistentSnapshot.Profile.StellarShardBalance==credited,"Retry duplicate credit");
             Require(Owner.Flush(),"Flush before reload");
             var body=File.ReadAllText(path);
-            Owner.ExitIsolated(); Owner.UseTestStorage(path);Require(Owner.Continue(),"Recreate service/reload");
+            Owner.ExitIsolated(); Owner.UseTestStorage(path, LegacyLevel());Require(Owner.Continue(),"Recreate service/reload");
             Require(Rewards.Score==200 && Lives.CurrentLives==4 && Loadout.ActiveLevel==3,"Continue checkpoint");
             Require(receiver.TryCollect(shard) && Owner.PersistentSnapshot.Profile.StellarShardBalance==credited,"Continue duplicate credit");
             Require(File.ReadAllText(path)==body,"No IO per pickup");
@@ -230,7 +237,7 @@ public static class VerifyPersistence
             var operation=UnityEditor.SceneManagement.EditorSceneManager.LoadSceneAsyncInPlayMode(scene,
                 new UnityEngine.SceneManagement.LoadSceneParameters(UnityEngine.SceneManagement.LoadSceneMode.Single));
             await Until(()=>operation.isDone && Runner!=null && Runner!=old,10,"Scene recreation");
-            Owner.UseTestStorage(path);Require(Owner.Continue(),"Continue after scene recreation");
+            Owner.UseTestStorage(path, LegacyLevel());Require(Owner.Continue(),"Continue after scene recreation");
             Require(Runner.CurrentIndex==2 && !Session.Flow.IsIntroducing && Rewards.Score==Owner.PersistentSnapshot.Campaign.Checkpoint.Stats.Score,"Correct Continue boundary/no intro");
             Require(Json(Owner.PersistentSnapshot.Campaign.Checkpoint)==checkpoint && File.ReadAllText(path)==saved,"Continue must not recapture/credit");
             Require(Player.GetComponent<PulseLaserWeapon>().Heat==0 && !Player.GetComponent<PlayerTemporaryEffects>().HasShield && !UnityEngine.Object.FindObjectsByType<RewardPickup>().Any(p=>p.IsActive),"Clean reload transient state");
@@ -272,11 +279,11 @@ public static class VerifyPersistence
             }
             // Failure lifecycle dùng bản sao; backup tự chứa Profile/Campaign cùng một transaction.
             File.WriteAllText(path,"{truncated");
-            Owner.UseTestStorage(path);
+            Owner.UseTestStorage(path, LegacyLevel());
             Require(Owner.LoadStatus==SaveLoadStatus.RecoveredBackup,"Runtime backup recovery");
             if(File.Exists(path+".bak"))File.Delete(path+".bak");
-            Owner.UseTestStorage(path);Require(Owner.LoadStatus==SaveLoadStatus.Invalid && !Owner.Continue() && !Owner.NewGame(),"Invalid save must expose failure without wiping profile");
-            File.Delete(path);Owner.UseTestStorage(path);Require(Owner.LoadStatus==SaveLoadStatus.Missing && !Owner.Continue(),"No save Continue");
+            Owner.UseTestStorage(path, LegacyLevel());Require(Owner.LoadStatus==SaveLoadStatus.Invalid && !Owner.Continue() && !Owner.NewGame(),"Invalid save must expose failure without wiping profile");
+            File.Delete(path);Owner.UseTestStorage(path, LegacyLevel());Require(Owner.LoadStatus==SaveLoadStatus.Missing && !Owner.Continue(),"No save Continue");
             Require(Owner.NewGame(),"Explicit New Game from missing save");
             Require(Owner.PersistentSnapshot.Campaign.Checkpoint.EncounterId=="ENCOUNTER_1","Old checkpoint leaked");
             Owner.ExitIsolated();
