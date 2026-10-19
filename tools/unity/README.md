@@ -418,7 +418,8 @@ sáu obsolete generated flights sau dependency audit. Folder contract ở
 [asset pipeline](../../docs/production/asset-pipeline.md#region-a-authored-data-layout).
 `RegionAAssetPaths` là Editor-only resolver chung cho builders/verifiers.
 
-`OrganizeRegionA.PrepareHeatVerification` tạo `.design/m5-heat-cleanup/Verification.cs`.
+`OrganizeRegionA.PrepareHeatVerification` tạo `.design/m5-shared-heat/Verification.cs`.
 Trong Play Mode: `VerifyHeatLifecycle.Begin` kiểm tra press/release, blocked cooling,
-inactive cooling, Pause, overheat recovery và live Mission handoff. Sau targeted PASS,
+shared heat/delay/latch qua nhặt Core, upgrade và cycle, Pause, overheat recovery,
+death/session reset và live Mission handoff; evidence ở `.design/m5-shared-heat/`. Sau targeted PASS,
 `VerifyHeatLifecycle.BeginFullRegion` chạy một integration flow trên bản cuối.

@@ -22,11 +22,10 @@ namespace StarShift.Player
         private double nextShotTime;
         private bool wasAllowed;
         private bool shuttingDown;
-        private readonly WeaponHeatState[] heatStates = { new WeaponHeatState(), new WeaponHeatState(), new WeaponHeatState() };
+        private readonly WeaponHeatState heat = new WeaponHeatState();
         private WeaponLoadout loadout;
         private PlayerTemporaryEffects effects;
         private PulseLaserDefinition ActiveDefinition => loadout != null && loadout.ActiveDefinition != null ? loadout.ActiveDefinition : definition;
-        private WeaponHeatState heat => heatStates[(int)CurrentBranch];
         public WeaponBranch CurrentBranch => loadout != null ? loadout.ActiveBranch : WeaponBranch.Pulse;
         public int CurrentLevel => loadout != null ? loadout.ActiveLevel : 1;
         public int ShotsFired { get; private set; }
@@ -39,14 +38,14 @@ namespace StarShift.Player
         public void ApplyDeathDowngrade()
         {
             loadout?.ApplyDeathDowngrade();
-            foreach (var state in heatStates) state.Reset();
+            heat.Reset();
             ResetCadence();
         }
 
         public void ResetForSession(bool preserveThermalState = false)
         {
             loadout?.ResetForSession();
-            if (!preserveThermalState) foreach (var state in heatStates) state.Reset();
+            if (!preserveThermalState) heat.Reset();
             ShotsFired = 0;
             ResetCadence();
         }
@@ -92,13 +91,10 @@ namespace StarShift.Player
         private void FixedUpdate()
         {
             if (Time.timeScale <= 0) return;
-            // Nhiệt có clock riêng: bị khóa bắn và nhánh không active vẫn tiếp tục nguội.
-            for (int i = 0; i < heatStates.Length; i++)
-            {
-                var thermalDefinition = loadout != null ? loadout.Definition((WeaponBranch)i) : i == 0 ? definition : null;
-                if (thermalDefinition != null && thermalDefinition.ThermalProfile != null)
-                    heatStates[i].Tick(thermalDefinition.ThermalProfile, i == (int)CurrentBranch && gameplayGate.CanFire && pointerInput.FireHeld, Time.fixedDeltaTime);
-            }
+            // Các loại đạn dùng chung nhiệt; khóa bắn vẫn cho clock nguội chạy.
+            var thermalProfile = ActiveDefinition.ThermalProfile;
+            if (thermalProfile != null)
+                heat.Tick(thermalProfile, gameplayGate.CanFire && pointerInput.FireHeld, Time.fixedDeltaTime);
             if (!CanFire || !pointerInput.FireHeld)
             {
                 ResetCadence();

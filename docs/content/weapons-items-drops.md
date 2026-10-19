@@ -33,7 +33,7 @@ Exact damage, interval, projectile speed/angles/range vẫn [TBD]; balance sau n
 
 ### Primary weapon heat — M3.5
 
-Mỗi weapon branch có continuous runtime heat riêng. Chỉ active branch đang được
+Player có một continuous runtime heat dùng chung cho cả ba weapon branch. Chỉ active branch đang được
 phép bắn và giữ primary fire mới tăng heat; chỉ khi chạm capacity/MAX mới latch `Overheated`. Warning/near-hot không
 chặn fire. Release trước MAX không lock: sau cooling delay heat giảm và press lại
 bắn ngay. Đây là burst management, không có reload, input mới hoặc timing minigame.
@@ -233,8 +233,9 @@ Enemy HP không scale theo level.
 
 Mỗi branch có một thermal profile; năm level cùng đọc profile đó. Thermal values
 ở bảng thermal phía trên là tuning theo feedback, không là final balance.
-Switch giữ heat/latch riêng của từng branch; inactive branch vẫn nguội theo profile
-`[PROVISIONAL]`. Khóa bắn không khóa clock nguội: held intent lúc gate block được
+Switch, unlock và upgrade giữ cùng heat/latch/cooling delay, không tạo thanh nhiệt
+riêng theo branch. Capacity và cooling/recovery dùng cùng seed ở bảng trên; tốc độ
+sinh nhiệt theo profile của loại đạn đang dùng. Khóa bắn không khóa clock nguội: held intent lúc gate block được
 xem như không bắn. Upgrade và thả/nhấn cùng branch không reset heat/latch.
 Overdrive chỉ nhân cadence 1.6× `[TUNABLE]`; heat/s vẫn theo type profile, không bypass
 Overheated. Drone bắn phụ độc lập primary thermal, không mở khóa primary fire.

@@ -1452,8 +1452,8 @@ RA-019 vẫn Blocked vì chưa có device run.
 
 ## Thermal independence and asset cleanup
 
-`VerifyHeatLifecycle` qua `OrganizeRegionA.PrepareHeatVerification` kiểm tra lifecycle
-hiện tại. PASS: real held fire tạo 8.10 heat; release/press giữ nhiệt; gate block vẫn
+Checkpoint trước khi đổi sang heat dùng chung: `VerifyHeatLifecycle` qua
+`OrganizeRegionA.PrepareHeatVerification` PASS: real held fire tạo 8.10 heat; release/press giữ nhiệt; gate block vẫn
 nguội 63 → 46.80 và không bắn; Pause freeze; inactive branch nguội; Overheated hồi
 và held fire tiếp tục. Live `CampaignLifecycle.AdvanceMission(..., true)` giữ chính
 xác ba heat states 45 / 55 / 42.5 rồi tiếp tục nguội. Session reset vẫn về zero.
@@ -1470,3 +1470,17 @@ Pause/Resume, switch, reserve, bốn completion records và RegionReady. Boss cl
 21.30 s gồm entry/death. Đây vẫn là protected aim/collection bot, seed410, không
 inject Core; không phải manual difficulty hoặc Android FPS acceptance.
 Evidence local ở `.design/m5-heat-cleanup/`. Không chạy full historical M4 suite.
+
+### Shared primary heat correction — 2026-10-20
+
+Theo feedback mới, mọi loại đạn dùng một thermal state; mechanic thuộc
+[weapons owner](../content/weapons-items-drops.md#primary-weapon-heat--m35).
+`VerifyHeatLifecycle.Begin` PASS trong Unity Play Mode: real held fire 8.10 heat;
+release/press giữ nhiệt; gate block nguội 63 → 45.60, không thêm shot; Pause freeze.
+Nhặt Plasma/Homing Core, tăng level và cycle cả ba branch giữ chính xác heat và
+cooling delay; cycle hoặc nhặt Core khi Overheated không mở khóa fire. Recovery
+vẫn tự bắn lại khi held; live Mission handoff giữ 55 → 55 rồi tiếp tục nguội;
+death và session reset về zero/unlatched. Compile PASS, native Console zero errors
+và warnings. Evidence local `.design/m5-shared-heat/heat.json`.
+Không chạy lại full Region hoặc Android cho sửa thermal state này; full Region
+ở checkpoint trước không được coi là runtime evidence của bản shared heat.

@@ -97,7 +97,7 @@ không bắn bù. Không thêm input/action mới.
 
 Player được switch tự do giữa các weapon đã unlock [LOCKED], cycle qua những
 branch khả dụng. Nhặt Core thành công tự chọn branch vừa nâng cấp; switch vẫn giữ
-heat/latch riêng; nhánh không active tiếp tục nguội theo profile, không reset. Chi tiết level/typing thuộc item owner. Active weapon fire theo config khi gate cho phép và gameplay pointer held;
+một heat/latch/cooling delay dùng chung cho mọi branch; đổi loại đạn, unlock hoặc tăng level đều không reset. Chi tiết level/typing thuộc item owner. Active weapon fire theo config khi gate cho phép và gameplay pointer held;
 selection này phải được checkpoint-save theo [save/profile](../systems/save-profile.md).
 Bố trí nút thuộc [UI/UX](../presentation/ui-ux.md); branch/pattern ở
 [weapons/items/drops](../content/weapons-items-drops.md).

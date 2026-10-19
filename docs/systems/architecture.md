@@ -225,7 +225,7 @@ contract thuộc [player combat](../gameplay/player-combat.md#player-state-model
 
 `PulseLaserDefinition` là ScriptableObject static, tham chiếu `WeaponThermalProfile`
 theo weapon type. `PulseLaserWeapon` giữ cadence, một plain C# `WeaponHeatState`
-riêng cho instance và local `UnityEngine.Pool.ObjectPool<PlayerProjectile>`.
+dùng chung mọi branch của instance và local `UnityEngine.Pool.ObjectPool<PlayerProjectile>`.
 Thermal simulation tick bằng scaled physics delta độc lập quyền bắn;
 weapon kết hợp thermal ready với gate/held intent trước khi spawn. Không ghi state
 vào definition/profile, không sửa Player gate để biểu diễn Overheated, không

@@ -12,9 +12,9 @@ public static class OrganizeRegionA
         var sources=new[]{"VerifyPacingRefinement.cs","VerifyHumanFeel.cs","VerifyHeatLifecycle.cs"}.Select(n=>File.ReadAllLines("../tools/unity/"+n)).ToArray();
         var imports=sources.SelectMany(s=>s).Where(l=>l.StartsWith("using ")).Distinct();
         var body=string.Join("\n",sources.Select(s=>string.Join("\n",s.Where(l=>!l.StartsWith("using ")))));
-        Directory.CreateDirectory("../.design/m5-heat-cleanup/human-regression/screenshots");
-        body=body.Replace("../.design/m5-human-feel/","../.design/m5-heat-cleanup/human-regression/").Replace("../.design/m5-refinement/","../.design/m5-heat-cleanup/human-regression/");
-        var path="../.design/m5-heat-cleanup/Verification.cs";File.WriteAllText(path,string.Join("\n",imports)+"\n"+body);return path;
+        Directory.CreateDirectory("../.design/m5-shared-heat/human-regression/screenshots");
+        body=body.Replace("../.design/m5-human-feel/","../.design/m5-shared-heat/human-regression/").Replace("../.design/m5-refinement/","../.design/m5-shared-heat/human-regression/");
+        var path="../.design/m5-shared-heat/Verification.cs";File.WriteAllText(path,string.Join("\n",imports)+"\n"+body);return path;
     }
     public static object Run()
     {
