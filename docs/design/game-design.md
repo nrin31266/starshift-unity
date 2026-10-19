@@ -110,7 +110,7 @@ phù hợp từng level là [PROVISIONAL]; reward policy còn mở theo
 Game phát triển từ nền Space Explorer: movement, shooting, collision, asteroid,
 collectible, scoring, menu, gameplay, end-game, scene transitions và documentation.
 StarShift phải thể hiện rõ bước phát triển tiếp bằng life/death/respawn, data-driven
-encounters, ba weapon branches × ba levels, boss/region transitions, save/profile,
+encounters, ba weapon branches × năm levels, boss/region transitions, save/profile,
 Mission Replay và DevConfig.
 
 Unity GameObject/Component, Transform, Physics 2D, MonoBehaviour lifecycle, scene

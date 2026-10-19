@@ -10,20 +10,28 @@ namespace StarShift.Encounters
     [Serializable]
     public class SpawnAction
     {
+        [Min(0)] public int EntryBeat;
+        [Min(.1f)] public float SpawnScale = 1;
+        public float VisualSpin;
+        public bool ContinuousTransit;
         [Min(1)] public int Count = 3;
         [Min(0)] public float StartTime;
         [Min(0)] public float Stagger = .35f;
         public GameObject EnemyPrefab;
         public EnemyDefinition EnemyDefinition;
         public RewardDropTable RewardOverride;
+        public EnemyModifierDefinition Elite;
         public bool Required = true;
         public FormationLayout Formation;
         public Vector2 Anchor;
         public Vector2 SlotStep = new Vector2(.18f, 0);
         [Min(0)] public float FormationRise;
         public FlightSequence Sequence;
+        public FormationPlan Plan;
+        [Min(0)] public int FirstSlot;
+        [Min(0)] public int HpOverride;
 
-        // Dữ liệu cũ chỉ dành cho sandbox/builders M2; asset M3 dùng Sequence.
+        // Transit trực tiếp cho hazard stream; formation phức tạp dùng Sequence.
         [HideInInspector] public Vector2 EntryAnchor = new Vector2(.5f, 1.12f);
         [HideInInspector] public Vector2 HoldAnchor = new Vector2(.5f, .78f);
         [HideInInspector] public Vector2 EntryCurve;
@@ -34,6 +42,7 @@ namespace StarShift.Encounters
 
         public Vector2 SlotOffset(int index)
         {
+            if (Plan != null) return Plan.Slots[FirstSlot + index];
             var slot = index - (Count - 1) * .5f;
             var spacing = new Vector2(Mathf.Abs(SlotStep.x), Mathf.Abs(SlotStep.y));
             if (spacing.x == 0) spacing.x = spacing.y;
@@ -65,7 +74,9 @@ namespace StarShift.Encounters
         {
             error = "Invalid spawn action.";
             var prefab = EnemyPrefab != null ? EnemyPrefab : fallback;
-            if (Count < 1 || !ConfigValue.Nonnegative(StartTime) || !ConfigValue.Nonnegative(Stagger) ||
+            if (HpOverride < 0 || FirstSlot < 0 || (Plan != null &&
+                (!Plan.IsValid || FirstSlot > Plan.Slots.Length - Count || Sequence == null))) return false;
+            if (EntryBeat < 0 || !ConfigValue.Positive(SpawnScale) || !float.IsFinite(VisualSpin) || Count < 1 || !ConfigValue.Nonnegative(StartTime) || !ConfigValue.Nonnegative(Stagger) ||
                 !ConfigValue.Finite(Anchor) || !ConfigValue.Finite(SlotStep) || !ConfigValue.Nonnegative(FormationRise) ||
                 !Enum.IsDefined(typeof(FormationLayout), Formation) || prefab == null ||
                 prefab.GetComponent<EnemyHealth>() == null || prefab.GetComponent<EntryHoldFlight>() == null ||

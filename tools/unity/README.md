@@ -277,8 +277,8 @@ unity command run_script --file ../tools/unity/VerifyVerticalSlice.cs --entry Ve
 unity command run_script --file ../tools/unity/VerifyEncounterFoundation.cs --entry VerifyEncounterFoundation.Boundaries --format json
 ```
 
-Inspector: `Data/Levels/L1` giữ direction/intro/encounter order/default camera;
-`Data/Encounters` giữ groups/schedule/completion/fire/grace; `Data/Flights` giữ phases;
+Inspector: `Data/Fixtures/Levels/M4SystemTestbed` giữ direction/intro/encounter order/default camera;
+`Data/Fixtures/Encounters` giữ groups/schedule/completion/fire/grace; `Data/Flights` giữ phases;
 `Data/Cameras` giữ size/region/transition. Runtime authority không nằm ở assets.
 Dev overrides/debug toggles nằm trên `L1Encounters`, default OFF.
 
@@ -357,3 +357,89 @@ MissileCancellation kiểm Retry/exit/StopRun giữa flight; không chạy probe
 `ConfigureGameplayFeel.TuneFallExitAndCooling` là targeted Edit Mode tuning cho
 Shard, timed Exit, thermal cooling và E4 timer allowance. Verify bằng Thermal,
 Pickups, EmptyEncounter và nearby PickupCarryOver; không cần full closure suite.
+
+
+## M5 Region A
+
+`ConfigureRegionA.BatchAB`, `.BatchC`, `.CuesAndBurst` author assets/wiring qua Unity
+API trong saved Gameplay scene/Edit Mode. Không rerun để reset tuning đã author.
+`VerifyRegionA.BeginBatch(2/3)`, `.BeginBossChecks`, `.BeginIntegrationChecks`,
+`.BeginContentChecks`, `.BeginFullRegion` chạy Play Mode; chờ một terminal progress
+trước entry khác. `InspectRegionA.Inspect` kiểm catalog/references.
+Evidence/cost/limits nằm ở [dev owner](../../docs/systems/dev-debug.md#m5-region-a-verification).
+
+
+## M5 second human-feel pass
+
+`ConfigureHumanFeel` author assets trong Edit Mode, qua Unity MCP/run_script; không
+rerun builders lịch sử để reset current tuning. `ConsolidateFlights` chỉ gộp duplicate
+flight data sau khi assert tương đương và kiểm dependency trước DeleteAsset.
+`PrepareVerification` tạo ignored combined source để reuse `VerifyPacingRefinement.Rig`:
+chạy trước `VerifyHumanFeel` entries bằng `.design/m5-human-feel/Verification.cs`
+(path từ Unity root là `../.design/m5-human-feel/Verification.cs`). Begin methods trả
+ngay, chờ JSON terminal trước runtime probe khác. ClosureRemainder chỉ resume sau
+các probe đã pass; không chạy song song. FullRegion có existing-file guard chống
+vô tình rerun integration đã thực hiện. Evidence, limits và manual start points ở
+[dev owner](../../docs/systems/dev-debug.md#m5-second-human-feel-pass-verification).
+
+## M5 balance and transition follow-up
+
+`ConfigureBalancePass.Configure` là tuning pass mới nhất sau HumanFeel; không save
+scene dirty. `PrepareVerification` ghép source vào `.design/m5-balance-pass/Verification.cs`,
+đổi output của reusable HumanFeel probes sang subfolder `human-regression` để giữ
+historical evidence. Chạy VerifyBalancePass Begin methods tuần tự; BeginFullRegion
+kiểm prerequisite JSON PASS và existing-file guard. Không chạy expensive historical
+matrix sau mỗi fix. Native captures, coverage và đúng chỗ tắt intro ở
+[dev owner](../../docs/systems/dev-debug.md#m5-balance-and-transition-follow-up).
+
+### Planet 1 flow polish
+
+Production levels nằm ở `Data/RegionA/Missions/Mission01–04`; system testbed nằm trong
+`Data/Fixtures/Levels/M4SystemTestbed` và `Data/Fixtures/Encounters`. Move dùng
+AssetDatabase và giữ GUID. Các seed flight lịch sử vẫn được builders/verifiers dùng,
+không được coi là orphan chỉ vì không nằm trong production scene dependencies.
+
+Chạy `ConfigureFlowPolish.Configure` trong Edit Mode để áp tuning/UI mới (có scene
+snapshot vào `.design/m5-flow-polish/before-scene.unity`), `MoveFixtures` để migrate
+folder cũ, rồi `PrepareVerification` để ghép các verifier dùng chung Rig. Trong Play
+Mode chạy generated `.design/m5-flow-polish/Verification.cs` entry
+`VerifyFlowPolish.Begin`; full flow entry `VerifyFlowPolish.BeginFullRegion`.
+Evidence mới nằm trong `.design/m5-flow-polish/`, không ghi đè các pass cũ.
+
+`VerifyBalancePass.BeginPersistence` trong cùng generated file kiểm tra save/Retry;
+`VerifyFlowPolish.BeginDevRoute` kiểm tra đường BOSS_PHASE_B. Edit Mode closure:
+`VerifyFlowPolishClosure.Inspect` kiểm tra serialized references, scene/prefab scripts,
+level config và Dev mode off. Không chạy lại historical full suite cho thay đổi này.
+
+### Heat and content cleanup
+
+`OrganizeRegionA.Run` migrate authored data qua AssetDatabase, giữ GUID và chỉ xóa
+sáu obsolete generated flights sau dependency audit. Folder contract ở
+[asset pipeline](../../docs/production/asset-pipeline.md#region-a-authored-data-layout).
+`RegionAAssetPaths` là Editor-only resolver chung cho builders/verifiers.
+
+`OrganizeRegionA.PrepareHeatVerification` tạo `.design/m5-shared-heat/Verification.cs`.
+Trong Play Mode: `VerifyHeatLifecycle.Begin` kiểm tra press/release, blocked cooling,
+shared heat/delay/latch qua nhặt Core, upgrade và cycle, Pause, overheat recovery,
+death/session reset và live Mission handoff; evidence ở `.design/m5-shared-heat/`. Sau targeted PASS,
+`VerifyHeatLifecycle.BeginFullRegion` chạy một integration flow trên bản cuối.
+
+
+### Pickup bounce consistency
+
+Trong Play Mode, chạy `VerifyPickupMotion.Run` qua `run_script` trên file
+`tools/unity/VerifyPickupMotion.cs` (Unity-root relative: `../tools/unity/VerifyPickupMotion.cs`).
+Kiểm tra cùng quỹ đạo normal/grace, đúng hai lần nảy rồi viewport exit, late grace
+không kéo xu lên, pool reset, 28 boss gold trajectories, Core/support retention,
+Pause/Resume và collection không trùng. Motion regressions step trực tiếp physics
+callback; Pause/Resume chạy qua frame thật. Evidence `.design/m5-pickup-motion/result.json`.
+
+
+### Respawn continuity
+
+Chạy `ConfigureFlowPolish.PrepareVerification` ở Edit Mode; trong Play Mode chạy
+`VerifyFlowPolish.RespawnContinuity` từ `.design/m5-flow-polish/Verification.cs`.
+Kiểm tra death giữ projectiles, mouse/touch đang held nối lại drag/fire tại safe
+entrance pose, không replay delta bị khóa, protection và terminal cleanup.
+Evidence `.design/m5-respawn-continuity/result.json`. Nearby regression
+`VerifyPlayerDrag.Run` cần run đã skip intro và không còn terminal overlay.

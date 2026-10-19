@@ -144,7 +144,7 @@ không biến cả asteroid storm thành chuỗi full-screen flash.
 | Event | Feedback định hướng |
 |---|---|
 | Supply Drone xuất hiện | Nhận ra cargo/reward bằng trail/navigation cue, không warning như boss |
-| Supply Drone destroyed | Break/small explosion, supply hit, tiny shake; crate ejection thấy rõ |
+| Supply Drone destroyed | Break/small explosion, supply hit, small burst; hai direct pickup bật nhẹ hai phía, không BOX trung gian |
 | Crate drift/pickup | Cargo drift, reward reveal + crate cue; không giấu pickup trong explosion |
 | Weapon Core | Upgrade pulse và upgrade cue, branch/level đọc qua HUD |
 | Shield Cell | Teal defensive ring/activate cue |
@@ -171,11 +171,13 @@ Exact hit-stop rules [TBD], không âm thầm pause damage timer ngoài gameplay
 
 ## Transition Astra → Crimson
 
-Tổng transition ~8–15 s [TUNABLE], không bắt buộc hai transition bằng nhau.
-HUD fade → center alignment → engine boost → scroll acceleration → star streak
-→ old background crossfade → Crimson reveal/deceleration → red planet orbit curve
-→ smooth rotation/movement → sector title. Small camera zoom/easing, engine pitch ramp,
-warp whoosh, music duck và new-region fade-in; không cần real 3D warp.
+Target major travel/approach ~8–15 s `[TUNABLE]`, không gồm chờ tap hoặc reward window;
+không bắt buộc hai transition bằng nhau. HUD fade → glide/breath → acceleration đồng
+thời ship bank → star vector cong và old environment trôi đi → gradual palette blend
+→ deceleration → Planet reveal/settle → tap → approach signature → destination ready.
+Engine pitch/warp whoosh/music duck là presentation polish khi có assets; không cần
+real 3D warp. Current placeholder implementation/timing ở
+[level owner](../content/levels-encounters.md#m5-region-a-authored-content-provisional).
 Input lock, orientation và handoff do [levels](../content/levels-encounters.md#transition-astra--crimson) sở hữu.
 
 ## Transition Crimson → Titan
@@ -203,14 +205,14 @@ Mission intro dùng các nhịp riêng `[TUNABLE]`:
 | Approach | .7 s | Tàu trình diễn tiến nhẹ, planet/parallax thay đổi vừa phải; framing 8 → 9. |
 | Travel | 1.8 s | Planet fade sang không gian, starfield tăng tốc; giữ framing 9 lâu hơn. |
 | Brake và gameplay blend | .8 s | Giảm tốc đồng thời camera 9 → baseline, tàu về pose thật, backdrop/HUD fade về; hết giảm tốc mở control ngay. Không có nhịp đứng chờ riêng. |
-| Mission card | 2.8 s | Trên màn hình gameplay đã có HUD/control, hiện Mission + Encounter đầu căn giữa; hết nhịp đọc mới start formation. |
+| Mission title overlay | 2.1 s | Mission lớn/bold và subtitle ngắn; formation đầu bắt đầu sau .75 s, khi chữ vẫn hiện/fading. |
 
-Mission card duration 2.8 s `[TUNABLE]` (gồm fade .2 s ở mỗi đầu), độc lập default
-minor announcement duration. Card bắt đầu sau Brake và camera settle về baseline;
-người chơi đã có thể kéo/bắn và Pause trong lúc đọc. Pause dừng countdown tới first
-spawn; Resume hiện lại card với thời gian còn lại. Không rút khoảng đọc chỉ để vào combat sớm.
+Mission title visible duration `[TUNABLE]` độc lập spawn lead; không còn blocking
+card 2.8 s. Pause dừng scaled title/entry clocks. Same-planet Mission travel giữ
+input, bias lùi nhẹ và tăng star travel đồng thời với title/entry theo
+[level owner](../content/levels-encounters.md#m5-region-a-authored-content-provisional).
 
-Tổng cinematic seed khoảng 3.3 s, tiếp theo là nhịp đọc card trên gameplay, không gồm thời gian chờ tap. Camera size
+Tổng cinematic seed khoảng 3.3 s, không gồm thời gian chờ tap. Camera size
 8 → 9 là mở rộng framing; cảm giác tiếp cận đến từ relative ship/planet/parallax,
 không dùng camera zoom một mình để giả tiến tới. Planet giữ vị trí mốc đích thay
 vì lao qua toàn màn hình. Tên location còn TBD dùng nhãn cấu trúc theo
@@ -259,3 +261,34 @@ zoom, playable viewport, drag conversion, collider, damage hoặc gameplay timer
 Không thêm camera system thứ hai. Pause freeze impulse clock và render neutral;
 NewGame/Retry/Continue/exit clear rocket/trail/flash và pending impact/burst. Respect ScreenShakeEnabled
 trong persisted Settings. Animation/impulse observer không quyết damage hoặc stock.
+
+
+## M5 Vanguard placeholder
+
+`[TUNABLE]` Death beats chạy 2.4 s scaled time: bốn small burst xen kẽ → core/main
+burst → short final impact → Core + support pair. Hostile damage đã bị khóa trước beats, timing
+không quyết HP hoặc phase. Phase transition có amber core cue theo [enemy owner](../content/enemies-bosses.md#boss-1--vanguard-frigate-provisional);
+strong attacks có module glow trước launch. Không final VFX/music/audio pack mới.
+
+Reserve missile vẫn dùng impact/projection restore hiện có; Homing primary không
+phát impact đó. Boss death tạm reuse short reserve impulse, chưa có strong final
+explosion/shake mix. Region travel dùng glide → tăng tốc/bank → turn cùng star
+vector/palette → giảm tốc → reveal Planet 2/tap → approach signature. Ship và star
+heading đổi đồng thời, environment đổi màu dần; gameplay semantic colors giữ nguyên.
+Planet reuse neutral placeholder disc với palette đích; chưa final orbit/warp art
+hoặc audio polish. Timing và gates thuộc [level owner](../content/levels-encounters.md#m5-region-a-authored-content-provisional).
+
+Asteroid/resource entry có amber edge marker trước khi hazard vào view. Supply event
+hiện cue `TIẾP TẾ` ngắn; không mở tutorial panel hoặc chặn Encounter.
+
+
+M5 second feel pass: asteroid dùng persistent damaged/critical tint sau hit flash,
+optional sprite-frame hooks cho future cracks và pooled .35 s expanding glow burst.
+Burst scale theo asteroid root; không thêm AoE hoặc camera shake cho mỗi rock.
+
+Vanguard reactor/core và engine cue làm phase break; twin pods telegraph đồng thời,
+missile pod riêng, beam pod hãm tàu trước khai hỏa. Magenta lane warning có opacity
+.3; active lane .9 với white core rộng 25% beam. Module gửi cùng damage bounds cho
+presentation, giữ safe space rõ hai bên. Native 16:9/20:9 review phải xem beam còn
+nối đúng pod khi active. Timing/HP/movement thuộc [enemy owner](../content/enemies-bosses.md#boss-1--vanguard-frigate-provisional),
+không để animation/color quyết damage. Defeat chain vẫn 2.4 s trước direct reward pair/handoff.

@@ -17,6 +17,7 @@ namespace StarShift.Rewards
         [Range(0, 1)] public float MajorChance = .0075f;
         [Range(0, 1)] public float ShardChance = .035f;
         public PickupDefinition Shard;
+        [Range(0,48), Tooltip("Chỉ boss defeat mới rải vàng toàn màn hình.")] public int BossShardCount;
         [Tooltip("Chỉ dùng cho authored system-test reward moments, không đổi global drop rate.")]
         public PickupDefinition GuaranteedPickup;
         public WeightedPickup[] MajorItems = Array.Empty<WeightedPickup>();

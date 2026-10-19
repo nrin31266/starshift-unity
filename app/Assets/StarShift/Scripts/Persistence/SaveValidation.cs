@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using StarShift.Combat;
+using StarShift.Player;
 
 namespace StarShift.Persistence
 {
@@ -26,7 +27,7 @@ namespace StarShift.Persistence
                 s.Lives < 1 || s.Lives > maximumLives || s.Missiles < 0 || s.Missiles > 3 || !Enum.IsDefined(typeof(WeaponBranch), s.ActiveWeapon) ||
                 s.WeaponLevels == null || s.WeaponLevels.Length != 3 || c.EncounterShardHighWater < 0) return false;
             for (int i = 0; i < s.WeaponLevels.Length; i++)
-                if (s.WeaponLevels[i] < (i == 0 ? 1 : 0) || s.WeaponLevels[i] > 3) return false;
+                if (s.WeaponLevels[i] < (i == 0 ? 1 : 0) || s.WeaponLevels[i] > WeaponLoadout.MaximumLevel) return false;
             var stats = s.Stats;
             return s.WeaponLevels[(int)s.ActiveWeapon] > 0 && stats != null && stats.Score >= 0 && stats.Shards >= 0 &&
                 stats.EnemiesDestroyed >= 0 && stats.CoresCollected >= 0 && stats.SupplyCaptured >= 0 && stats.LivesLost >= 0 && NonNegative(stats.PlaySeconds);

@@ -2,7 +2,7 @@ namespace StarShift.UI
 {
     public static class GameplayCopy
     {
-        public const string SpaceTitle = "Region / Planet · TBD";
+        public const string SpaceTitle = "HÀNH TINH PHÍA TRƯỚC";
         public const string EstablishingDescription = "Một hành tinh hiện ra ở phía xa.";
         public const string TapToContinue = "Chạm để tiếp tục";
         public const string Pause = "TẠM DỪNG";
@@ -17,7 +17,7 @@ namespace StarShift.UI
         public const string Placeholder = "—";
         public const string PulseLaser = "Pulse Laser";
         public const string HeatOverheated = "NÓNG";
-        public static string Encounter(int number) => $"Encounter {number:00}";
+        public static string Encounter(int number) => $"ĐỢT {number}";
         public static string Weapon(int level) => $"{PulseLaser} · CẤP {level}";
         public static string WeaponStatus(int level) => $"T1 L{level}";
         public static string Lives(int count) => $"×{count}";

@@ -32,7 +32,7 @@ public static class VerifyEncounterFoundation
     }
     public static object Validate()
     {
-        var level=AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Levels/L1.asset");
+        var level=AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Fixtures/Levels/M4SystemTestbed.asset");
         Check(level.IsValid(out var error),error);
         Check(StarShift.Editor.EncounterConfigValidation.Errors().Length==0,"Content scan failed.");
         var copy=UnityEngine.Object.Instantiate(level);

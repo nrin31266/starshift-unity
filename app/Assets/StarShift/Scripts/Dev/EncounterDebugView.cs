@@ -34,7 +34,7 @@ namespace StarShift.Dev
                 for (int i = 0; i < encounter.Groups.Length; i++)
                 {
                     var group = encounter.Groups[i];
-                    text.Append($"\nSpawn Group {i+1:00}: {group.Count} enemies | Formation: {group.Formation}\nFlight Sequence / Path: ");
+                    text.Append($"\nSpawn Group {i+1:00}: {group.Count} enemies | Formation: {(group.Plan != null ? group.Plan.name : group.Formation.ToString())}\nFlight Sequence / Path: ");
                     if (group.Sequence == null) { text.Append("legacy"); continue; }
                     text.Append(group.Sequence.name);
                     foreach (var phase in group.Sequence.Phases) text.Append($" | {phase.Kind}:{phase.Path}");

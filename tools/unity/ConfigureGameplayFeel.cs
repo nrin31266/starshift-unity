@@ -35,7 +35,7 @@ public static class ConfigureGameplayFeel
         var holdRight = Flight("M4HoldRight", new Vector2(1.6f,.86f), Vector2.zero, FlightPath.ArcLeft, true);
         for (int n = 2; n <= 4; n++)
         {
-            var encounter = AssetDatabase.LoadAssetAtPath<EncounterDefinition>(Root + "Encounters/L1Encounter" + (char)('A'+n-1) + ".asset");
+            var encounter = AssetDatabase.LoadAssetAtPath<EncounterDefinition>(Root + "Fixtures/Encounters/L1Encounter" + (char)('A'+n-1) + ".asset");
             for (int i = 0; i < encounter.Groups.Length; i++)
                 encounter.Groups[i].Sequence = n == 2 ? (i%2==0 ? retreat : right) :
                     n == 3 ? (i%2==0 ? diagonal : retreat) : (i%2==0 ? dive : right);
@@ -43,7 +43,7 @@ public static class ConfigureGameplayFeel
             if (!encounter.IsValid(out var error)) throw new InvalidOperationException(error);
             EditorUtility.SetDirty(encounter);
         }
-        var final = AssetDatabase.LoadAssetAtPath<EncounterDefinition>(Root + "Encounters/L1EncounterE.asset");
+        var final = AssetDatabase.LoadAssetAtPath<EncounterDefinition>(Root + "Fixtures/Encounters/L1EncounterE.asset");
         final.Groups[0].Sequence = holdRight;
         EditorUtility.SetDirty(final);
         AssetDatabase.SaveAssets();
@@ -104,7 +104,7 @@ public static class ConfigureGameplayFeel
         }
         for(int i=0;i<5;i++)
         {
-            var encounter=AssetDatabase.LoadAssetAtPath<EncounterDefinition>(dataRoot+"Encounters/L1Encounter"+(char)('A'+i)+".asset");
+            var encounter=AssetDatabase.LoadAssetAtPath<EncounterDefinition>(dataRoot+"Fixtures/Encounters/L1Encounter"+(char)('A'+i)+".asset");
             encounter.RewardGraceSeconds=1.5f;EditorUtility.SetDirty(encounter);
         }
         var player=GameObject.Find("Player");
@@ -258,7 +258,7 @@ public static class ConfigureGameplayFeel
         Number(presentation,"duration",.45f);Number(player.GetComponent<StarShift.Player.EmergencyMissileReserve>(),"flightSeconds",.32f);
         for(int i=0;i<4;i++)
         {
-            var encounter=AssetDatabase.LoadAssetAtPath<EncounterDefinition>(Root+"Encounters/L1Encounter"+(char)('A'+i)+".asset");
+            var encounter=AssetDatabase.LoadAssetAtPath<EncounterDefinition>(Root+"Fixtures/Encounters/L1Encounter"+(char)('A'+i)+".asset");
             encounter.HandoffDelay=2;EditorUtility.SetDirty(encounter);
         }
         UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(player.scene);
@@ -281,7 +281,7 @@ public static class ConfigureGameplayFeel
             var profile=AssetDatabase.LoadAssetAtPath<StarShift.Combat.WeaponThermalProfile>(Root+"Weapons/"+id+".asset");
             Number(profile,"coolingDelay",.3f);Number(profile,"coolRate",30);Number(profile,"overheatCoolRate",50);
         }
-        var encounter=AssetDatabase.LoadAssetAtPath<EncounterDefinition>(Root+"Encounters/L1EncounterD.asset");
+        var encounter=AssetDatabase.LoadAssetAtPath<EncounterDefinition>(Root+"Fixtures/Encounters/L1EncounterD.asset");
         encounter.Duration=21;EditorUtility.SetDirty(encounter);
         AssetDatabase.SaveAssets();return new{pass=true,fallSpeed=3.2f,terminalSpeed=6.4f,exitSeconds=3,coolingDelay=.3f,coolRate=30,overheatCoolRate=50};
     }

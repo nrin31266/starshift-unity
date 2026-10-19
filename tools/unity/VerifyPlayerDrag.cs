@@ -76,7 +76,10 @@ public static class VerifyPlayerDrag
             movement.enabled = true;
             await MouseEvent(mouse, new Vector2(550, 350), true);
             AssertNear(body.position, disabledPosition, "re-enable during held press cannot jump");
-            await MouseEvent(mouse, new Vector2(550, 350), false);
+            var resumedPosition = body.position;
+            await MouseEvent(mouse, new Vector2(570, 360), true);
+            AssertDrag(camera, resumedPosition, body.position, new Vector2(20, 10), "held drag resumes from new anchor");
+            await MouseEvent(mouse, new Vector2(570, 360), false);
             await Drag(mouse, body, camera, new Vector2(900, 300), new Vector2(-50, 20), results, "fresh-press-after-disable");
 
             touch = InputSystem.AddDevice<Touchscreen>("StarShiftVerificationTouch");

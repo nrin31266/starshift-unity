@@ -180,10 +180,10 @@ public static class VerifyPlayerDamageLifecycle
                 Require(lives.CurrentLives == 2 && deaths == 1 && !gate.CanInput && !gate.CanFire && !gate.CanTakeDamage,
                     "Duplicate contacts consumed lives or permissions remained open.");
                 Require(!fireGate.CanFire && !attack.IsTelegraphing, "Death did not cancel pending attack.");
-                Require(UnityEngine.Object.FindObjectsByType<EnemyProjectile>().Length == 0, "Hostile cleanup leaked active shots.");
+                Require(projectiles.Any(p => p.gameObject.activeSelf), "Death cleared every hostile shot.");
                 Require(playerShot.gameObject.activeSelf, "Death incorrectly cleared friendly projectile.");
                 Require(player.GetComponent<PulseLaserWeapon>().CurrentLevel == 1, "Lv1 downgrade must stay Lv1.");
-                foreach (var shot in projectiles)
+                foreach (var shot in projectiles.Where(p => !p.gameObject.activeSelf))
                     Require(shot.Owner == null && !shot.GetComponent<Rigidbody2D>().simulated &&
                         !shot.GetComponent<BoxCollider2D>().enabled && shot.GetComponent<Rigidbody2D>().linearVelocity == Vector2.zero,
                         "Hostile pool reset incomplete.");
@@ -310,10 +310,13 @@ public static class VerifyPlayerDamageLifecycle
             Require(movingScout.GetComponent<EntryHoldFlight>().IsHolding && !fireGate.CanFire,
                 "Enemy entry froze while death/respawn fire permission was blocked.");
             var safePosition = player.GetComponent<Rigidbody2D>().position;
-            await MouseEvent(mouse, new Vector2(900,650), true);
-            Require(player.GetComponent<InputSystemPointerInput>().FireHeld &&
-                (player.GetComponent<Rigidbody2D>().position - safePosition).sqrMagnitude < .00001f,
-                "Held pointer carried stale movement through respawn.");
+            await MouseEvent(mouse, new Vector2(800,600), true);
+            Require((player.GetComponent<Rigidbody2D>().position - safePosition).sqrMagnitude < .00001f, "Respawn replayed blocked drag");
+            var heldBefore = Camera.main.WorldToScreenPoint(player.transform.position);
+            await MouseEvent(mouse, new Vector2(830,620), true);
+            var heldDelta = (Vector2)(Camera.main.WorldToScreenPoint(player.transform.position) - heldBefore);
+            Require(player.GetComponent<InputSystemPointerInput>().FireHeld && (heldDelta - new Vector2(30,20)).sqrMagnitude < 1,
+                "Held drag did not resume without a new press.");
             await Task.Delay(230);
             Require(UnityEngine.Object.FindObjectsByType<PlayerProjectile>().Length > 0, "Held fire did not resume after entrance.");
             await MouseEvent(mouse, new Vector2(900,650), false);
@@ -367,7 +370,7 @@ public static class VerifyPlayerDamageLifecycle
             UnityEngine.Object.DestroyImmediate(blocker);
             blocker = null;
             await Until(() => gate.State == PlayerGameplayState.PostEntryInvincibility, 600, "Cleared candidate did not finish entrance.");
-            return new { passed = true, heldFireResumes = true, staleDragBlocked = true, freshPressDelta = delta.ToString(),
+            return new { passed = true, heldFireResumes = true, staleDragBlocked = true, heldDragResumes = true, freshPressDelta = delta.ToString(),
                 callbackFailureSafe = true, pauseEntrance = true, rootReuseReset = true,
                 enemyEntryDuringGrace = true, allCandidatesBlockedSafe = true, presentationIndependent = true };
         }

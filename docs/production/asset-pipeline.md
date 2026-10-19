@@ -227,3 +227,60 @@ seed trong script. Script chỉ tạo khi asset chưa tồn tại, giữ GUID/im
 Đây là test presentation theo [placeholder-first](#placeholder-first), không lock
 visual family hoặc tên hành tinh. Choreography thuộc
 [audio/VFX](../presentation/audio-vfx.md#level-intro-warning-và-dynamic-audio).
+
+
+## M5 placeholder authoring
+
+`tools/unity/ConfigureRegionA.cs` chạy qua Unity Pipeline trong saved Gameplay scene,
+Edit Mode. BatchAB author Mission 01–03/preboss; BatchC author Vanguard/modules,
+Mission 04 và Boss HUD/catalog. Builders tạo asset bằng Unity API, giữ GUID của asset
+đã có và không overwrite later tuning khi rerun. Không chạy baseline M4 builder
+trên production scene để reset content. New sprite renderers reuse placeholder
+sprites; không generate final raster art hoặc texture batch.
+
+M4 fixture giữ level/encounter/reward assets riêng; production definitions trong
+Data/RegionA. New `.meta` do Unity tạo, phải đi cùng assets. Device visual-family
+approval chưa có, không coi placeholder thành locked/final art.
+
+
+`ConfigurePacingRefinement.Configure` cập nhật production choreography/stream/copy
+qua Unity API; `ConfigureTravel` wire PlanetJourney trên saved Gameplay scene. Cả hai
+chạy Edit Mode qua Pipeline, giữ GUID; không chạy baseline builder để reset tuning.
+`Report` chỉ đọc config và ghi snapshot evidence, không author asset hoặc save gameplay.
+
+
+`ConfigureHumanFeel` là follow-up authoring cho pass thứ hai: Formations,
+DurabilityAndRewards, Asteroids, Vanguard và VisualRefinements chạy Edit Mode qua
+Unity Pipeline. Dùng shared FormationPlan assets, giữ GUID và sprite sources cũ;
+không rerun ConfigureRegionA/ConfigurePacingRefinement để reset current tuning.
+Vanguard ghép existing placeholder primitives; không generate raster art hoặc đổi
+sprite importer/slicing metadata. New assets/scripts có Unity-generated `.meta`.
+
+## Region A authored data layout
+
+Production data thuộc `app/Assets/StarShift/Data/RegionA/`, chia theo trách nhiệm:
+
+| Folder | Nội dung |
+|---|---|
+| `Missions` | Mission01–04 LevelDefinition |
+| `Encounters` | Encounter schedule/completion config |
+| `Cameras` | Encounter camera profiles |
+| `Flights` | FlightSequence đang dùng production |
+| `Formations` | FormationPlan slots |
+| `Hazards` | HazardStreamDefinition |
+| `Enemies` | Common enemy HP/modifier definitions |
+| `Weapons` | Common enemy fire profiles |
+| `Rewards` | Common/Elite progression drop tables |
+| `Boss` | Vanguard health, flight, phases, attacks, camera, beam material và defeat rewards |
+
+System fixtures tách tại `Data/Fixtures/Levels`, `Encounters`, `RegionAFlights`.
+Ba seed flights TopHold/ArcLeft/ArcRight còn được verifiers dùng, giữ tại fixture
+folder. Sáu generated flights cũ SineFormation/PincerLeft/PincerRight/DiagonalStorm/
+EscortLeft/EscortRight đã bỏ khỏi authored assets: không có GUID dependencies hoặc
+runtime/test loader; historical builders có thể tạo lại vào fixture folder.
+
+`RegionAAssetPaths` trong Editor là owner đường dẫn authoring theo type/name.
+Builders/verifiers dùng logical flat Region A name qua resolver; serialized gameplay
+references vẫn là Unity GUID, runtime không dùng helper Editor này. Move/Delete qua
+AssetDatabase; migrate giữ GUID và kiểm tra missing references. Không xóa fixture
+hoặc công cụ regression chỉ vì production không load trực tiếp.

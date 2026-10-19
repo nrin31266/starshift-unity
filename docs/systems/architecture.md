@@ -225,11 +225,12 @@ contract thuộc [player combat](../gameplay/player-combat.md#player-state-model
 
 `PulseLaserDefinition` là ScriptableObject static, tham chiếu `WeaponThermalProfile`
 theo weapon type. `PulseLaserWeapon` giữ cadence, một plain C# `WeaponHeatState`
-riêng cho instance và local `UnityEngine.Pool.ObjectPool<PlayerProjectile>`.
-Thermal simulation chỉ tick bằng scaled physics delta khi gameplay gate cho phép;
+dùng chung mọi branch của instance và local `UnityEngine.Pool.ObjectPool<PlayerProjectile>`.
+Thermal simulation tick bằng scaled physics delta độc lập quyền bắn;
 weapon kết hợp thermal ready với gate/held intent trước khi spawn. Không ghi state
 vào definition/profile, không sửa Player gate để biểu diễn Overheated, không
-couple movement với thermal. `GameplaySession.RunStarted` reset weapon cho mission;
+couple movement với thermal. `GameplaySession.RunStarted` giữ thermal qua live
+Mission handoff; session/checkpoint restart mới reset;
 death dùng boundary downgrade/reset hiện có. HUD chỉ đọc heat/latch và cập nhật
 bar khi giá trị đổi; không Find/allocate hoặc tạo UI trong heat hot path.
 Semantics do [player](../gameplay/player-combat.md#thermal-lifecycle), mechanic và
@@ -378,8 +379,8 @@ fire/pending telegraph, `ResumeAfter(seconds)` đếm scaled grace, `ClearProjec
 release active hostile projectiles cùng scene qua existing pool callback. Producers
 bind scene reference hoặc fallback tìm gate một lần; không có gate thì fail closed.
 Nó không chọn shooter, không đóng băng movement và không là encounter/FireDirector.
-Lifecycle giữ block qua death/entrance, request grace khi entrance hoàn tất và block
-terminal ở Game Over. M2 session nối Result sau full L1; general transition chưa có;
+Lifecycle giữ block qua death/entrance nhưng không clear đạn đang bay; request
+grace khi entrance hoàn tất và block terminal ở Game Over. M2 session nối Result sau full L1; general transition chưa có;
 owner sau có thể dùng cùng safety boundary, không suy từ Player `CanFire`.
 
 `PlayerDamagePresentation` chỉ đọc gate để death flash, protection blink/tint và
@@ -435,12 +436,13 @@ kết thúc hoặc reset. Không tạo writer thứ hai trên Player Rigidbody.
 Canvas/uGUI pointer handlers; transparent raycast area chỉ bật trong intro. Tap
 chỉ arm khi prompt sẵn sàng; drag/cancel/hold dài không launch. Không poll input
 thứ hai hoặc tạo menu mới. `GameplayAnnouncement` giữ title/description và fade/
-duration; cùng một component đổi anchor/alignment cho major establishing và centered
-minor title. Loại title không suy từ HUD lock. LevelFlow giữ phase MissionTitle sau
-Brake: cinematic đã hide, HUD/control/Pause mở, runner vẫn chờ trước first spawn.
-Phase này dùng scaled timer; Resume refresh card với thời gian còn lại. Mission card dùng duration từ Intro config, subtitle lấy từ
-starting encounter index do runner truyền vào; không có ArrivalDescription hoặc một
-first-Encounter announcement riêng. `SafeAreaLayout` chỉ cập nhật anchors khi safe area/resolution đổi.
+duration; component đổi layout theo major establishing, Mission hoặc Đợt. Mission và
+Đợt có presentation instances riêng để chồng thời gian entry. LevelFlow giữ phase
+MissionTitle sau Brake chỉ tới spawn lead, độc lập visible duration; cinematic đã
+hide, HUD/control/Pause mở. Title và subtitle Mission lấy từ LevelDefinition,
+EncounterCuePresentation đọc Đợt từ EncounterDefinition; không dùng subtitle Encounter
+thay cho Mission briefing. Scaled clocks freeze trong Pause. SafeAreaLayout chỉ cập
+nhật anchors khi safe area/resolution đổi.
 Canvas/RectTransform/buttons/EventSystem được author bằng `ConfigureGameplayUi` qua
 Unity; không dựng UI runtime từng frame. Default execution order đặt session trước
 HUD để đọc dependency sau Awake; announcement cũng initialize trước HUD. Không thêm
@@ -561,7 +563,7 @@ chưa cần sinh asset hoặc khóa schema để tài liệu trông hoàn chỉn
 | Component/data | Responsibility |
 |---|---|
 | WeaponLoadout | Mutable unlocks, per-branch level và active selection; không fire hoặc giữ heat |
-| PulseLaserDefinition / WeaponLevelPattern | Static type config, ba level patterns, một thermal reference mỗi type; giữ class/GUID cũ để tương thích prefab |
+| PulseLaserDefinition / WeaponLevelPattern | Static type config, năm level patterns, một thermal reference mỗi type; giữ class/GUID cũ để tương thích prefab |
 | PulseLaserWeapon | Active primary cadence/heat states và pooled projectiles; loadout event reset cadence, không mutate definitions |
 | PlayerProjectile | Snapshot damage/motion/tracking/splash; same-scene target registry, spawn-version guard khi enemy reuse |
 | PlayerTemporaryEffects | Shield/OD/Drone runtime timer/protection; scaled gameplay gate, lifecycle clear |
@@ -569,7 +571,7 @@ chưa cần sinh asset hoặc khóa schema để tài liệu trông hoàn chỉn
 | SupportDrone | Một authored companion và local projectile pool; visual/timer đọc effects owner, damage không mượn primary weapon authority |
 | RunRewards | Runtime score/shard và verification counters; reset theo run, không save/profile |
 | RewardDropTable / PickupDefinition | Static reward source/weights/item tuning; test overrides không sửa global drops |
-| RewardRoller | Plain C# seeded selection, state filtering/weights và bounded crate pity history |
+| RewardRoller | Plain C# seeded selection, state filtering/weights và bounded supply pity history |
 | RewardDirector | Subscribe kill/run boundary, chọn drop, rent/return reward; không quản Player movement/death/UI |
 | RewardPickup | Pooled reward-scope participant, contact/lifetime và callback collect; không tự chọn/áp effect |
 
@@ -718,3 +720,70 @@ projectile reuse xóa trail và restore sprite/scale, không đổi physics root
 GameplayViewController áp impulse trong render callback rồi restore projection;
 không dịch Transform của camera đang được movement/bounds/flight dùng làm authority.
 Các tunables thuộc [presentation owner](../presentation/audio-vfx.md#reserve-missile-impact-cue).
+
+
+## M5 composition boundaries `[PROVISIONAL]`
+
+EnemyDefinition giữ archetype, FlightSequence giữ path, SingleFireDefinition giữ
+attack. Burst count/spacing và spread count/fan là attack data, không có Bomber mission controller. Elite
+modifier giữ HP/cadence/scale/accent config; EnemyHealth nhận modifier khi spawn,
+EnemyModifierPresentation đọc state và reset scale/accent khi pool return.
+
+Vanguard reuse EnemyHealth/EntryHoldFlight. BossPhaseRunner chỉ chọn module/phase;
+BossAttackModule giữ telegraph và pooled projectiles. BossDeathSequence chỉ giữ scaled
+presentation timer/callback. Runner giữ defeat boundary/generation/completion, khóa
+producers và clear hostile shots ngay khi zero HP, giữ dying boss root tới cuối
+sequence. Reward callback chạy sau beats, trước completion/reward grace. Stop/Retry
+hủy callback và thu hồi root; không để presentation cấp quyền damage.
+
+RegionCampaignFlow chỉ orchestration L1–L4 và destination skeleton, tham chiếu catalog
+rõ. CampaignLifecycle giữ write permission/restore; CampaignProgress mutate DTO và
+atomic transaction. GameplaySession vẫn giữ clock/terminal/Pause. BossHud chỉ đọc
+health/name/phase; không quyết Boss lifecycle. Không thêm event bus hoặc scene thứ hai.
+
+
+## M5 pacing refinement boundaries
+
+EncounterDefinition giữ entry lead/title duration/adaptive beat rules; SpawnAction
+giữ beat index/subgroup offset/stagger. Runner giữ beat-start clocks và enemy pressure;
+không mutate definition. HazardStreamSchedule là plain seeded schedule builder,
+HazardStreamDefinition giữ cone/density/size/speed; EntryHoldFlight thực thi continuous
+unclamped transit, AsteroidVisualMotion chỉ xoay visual. Không có từng asteroid prefab copy.
+
+RegionCampaignFlow giữ same-planet travel; RelativeDragMovement compose bias và pointer
+delta. CampaignLifecycle đánh dấu atomic Mission advance để HUD không nhầm idle giữa
+hai runs thành terminal/hide title; preserve input/pose là explicit launch option.
+PlanetJourney giữ scaled major cinematic phase/callback generation; LevelFlow nối existing
+intro presentation và Up/Right boundary. GameplaySession giữ input/clock cleanup;
+presentation không cấp damage hoặc persistence writes. Timing thuộc level/audio owners.
+
+
+## M5 shared composition and reward floor boundaries
+
+`FormationPlan` là static slot data; SpawnAction chỉ tham chiếu plan/dải slot và
+fixed HP override khi cần. Validator từ chối duplicate/range overlap. EntryHoldFlight
+vẫn giữ pose/clock/reprojection; combat offset/reposition và motion pause được reset
+khi pooled instance activate. Boss phase/module gửi intent, không tự clamp Transform.
+Playable viewport vẫn do CameraProfile → GameplayViewController → PlayerMovementBounds
+sở hữu; asteroid/Boss region policy ở [level owner](../content/levels-encounters.md#m5-region-a-authored-content-provisional).
+
+EncounterRewardQuota là plain C# deterministic selection state, tách khỏi static
+EncounterDefinition. RewardDirector subscribe encounter start, kill, escape và
+completion; chọn/credit/fallback floor, không mutate config hoặc persistence DTO.
+RewardDirector phát drop-spawn/collected facts cho scoped verification observers;
+không thêm debug log hoặc persistence write. RunStarted reset roller history; encounter boundary reseed selection nhưng giữ supply
+pity history trong run. Save/profile không cần schema mới: stable encounter seed được
+tái dựng, Player checkpoint/Shard ledger/write authority giữ nguyên. Quota/overflow
+semantics thuộc [reward owner](../content/weapons-items-drops.md#encounter-reward-floor-provisional).
+
+Hazard variant data thuộc stream config; scheduler snapshot scale/HP/transit vào
+SpawnAction, EnemyHealth nhận HP trước activate. EnemyDamagePresentation chỉ đọc
+health và chọn tint/optional frame. AsteroidDestructionPresentation subscribe lethal
+reward event để phát pooled visual burst, không có gameplay damage/shake authority.
+
+BossAttackModule giữ một local attack clock: projectile mode dùng pool hiện có;
+beam mode charge/active bounds và Physics2D query route qua PlayerContactReceiver.
+BossBeamPresentation nhận bounds/read-only active cue, không quyết damage. Beam
+braces motion qua flight owner và nhả khi cancel/end/death/disable. Phase runner
+cancel module trước reposition; death/generation/Retry vẫn do existing owners xử lý.
+Không thêm Wave runtime, per-Mission controller, loot framework hoặc boss-minion framework.

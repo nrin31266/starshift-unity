@@ -24,13 +24,32 @@ namespace StarShift.Enemies
         private Vector2 exitViewport;
         private float holdDuration;
         private float exitDuration;
+        private bool continuousTransit;
 
         private FlightSequence sequence;
         private Vector2 slotOffset;
         private PlayDirection direction;
         private int phaseIndex;
         private bool sequenceFinished;
-        public int PhaseIndex => phaseIndex;
+        private Vector2 combatOffset;
+        private Vector2 offsetFrom;
+        private Vector2 offsetTarget;
+        private float offsetElapsed;
+        private float offsetSeconds;
+        private float motionMultiplier = 1;
+        public bool MotionPaused { get; private set; }
+        public void SetMotionPaused(bool paused) => MotionPaused = paused;
+        public void Reposition(Vector2 offset, float seconds, float motionScale = 1)
+        { offsetFrom = combatOffset; offsetTarget = offset; offsetElapsed = 0; offsetSeconds = Mathf.Max(.01f, seconds); motionMultiplier = motionScale; }
+        public void BeginRetreat(float seconds = 1.1f)
+        {
+            var start = (Vector2)flightCamera.WorldToViewportPoint(transform.position);
+            // Rút theo hướng đi ra phía trên đội hình, giữ flight là pose writer duy nhất.
+            var end = direction == PlayDirection.Right ? new Vector2(1.3f, start.y) : new Vector2(start.x, 1.3f);
+            Configure(start, start, Vector2.zero, .01f, end, 0, seconds, true);
+            elapsed = 0; MotionPaused = false;
+        }
+        public int PhaseIndex => sequence != null ? phaseIndex : elapsed < entryDuration ? 0 : 2;
 
         public bool IsHolding => sequence != null ? !sequenceFinished && (sequence.Phases[phaseIndex].Kind == FlightPhaseKind.Hold || sequence.Phases[phaseIndex].Kind == FlightPhaseKind.Combat) : elapsed >= entryDuration && (exitDuration <= 0 || elapsed < entryDuration + holdDuration);
         public bool IsExiting => sequence != null ? sequence.Phases[phaseIndex].Kind == FlightPhaseKind.Exit : exitDuration > 0 && elapsed >= entryDuration + holdDuration;
@@ -55,9 +74,10 @@ namespace StarShift.Enemies
         }
 
         public void Configure(Vector2 entry, Vector2 hold, Vector2 curve, float entrySeconds,
-            Vector2 exit, float holdSeconds, float exitSeconds)
+            Vector2 exit, float holdSeconds, float exitSeconds, bool continuous = false)
         {
             sequence = null;
+            continuousTransit = continuous;
             entryViewport = entry;
             holdViewport = hold;
             entryCurve = curve;
@@ -70,6 +90,7 @@ namespace StarShift.Enemies
         public void ConfigureSequence(FlightSequence config, Vector2 offset, PlayDirection playDirection)
         {
             sequence = config;
+            continuousTransit = false;
             slotOffset = offset;
             direction = playDirection;
             phaseIndex = 0;
@@ -91,12 +112,17 @@ namespace StarShift.Enemies
             elapsed = 0;
             phaseIndex = 0;
             sequenceFinished = false;
+            combatOffset = offsetFrom = offsetTarget = Vector2.zero;
+            offsetElapsed = offsetSeconds = 0; motionMultiplier = 1;
+            MotionPaused = false;
             ApplyPosition();
         }
 
         private void FixedUpdate()
         {
-            if (!health.IsAlive) return;
+            if (!health.IsAlive || MotionPaused) return;
+            if (offsetElapsed < offsetSeconds)
+            { offsetElapsed += Time.fixedDeltaTime; combatOffset = Vector2.Lerp(offsetFrom,offsetTarget,Mathf.SmoothStep(0,1,offsetElapsed/offsetSeconds)); }
             elapsed = sequence != null ? elapsed + Time.fixedDeltaTime : Mathf.Min(entryDuration + holdDuration + exitDuration, elapsed + Time.fixedDeltaTime);
             ApplyPosition();
         }
@@ -112,6 +138,15 @@ namespace StarShift.Enemies
             if (flightCamera == null || !flightCamera.isActiveAndEnabled) return;
             if (sequence != null) { ApplySequencePosition(); return; }
             var depth = Vector3.Dot(transform.position - flightCamera.transform.position, flightCamera.transform.forward);
+            if (continuousTransit)
+            {
+                // Luồng xuyên màn hình không clamp mốc giữa hoặc dừng ở biên viewport.
+                var transit = Vector2.Lerp(entryViewport, exitViewport, elapsed / (entryDuration + holdDuration + exitDuration));
+                var world = flightCamera.ViewportToWorldPoint(new Vector3(transit.x, transit.y, depth));
+                body.position = world;
+                transform.position = world;
+                return;
+            }
             var hold = new Vector3(holdViewport.x, holdViewport.y, depth);
             var rootViewport = flightCamera.WorldToViewportPoint(transform.position);
             GetViewportEnvelope(out var minimum, out var maximum);
@@ -144,7 +179,7 @@ namespace StarShift.Enemies
             var depth = Vector3.Dot(transform.position - flightCamera.transform.position, flightCamera.transform.forward);
             Vector2 Project(Vector2 point, bool clamp)
             {
-                var result = PlayDirectionSpace.Point(point + slotOffset, direction);
+                var result = PlayDirectionSpace.Point(point + slotOffset + combatOffset, direction);
                 if (!clamp) return result;
                 var root = (Vector2)flightCamera.WorldToViewportPoint(transform.position);
                 GetViewportEnvelope(out var min, out var max);
@@ -156,10 +191,11 @@ namespace StarShift.Enemies
             bool toClamp = phase.ClampToView || (phaseIndex + 1 < sequence.Phases.Length && sequence.Phases[phaseIndex+1].ClampToView);
             var from = Project(phase.From, fromClamp);
             var to = Project(phase.To, toClamp);
-            var local = phase.Evaluate(clock / phase.Duration, phase.From, phase.To);
-            var linear = Vector2.Lerp(phase.From, phase.To, phase.Smooth ? Mathf.SmoothStep(0,1,clock/phase.Duration) : Mathf.Clamp01(clock/phase.Duration));
-            var t = phase.Smooth ? Mathf.SmoothStep(0,1,clock/phase.Duration) : Mathf.Clamp01(clock/phase.Duration);
-            var viewport = Vector2.Lerp(from, to, t) + PlayDirectionSpace.Offset(local - linear, direction);
+            var progress = phase.RepeatMotion ? Mathf.Repeat(clock / phase.Duration, 1) : clock / phase.Duration;
+            var local = phase.Evaluate(progress, phase.From, phase.To);
+            var linear = Vector2.Lerp(phase.From, phase.To, phase.Smooth ? Mathf.SmoothStep(0,1,progress) : Mathf.Clamp01(progress));
+            var t = phase.Smooth ? Mathf.SmoothStep(0,1,progress) : Mathf.Clamp01(progress);
+            var viewport = Vector2.Lerp(from, to, t) + PlayDirectionSpace.Offset((local - linear) * motionMultiplier, direction);
             var position = flightCamera.ViewportToWorldPoint(new Vector3(viewport.x, viewport.y, depth));
             body.position = position;
             transform.position = position;

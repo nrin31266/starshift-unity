@@ -945,7 +945,7 @@ public static class VerifyVerticalSlice
             }
             await MouseEvent(pointer, false);
         }
-        static EncounterDefinition[] Configs() => new[] { "A", "B" }.Select(id => AssetDatabase.LoadAssetAtPath<EncounterDefinition>("Assets/StarShift/Data/Encounters/L1Encounter" + id + ".asset")).ToArray();
+        static EncounterDefinition[] Configs() => new[] { "A", "B" }.Select(id => AssetDatabase.LoadAssetAtPath<EncounterDefinition>("Assets/StarShift/Data/Fixtures/Encounters/L1Encounter" + id + ".asset")).ToArray();
         public void Dispose()
         {
             Session.enabled = false; Runner.StopRun(); Time.timeScale = 1;

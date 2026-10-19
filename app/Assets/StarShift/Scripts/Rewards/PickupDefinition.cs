@@ -12,6 +12,7 @@ namespace StarShift.Rewards
         public WeaponBranch Branch;
         public string ShortCode;
         public Color Color = Color.white;
+        [Range(.2f,1)] public float VisualScale = 1;
         [Min(1)] public int Amount = 1;
         [Min(.1f)] public float Lifetime = 12;
         [Min(0)] public float DriftSpeed = .65f;

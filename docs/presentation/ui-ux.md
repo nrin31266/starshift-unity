@@ -241,39 +241,31 @@ Text có thời gian xuất hiện/đọc trước khi fade in lời nhắc nh�
 Không nút chữ nhật BẮT ĐẦU. Tap trái chuột hoặc touch hợp lệ ở bất kỳ điểm trong
 Game View tiếp tục; drag, cancel, right-click, hold dài và press bắt đầu trước lời
 nhắc không được tính. Không auto-launch khi hết thời gian đọc. Toàn bộ input của
-cinematic được consume; khi trả gameplay phải có press mới để move/fire. Detailed
+trước continue được consume; fresh press sau tap được move/fire ngay trong approach. Detailed
 ownership thuộc [player owner](../gameplay/player-combat.md#m2-ui-pointer-ownership).
 
 Ẩn combat HUD/Pause ở **major cinematic**: establishing intro hiện tại; future
 major boss reveal, major direction-shift cinematic và ending áp dụng cùng rule.
 Không mặc định mọi transition là major cinematic. Sau continue, giữ approach /
-acceleration / deceleration; camera và HUD trở về đồng thời với deceleration,
-không nhịp đứng chờ riêng hoặc menu/confirmation nữa.
-Khi camera đã về khung gameplay, HUD hiện đủ và điều khiển mở, mới hiện Mission card.
-Mission card **căn giữa**, gồm hai dòng: “Mission 01” và “Encounter 01” nhỏ hơn ngay
-bên dưới. Mission không có câu mô tả. Encounter đầu được gộp vào card này để có
-thời gian đọc, không phát thêm announcement đầu tiên cạnh tranh với Mission card.
-Title Mission từ Intro config, subtitle Encounter lấy từ index đang vào trong Mission;
-normal start là 01, dev encounter jump phải phản ánh đúng index đã chọn.
-Card giữ lâu hơn minor handoff; nhịp dừng/hiển thị theo
-[audio/VFX](audio-vfx.md#level-intro-warning-và-dynamic-audio). Không trở thành hero
-location title hoặc yêu cầu tap lần nữa. Pause không nhận lệnh trong
-major intro; simulation vẫn chạy. HUD fade về trong Brake; hết Brake mở control rồi
-hiện card trên gameplay. Người chơi có thể kéo/bắn/Pause trong nhịp đọc, nhưng first
-spawn đợi card hoàn tất. Resume từ Pause hiện lại card với thời gian còn lại.
+acceleration / deceleration; HUD/control mở ngay, real Player giữ pose/held input
+qua cuối zoom. Khi Brake kết thúc Mission title hiện upper-center, gồm
+`NHIỆM VỤ NN` và mô tả ngắn một dòng. Title là overlay: first enemy entry bắt đầu
+trong lúc chữ còn hiện/fading, không chờ card hoàn tất và không yêu cầu tap nữa.
+Pause không nhận lệnh trong major cinematic; simulation vẫn chạy. Trên gameplay,
+Pause dừng scaled title/entry clocks; Resume cần thao tác mới theo input owner.
 
-Sau khi gameplay bắt đầu, HUD luôn hiện xuyên suốt ordinary A → B / formation
-transitions. Pause và gameplay permissions vẫn theo gameplay/lifecycle bình thường;
-minor handoff không tự khóa input hoặc ẩn Pause. Không Continue/forced confirmation.
-Minor title + một câu mô tả nằm **giữa màn hình**, dùng cùng announcement với layout
-căn giữa rồi auto fade; không chung vị trí/layout với major establishing. Incoming
-encounter config có thể để trống cả hai. M4-A testbed dùng “Encounter NN” và description trống để debug đúng cấp, chưa dùng nhãn hoa mỹ. Nhãn cấp thống nhất
-`Mission NN` / `Encounter NN`; câu mô tả tiếng Việt, không dùng lại “đợt” làm title.
-Minor announcement nhận duration bằng phần handoff còn lại sau projectile cleanup do
-[level owner](../content/levels-encounters.md#level-1--first-contact-provisional) quy định,
-để chữ và cue bay kết thúc cùng nhịp. Fallback cho announcement không truyền duration
-là 1.6 s, fade .2 s `[TUNABLE]`; Pause/terminal/reset ẩn nó.
-Announcement chỉ render copy, không sở hữu gameplay authority.
+Ordinary Encounter/Mission handoff giữ HUD, relative drag, hold-to-fire và Pause;
+không Continue/forced confirmation. Player-facing Encounter là `ĐỢT N · TÊN NGẮN`,
+subtitle ngắn một dòng; Boss dùng `CẢNH BÁO` / `VANGUARD FRIGATE`. Internal IDs vẫn
+English và không xuất hiện trong HUD. Fixture lịch sử chỉ dùng cho DevTest.
+
+Mission title và Đợt dùng hai announcement instances: Mission upper-center lớn/bold,
+Đợt nhỏ hơn ở phía trên; không có modal/raycast blocker hoặc card nền. Typography
+seeds `[TUNABLE]`: Mission 42/bold + subtitle 22, Đợt 25/normal + subtitle 18.
+Visible duration/entry lead độc lập theo [level owner](../content/levels-encounters.md#m5-region-a-authored-content-provisional).
+Fallback announcement không truyền duration là 1.6 s, fade .2 s `[TUNABLE]`.
+Announcement chỉ render copy, không sở hữu gameplay authority; atomic Mission launch
+không được hide title chỉ vì outgoing run vừa Idle. Pause tạm ẩn cue và giữ remaining time để Resume; terminal/reset hủy cue.
 
 Pause hiện “TẠM DỪNG”; “TIẾP TỤC” hoạt động. M4-B nối “CHƠI LẠI ĐỢT” tới
 current Encounter checkpoint khi backend báo CanRetry. “CÀI ĐẶT”, “VỀ MENU CHÍNH”
@@ -298,8 +290,26 @@ Input ownership chi tiết thuộc [player owner](../gameplay/player-combat.md#m
 
 ## Reserve missile HUD prototype
 
-CombatHud có nút TÊN LỬA với current/cap, nằm trong SafeArea góc dưới phải; tách khỏi
-weapon-cycle. Disable khi stock zero, cooldown, Pause, cinematic, dying/respawning,
-terminal hoặc không ở Running Encounter. Nút chỉ gửi intent tới reserve owner;
+CombatHud dùng ký hiệu tạm `M current/cap` (sau này thay icon), nằm cao hơn
+weapon-cycle với đáy nút tại y96 reference pixels, size 96×48 `[TUNABLE]`. Caption nhỏ giữa hai nút
+hiện T1/T2/T3 đã unlock, bracket active branch, `-` cho locked và `+N` số loại khác.
+Caption không raycast; các nút vẫn consume pointer riêng. Disable khi stock zero, cooldown, Pause, cinematic, dying/respawning,
+terminal hoặc không ở Running/ExitDrain Encounter. Nút chỉ gửi intent tới reserve owner;
 UI không trừ stock/damage hoặc lưu save. Pointer consumption dùng existing UI input
 boundary để bấm nút không khởi động drag/fire. Không thêm inventory/menu scene.
+
+
+## M5 Boss HUD `[PROVISIONAL]`
+
+BossHud được author dưới GameplayUI/SafeArea: compact centered name và HP bar dưới
+counters, không giant card hoặc common-enemy HP bar. Chỉ hiện khi Boss Encounter đang
+Running và Boss sống; ẩn ngay defeat/reset/exit. Phase B thêm `GIAI ĐOẠN 2` để cue
+không chỉ phụ thuộc màu. Proper name Vanguard Frigate giữ English/provisional.
+Mission production dùng `NHIỆM VỤ 01`–`NHIỆM VỤ 04`; không expose internal IDs.
+Region-ready giữ gameplay theo hướng Right và gesture đang held sau approach; chưa có Mission 05/menu mới.
+
+
+M5 second feel pass giữ Boss HUD tại SafeArea top center, đưa track/name cao hơn để
+không chồng engine silhouette ở camera 9. Đây là placeholder composition; không thêm
+common-enemy HP bars. Beam warning/active khác nhau bằng full lane tint và bright core,
+không chỉ đổi màu. Exact combat geometry ở [enemy owner](../content/enemies-bosses.md#boss-1--vanguard-frigate-provisional).

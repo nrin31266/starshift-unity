@@ -10,21 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c4179b97c92ab72e0bcc1e13a4938118, type: 3}
-  m_Name: L1
+  m_Name: M4SystemTestbed
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Encounters.LevelDefinition
-  Id: L1
+  Id: M4_FIXTURE
   DisplayName: First Contact
   MissionNumber: 1
+  EnemyHealthMultiplier: 1
   RegionId: astra-frontier
   LocationName:
   MissionBriefing:
   Direction: 0
   Camera: {fileID: 11400000, guid: f15e6f16905e5380b9f1a05f63962ceb, type: 2}
+  ReplayPreset:
+    Lives: 3
+    Missiles: 1
+    ActiveWeapon: 0
+    WeaponLevels: 010000000000000000000000
   Intro:
     Enabled: 1
-    ContinueDelaySeconds: 1.8
+    ContinueDelaySeconds: 0.01
     ArrivalTitle: Mission 01
     MissionTitleSeconds: 2.8
+    MissionEntryLeadSeconds: 0.75
     ApproachView:
       orthographicSize: 8
       playableViewport:

@@ -139,7 +139,13 @@ namespace StarShift.Player
 
         private Vector2 DeltaFrom(Vector2 position)
         {
-            if (!movementTracking) return Vector2.zero;
+            if (!movementTracking)
+            {
+                // Sau gate lock, lấy mốc mới cho pointer còn giữ để không kéo bù đoạn bị khóa.
+                previousPosition = position;
+                movementTracking = true;
+                return Vector2.zero;
+            }
             var delta = position - previousPosition;
             previousPosition = position;
             return delta;

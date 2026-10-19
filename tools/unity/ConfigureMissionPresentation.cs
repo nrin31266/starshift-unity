@@ -15,7 +15,7 @@ public static class ConfigureMissionPresentation
     public static object TuneMinorHandoff()
     {
         if (Application.isPlaying) throw new InvalidOperationException("Edit Mode required.");
-        var level = AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Levels/L1.asset");
+        var level = AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Fixtures/Levels/M4SystemTestbed.asset");
         var outgoing = level.Encounters[0];
         outgoing.HandoffDelay = 1.7f;
         outgoing.ProjectileGraceSeconds = .65f;
@@ -105,14 +105,14 @@ public static class ConfigureMissionPresentation
             var visualSettings=new SerializedObject(presentation);
             visualSettings.FindProperty("planetStartScale").floatValue=3.2f;
             visualSettings.FindProperty("planetEndScale").floatValue=4.1f;visualSettings.ApplyModifiedPropertiesWithoutUndo();
-            var level=AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Levels/L1.asset");
+            var level=AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Fixtures/Levels/M4SystemTestbed.asset");
             level.Intro.ArrivalTitle=$"Mission {level.MissionNumber:00}";
             EditorUtility.SetDirty(level);
             level.Encounters[0].HandoffDelay=1.7f;EditorUtility.SetDirty(level.Encounters[0]);
             var next=level.Encounters[1];next.TransitionTitle=GameplayCopy.Encounter(2);
             next.TransitionDescription="Tín hiệu địch đang tiến vào khu vực.";EditorUtility.SetDirty(next);
         }
-        var currentLevel=AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Levels/L1.asset");
+        var currentLevel=AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Fixtures/Levels/M4SystemTestbed.asset");
         if(Mathf.Approximately(currentLevel.Intro.TravelSeconds,1.1f))
         {currentLevel.Intro.TravelSeconds=1.8f;EditorUtility.SetDirty(currentLevel);}
         // Chỉ migrate seed cũ; giữ nguyên copy đã được author riêng.
@@ -122,6 +122,6 @@ public static class ConfigureMissionPresentation
         {currentLevel.Encounters[1].TransitionTitle=GameplayCopy.Encounter(2);EditorUtility.SetDirty(currentLevel.Encounters[1]);}
         presentation.Hide();
         EditorSceneManager.MarkSceneDirty(scene);EditorSceneManager.SaveScene(scene);AssetDatabase.SaveAssets();
-        return new {configured=true,migrate,scene.isDirty,hint=hint.name,locationRemainsTbd=string.IsNullOrWhiteSpace(AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Levels/L1.asset").LocationName)};
+        return new {configured=true,migrate,scene.isDirty,hint=hint.name,locationRemainsTbd=string.IsNullOrWhiteSpace(AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Fixtures/Levels/M4SystemTestbed.asset").LocationName)};
     }
 }

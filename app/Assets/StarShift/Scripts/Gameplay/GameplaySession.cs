@@ -15,6 +15,7 @@ namespace StarShift.Gameplay
         private PlayerGameplayGate playerGate;
         private InputSystemPointerInput pointer;
         private PulseLaserWeapon weapon;
+        private RegionCampaignFlow region;
         private float previousScale;
         private bool previousAudioPause;
         private bool ownsClock;
@@ -22,8 +23,8 @@ namespace StarShift.Gameplay
         public bool CanRetry => Persistence != null && Persistence.CanRetry;
         public void RetryEncounter() => Persistence?.RetryEncounter();
         public LevelFlow Flow => runner.Flow;
-        public bool HasActiveRun => runner.HasActiveRun;
-        public bool CanPause => !IsTerminal && runner.HasActiveRun && (Flow == null || !Flow.IsCinematic);
+        public bool HasActiveRun => runner.HasActiveRun || (Persistence != null && Persistence.IsAdvancingMission) || (region != null && region.IsTravelling);
+        public bool CanPause => !IsTerminal && HasActiveRun && (Flow == null || !Flow.IsCinematic);
         public bool IsPaused { get; private set; }
         public bool IsTerminal => playerGate.State == PlayerGameplayState.Result || playerGate.State == PlayerGameplayState.GameOver;
         public bool IsClear => playerGate.State == PlayerGameplayState.Result;
@@ -33,6 +34,7 @@ namespace StarShift.Gameplay
 
         private void Awake()
         {
+            region = GetComponent<RegionCampaignFlow>();
             playerGate = lifecycle.GetComponent<PlayerGameplayGate>();
             pointer = lifecycle.GetComponent<InputSystemPointerInput>();
             weapon = lifecycle.GetComponent<PulseLaserWeapon>();
@@ -75,32 +77,46 @@ namespace StarShift.Gameplay
             if (Flow != null) Flow.RefreshMissionTitle();
         }
 
-        public void ResetRuntime()
+        public void ResetRuntime(bool preserveInput = false)
         {
+            region?.Cancel();
             lifecycle.GetComponent<PlayerTemporaryEffects>()?.ResetForSession();
             lifecycle.GetComponent<EmergencyMissileReserve>()?.CancelPending();
             lifecycle.GetComponent<EmergencyMissilePresentation>()?.ResetForSession();
             lifecycle.GetComponentInChildren<SupportDrone>()?.ResetForSession();
-            weapon.ResetForSession();
+            weapon.ResetForSession(preserveThermalState: preserveInput);
             ReleaseFriendlyProjectiles();
             RestoreClock();
             IsPaused = false;
-            pointer.CancelGesture();
+            if(!preserveInput)pointer.CancelGesture();
             Changed?.Invoke();
         }
 
         private void OnRunStarted()
         {
-            ResetRuntime();
-            MissionStarted?.Invoke();
+            ResetRuntime(runner.PreservePlayerInput);
+            if(!runner.PreservePlayerInput)MissionStarted?.Invoke();
         }
 
         private void OnMissionCompleted()
         {
             if (lifecycle.GetComponent<PlayerLives>().CurrentLives <= 0 || IsTerminal) return;
-            playerGate.SetState(PlayerGameplayState.Result);
-            EndCombat();
+            if (region != null && region.QueueAdvance()) return;
+            ShowRegionComplete();
         }
+
+        public void PrepareMajorTravel()
+        {
+            pointer.CancelGesture();enemyFireGate.Block();ReleaseFriendlyProjectiles();
+            lifecycle.GetComponent<EmergencyMissileReserve>()?.CancelPending();
+            lifecycle.GetComponent<EmergencyMissilePresentation>()?.ResetForSession();
+            lifecycle.GetComponent<PlayerTemporaryEffects>()?.ResetForSession();
+        }
+        public void ShowRegionReady(bool preserveInput = false)
+        {
+            RestoreClock();IsPaused=false;if(!preserveInput)pointer.CancelGesture();playerGate.SetState(PlayerGameplayState.Active);playerGate.SetCinematicLock(false);enemyFireGate.Block();Changed?.Invoke();
+        }
+        public void ShowRegionComplete() { playerGate.SetState(PlayerGameplayState.Result); EndCombat(); }
 
         private void OnGameOver() => EndCombat();
 

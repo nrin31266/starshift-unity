@@ -11,13 +11,14 @@ namespace StarShift.UI
         [SerializeField, Min(.1f)] private float duration = 1.6f;
         [SerializeField, Min(.01f)] private float fadeDuration = .2f;
         [SerializeField] private Vector2 majorAnchor = new Vector2(.065f, .4f);
-        [SerializeField] private Vector2 minorAnchor = new Vector2(.5f, .5f);
+        [SerializeField] private Vector2 minorAnchor = new Vector2(.5f, .87f);
         [SerializeField, Min(1)] private int majorTitleSize = 42;
-        [SerializeField, Min(1)] private int minorTitleSize = 34;
+        [SerializeField, Min(1)] private int minorTitleSize = 25;
         private CanvasGroup group;
         private float elapsed;
         private float activeDuration;
         private bool showing;
+        public bool IsMissionTitle { get; private set; }
         public bool IsPersistent { get; private set; }
         private void Awake()
         {
@@ -27,6 +28,7 @@ namespace StarShift.UI
         }
         public void Show(string copy, string detail = "", float seconds = 0)
         {
+            IsMissionTitle = copy != null && copy.StartsWith("NHIỆM VỤ");
             SetLayout(false);
             IsPersistent = false;
             label.text = copy;
@@ -48,11 +50,22 @@ namespace StarShift.UI
         private void SetLayout(bool major)
         {
             var rect = (RectTransform)transform;
-            rect.anchorMin = rect.anchorMax = major ? majorAnchor : minorAnchor;
+            rect.anchorMin = rect.anchorMax = major ? majorAnchor : IsMissionTitle ? new Vector2(.5f,.67f) : minorAnchor;
             rect.pivot = major ? new Vector2(0, .5f) : new Vector2(.5f, .5f);
             rect.anchoredPosition = Vector2.zero;
             label.alignment = description.alignment = major ? TextAnchor.MiddleLeft : TextAnchor.MiddleCenter;
-            label.fontSize = major ? majorTitleSize : minorTitleSize;
+            label.fontSize = major ? majorTitleSize : IsMissionTitle ? 42 : minorTitleSize;
+            label.fontStyle = IsMissionTitle ? FontStyle.Bold : FontStyle.Normal;
+            description.fontSize = IsMissionTitle ? 22 : 18;
+            rect.sizeDelta = new Vector2(1100, major ? 180 : IsMissionTitle ? 120 : 80);
+            var titleRect = (RectTransform)label.transform;
+            var detailRect = (RectTransform)description.transform;
+            titleRect.anchorMin = titleRect.anchorMax = detailRect.anchorMin = detailRect.anchorMax = new Vector2(.5f,.5f);
+            titleRect.pivot = detailRect.pivot = new Vector2(.5f,.5f);
+            titleRect.sizeDelta = new Vector2(1100, IsMissionTitle || major ? 58 : 36);
+            detailRect.sizeDelta = new Vector2(1100,32);
+            titleRect.anchoredPosition = new Vector2(0, IsMissionTitle || major ? 20 : 12);
+            detailRect.anchoredPosition = new Vector2(0, IsMissionTitle || major ? -28 : -20);
         }
         public void Hide()
         {
@@ -63,7 +76,8 @@ namespace StarShift.UI
         private void Update()
         {
             if (!showing) return;
-            elapsed += Time.unscaledDeltaTime;
+            if (Time.timeScale <= 0) { group.alpha = 0; return; }
+            elapsed += Time.deltaTime;
             group.alpha = Mathf.Clamp01(Mathf.Min(elapsed, activeDuration - elapsed) / Mathf.Min(fadeDuration, activeDuration / 2));
             if (elapsed >= activeDuration) Hide();
         }

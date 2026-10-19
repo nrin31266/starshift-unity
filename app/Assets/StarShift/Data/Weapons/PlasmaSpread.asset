@@ -15,30 +15,44 @@ MonoBehaviour:
   branch: 1
   levels:
   - ProjectileCount: 3
-    SpreadDegrees: 32
+    SpreadDegrees: 30
     LateralSpacing: 0
     Damage: 1
     CenterBonus: 0
-    FireInterval: 0.25
+    FireInterval: 0.3
+    SplashRadius: 0
+  - ProjectileCount: 4
+    SpreadDegrees: 36
+    LateralSpacing: 0
+    Damage: 1
+    CenterBonus: 0
+    FireInterval: 0.29
     SplashRadius: 0
   - ProjectileCount: 5
+    SpreadDegrees: 42
+    LateralSpacing: 0
+    Damage: 1
+    CenterBonus: 0
+    FireInterval: 0.28
+    SplashRadius: 0
+  - ProjectileCount: 6
     SpreadDegrees: 48
     LateralSpacing: 0
     Damage: 1
     CenterBonus: 0
-    FireInterval: 0.25
+    FireInterval: 0.27
     SplashRadius: 0
-  - ProjectileCount: 5
-    SpreadDegrees: 58
+  - ProjectileCount: 7
+    SpreadDegrees: 54
     LateralSpacing: 0
     Damage: 1
-    CenterBonus: 2
-    FireInterval: 0.22
+    CenterBonus: 0
+    FireInterval: 0.26
     SplashRadius: 0
   projectileColor: {r: 0.8, g: 0.4, b: 1, a: 1}
   trackingDegreesPerSecond: 0
   trackingRange: 18
-  projectileScale: {x: 0.475, y: 0.38}
+  projectileScale: {x: 0.3, y: 0.24}
   projectileSprite: {fileID: 21300000, guid: b0637793b701696b1951595191bf91c2, type: 3}
   trailSeconds: 0
   projectilePrefab: {fileID: 6313352160549666604, guid: 689fd7f0b61bc39b798a1aea031257f6, type: 3}

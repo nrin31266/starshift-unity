@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f1d586d44955cc0fa3b4b57b2d5444f, type: 3}
+  m_Name: M3Sine
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Encounters.EncounterDefinition
+  Id: ENCOUNTER_1
+  Completion: 1
+  CompleteWhenScheduleExhausted: 1
+  EntryBeats: []
+  EntryLeadSeconds: 0.5
+  TitleSeconds: 1.3
+  HazardStream: {fileID: 0}
+  ScoutPrefab: {fileID: 0}
+  Duration: 42
+  Groups:
+  - EntryBeat: 0
+    SpawnScale: 1
+    VisualSpin: 0
+    ContinuousTransit: 0
+    Count: 6
+    StartTime: 0
+    Stagger: 0.09
+    EnemyPrefab: {fileID: 6611317040080042917, guid: 9d316cc2f8530d4c0b69980929d92525, type: 3}
+    EnemyDefinition: {fileID: 11400000, guid: 97225e4379e67b2799306e7a3e546255, type: 2}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 11400000, guid: d178eca29e0487125937dfe42a363768, type: 2}
+    Plan: {fileID: 11400000, guid: f7ca3b6e69d01dbb6a35f0e798e336cf, type: 2}
+    FirstSlot: 0
+    HpOverride: 0
+    EntryAnchor: {x: 0.5, y: 1.12}
+    HoldAnchor: {x: 0.5, y: 0.78}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 3
+    ExitAnchor: {x: 1.18, y: 0.3}
+    ExitDuration: 3
+  - EntryBeat: 0
+    SpawnScale: 1
+    VisualSpin: 0
+    ContinuousTransit: 0
+    Count: 6
+    StartTime: 0
+    Stagger: 0.09
+    EnemyPrefab: {fileID: 6611317040080042917, guid: 9d316cc2f8530d4c0b69980929d92525, type: 3}
+    EnemyDefinition: {fileID: 11400000, guid: 97225e4379e67b2799306e7a3e546255, type: 2}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 11400000, guid: 5258d120c4f7053ccb5fbb0dc406eb7c, type: 2}
+    Plan: {fileID: 11400000, guid: f7ca3b6e69d01dbb6a35f0e798e336cf, type: 2}
+    FirstSlot: 6
+    HpOverride: 0
+    EntryAnchor: {x: 0.5, y: 1.12}
+    HoldAnchor: {x: 0.5, y: 0.78}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 3
+    ExitAnchor: {x: 1.18, y: 0.3}
+    ExitDuration: 3
+  OptionalEvents: []
+  CameraOverride: {fileID: 11400000, guid: d643833e38cf61ca98545536051887c1, type: 2}
+  GuaranteedMajorCount: 1
+  GuaranteeTable: {fileID: 11400000, guid: 3f21893fa1f0805d69ff96a39947511f, type: 2}
+  ActiveShooterLimit: 3
+  ShotSpacing: 0.16
+  ShotsPerVolley: 6
+  VolleyPause: 1.8
+  ClearPauseSeconds: 0.7
+  HandoffTravelSeconds: 0.85
+  HandoffDelay: 2
+  ProjectileGraceSeconds: 0.45
+  ProjectileFadeSeconds: 0.25
+  TransitionTitle: "\u0110\u1EE2T 1 \xB7 \u0110\u1ED8I H\xCCNH L\u01AF\u1EE2N S\xD3NG"
+  TransitionDescription: "Gi\u1EEF \u0111\u01B0\u1EDDng b\u1EAFn khi Raider \u0111\u1ED5i
+    h\u01B0\u1EDBng."
+  RewardGraceSeconds: 2.5
+  BossPostDeathSeconds: 1

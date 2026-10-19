@@ -61,7 +61,7 @@ Choreography flash/particle/SFX/shake thuộc [audio/VFX](../presentation/audio-
 
 ## M4-A non-attacking test targets `[PROVISIONAL]`
 
-Supply Drone dùng HP 3, Resource Asteroid dùng HP 4 `[TUNABLE]` trong placeholder
+Supply Drone dùng HP 3, Resource Asteroid dùng HP 2 `[TUNABLE]` trong placeholder
 prefabs. Cả hai reuse health/flight; attack disabled. Supply body không damage Player;
 resource asteroid body qua damaging contact gate. Không thêm archetype attack, boss
 hoặc production art mới. HP của Scout giữ nguyên khi Player upgrade.
@@ -186,7 +186,7 @@ không tự copy Scout stats thành locked minion contract.
 ## Balance seed table
 
 Tất cả HP là [TUNABLE], không phải final balance.
-Scout HP seed hiện phục vụ vertical-slice playtest, cần bốn hit Pulse Lv1 để kill.
+Scout fixture seed giữ bốn hit Pulse Lv1; production Region A override theo [runtime seeds](#m5-runtime-seeds-tunable).
 Damage state theo [threshold](#damage-state), không coi đây là HP campaign cuối cùng;
 retune theo [weapon power progression](weapons-items-drops.md#weapon-philosophy-và-common-config).
 
@@ -230,17 +230,40 @@ phase scheduler và duration chưa được thiết kế chốt: [TBD].
 Vanguard là boss giới thiệu, dùng ít mechanic để player học đọc volley và phase
 change trước khi campaign tăng target-priority pressure.
 
-### Phase structure
+### Silhouette và movement `[TUNABLE]`
 
-Phase A dùng twin cannon, basic missile volley và movement ngang/arc nhẹ.
-Phase B ở khoảng 50% HP [TUNABLE] tăng fire rate vừa phải, thêm side sweep/spread
-và một attack mới rõ. Không thay challenge bằng attack one-frame bất ngờ.
+Capital-ship placeholder ghép central hull/reactor, hai cánh, engine masses, twin
+cannon pods, missile pod và beam pod; không có final raster art. Width 14 world
+units tại camera 9 tương ứng ~43.75% khung 16:9 / 35% khung 20:9. Compound body
+hitboxes theo thân/cánh; disabled movement envelope chỉ dùng để giữ footprint trong view.
+`EntryHoldFlight` vẫn là pose writer. Settled anchor (.5,.73), repeating 8 s sine
+với curve (.12,.012), ở upper combat zone. Không dive vào Player start.
 
-### Telegraph
+### Phase structure `[TUNABLE]`
 
-Missile/side sweep phải readable.
+HP 520, không scale theo Player weapon. Phase A lần lượt twin cannon → missile fan
+→ twin cannon, rest 1.9 s. Cannon 3 viên/pod ×2 pod (fan 38°), missile 5 viên/fan 62°.
+Cannon telegraph .55 s, missile 1 s. Telegraph xuất phát
+từ các pod đang fire; hai cannon cùng cue.
 
-Không có attack one-frame bất ngờ.
+Phase B tại 50% HP: cancel attack hiện tại, core/engine cue 1.5 s, reposition offset
+(-.06,.015) qua flight owner và motion envelope ×1.2. Order lane lock → cannon →
+missile fan → lane lock; rest 1.7 s. Không nhân projectile count cho toàn bộ phase.
+
+### Signature lane lock `[TUNABLE]`
+
+Beam pod charge 1.05 s bằng vùng magenta rộng 10% viewport, rồi active 1.5 s với
+white core. Tàu hãm chuyển động trong cả charge/active để beam giữ đúng pod/lane;
+khi cancel/end/death/Retry phải nhả motion pause. Luôn còn safe space rộng hai bên.
+Không instant hit, không beam tracking vô hạn hoặc AoE explosion.
+
+`BossAttackModule` tính active beam bounds, query Player hitbox và route vào existing
+life/protection receiver; `BossBeamPresentation` chỉ vẽ cùng bounds. Gate/Pause/death
+hủy damage đúng owner. Beam không trở thành collider nhận friendly projectile.
+
+Không thêm minion hoặc pickup giữa phase ở lượt này: ba attack identities và defeat
+pair là đủ cho Boss 1; tránh chồng threat/reward paths. Duration là tuning, phải
+đủ thấy cả hai phase và nhiều signature attacks; benchmark không thay human approval.
 
 ### Death
 
@@ -321,7 +344,49 @@ resolve. Boss identity/phase trong file này không mang nghĩa có prefab/scene
 
 `EnemyDefinition.MissileTier` có Normal / Large / Boss `[PROVISIONAL]`. Đây là
 explicit authored classification, không đoán boss từ HP hoặc coi mọi minion trong
-boss Encounter là boss. Current Scout default Normal. Chưa author Large/Boss combat
-mới; verification dùng synthetic definitions. Non-hostile supply/resource giữ
+boss Encounter là boss. Current Scout default Normal. M5 author Bomber Large và Vanguard Boss; fixture synthetic vẫn phục vụ regression. Non-hostile supply/resource giữ
 BodyDamagesPlayer=false và không bị missile auto-clear. Percent damage và viewport
 eligibility thuộc [weapon/item owner](weapons-items-drops.md#tên-lửa-dự-trữ).
+
+
+## M5 runtime seeds `[TUNABLE]`
+
+| Production Region A target | Max HP | Config owner |
+|---|---:|---|
+| Scout | 4 / 5 / 5 | HP gốc 4, mission 1 / 2 / 3 |
+| Raider | 7 / 8 | HP gốc 6, mission 2 / 3 |
+| Bomber | 14 | HP gốc 12, mission 2; scale 1.45 |
+| Elite Bomber | 23 | Mission 3 Bomber 15 ×1.5 rounded up; scale ×1.12, cooldown ×.8 |
+
+`LevelDefinition.EnemyHealthMultiplier` theo mission 1–4: 1 / 1.1 / 1.2 / 1.25.
+Làm tròn lên HP gốc × mission multiplier, sau đó Elite multiplier; không áp cho
+Boss, asteroid hoặc supply/resource. Không scale HP theo weapon level. Common
+hostile chỉ nhận damage sau .2 s hiện trong viewport; Boss còn phải tới Hold/Combat.
+Player projectile bỏ qua target chưa nhận damage, kể cả Homing acquisition/splash.
+Raider giữ burst hai shot cách .22 s; Bomber giữ
+spread ba viên/40°, telegraph .7 s, cooldown 3.6 s. Normal/Elite không có floating HP bar.
+TTK evidence thuộc [dev/debug](../systems/dev-debug.md#m5-second-human-feel-pass-verification).
+
+Normal storm asteroid dùng một prefab, bốn config variants:
+
+| Size | Root scale | HP | Transit multiplier |
+|---|---:|---:|---:|
+| Small | .70 | 1 | .86 |
+| Medium | 1.05 | 2 | 1.00 |
+| Large | 1.50 | 4 | 1.14 |
+| Huge | 2.10 | 6 | 1.30 |
+
+HP override được cấu hình khi rent inactive, reset trước activate; EnemyHealth vẫn
+là authority, definition không mutate. Collider là inset box footprint theo visual
+và root scale; spin chỉ xoay visual. Resource targets giữ reward path riêng theo
+[item owner](weapons-items-drops.md#asteroid-reward-classes), không tiêu common quota.
+
+Asteroid presentation đọc Healthy → Damaged tại ≤66% → Critical tại ≤33% → Destroyed.
+Hit flash .08 s độc lập tint; optional damaged/critical sprites cho cracked assets
+sau này, hiện chỉ tint. Pool reuse restore intact sprite/tint/HP/scale. Destruction
+burst nhỏ reuse glow sprite và pooled renderers; huge burst lớn tương ứng, không
+AoE damage hoặc reserve-scale shake. Exact choreography thuộc
+[audio/VFX](../presentation/audio-vfx.md#m5-vanguard-placeholder).
+
+Vanguard HP/movement/attacks ở [Boss 1](#boss-1--vanguard-frigate-provisional), không
+coi HP/timing thành final balance. Death/handoff theo audio/VFX và encounter owner.

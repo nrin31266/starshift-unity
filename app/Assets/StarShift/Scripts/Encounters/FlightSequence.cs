@@ -18,6 +18,7 @@ namespace StarShift.Encounters
         public bool CanShoot;
         public bool ClampToView;
         public bool HoldUntilResolved;
+        public bool RepeatMotion;
         public bool Smooth = true;
         [Min(.01f)] public float Cycles = 1;
 

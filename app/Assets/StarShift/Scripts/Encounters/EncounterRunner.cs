@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace StarShift.Encounters
 {
-    public enum EncounterStage { Idle, Intro, Running, ProjectileDrain, BossPostDeath, RewardGrace, Handoff }
+    public enum EncounterStage { Idle, Intro, Running, ProjectileDrain, BossPostDeath, RewardGrace, Handoff, ExitDrain }
 
     [DisallowMultipleComponent, DefaultExecutionOrder(-10)]
     [RequireComponent(typeof(EncounterFireCoordinator), typeof(ScenePrefabPool), typeof(EncounterCleanup))]
@@ -35,12 +35,20 @@ namespace StarShift.Encounters
         private int generation;
         private bool bossDefeated;
         private bool completionSent;
+        private EnemySlot dyingBoss;
+        private float[] beatStarts;
+        private float entryLeadRemaining;
+        private float cleanupOverlap;
+        private float optionalResolvedAt;
+        public bool PreservePlayerInput { get; private set; }
+        public int ActiveEnemyCount => LiveCount(-1);
+        public float BeatStartTime(int beat) => beatStarts != null && beat >= 0 && beat < beatStarts.Length ? beatStarts[beat] : -1;
         public EncounterDefinition Current => Definitions[CurrentIndex];
         private EncounterDefinition[] Definitions => levelFlow != null ? levelFlow.Level.Encounters : encounters;
         public LevelFlow Flow => levelFlow;
         public int CurrentIndex { get; private set; }
         public EncounterStage Stage { get; private set; }
-        public bool IsRunning => Stage == EncounterStage.Running || Stage == EncounterStage.ProjectileDrain || Stage == EncounterStage.BossPostDeath;
+        public bool IsRunning => Stage == EncounterStage.Running || Stage == EncounterStage.ExitDrain || Stage == EncounterStage.ProjectileDrain || Stage == EncounterStage.BossPostDeath;
         public bool HasActiveRun => Stage != EncounterStage.Idle;
         public bool IsClearPause => Stage == EncounterStage.Handoff && !travelStarted;
         public bool IsHandoffTravel => Stage == EncounterStage.Handoff && travelStarted;
@@ -55,6 +63,7 @@ namespace StarShift.Encounters
         public event Action<EncounterDefinition, int> EncounterStarted;
         public event Action<OptionalEvent, int> OptionalEventTriggered;
         public event Action<EnemyHealth, RewardDropTable, Vector3> EnemyDefeated;
+        public event Action<EnemyHealth> EnemyEscaped;
         public event Action RunStarted;
         public event Action MissionCompleted;
 
@@ -64,6 +73,8 @@ namespace StarShift.Encounters
             public EntryHoldFlight Flight;
             public SingleFireAttack Attack;
             public bool Required;
+            public int Beat;
+            public bool Optional;
             public bool Resolved;
             public Action DeathHandler;
         }
@@ -73,6 +84,7 @@ namespace StarShift.Encounters
             public float Start;
             public int Spawned;
             public bool Optional;
+            public bool Started;
         }
 
         private void Awake()
@@ -94,7 +106,7 @@ namespace StarShift.Encounters
             => StartRun(startPoint, singleEncounter, false, null, null);
 
         public void StartRun(string startPoint, bool singleEncounter, bool skipIntro,
-            PlayDirection? directionOverride, CameraProfile cameraOverride, Action restoreState = null)
+            PlayDirection? directionOverride, CameraProfile cameraOverride, Action restoreState = null, bool missionArrival = false, bool preservePlayerInput = false)
         {
             GetComponent<StarShift.Persistence.CampaignLifecycle>()?.OnRunnerStarting();
             StopRun();
@@ -115,6 +127,7 @@ namespace StarShift.Encounters
             standalone = singleEncounter;
             CompletionCount = 0;
             CurrentIndex = index;
+            PreservePlayerInput = preservePlayerInput;
             var token = generation;
             RunStarted?.Invoke();
             if (token != generation) return;
@@ -122,13 +135,13 @@ namespace StarShift.Encounters
             if (token != generation) return;
             if (levelFlow != null)
             {
-                levelFlow.Begin(startPoint == "LEVEL_START" && !skipIntro, directionOverride, cameraOverride, index);
+                levelFlow.Begin(startPoint == "LEVEL_START" && !skipIntro, directionOverride, cameraOverride, index, missionArrival, preservePlayerInput);
                 if (token != generation) return;
                 if (levelFlow.IsIntroducing) { Stage = EncounterStage.Intro; return; }
             }
             BeginEncounter(index);
         }
-        private void BeginEncounter(int index)
+        private void BeginEncounter(int index, bool fromMissionTitle = false)
         {
             generation++;
             cleanup.BeginScope(generation, preserveRewards: true);
@@ -138,9 +151,15 @@ namespace StarShift.Encounters
             clearPauseRemaining = travelRemaining = 0;
             travelStarted = false;
             spawned.Clear(); schedule.Clear();
-            foreach (var action in Current.Groups) schedule.Add(new ScheduledGroup { Action = action, Start = action.StartTime });
+            beatStarts = new float[Current.EntryBeats.Length + 1];
+            for (int i = 0; i < beatStarts.Length; i++) beatStarts[i] = -1;
+            beatStarts[0] = 0; entryLeadRemaining = fromMissionTitle ? 0 : Current.EntryLeadSeconds; cleanupOverlap = 0; optionalResolvedAt = -1;
+            foreach (var action in Current.Groups) schedule.Add(new ScheduledGroup { Action = action, Start = action.StartTime, Started = action.EntryBeat == 0 });
+            if (Current.HazardStream != null)
+                foreach (var action in HazardStreamSchedule.Build(Current.HazardStream, Current.Duration)) schedule.Add(new ScheduledGroup { Action = action, Start = action.StartTime, Started = true });
             optionalFired = new bool[Current.OptionalEvents.Length];
             bossDefeated = completionSent = false;
+            dyingBoss = null;
             Stage = EncounterStage.Running;
             coordinator.Begin(Current, safetyGate);
             if (levelFlow != null) levelFlow.ApplyEncounter(Current);
@@ -156,7 +175,7 @@ namespace StarShift.Encounters
                 var introToken = generation;
                 levelFlow.TickIntro(Time.fixedDeltaTime);
                 if (introToken != generation) return;
-                if (!levelFlow.IsIntroducing) BeginEncounter(CurrentIndex);
+                if (!levelFlow.IsIntroducing) BeginEncounter(CurrentIndex, true);
                 return;
             }
             if (Stage == EncounterStage.Handoff)
@@ -191,12 +210,25 @@ namespace StarShift.Encounters
             if (Stage == EncounterStage.BossPostDeath)
             {
                 remaining -= Time.fixedDeltaTime;
-                if (remaining <= 0) CompleteEncounter();
+                if (remaining <= 0 && dyingBoss == null) CompleteEncounter();
                 return;
             }
+            if (Stage == EncounterStage.ExitDrain)
+            {
+                ResolveDepartedSlots();
+                if (!HasLiveEnemies()) { BeginProjectileDrain(); return; }
+                remaining -= Time.fixedDeltaTime;
+                if (remaining <= 0)
+                {
+                    foreach (var slot in spawned) if (!slot.Resolved && slot.Health.IsAlive && !slot.Flight.IsExiting) slot.Flight.BeginRetreat();
+                }
+                return;
+            }
+            if (Stage == EncounterStage.Running && entryLeadRemaining > 0) { entryLeadRemaining -= Time.fixedDeltaTime; return; }
             Elapsed += Time.fixedDeltaTime;
             if (Stage == EncounterStage.ProjectileDrain)
             {
+                cleanupOverlap += Time.fixedDeltaTime;
                 remaining -= Time.fixedDeltaTime;
                 if (safetyGate.VisibleProjectileTimeLimit <= 0 || remaining <= 0) CompleteEncounter();
                 return;
@@ -211,14 +243,16 @@ namespace StarShift.Encounters
             {
                 var e = Current.OptionalEvents[i];
                 if (optionalFired[i] || Elapsed < e.TimeOffset) continue;
+                if (e.UsePressureWindow && LiveCount(-1) > e.MaximumActiveEnemies && Elapsed < e.FallbackTime) continue;
                 bool condition = e.Condition != OptionalEventCondition.NoActiveEnemies || !HasLiveEnemies();
                 condition &= e.Condition != OptionalEventCondition.PlayerAlive || playerLives.CurrentLives > 0;
                 if (!condition) continue;
                 optionalFired[i] = true;
-                if (e.Group != null) schedule.Add(new ScheduledGroup { Action = e.Group, Start = Elapsed + e.Group.StartTime, Optional = true });
+                if (e.Group != null) schedule.Add(new ScheduledGroup { Action = e.Group, Start = Elapsed + e.Group.StartTime, Optional = true, Started = true });
                 OptionalEventTriggered?.Invoke(e, token);
                 if (generation != token || Stage != EncounterStage.Running) return;
             }
+            ActivateEntryBeats();
             // Min timestamp trước, stable group order nếu bằng nhau; không phụ thứ tự Inspector.
             while (true)
             {
@@ -226,12 +260,21 @@ namespace StarShift.Encounters
                 foreach (var group in schedule)
                 {
                     var time = group.Start + group.Spawned * group.Action.Stagger;
-                    if (group.Spawned < group.Action.Count && time <= Elapsed && time < nextTime)
+                    if (group.Started && group.Spawned < group.Action.Count && time <= Elapsed && time < nextTime)
                     { due = group; nextTime = time; }
                 }
                 if (due == null) break;
-                Spawn(due.Action, due.Spawned++, !due.Optional && due.Action.Required);
+                Spawn(due.Action, due.Spawned++, !due.Optional && due.Action.Required, due.Optional);
             }
+            ResolveDepartedSlots();
+            if (Current.Completion == EncounterCompletion.Timeline && Current.CompleteWhenScheduleExhausted &&
+                ScheduleExhausted() && !HasLiveEnemies()) ResolveEncounter();
+            else if (Current.Completion == EncounterCompletion.Eliminate && requiredKilled == Current.RequiredCount) ResolveEncounter();
+            else if (Current.Completion == EncounterCompletion.Boss && Current.RequiredCount > 0 && requiredKilled == Current.RequiredCount)
+                NotifyBossDefeated(token);
+        }
+        private void ResolveDepartedSlots()
+        {
             foreach (var slot in spawned)
             {
                 if (slot.Resolved) continue;
@@ -241,16 +284,41 @@ namespace StarShift.Encounters
                     if (slot.Required) requiredKilled++;
                     Release(slot);
                 }
-                else if (!slot.Required || (Current.Completion != EncounterCompletion.Eliminate && Current.Completion != EncounterCompletion.Boss))
+                else if (Stage == EncounterStage.ExitDrain || !slot.Required || (Current.Completion != EncounterCompletion.Eliminate && Current.Completion != EncounterCompletion.Boss))
                 {
-                    if (slot.Flight != null && (slot.Flight.HasExited || (slot.Flight.IsExiting && slot.Flight.IsOutsideView))) Release(slot);
+                    if (slot.Flight != null && (slot.Flight.HasExited || (slot.Flight.IsExiting && slot.Flight.IsOutsideView)))
+                    { EnemyEscaped?.Invoke(slot.Health); Release(slot); }
                 }
             }
-            if (Current.Completion == EncounterCompletion.Timeline && Current.CompleteWhenScheduleExhausted &&
-                ScheduleExhausted() && !HasLiveEnemies()) ResolveEncounter();
-            else if (Current.Completion == EncounterCompletion.Eliminate && requiredKilled == Current.RequiredCount) ResolveEncounter();
-            else if (Current.Completion == EncounterCompletion.Boss && Current.RequiredCount > 0 && requiredKilled == Current.RequiredCount)
-                NotifyBossDefeated(token);
+        }
+        private int LiveCount(int beat)
+        {
+            int count = 0;
+            foreach (var slot in spawned)
+                if (!slot.Resolved && !slot.Optional && (beat < 0 || slot.Beat == beat) && slot.Health != null && slot.Health.IsAlive && !slot.Flight.HasExited) count++;
+            return count;
+        }
+        private void ActivateEntryBeats()
+        {
+            for (int beat = 1; beat < beatStarts.Length; beat++)
+            {
+                if (beatStarts[beat] >= 0 || beatStarts[beat - 1] < 0) continue;
+                var rule = Current.EntryBeats[beat - 1];
+                bool exhausted = true;
+                foreach (var group in schedule) if (!group.Optional && group.Action.EntryBeat == beat - 1 && group.Spawned < group.Action.Count) exhausted = false;
+                if (!exhausted) continue;
+                if (rule.WaitForOptionalResolution)
+                {
+                    bool pending = Array.Exists(optionalFired, fired => !fired);
+                    foreach (var slot in spawned) if (slot.Optional && !slot.Resolved && slot.Health != null && slot.Health.IsAlive && !slot.Flight.HasExited) pending = true;
+                    if (pending) { optionalResolvedAt = -1; continue; }
+                    if (optionalResolvedAt < 0) optionalResolvedAt = Elapsed;
+                }
+                var gap = Elapsed - (rule.WaitForOptionalResolution ? optionalResolvedAt : beatStarts[beat - 1]);
+                if (gap < rule.MinimumGap || (LiveCount(beat - 1) > rule.RemainingThreshold && gap < rule.FallbackDelay)) continue;
+                beatStarts[beat] = Elapsed;
+                foreach (var group in schedule) if (!group.Optional && group.Action.EntryBeat == beat) { group.Started = true; group.Start = Elapsed + group.Action.StartTime; }
+            }
         }
         private bool ScheduleExhausted()
         {
@@ -264,11 +332,15 @@ namespace StarShift.Encounters
             foreach (var e in spawned) if (!e.Resolved && e.Health != null && e.Health.IsAlive) return true;
             return false;
         }
-        private void Spawn(SpawnAction group, int index, bool required)
+        private void Spawn(SpawnAction group, int index, bool required, bool optional = false)
         {
             var root = pool.Rent(group.EnemyPrefab != null ? group.EnemyPrefab : Current.ScoutPrefab);
             var slot = new EnemySlot { Health = root.GetComponent<EnemyHealth>(), Flight = root.GetComponent<EntryHoldFlight>(),
-                Attack = root.GetComponent<SingleFireAttack>(), Required = required };
+                Attack = root.GetComponent<SingleFireAttack>(), Required = required, Beat = group.EntryBeat, Optional = optional };
+            var hp = group.HpOverride;
+            if (levelFlow != null && slot.Health.Definition.BodyDamagesPlayer && slot.Health.Definition.MissileTier != MissileDamageTier.Boss && root.GetComponent<AsteroidVisualMotion>() == null)
+                hp = Mathf.CeilToInt((hp > 0 ? hp : slot.Health.Definition.MaxHp) * levelFlow.Level.EnemyHealthMultiplier);
+            slot.Health.ConfigureModifier(group.Elite, hp);
             var direction = levelFlow != null ? levelFlow.Direction : PlayDirection.Up;
             if (group.Sequence != null) slot.Flight.ConfigureSequence(group.Sequence, group.Anchor + group.SlotOffset(index), direction);
             else
@@ -277,7 +349,7 @@ namespace StarShift.Encounters
                 slot.Flight.Configure(PlayDirectionSpace.Point(group.EntryAnchor + offset, direction),
                     PlayDirectionSpace.Point(group.HoldAnchor + offset, direction), PlayDirectionSpace.Offset(group.EntryCurve,direction),
                     group.EntryDuration, PlayDirectionSpace.Point(group.ExitAnchor + offset,direction), group.HoldDuration,
-                    required && (Current.Completion == EncounterCompletion.Eliminate || Current.Completion == EncounterCompletion.Boss) ? 0 : group.ExitDuration);
+                    required && (Current.Completion == EncounterCompletion.Eliminate || Current.Completion == EncounterCompletion.Boss) ? 0 : group.ExitDuration, group.ContinuousTransit);
             }
             coordinator.Register(slot.Attack);
             root.transform.SetParent(transform, false);
@@ -286,12 +358,28 @@ namespace StarShift.Encounters
             var rewarded = false;
             slot.DeathHandler = () =>
             {
-                if (rewarded || slot.Resolved || token != generation || Stage != EncounterStage.Running) return;
+                if (rewarded || slot.Resolved || token != generation || (Stage != EncounterStage.Running && Stage != EncounterStage.ExitDrain)) return;
                 rewarded = true;
-                EnemyDefeated?.Invoke(slot.Health, group.RewardOverride, slot.Health.transform.position);
+                var death = slot.Health.GetComponent<BossDeathSequence>();
+                if (death != null && Current.Completion == EncounterCompletion.Boss)
+                {
+                    dyingBoss = slot;
+                    NotifyBossDefeated(token);
+                    death.Begin(() =>
+                    {
+                        if (token != generation || Stage != EncounterStage.BossPostDeath) return;
+                        EnemyDefeated?.Invoke(slot.Health, group.RewardOverride, slot.Health.transform.position);
+                        dyingBoss = null;
+                        NotifyBossPresentationComplete(token);
+                    });
+                }
+                else EnemyDefeated?.Invoke(slot.Health, group.RewardOverride, slot.Health.transform.position);
             };
             slot.Health.Died += slot.DeathHandler;
             root.SetActive(true);
+            var prefab = group.EnemyPrefab != null ? group.EnemyPrefab : Current.ScoutPrefab;
+            if (group.Elite == null) root.transform.localScale = prefab.transform.localScale * group.SpawnScale;
+            root.GetComponent<AsteroidVisualMotion>()?.Configure(group.VisualSpin);
             spawned.Add(slot);
         }
         private void Release(EnemySlot slot)
@@ -306,25 +394,34 @@ namespace StarShift.Encounters
         private void CloseProducers()
         {
             coordinator.Stop();
-            foreach (var slot in spawned) if (!slot.Resolved) Release(slot);
+            foreach (var slot in spawned) if (!slot.Resolved && slot != dyingBoss) Release(slot);
             cleanup.CloseHostiles();
         }
         private void ResolveEncounter()
+        {
+            coordinator.Stop();
+            if (HasLiveEnemies())
+            {
+                Stage = EncounterStage.ExitDrain; remaining = 8;
+                foreach (var slot in spawned)
+                    if (!slot.Resolved && slot.Health.IsAlive && slot.Health.GetComponent<AsteroidVisualMotion>() == null) slot.Flight.BeginRetreat();
+                return;
+            }
+            BeginProjectileDrain();
+        }
+        private void BeginProjectileDrain()
         {
             var token = generation;
             CloseProducers();
             if (token != generation) return;
             var visibleTime = safetyGate.VisibleProjectileTimeLimit;
-            if (Current.Completion != EncounterCompletion.Boss && CurrentIndex + 1 < Definitions.Length && visibleTime > 0)
+            cleanupOverlap = 0;
+            if (Current.Completion != EncounterCompletion.Boss && visibleTime > 0)
             {
+                cleanupOverlap = 0;
                 Stage = EncounterStage.ProjectileDrain;
                 safetyGate.BeginProjectileCleanup(Current.ProjectileGraceSeconds, Current.ProjectileFadeSeconds);
                 remaining = Current.ProjectileGraceSeconds + Current.ProjectileFadeSeconds + Time.fixedDeltaTime * 2;
-            }
-            else if (Current.Completion == EncounterCompletion.Timeline && visibleTime > 0)
-            {
-                Stage = EncounterStage.ProjectileDrain;
-                remaining = visibleTime + Time.fixedDeltaTime;
             }
             else CompleteEncounter();
         }
@@ -359,6 +456,7 @@ namespace StarShift.Encounters
             if (!standalone && CurrentIndex + 1 < Definitions.Length) { FinishHandoff(); return; }
             // Completion consumer có thể vừa eject reward cuối; preserve sau notification.
             cleanup.BeginGrace(remaining);
+            if (Current.Completion == EncounterCompletion.Boss && cleanup.HasRewards) levelFlow?.Announce("CHIẾN LỢI PHẨM", "Thu nhặt phần thưởng trước khi khởi hành.", remaining);
             if (!cleanup.HasRewards) FinishHandoff();
         }
         private void FinishHandoff()
@@ -366,7 +464,7 @@ namespace StarShift.Encounters
             if (!standalone && CurrentIndex + 1 < Definitions.Length)
             {
                 Stage = EncounterStage.Handoff;
-                clearPauseRemaining = Current.EffectiveClearPauseSeconds;
+                clearPauseRemaining = Mathf.Max(0, Current.EffectiveClearPauseSeconds - cleanupOverlap);
                 travelRemaining = Current.EffectiveHandoffTravelSeconds;
                 travelStarted = false;
                 remaining = clearPauseRemaining + travelRemaining;
@@ -389,6 +487,7 @@ namespace StarShift.Encounters
         {
             generation++;
             Stage = EncounterStage.Idle;
+            dyingBoss = null;
             clearPauseRemaining = travelRemaining = 0;
             travelStarted = false;
             if (levelFlow != null) levelFlow.Cancel();

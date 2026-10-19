@@ -11,7 +11,7 @@ namespace StarShift.Gameplay
     [DisallowMultipleComponent]
     public sealed class LevelFlow : MonoBehaviour
     {
-        [SerializeField] private LevelDefinition level;
+        [SerializeField, Tooltip("Level đang chạy. Production dùng Data/RegionA/Missions/Mission01; Data/Fixtures/Levels/M4SystemTestbed chỉ là M4 fixture.")] private LevelDefinition level;
         [SerializeField] private GameplayViewController view;
         [SerializeField] private PlayerGameplayGate player;
         [SerializeField] private EnemyFireGate enemyFireGate;
@@ -21,14 +21,18 @@ namespace StarShift.Gameplay
         private bool handoff;
         private float handoffDuration;
         private int startingEncounterIndex;
+        private PlanetJourney journey;
+        private bool missionTravel;
+        private GameplayViewSettings entryView;
+        private void Awake() => journey=GetComponent<PlanetJourney>();
         public LevelDefinition Level => level;
         public MissionIntroPhase IntroPhase { get; private set; }
         public bool IsIntroducing => IntroPhase != MissionIntroPhase.None;
-        public bool IsAwaitingStart => IntroPhase == MissionIntroPhase.Briefing;
-        public bool CanContinue => IsAwaitingStart && phaseElapsed >= level.Intro.ContinueDelaySeconds;
-        public bool IsCinematic => IsIntroducing && IntroPhase != MissionIntroPhase.MissionTitle;
+        public bool IsAwaitingStart => IntroPhase == MissionIntroPhase.Briefing || (journey != null && journey.IsAwaitingTap);
+        public bool CanContinue => (journey != null && journey.IsAwaitingTap) || (IntroPhase == MissionIntroPhase.Briefing && phaseElapsed >= level.Intro.ContinueDelaySeconds);
+        public bool IsCinematic => (journey != null && journey.IsCinematic) || IntroPhase == MissionIntroPhase.Briefing;
         public float IntroElapsed => elapsed;
-        public float HudOpacity => IntroPhase == MissionIntroPhase.Brake ? Mathf.Clamp01(phaseElapsed / level.Intro.BrakeSeconds) : IsCinematic ? 0 : 1;
+        public float HudOpacity => IsCinematic ? 0 : 1;
         public PlayDirection Direction { get; private set; }
         public CameraProfile Baseline { get; private set; }
         public string EstablishingTitle => string.IsNullOrWhiteSpace(level.LocationName) ? GameplayCopy.SpaceTitle : level.LocationName;
@@ -42,16 +46,24 @@ namespace StarShift.Gameplay
             level = definition;
         }
 
-        public void Begin(bool withIntro, PlayDirection? directionOverride = null, CameraProfile cameraOverride = null, int encounterIndex = 0)
+        public void Begin(bool withIntro, PlayDirection? directionOverride = null, CameraProfile cameraOverride = null, int encounterIndex = 0, bool missionArrival = false, bool suppressTitle = false)
         {
             startingEncounterIndex = encounterIndex;
+            if(!suppressTitle)presentation.ResetEnvironment();
             Direction = directionOverride ?? level.Direction;
             Baseline = cameraOverride != null ? cameraOverride : level.Camera;
             view.SetBaseline(Baseline.View);
+            var entryCamera = cameraOverride != null ? cameraOverride : level.Encounters[startingEncounterIndex].CameraOverride;
+            entryView = entryCamera != null ? entryCamera.View : Baseline.View;
             player.GetComponent<PlayerRespawnEntrance>().Direction = Direction;
             player.transform.rotation = Quaternion.Euler(0,0,PlayDirectionSpace.Rotation(Direction));
             elapsed = phaseElapsed = 0;
-            if (withIntro && level.Intro.Enabled)
+            if (missionArrival)
+            {
+                presentation.Hide(); view.RequestView(entryView, Baseline.TransitionSeconds);
+                EnterPhase(MissionIntroPhase.MissionTitle);
+            }
+            else if (withIntro && level.Intro.Enabled)
             {
                 player.SetState(PlayerGameplayState.Entry);
                 player.SetCinematicLock(true);
@@ -63,22 +75,34 @@ namespace StarShift.Gameplay
             else
             {
                 presentation.Hide();
-                view.RequestView(Baseline.View, 0);
+                view.RequestView(entryView, suppressTitle ? Baseline.TransitionSeconds : 0);
                 PresentationChanged?.Invoke();
             }
             if (IsAwaitingStart)
                 TitleRequested?.Invoke(EstablishingTitle, string.IsNullOrWhiteSpace(level.MissionBriefing) ? GameplayCopy.EstablishingDescription : level.MissionBriefing, 0);
-            else RequestMissionTitle();
+            else if(!suppressTitle) RequestMissionTitle();
         }
 
         public bool BeginApproach()
         {
+            if (journey != null && journey.IsAwaitingTap) return journey.AcceptTap();
             if (!CanContinue) return false;
             player.GetComponent<InputSystemPointerInput>().CancelGesture();
             EnterPhase(MissionIntroPhase.Approach);
+            ReleaseApproach(Direction);
             return true;
         }
 
+        public void ReleaseApproach(PlayDirection direction)
+        {
+            Direction = direction;
+            player.GetComponent<PlayerRespawnEntrance>().Direction = direction;
+            player.GetComponent<RelativeDragMovement>().SetCinematicPosition(presentation.ShipPosition);
+            player.transform.rotation = Quaternion.Euler(0,0,PlayDirectionSpace.Rotation(direction));
+            presentation.BeginGameplayApproach();
+            player.SetState(PlayerGameplayState.Active); player.SetCinematicLock(false);
+            PresentationChanged?.Invoke();
+        }
         public void TickIntro(float delta)
         {
             if (!IsIntroducing) return;
@@ -92,7 +116,7 @@ namespace StarShift.Gameplay
             elapsed += delta;
             phaseElapsed += delta;
             var duration = PhaseDuration;
-            if (IsCinematic) presentation.Present(IntroPhase, Mathf.Clamp01(phaseElapsed / duration), Direction);
+            if (IntroPhase != MissionIntroPhase.MissionTitle) presentation.Present(IntroPhase, Mathf.Clamp01(phaseElapsed / duration), Direction);
             if (phaseElapsed < duration) return;
             if (IntroPhase != MissionIntroPhase.MissionTitle)
             {
@@ -108,7 +132,7 @@ namespace StarShift.Gameplay
             MissionIntroPhase.Approach => level.Intro.ApproachSeconds,
             MissionIntroPhase.Travel => level.Intro.TravelSeconds,
             MissionIntroPhase.Brake => level.Intro.BrakeSeconds,
-            MissionIntroPhase.MissionTitle => level.Intro.MissionTitleSeconds,
+            MissionIntroPhase.MissionTitle => level.Intro.MissionEntryLeadSeconds,
             _ => 1
         };
 
@@ -117,11 +141,10 @@ namespace StarShift.Gameplay
             IntroPhase = phase;
             phaseElapsed = 0;
             if (phase == MissionIntroPhase.Approach) view.RequestView(level.Intro.TravelView, PhaseDuration);
-            if (phase == MissionIntroPhase.Brake) view.RequestView(Baseline.View, PhaseDuration);
+            if (phase == MissionIntroPhase.Brake) view.RequestView(entryView, PhaseDuration);
             if (phase == MissionIntroPhase.MissionTitle)
             {
                 presentation.Hide();
-                player.GetComponent<InputSystemPointerInput>().CancelGesture();
                 player.SetState(PlayerGameplayState.Active);
                 player.SetCinematicLock(false);
                 enemyFireGate.ResumeAfter(0);
@@ -132,7 +155,7 @@ namespace StarShift.Gameplay
         }
 
         private void RequestMissionTitle(float seconds = 0) => TitleRequested?.Invoke(level.Intro.ArrivalTitle,
-            GameplayCopy.Encounter(startingEncounterIndex + 1), seconds > 0 ? seconds : level.Intro.MissionTitleSeconds);
+            level.MissionBriefing, seconds > 0 ? seconds : level.Intro.MissionTitleSeconds);
 
         public void RefreshMissionTitle()
         {
@@ -146,7 +169,7 @@ namespace StarShift.Gameplay
             phaseElapsed = 0;
             presentation.PresentHandoff(0, Direction);
             PresentationChanged?.Invoke();
-            if (handoff) TitleRequested?.Invoke(next.TransitionTitle, next.TransitionDescription, handoffDuration);
+            // Đợt mới có overlay riêng khi EncounterStarted, không xếp timer chữ trước travel.
         }
         public void TickHandoff(float delta)
         {
@@ -164,9 +187,49 @@ namespace StarShift.Gameplay
             var profile = encounter.CameraOverride != null ? encounter.CameraOverride : Baseline;
             view.RequestView(profile.View, profile.TransitionSeconds);
         }
+        public void NotifyPresentationChanged() => PresentationChanged?.Invoke();
+        public void Announce(string title, string description, float seconds) => TitleRequested?.Invoke(title, description, seconds);
+
+        public void PresentMissionTravel(float progress)
+        {
+            missionTravel=true;
+            presentation.PresentMissionTravel(progress,Direction);
+            var bias=PlayDirectionSpace.Offset(new Vector2(0,-.04f*Mathf.Sin(Mathf.Clamp01(progress)*Mathf.PI)),Direction);
+            player.GetComponent<RelativeDragMovement>().SetTravelBias(bias);
+        }
+        public void PrepareMissionTravel(LevelDefinition next, float seconds)
+        {
+            var profile = next.Encounters[0].CameraOverride != null ? next.Encounters[0].CameraOverride : next.Camera;
+            view.RequestView(profile.View, seconds);
+        }
+        public void EndMissionTravel()
+        {
+            if(!missionTravel)return;
+            missionTravel=false;player.GetComponent<RelativeDragMovement>().SetTravelBias(Vector2.zero);presentation.Hide();
+        }
+        public void ResetRegionDeparture()
+        {
+            Direction=level.Direction;presentation.ResetEnvironment();
+            view.SetBaseline(level.Camera.View);view.RequestView(level.Camera.View,0);
+            player.GetComponent<PlayerRespawnEntrance>().Direction=Direction;
+            player.GetComponent<RelativeDragMovement>().ResetForCheckpoint(Direction);
+            player.transform.rotation=Quaternion.Euler(0,0,PlayDirectionSpace.Rotation(Direction));
+        }
+        public void FinishRegionTravel(bool preservePose = false)
+        {
+            Direction = PlayDirection.Right;
+            presentation.SetDestinationPalette();
+            view.SetBaseline(level.Camera.View); view.RequestView(level.Camera.View, 0);
+            player.GetComponent<PlayerRespawnEntrance>().Direction = Direction;
+            if (!preservePose) player.GetComponent<RelativeDragMovement>().ResetForCheckpoint(Direction);
+            player.transform.rotation = Quaternion.Euler(0,0,PlayDirectionSpace.Rotation(Direction));
+            presentation.Hide();
+            PresentationChanged?.Invoke();
+        }
         public void Cancel()
         {
             IntroPhase = MissionIntroPhase.None;
+            EndMissionTravel();journey?.Cancel();
             handoff = false;
             if (presentation != null) presentation.Hide();
             if (player != null) player.SetCinematicLock(false);

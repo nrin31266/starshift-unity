@@ -1113,3 +1113,401 @@ docs/diff checks PASS; final Console ground truth 0 errors/0 warnings, scene kh�
 dirty và 0 missing scripts/references. Logs retained đều từ trước lượt fix này.
 Không chạy lại historical matrix hoặc `pr-review`; verification theo phạm vi hai
 findings. Thermal/lifecycle contract không thay đổi.
+
+
+## M5 Region A verification
+
+Production starts: Mission01–03 LEVEL_START / ENCOUNTER_1–3 theo số encounter thật;
+Mission01 chỉ có hai Encounter. Mission04 thêm PRE_BOSS, BOSS, BOSS_PHASE_B.
+DevFastStart TRANSITION chạy context handoff thật của Mission04, không alias vào wave
+hoặc Mission05 giả. Phase B seed gây damage qua health owner một lần sau spawn;
+đây là DevTest, không snapshot/restore Boss phase vào campaign.
+
+`VerifyRegionA.BeginBatch(2/3)`, `BeginBossChecks`, `BeginIntegrationChecks`,
+`BeginContentChecks`, `BeginFullRegion` chạy qua Pipeline/run_script trong Play Mode.
+Entry Begin trả ngay; chờ `.design/m5/batch-progress.json` terminal trước probe khác.
+Không chạy hai runtime probes đồng thời. `InspectRegionA.Inspect` kiểm production
+catalog, retained fixture, missing scripts/references và saved dev flag.
+
+Evidence Editor ngày 2026-10-19:
+
+- M2 integrated Pulse: 55.68 s simulation, peak 6; M3: 74.38 s, peak 7; protected bot.
+- Boss targeted PASS: Phase A/B/sweep, Pause, real target reserve 10% max HP,
+  projection reset sau đổi framing, death/respawn, staged death, crate, completion once,
+  Up→Right destination. Chưa physical-device/readability/fun verified.
+- Một full production Region run 1× PASS: L1 35.72 s, L2 52.46 s, L3 66.66 s,
+  L4/Boss/transition 82.76 s; tổng 237.60 s. Bot được bảo vệ, có một death/respawn,
+  Pause, reserve use và pickup; thêm một Plasma Core test pickup để đảm bảo switch
+  coverage. Không dùng số này để claim representative human balance hoặc target 6–9 phút.
+- Grouped closure fix sau full run: arrival card trước spawn, Raider short burst,
+  hazard entry/Supply cues và movement-owner cinematic pose. Targeted content pass:
+  Supply destroy→crate→major, Supply escape không gate, Elite HP/scale/pool reset,
+  steady enemy instance reuse, Boss captures 1600×900 và 2000×900.
+- Persistence PASS: M2 Encounter 3 Continue/fresh storage, Retry, Boss Retry reset
+  HP/phase, replay preset + exact disk bytes isolation, transition/ready reload không
+  spawn Boss/duplicate records. Temp storage riêng, không sửa production save.
+- Compile PASS; Console 0 errors/warnings tại checks; 0 missing scripts/references.
+  Docs checker và final diff check được ghi trong phase closure evidence.
+
+`UseTestStorage(path, fixture)` chỉ có hiệu lực Editor/Development và cho phép clone
+M4 fixture catalog riêng. VerifyPersistence giữ fixtures L1 năm Encounter trong memory,
+không trộn vào production catalog. Legacy Core + Retry(5) đã PASS sau M5. VerifyM4Testbed
+Rig tự mount M4 fixture và restore previous level khi dispose. Không rerun historical
+M4 giant suite trong M5.
+
+Balance RA-018 vẫn Partial: cần manual Region A feel/duration pass. ADB không có device;
+RA-019 Blocked, không claim Android touch/FPS/audio. Ponytail không có callable skill/tool
+trong chat này dù config enabled; không claim review đã chạy. Không chạy pr-review.
+Tracker live TSV đã đọc RA-001–019; connector cần reauthentication nên không ghi Sheet.
+Dùng lại duy nhất `.design/m4-a/tracker-updates.tsv` cho evidence/status updates.
+
+
+## M5 gameplay pacing refinement verification
+
+2026-10-19 follow-up sau M5 checkpoint `c75634d8`; checkpoint trước sửa `6646ebcf`.
+Current production pacing thay seed cũ ở section trước; timing/composition canonical
+ở [levels](../content/levels-encounters.md#m5-region-a-authored-content-provisional).
+`tools/unity/VerifyPacingRefinement.cs` chạy qua Pipeline/run_script trong Play Mode.
+Begin methods trả ngay; chỉ một runtime probe, chờ JSON terminal trước probe khác.
+FullRegionStatus đọc Task handle live trong Editor; không restart khi chỉ chậm quan sát.
+Evidence local ở `.design/m5-refinement/`, không phải production save hoặc tracker mới.
+
+| Probe | Evidence và phạm vi |
+|---|---|
+| A | Initial virtual tap/3.3 s approach, title còn hiện lúc spawn, M1 fast-clear .54 s, một survivor không chặn beat sau, slow fallback 7 s, natural exit |
+| B + Storm correction | Mirrored Raider .52 s fast-clear gap; real Pulse kill Bomber; no-shoot M2/M4 còn 3 lives, normal count 20/24, visible peak gồm resource/Supply 7/8, runtime flow deviation <3°, deterministic seed, hazard cleanup |
+| C | Sine .52 s fast-clear gap, pincer đồng bộ, Supply T2.52 khi giảm pressure; real Pulse destroy → crate/collect và escape → reinforcement |
+| D | M1→M2 và M2→M3 first spawn 2.84 s; title overlap, relative drag/held input, Pause freeze, no teleport; minor transition 2.14–2.16 s gồm entry lead |
+| E + Wide journey | Native 1600×900 và 2000×900: Boss death 2.40–2.42 s, reward crate, glide/accelerate/bank/turn/palette/decelerate/reveal 7.28 s, stable tap, actual UI tap, approach .7/1.8/.8, consumed input/fresh press, Right-ready, automatic projection |
+| Bounded cleanup | Normal combat reserve visible impact/projection recovery; lingering visible projectile natural bound 244.77 s bị bounded grace/fade dọn trong .70 s ở final Timeline; Pause freeze, damage off trước release |
+| Integration | Temp save: later M2 Continue/fresh store, Retry, Boss Retry reset phase/HP, replay exact disk-byte isolation, RegionTransition resume qua reveal/tap/approach, RegionReady direct restore; original storage bytes unchanged |
+| Visuals/reviews | One design-review sau native tuning ở hai landscape aspects; unity-scriptdesign về config/runtime boundaries, lifecycle và ownership. Không Ponytail callable tool; không pr-review |
+
+Protected fixture tests và virtual/manual interaction không thay representative human
+balance. RA-018 giữ Partial, RA-019 giữ Blocked; không claim Android touch/FPS/audio.
+Same tracker artifact `.design/m4-a/tracker-updates.tsv`; live Sheet TSV read đã đối
+chiếu RA-001–019, không claim Sheet write khi connector cần reauthentication.
+
+Final integration sau toàn bộ batches/review: **đúng một full Region run**, PASS.
+L1 26.72 s, L2 37.14 s, L3 38.40 s, L4/Boss/Planet travel/approach 66.88 s;
+tổng 169.14 s fixed simulation (2 phút 49 giây), không thêm idle để kéo stopwatch.
+Sáu empty-active-field samples giữa các combat beats: trung bình .38 s, max .80 s;
+không tính intentional entry/title/reward/cinematic windows vào mean này. Các samples
+đếm active enemy roots, không phải phép đo pixel-visibility hoặc human feel.
+Peak visible 8; có forced death/respawn, Pause, reserve use, weapon switch và reward
+collection; một Plasma Core QA được thêm để chắc chắn có switch coverage. Save trong
+temp path, bốn Mission records/unlocks, RegionReady; không dùng protected bot để claim
+representative balance, target 6–9 phút hoặc device PASS.
+
+Closure: compile completed/no errors; Console 0 errors/warnings sau full run;
+production catalog 4 Missions/10 Encounters, retained M4 fixture 5 Encounters,
+saved DevFastStart off; 0 missing scripts/references. Docs checker/diff check được
+ghi cùng closure evidence. User-only L1 intro delay và runInBackground giữ uncommitted.
+
+Post-full narrow regression: sửa lifetime cue khi Pause sau Mission title đã hiện
+(trên gameplay và cuối same-planet travel): tạm hide/freeze, Resume tiếp tục remaining
+time và giữ overlap tới entry. Không thay layout, spawn/transition/gameplay clocks;
+chỉ chạy targeted title-pause regression, không chạy lại full Region.
+
+Một intermediate Editor reload session phát sinh private projectile-pool null ở
+PulseLaserWeapon trước fresh QA; log lưu riêng trong intermediate-editor-console.json.
+Đã stop, xác nhận Edit Mode/compile completed, rồi fresh Play để dựng lại runtime;
+title-pause regression còn yêu cầu actual Pulse fire. Final fresh session Console
+0 errors/warnings. Không sửa weapon runtime hoặc claim live hot-reload support trong
+refinement này; full integration trước đó cũng không có lỗi Console.
+
+
+## M5 second human-feel pass verification
+
+2026-10-19, working tree trên `codex/m5-region-a`, base HEAD `6c745a88`; không commit,
+push, PR, merge hoặc M6. Brief ở `.design/m5-human-feel/REQUEST.txt`, native evidence
+ở cùng thư mục; số gameplay hiện hành thuộc canonical content owners, không dùng
+các composition assertions của old refinement A–C làm current production spec.
+
+`ConfigureHumanFeel.PrepareVerification` ghép hai offline verifier sources thành
+ignored `.design/m5-human-feel/Verification.cs` để reuse existing virtual-input Rig;
+Pipeline run_script chỉ compile một input file, không resolve một ephemeral tool
+assembly từ lần gọi trước. Sau prepare, chạy `VerifyHumanFeel` entry trong generated
+file. Không đưa verifier vào Assets hoặc cài thêm package.
+
+| Entry / evidence | Phạm vi |
+|---|---|
+| BeginFormations / formations.json | Native 1600×900, 2000×900; seven production silhouettes, settled collider separation/unique slots, Raider mid-entry |
+| BeginTtk / ttk.json | Actual held primary projectiles, thermal on; Scout/Raider/Bomber/Elite, Pulse L1/L2/L3, Plasma L2/Homing L2; frozen target cách muzzle khoảng 3 world units |
+| QuotaChecks / quota-pure.json | Six seeds; repeatability, source ordinal variety, normal major credit, remaining-population fallback |
+| BeginRewards / rewards.json | Seven encounters × three seeds; type/count/source ordinal, no authored carrier, slow Timeline fallback |
+| BeginPersistence / persistence.json | Real temp save: collect Core/Shard → Retry/Continue restore, same source ordinal, high-water anti-duplication, Replay/Dev disk-byte isolation; production bytes unchanged |
+| BeginAsteroids / asteroids.json | Both native aspects, M2/M4 count/flow/size/HP/stages/Pause, safe no-shoot lane, cleanup, full region |
+| BeginBoss / boss.json | Both native aspects, silhouette width, phase cancel/reposition, warning/active beam safe lane, active hit through life owner, reserve/projection/later profile, defeat crate |
+| BeginBossTtk / boss-ttk.json | Moving real boss, held Pulse L1/L2/L3, thermal on, protected aim bot; records fight seconds and beam count |
+| BeginClosure / closure.json | Grouped affected checks; resume only remaining probes after a verifier-bound fix, retain unrelated passes |
+| BeginFullRegion / full-region.json | Exactly one final integration attempt; rejects existing evidence file; temp campaign, actual drops/upgrades and sampled empty-field/density metrics |
+
+Sustained target benchmark (trigger → lethal; first projectile travel included):
+
+| Target | Pulse L1 | Pulse L2 | Pulse L3 | Plasma L2 | Homing L2 |
+|---|---:|---:|---:|---:|---:|
+| Scout | 1.34 s | .66 s | .34 s | .72 s | .76 s |
+| Raider | 1.86 s | 1.02 s | .50 s | .98 s | 1.26 s |
+| Bomber | 3.72 s | 1.84 s | 1.00 s | 1.20 s | 2.74 s |
+| Elite equivalent | 6.62 s | 3.38 s | 1.68 s | 1.96 s | 4.76 s |
+
+Elite benchmark dùng fixed HP equivalent trên Bomber prefab, không giả enemy HP
+scale theo weapon. Actual composite Elite geometry được xem riêng trong formation
+captures. Boss Pulse L1/L2/L3 đạt 101.68/49.92/24.58 s, tương ứng 7/3/2 active beams.
+Bot aim/protection và 2× wall-clock acceleration của Boss benchmark không phải
+human dodge/fun approval. L1 Boss còn dài, upgraded clear nhanh; RA-018 vẫn Partial.
+
+Storm no-shoot checks còn 3 lives ở cả hai aspects, peak normal/resource 14 (M2) /
+15 (M4), runtime angle deviation <3°. Four size HP classes và damage states được
+assert qua health authority. Numeric clamp được bổ sung virtual edge drag trong
+camera closure; không coi numeric clamp một mình là full input evidence.
+
+### Manual fast-start handoff
+
+Mở `app/Assets/StarShift/Scenes/02_Gameplay.unity`. Trong Play Mode, chọn
+`L1Encounters → DevFastStart`; bật `Dev Mode Enabled`, đặt `Standalone=true`,
+`Skip Intro=true`, `Override Direction=false`, `Camera Override=None`,
+`Deterministic Rewards=true`, `Reward Seed=410`. Chọn Start Level / Start Point theo
+bảng, dùng component context menu **Replay Configured Start**. Play-only overrides
+không ghi production scene; saved scene giữ dev off. `Starting Weapon Level=1` để
+xem durability, 2–5 để so progression; `Unlock All Weapons=true` nếu cần switch.
+
+| Test | Start Level asset trong Data/RegionA | Start Point |
+|---|---|---|
+| M1 special formation | Mission01 | ENCOUNTER_2 |
+| M2 Raider | Mission02 | ENCOUNTER_1 |
+| M2 Bomber escort | Mission02 | ENCOUNTER_3 |
+| M2 storm | Mission02 | ENCOUNTER_2 |
+| M3 Pincer/Supply | Mission03 | ENCOUNTER_2 |
+| M3 Elite | Mission03 | ENCOUNTER_3 |
+| M4 storm | Mission04 | PRE_BOSS |
+| Boss Phase A | Mission04 | BOSS |
+| Boss Phase B/beam | Mission04 | BOSS_PHASE_B |
+
+BOSS_PHASE_B là real Boss encounter với dev health reduction sau spawn, không có
+fake checkpoint. Thả fire để xem silhouette/entry; giữ fire để so TTK, drag né beam,
+thử reserve và Pause/Retry. Campaign Retry chỉ được cấp qua lifecycle checkpoint;
+raw DevFastStart không tự ghi CampaignSave/Profile. Để chơi toàn Region: Start Level
+Mission01, Start Point LEVEL_START, Standalone=false, Skip Intro=false.
+
+
+### Second pass closure and final integration evidence
+
+Technical closure PASS: native formation captures/numeric separation ở cả hai aspects;
+invalid duplicate/nonfinite/out-of-range slots và impossible/shard-major quota bị reject.
+Twenty camera/aspect cases có ortho/projection và actual 100 px drag đúng mapping;
+virtual drag chạm cả bốn cạnh storm và restricted Boss region. Full-cap regression giữ
+normal cap và reserved guaranteed item/crate, không duplicate. Boss brace/active-render
+captures bổ sung sau khi sửa pod disconnect; beam damage/safe lane, death cancel,
+reserve restore và later camera profile đều PASS. Boss camera consolidation chỉ đổi
+reference về existing GUID với identical view/timing, không đổi gameplay sau full run.
+
+Một verifier wait ban đầu chỉ 600 ms, chưa bao gồm .45 s projectile grace + .25 s fade
+ở outer-survivor test; đổi window thành 1.6 s và rerun test đó + phần closure còn lại.
+Không đổi runtime để hợp thức hóa test; không chạy lại các probe độc lập đã pass.
+Compile completed/up-to-date, final Unity Console ground truth 0 errors/0 warnings,
+0 missing scripts/references; saved DevFastStart off. Docs checker và git diff check PASS.
+
+Đúng **một full Region A run** cuối: **222.06 s (3:42.06)** fixed simulation.
+Mission boundary durations L1 38.16 s, L2 60.60 s, L3 57.08 s, L4 66.22 s; L1 gồm
+initial arrival, L4 gồm Boss/reward/Planet travel/tap/approach. Encounter timing/raw
+metrics ở `full-region.json`. Actual Boss combat clock tới defeat 30.32 s (entry
+3.5 s; hold-to-defeat 26.82 s), active Plasma L2 + reserve; `full-boss-clock.json`
+đọc retained runner clock ngay sau completion, không rerun fight. Entire last Boss
+segment 48.08 s gồm death/reward và outro; không gọi segment đó là pure TTK.
+
+Full run peak visible 14, max common telegraph/shooter 1. Drop observer subscribe
+synchronous owner facts để không bỏ sót pickup spawn/collect giữa hai poll; exact
+12 drops: Pulse/Plasma/Homing Core mỗi loại 2, Overdrive 1, Shield 1, MajorCrate 3,
+Shard 1. Cả 12 được collect; crate selection làm collected OD=2/Shield=3. Sáu upgrade
+Core, một death downgrade; final loadout 2/2/2. Có actual death/respawn, Pause,
+weapon cycle và reserve; **không injected Core**. Temp campaign ghi đủ bốn Mission
+records/RegionReady, production storage bytes giữ nguyên.
+
+Empty-visible-field samples trung bình **3.32 s**, max **6.60 s**, gồm cả playable
+entry, Mission travel và post-death/reward windows. Khác definition của prior pass
+đã loại intentional windows, không so trực tiếp với .38/.80 s cũ. Không thêm idle
+để kéo duration. Protected aim/collection bot không đại diện human pace, chưa chứng
+minh target 6–9 phút hoặc fun/final balance. RA-018 giữ **Partial** tới manual approval.
+`adb devices -l` không có thiết bị: RA-019 giữ **Blocked**. Tracker dùng đúng existing
+`.design/m4-a/tracker-updates.tsv`; phiên này không có writable Sheet connector,
+không claim live Google Sheet update. Không tạo tracker mới.
+
+Focused unity-scriptdesign và native design-review ở `.design/m5-human-feel/`.
+Cleanup gộp 16 generated duplicate flights sau data/dependency checks, reuse existing
+BossCamera GUID, bỏ superseded Vanguard child visuals/EnemyFirePresentation; giữ
+fixture, legacy transit/layout consumers và useful regression tooling. No final art,
+new packages/Editor version, minion framework, phase reward, commit/push/PR/merge/M6.
+
+## M5 balance and transition follow-up
+
+`ConfigureBalancePass.Configure` áp dụng tuning mới qua Unity API/Edit Mode, chỉ save
+các asset đã sửa; không save scene đang dirty. Không rerun builder lịch sử để reset
+current content. `PrepareVerification` ghép existing Rig, VerifyHumanFeel và probe mới
+vào ignored `.design/m5-balance-pass/Verification.cs`; evidence mới có folder riêng,
+không ghi đè measurements của pass trước. Chờ JSON terminal giữa các runtime probes.
+
+| Probe | Coverage |
+|---|---|
+| VerifyBalancePass.BeginSystems | 15 patterns Lv1–5; Core auto-select/max/death; Supply pair khi gate đóng và cap đầy; ejection Pause; capture stat một lần; shooter peak 1/4/6; Boss fan counts |
+| BeginProgression | Real projectile TTK trên Bomber; deterministic two-item floors cho 3 seeds × 2 attempts; branch heat không reset khi Core đổi súng |
+| BeginCameras | Intro.Enabled false/true, first-entry zoom, M1→M2 monotonic zoom; Planet 2 Brake→control pose continuity ở 1600×900 và 2000×900 |
+| BeginPersistence | Lv5 disk roundtrip; save Lv1–3 cũ hợp lệ, Lv6 bị reject; Retry/Continue restore; Replay/Dev và production bytes isolation |
+| BeginFullRegion | Một lượt dùng real primary aim bot sau grouped prerequisites; NewGame→4 missions→Boss→Planet ready, pause/death/reserve/pickup/save |
+| BeginBossVisual | Native Game View của six-shot cannon và five-shot missile fan sau khi các viên đã tách ra |
+
+Targeted probe results và giới hạn acceptance nằm trong evidence folder; duration/
+fun balance vẫn cần human playtest. Các bảng TTK của second pass ở trên là historical
+measurements trước khi giảm HP; không coi chúng là số đo tuning hiện tại.
+
+### Tắt intro đúng asset và test nhanh
+
+Scene production: `02_Gameplay → L1Encounters → LevelFlow → Level` trỏ tới
+`Data/RegionA/Missions/Mission01.asset`. Trong asset đó, mở **Intro → Enabled** và bỏ chọn để
+bỏ establishing intro khi Play từ `LEVEL_START`. `Data/Fixtures/Levels/M4SystemTestbed.asset`, ID
+`M4_FIXTURE`, chỉ điều khiển system testbed, không điều khiển production Mission01.
+Tooltip trên LevelFlow/Level và Intro/Enabled nhắc rõ ranh giới này.
+
+Để chỉ bỏ intro trong lượt test: vào Play Mode, chọn `L1Encounters → DevFastStart`,
+bật **Dev Mode Enabled**, **Skip Intro**, đặt **Start Level=Mission01**,
+**Start Point=LEVEL_START**, rồi context menu **Replay Configured Start**.
+`Starting Weapon Level` hỗ trợ 1–5; bật `Unlock All Weapons` để so cả ba nhánh.
+Các Start Point formation/storm/Boss ở bảng fast-start phía trên vẫn dùng được.
+Dev default trong scene giữ off; thay đổi Play Mode này không cần save scene.
+
+Shooter config ở `Data/RegionA/Encounters/<Encounter>.asset → Active Shooter Limit` (1–6),
+`Shot Spacing`, `Shots Per Volley`, `Volley Pause`. Exact production seeds thuộc
+[level owner](../content/levels-encounters.md#m5-region-a-authored-content-provisional).
+
+### Follow-up verification results
+
+Grouped probes và đúng một full Region mới PASS. Real held Pulse/Bomber HP19,
+distance3: Lv1/2/3/4/5 = 3.22/1.68/.82/.66/.46 s; Plasma L3/L5 .64/.42 s,
+Homing L3/L5 1.74/.70 s. Đây là protected frozen-target benchmark, không thay human aim.
+
+Camera 16:9/20:9 không có reverse tại M1→M2; largest sampled size step .00724/.00548,
+second-intro handoff gap 0 viewport trong lần cuối. Actual DevFastStart Skip Intro
+true/false cũng PASS trên production Mission01. Native shots/captures chứng minh
+cannon six + missile five; riêng limit6 chỉ là configurable stress case.
+
+Full Region 187.96 s: L1 45.28, L2 52.32, L3 41.26, L4/travel 49.10. Peak14,
+max4 shooter; 20 spawned/collected pickups, 14 Cores, final5/5/5; one forced death,
+Pause/switch/reserve và 4 profile records, RegionReady; original production save
+bytes unchanged. Maxed protected bot Boss clock 12.56 s gồm entry/death: độ khó khi
+max loadout cần human feedback, không claim 45–75 s fight hoặc 6–9 min human run.
+
+Final compile up_to_date; Console ground truth 0 errors, 1 warning từ Unity Pipeline
+vì request Play khi Editor đã Play (tooling, không là gameplay warning). Catalog +
+fixture inspectors: 0 missing scripts/references, dev default off. Scene dirty từ
+đầu được giữ, scene file/fixture intro/runInBackground không đổi trong follow-up.
+Docs/diff checks PASS. Không chạy lại full historical matrix, không có Android thật.
+
+## Planet 1 flow polish verification
+
+Latest feedback pass dùng `tools/unity/ConfigureFlowPolish.cs` và
+`tools/unity/VerifyFlowPolish.cs`; generated runtime probes/evidence nằm trong
+`.design/m5-flow-polish/`. Tuning mới theo [enemy owner](../content/enemies-bosses.md#m5-runtime-seeds-tunable),
+[weapon/reward owner](../content/weapons-items-drops.md#encounter-reward-floor-provisional)
+và [level owner](../content/levels-encounters.md#m5-region-a-authored-content-provisional).
+Các số đo pass trước ở trên là historical; không dùng làm TTK của HP/pattern mới.
+
+Production `Mission01 → Intro → Enabled` điều khiển establishing intro. Có thể tắt
+trên local test config để vào nhanh; bật lại để kiểm tra approach. Để thử nhanh mà không đổi
+production config, dùng DevFastStart trong Play Mode theo hướng dẫn phía trên;
+`BOSS_PHASE_B` chờ Boss hết entry protection rồi mới giảm HP để vào Phase B.
+
+Folder fixtures đã đổi tên; các builder/verifier cập nhật đường dẫn, GUID giữ nguyên.
+Không xóa các flight seed cũ còn được historical builders hoặc tests sử dụng.
+Native Editor từng crash GTK focus trong lúc test; automation tái dùng GameView đang
+mở để tránh gọi focus mỗi lần đổi aspect. Không suy ra đây là lỗi Android runtime.
+
+### Flow polish results
+
+Grouped targeted probes PASS tại 1600×900 và 2000×900: 15 weapon patterns/aspect,
+real held fire trong initial và second approach; không cancel held gesture tại finish.
+Largest sampled handoff movement dưới .000002 world units, initial Brake không reverse.
+Đây là boundary sampling, không phải claim mọi frame trên mọi thiết bị đều hoàn hảo.
+Scout HP4 được hạ bằng real held Pulse L1 trong 2.18 s gồm thao tác align và shot travel.
+Storm còn 7 visible asteroids tại deadline; chờ thêm 4.40 s tới khi chúng bay ra,
+không có asteroid bị release giữa viewport. Boss entry damage bị từ chối trước Hold;
+28 gold + major pair xuất hiện, có sprite, Pause freeze và giữ collectible trong grace.
+
+Save regression PASS: old-save compatibility, max-five roundtrip, reject level six,
+Retry rollback, Replay/Dev isolation và production bytes unchanged. Actual DevFastStart
+`BOSS_PHASE_B` PASS sau entry protection, không ghi production save.
+
+Đúng một full Region integration run PASS: 173.84 s; Mission clocks 26.24 / 53.04 /
+36.42 / 58.14 s (L4 gồm reward/travel). Peak 12 enemies, max 3 common shooters.
+72 pickups gồm 13 Cores, 28 normal/resource Shards, 28 boss gold và 3 support items;
+final levels 5/5/4 sau một forced death. Có Pause/Resume, cycle weapon, reserve missile,
+4 completion records và RegionReady. Boss clock 20.62 s gồm entry/death; không coi là
+pure combat TTK. Protected aim/collection bot, seed 410, không inject Core; chưa thay
+human acceptance. Playable empty-field mean/max 3.18/7.16 s gồm entry và travel.
+
+Final scene/data/prefab reference inspection PASS (zero missing references), fixture
+GUID giữ nguyên, Dev mode saved off. Final evidence ở `.design/m5-flow-polish/`.
+Android touch/performance và final fun/difficulty chưa verify; RA-018 vẫn Partial,
+RA-019 vẫn Blocked vì chưa có device run.
+
+## Thermal independence and asset cleanup
+
+Checkpoint trước khi đổi sang heat dùng chung: `VerifyHeatLifecycle` qua
+`OrganizeRegionA.PrepareHeatVerification` PASS: real held fire tạo 8.10 heat; release/press giữ nhiệt; gate block vẫn
+nguội 63 → 46.80 và không bắn; Pause freeze; inactive branch nguội; Overheated hồi
+và held fire tiếp tục. Live `CampaignLifecycle.AdvanceMission(..., true)` giữ chính
+xác ba heat states 45 / 55 / 42.5 rồi tiếp tục nguội. Session reset vẫn về zero.
+
+Folder migration PASS: 68 assets giữ GUID; 6 obsolete generated flights có zero
+asset dependencies trước khi xóa. Các callers/builders cập nhật qua Editor-only
+`RegionAAssetPaths`; detailed folder contract thuộc
+[asset pipeline](../production/asset-pipeline.md#region-a-authored-data-layout).
+Scene/prefab/data reference inspection sau migration PASS, Dev mode saved off.
+
+Một full Region trên bản thermal + layout mới PASS: 179.92 s, peak13 enemies,
+max3 common shooters, 72 pickups, final levels 5/5/4 sau một forced death. Có
+Pause/Resume, switch, reserve, bốn completion records và RegionReady. Boss clock
+21.30 s gồm entry/death. Đây vẫn là protected aim/collection bot, seed410, không
+inject Core; không phải manual difficulty hoặc Android FPS acceptance.
+Evidence local ở `.design/m5-heat-cleanup/`. Không chạy full historical M4 suite.
+
+### Shared primary heat correction — 2026-10-20
+
+Theo feedback mới, mọi loại đạn dùng một thermal state; mechanic thuộc
+[weapons owner](../content/weapons-items-drops.md#primary-weapon-heat--m35).
+`VerifyHeatLifecycle.Begin` PASS trong Unity Play Mode: real held fire 8.10 heat;
+release/press giữ nhiệt; gate block nguội 63 → 45.60, không thêm shot; Pause freeze.
+Nhặt Plasma/Homing Core, tăng level và cycle cả ba branch giữ chính xác heat và
+cooling delay; cycle hoặc nhặt Core khi Overheated không mở khóa fire. Recovery
+vẫn tự bắn lại khi held; live Mission handoff giữ 55 → 55 rồi tiếp tục nguội;
+death và session reset về zero/unlatched. Compile PASS, native Console zero errors
+và warnings. Evidence local `.design/m5-shared-heat/heat.json`.
+Không chạy lại full Region hoặc Android cho sửa thermal state này; full Region
+ở checkpoint trước không được coi là runtime evidence của bản shared heat.
+
+
+### Pickup bounce consistency — 2026-10-20
+
+`VerifyPickupMotion.Run` PASS trong Unity: normal/grace cùng quỹ đạo và nảy hai lần;
+late grace không kéo xu ngược lên; 28 boss gold trajectories nảy hai lần rồi viewport
+exit; pooled state reset. Core/support vẫn giữ trong grace, Pause/Resume và collect
+một lần PASS qua frame thật. Motion dùng controlled physics callback stepping;
+không coi đây là full boss fight hoặc device evidence. Compile PASS và native Console
+zero errors/warnings. Reproduction ở [tool README](../../tools/unity/README.md#pickup-bounce-consistency),
+evidence local `.design/m5-pickup-motion/result.json`.
+
+
+### Respawn projectile and held-input continuity — 2026-10-20
+
+`VerifyFlowPolish.RespawnContinuity` PASS trong Unity Play Mode qua combined script
+của `ConfigureFlowPolish.PrepareVerification`. Với mouse và synthetic touch: giữ
+pointer xuyên Dying/entrance; delta bị khóa không teleport; sau entrance kéo
+30×20 px nhận đúng 30×20 px, held fire tự tiếp tục. Accepted death giữ hostile và
+friendly shots đang bay, hostile tiếp tục di chuyển; duplicate hit không trừ thêm
+life và post-entry protection vẫn chặn damage. Pause còn yêu cầu fresh press;
+Game Over vẫn cleanup đạn. Evidence `.design/m5-respawn-continuity/result.json`.
+`VerifyPlayerDrag.Run` PASS short/long/release, projection 16:9/20:9 × ba zoom,
+held drag sau movement re-enable và touch/second-finger isolation. Cần bắt đầu run
+skip-intro trước suite này; chạy ngay sau terminal fixture với overlay còn mở sẽ
+bị UI chặn pointer. Compile và native Console không có error/warning mới.
+Không chạy lại full campaign hoặc Android cho sửa này.

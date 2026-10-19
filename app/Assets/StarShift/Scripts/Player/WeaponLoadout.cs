@@ -7,6 +7,7 @@ namespace StarShift.Player
     [DisallowMultipleComponent]
     public sealed class WeaponLoadout : MonoBehaviour
     {
+        public const int MaximumLevel = 5;
         [SerializeField] private PulseLaserDefinition[] weapons;
         private readonly int[] levels = { 1, 0, 0 };
         public WeaponBranch ActiveBranch { get; private set; }
@@ -19,11 +20,16 @@ namespace StarShift.Player
             if (weapons != null) foreach (var item in weapons) if (item != null && item.Branch == branch) return item;
             return null;
         }
-        public bool CanUpgrade(WeaponBranch branch) => Definition(branch) != null && Level(branch) < 3;
-        public bool ApplyCore(WeaponBranch branch)
+        public bool CanUpgrade(WeaponBranch branch)
+        {
+            var definition = Definition(branch);
+            return definition != null && Level(branch) < MaximumLevel && definition.Pattern(Level(branch) + 1) != null;
+        }
+        public bool ApplyCore(WeaponBranch branch, bool activate = false)
         {
             if (!CanUpgrade(branch)) return false;
             levels[(int)branch]++;
+            if (activate) ActiveBranch = branch;
             Changed?.Invoke();
             return true;
         }
@@ -50,7 +56,7 @@ namespace StarShift.Player
             if (restored == null || restored.Length != levels.Length || !Enum.IsDefined(typeof(WeaponBranch), active))
                 throw new ArgumentException("Invalid weapon checkpoint.");
             for (int i = 0; i < levels.Length; i++)
-                if (restored[i] < (i == 0 ? 1 : 0) || restored[i] > 3 || (restored[i] > 0 && Definition((WeaponBranch)i) == null))
+                if (restored[i] < (i == 0 ? 1 : 0) || restored[i] > MaximumLevel || (restored[i] > 0 && Definition((WeaponBranch)i)?.Pattern(restored[i]) == null))
                     throw new ArgumentException("Unavailable checkpoint weapon.");
             if (restored[(int)active] <= 0) throw new ArgumentException("Locked active weapon.");
             Array.Copy(restored, levels, levels.Length);

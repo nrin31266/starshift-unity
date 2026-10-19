@@ -19,6 +19,7 @@ namespace StarShift.UI
         [SerializeField] private PulseLaserWeapon weapon;
         [SerializeField] private Text livesLabel;
         [SerializeField] private Text weaponLabel;
+        [SerializeField] private Text weaponInventory;
         [SerializeField] private Image heatFill;
         [SerializeField] private Image heatFrame;
         [SerializeField] private Text heatStatus;
@@ -132,7 +133,7 @@ namespace StarShift.UI
             pauseButton.interactable = !session.IsPaused && session.CanPause;
             gameplayHud.blocksRaycasts = gameplayHud.interactable = !cinematic;
             if (announcement.IsPersistent && !awaitingStart) announcement.Hide();
-            if (!session.HasActiveRun || session.IsPaused || session.IsTerminal) announcement.Hide();
+            if (!session.HasActiveRun || session.IsTerminal) announcement.Hide();
         }
 
         private void Update()
@@ -148,6 +149,17 @@ namespace StarShift.UI
                 previousLevel = weapon.CurrentLevel;
                 previousBranch = (int)weapon.CurrentBranch;
                 weaponLabel.text = $"T{previousBranch + 1} L{previousLevel}";
+            }
+            if (weaponInventory != null)
+            {
+                var text = ""; var others = 0;
+                for (int i = 0; i < 3; i++)
+                {
+                    var level = loadout.Level((StarShift.Combat.WeaponBranch)i);
+                    if (level > 0 && i != (int)loadout.ActiveBranch) others++;
+                    text += (i > 0 ? "  " : "") + (i == (int)loadout.ActiveBranch ? "[" : "") + (level > 0 ? $"T{i+1}" : "-") + (i == (int)loadout.ActiveBranch ? "]" : "");
+                }
+                weaponInventory.text = text + $"  +{others}";
             }
             if (rewards != null && previousScore != rewards.Score) { previousScore = rewards.Score; scoreLabel.text = previousScore.ToString(); }
             if (rewards != null && previousShards != rewards.Shards) { previousShards = rewards.Shards; shardLabel.text = previousShards.ToString(); }
@@ -176,7 +188,7 @@ namespace StarShift.UI
                 if (previousMissiles != missileReserve.Current)
                 {
                     previousMissiles = missileReserve.Current;
-                    missileCount.text = $"TÊN LỬA {previousMissiles}/{missileReserve.Capacity}";
+                    missileCount.text = $"M {previousMissiles}/{missileReserve.Capacity}";
                 }
             }
             RefreshHeat();

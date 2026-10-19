@@ -26,14 +26,21 @@ namespace StarShift.Rewards
         private float fallVelocity;
         private int bounceCount;
         private Camera gameplayCamera;
+        private Vector2 ejectionVelocity;
+        private Vector3 visualScale;
+        private bool visualInitialized;
+        private float ejectionRemaining;
+        public void Eject(Vector2 velocity) { ejectionVelocity = velocity; ejectionRemaining = .45f; }
         public PickupDefinition Item { get; private set; }
         public RewardDropTable Crate { get; private set; }
         public float Remaining => remaining;
         public EncounterObjectCategory Category => EncounterObjectCategory.Reward;
         public bool IsActive => active && isActiveAndEnabled;
+        public event Action Collected;
         public void Launch(PickupDefinition item, RewardDropTable crate, Vector3 position, EncounterCleanup scope,
             PlayerPickupReceiver player, Func<RewardPickup, bool> onCollect, Action<RewardPickup> onRelease)
         {
+            if (!visualInitialized) { visualScale = visual.transform.localScale; visualInitialized = true; }
             Item = item; Crate = crate; cleanup = scope; token = scope.RewardToken; receiver = player;
             collect = onCollect; release = onRelease; remaining = crate != null ? 8 : item.Lifetime;
             graceRemaining = -1;
@@ -41,10 +48,13 @@ namespace StarShift.Rewards
             previousPickupPosition = position;
             fallVelocity = -(item != null ? item.DriftSpeed : .8f);
             bounceCount = 0;
+            ejectionVelocity = Vector2.zero; ejectionRemaining = 0;
+            Collected = null;
             gameplayCamera = Camera.main;
             transform.position = position;
             baseColor = crate != null ? new Color(1, .78f, .2f) : item.Color;
             visual.color = baseColor;
+            visual.transform.localScale = visualScale * (item != null ? item.VisualScale : 1);
             label.color = Color.white;
             label.text = crate != null ? "BOX" : item.ShortCode;
             active = cleanup.Register(this, scope.Token);
@@ -62,6 +72,11 @@ namespace StarShift.Rewards
             label.color = new Color(1, 1, 1, opacity);
             if (remaining <= 0) { Release(); return; }
             var position = transform.position;
+            if (ejectionRemaining > 0)
+            {
+                position += (Vector3)ejectionVelocity * (ejectionRemaining / .45f) * Time.fixedDeltaTime;
+                ejectionRemaining = Mathf.Max(0, ejectionRemaining - Time.fixedDeltaTime);
+            }
             bool shard = Item != null && Item.Kind == PickupKind.Shard;
             if (shard)
             {
@@ -77,6 +92,15 @@ namespace StarShift.Rewards
                 }
             }
             else position += Vector3.down * ((Item != null ? Item.DriftSpeed : .8f) * Time.fixedDeltaTime);
+            if (graceRemaining >= 0)
+            {
+                var viewport = gameplayCamera.WorldToViewportPoint(position);
+                viewport.x = Mathf.Clamp(viewport.x, .05f, .95f);
+                // Xu giữ quỹ đạo nảy hai lần rồi rơi ra, kể cả trong thời gian nhặt thưởng.
+                if (!shard) viewport.y = Mathf.Max(.09f, viewport.y);
+                position = gameplayCamera.ViewportToWorldPoint(viewport);
+                if (!shard && viewport.y <= .09f) fallVelocity = 0;
+            }
             transform.position = position;
             // Sweep đường đi của Player để drag nhanh vẫn nhận contact; không hút pickup.
             var current = receiver.transform.position;
@@ -99,12 +123,13 @@ namespace StarShift.Rewards
             // Khóa trước callback để effect không collect trùng khi eject thêm reward.
             active = false;
             if (!collect(this)) { active = true; return false; }
+            Collected?.Invoke();
             Release(); return true;
         }
         public void StopHostility() { }
         public void PreserveForGrace(float seconds)
         {
-            remaining = Mathf.Max(remaining, seconds + Time.fixedDeltaTime);
+            remaining = seconds;
             graceRemaining = seconds;
         }
         public void Release()
@@ -113,6 +138,7 @@ namespace StarShift.Rewards
             cleanup?.Unregister(this);
             var callback = release;
             release = null; collect = null; Item = null; Crate = null; receiver = null; cleanup = null;
+            Collected = null;
             if (callback != null) callback(this);
         }
         private void OnDisable() { if (active) Release(); }
