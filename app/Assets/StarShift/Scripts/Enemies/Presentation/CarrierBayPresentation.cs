@@ -12,7 +12,7 @@ namespace StarShift.Enemies
         private float remaining;
         public int LaunchCues { get; private set; }
         private void Awake() => spawner = GetComponent<EscortSpawner>();
-        private void OnEnable() { previousCount = spawner.SpawnCount; remaining = 0; LaunchCues = 0; }
+        private void OnEnable() { previousCount = 0; remaining = 0; LaunchCues = 0; }
         private void LateUpdate()
         {
             if (spawner.SpawnCount != previousCount)

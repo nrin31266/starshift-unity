@@ -19,7 +19,7 @@ namespace StarShift.Player
         private int previousShots;
         private float muzzleRemaining, rewardRemaining, survivalRemaining;
         private void Awake() { weapon = GetComponent<PulseLaserWeapon>(); gate = GetComponent<PlayerGameplayGate>(); receiver = GetComponent<PlayerPickupReceiver>(); }
-        private void OnEnable() { receiver.Collected += OnCollected; previousShots = weapon.ShotsFired; previousState = gate.State; }
+        private void OnEnable() { receiver.Collected += OnCollected; previousShots = 0; previousState = gate.State; }
         private void OnCollected(PickupDefinition item)
         {
             rewardRemaining = .36f;

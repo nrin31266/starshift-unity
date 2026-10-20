@@ -33,8 +33,8 @@ public static class VerifyM8Production
     static async Task Capture(string name, int settleMs = 200)
     {
         if (settleMs > 0) await Task.Delay(settleMs); Canvas.ForceUpdateCanvases();
-        var path = Path.GetFullPath(EvidenceRoot + "screenshots/" + "production-" + name + ".png"); ScreenCapture.CaptureScreenshot(path);
-        await Task.Delay(180); Require(File.Exists(path), "Screenshot missing: " + name);
+        var path = Path.GetFullPath(EvidenceRoot + "screenshots/" + "production-" + name + ".png"); if (File.Exists(path)) File.Delete(path); ScreenCapture.CaptureScreenshot(path);
+        await Until(()=>File.Exists(path),4000,"Screenshot missing: "+name);
     }
     public static object Begin(int width)
     {

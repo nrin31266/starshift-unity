@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: 1ef61e974dc41c9f6ac425d64599f236
+guid: 406c238945c93997e9a0c75c319bdb59
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6380466293188835875
-    second: warden-engine_0
+      213: 1899885257178992673
+    second: carrier-bay-loop-sheet_0
+  - first:
+      213: -9220848287964502008
+    second: carrier-bay-loop-sheet_1
+  - first:
+      213: 4244070569934921503
+    second: carrier-bay-loop-sheet_2
+  - first:
+      213: 9105321310549086401
+    second: carrier-bay-loop-sheet_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +55,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 0
   alignment: 0
@@ -126,23 +135,89 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: warden-engine_0
+      name: carrier-bay-loop_00
       rect:
         serializedVersion: 2
-        x: 1
-        y: 2
-        width: 94
-        height: 93
+        x: 0
+        y: 0
+        width: 64
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 32abfdad948fb8850800000000000000
-      internalID: 6380466293188835875
+      spriteID: 8cb8eaea7d880a1c4bee07b42061aff2
+      internalID: -1307209575
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: carrier-bay-loop_01
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ef820d5f3a0e3f03789ae3cf44afb830
+      internalID: 1707648650
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: carrier-bay-loop_02
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 64
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 315b86775a5b138d5bf4841d246dd4d8
+      internalID: 1246275921
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: carrier-bay-loop_03
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 64
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5da2fbfba1c367ae681f2d978f7ceca9
+      internalID: 800943949
       vertices: []
       indices: 
       edges: []
@@ -151,7 +226,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 6979e57f0f9c1e274ad9615de3dbed08
     internalID: 0
     vertices: []
     indices: 
@@ -161,7 +236,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      warden-engine_0: 6380466293188835875
+      carrier-bay-loop_00: -1307209575
+      carrier-bay-loop_01: 1707648650
+      carrier-bay-loop_02: 1246275921
+      carrier-bay-loop_03: 800943949
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

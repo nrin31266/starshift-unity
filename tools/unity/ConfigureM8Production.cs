@@ -69,6 +69,8 @@ public static class ConfigureM8Production
     static void Damage(GameObject root,string id)
     {
         var damage=root.GetComponent<EnemyDamagePresentation>();if(damage==null)return;
+        if(new[]{"heavy","bulwark","carrier","vanguard","warden"}.Contains(id))
+        {var so=new SerializedObject(damage);so.FindProperty("criticalHealthFraction").floatValue=.25f;so.ApplyModifiedPropertiesWithoutUndo();}
         Set(damage,"damagedSprite",S(id+"-damaged"));Set(damage,"criticalSprite",S(id+"-critical"));ColorField(damage,"damagedTint",Color.white);ColorField(damage,"criticalTint",Color.white);
         var feedback=Component<EnemyHitPresentation>(root);Set(feedback,"sparks",Visual(root,"M8Hit","hit-sparks",Vector3.zero,12));Set(feedback,"smoke",Visual(root,"M8Smoke","smoke-debris",new Vector3(.1f,.3f,0),7,.6f));Array(feedback,"hitFrames",Frames("hit-sparks"));Array(feedback,"smokeFrames",Frames("smoke-debris"));
     }
@@ -100,6 +102,7 @@ public static class ConfigureM8Production
     }
     public static object Fleet()
     {
+        EditMode();
         foreach(var pair in new[]{new[]{"Scout","scout"},new[]{"Raider","raider"},new[]{"Bomber","heavy"},new[]{"Bulwark","bulwark"},new[]{"Sniper","sniper"},new[]{"Interceptor","interceptor"},new[]{"Carrier","carrier"},new[]{"WardenDrone","warden-drone"}})Prefab("Enemies/"+pair[0],r=>Hull(r,pair[1]));
         Prefab("Player/Player",Player);
         Player(GameObject.Find("Player"));
@@ -125,6 +128,7 @@ public static class ConfigureM8Production
     }
     public static object BossesWorld()
     {
+        EditMode();
         foreach(var family in new[]{"vanguard","warden"})Prefab("Enemies/"+(family=="vanguard"?"VanguardFrigate":"NebulaWarden"),root=>{
             var hull=root.GetComponentsInChildren<SpriteRenderer>(true).First(r=>r.name=="HullPlaceholder");hull.sprite=S(family+"-hull");hull.color=Color.white;hull.transform.localScale=Vector3.one/root.transform.localScale.x;Damage(root,family);
             foreach(var r in root.GetComponentsInChildren<SpriteRenderer>(true))
@@ -160,8 +164,19 @@ public static class ConfigureM8Production
                 if(r.name.StartsWith("DeathBeat"))Loop(r,"missile-splash");
                 if(r.name.StartsWith("ShieldBreak"))Loop(r,"shield-activate-break");
             }
+            if(family=="vanguard")
+            {
+                for(int sign=-1;sign<=1;sign+=2)Visual(root,"M8Truss"+sign,"vanguard-truss",new Vector3(sign*1.7f,.25f,0),2);
+            }
             if(family=="warden")
             {
+                foreach(var name in new[]{"BeamNodeAttack","DroneNode","PlasmaNode"})
+                {
+                    var node=root.transform.Find(name);var offset=node.localPosition;
+                    var brace=Visual(root,"M8Truss"+name,"warden-truss",offset*.5f,2);
+                    brace.transform.localScale=Vector3.one/root.transform.localScale.x;
+                    brace.transform.localRotation=Quaternion.FromToRotation(Vector3.right,offset.normalized);
+                }
                 for(int sign=-1;sign<=1;sign+=2){var r=Visual(root,"M8ArmorWing"+sign,"warden-wing",new Vector3(sign*2.65f,.25f,0),3,.65f);r.flipX=sign<0;}
                 var core=Visual(root,"M8Core","warden-core",Vector3.zero,6,.42f);Loop(core,"warden-core-loop");
             }
@@ -178,6 +193,7 @@ public static class ConfigureM8Production
     static string PickupId(PickupDefinition d)=>d.Kind==PickupKind.Shard?"stellar-shard":d.Kind==PickupKind.WeaponCore?d.Branch==WeaponBranch.Pulse?"pulse-core":d.Branch==WeaponBranch.Plasma?"plasma-core":"homing-core":d.Kind==PickupKind.Shield?"shield-cell":d.Kind==PickupKind.Overdrive?"overdrive":d.Kind==PickupKind.SupportDrone?"support-drone":d.Kind==PickupKind.MissileAmmo?"missile-ammo":"extra-life";
     public static object CombatRewards()
     {
+        EditMode();
         foreach(var guid in AssetDatabase.FindAssets("t:PickupDefinition",new[]{"Assets/StarShift/Data"}))
         {var d=AssetDatabase.LoadAssetAtPath<PickupDefinition>(AssetDatabase.GUIDToAssetPath(guid));var id=PickupId(d);d.Sprite=S(id);d.AnimationFrames=Frames(id);EditorUtility.SetDirty(d);}
         foreach(var guid in AssetDatabase.FindAssets("t:PulseLaserDefinition",new[]{"Assets/StarShift/Data"}))
@@ -210,6 +226,7 @@ public static class ConfigureM8Production
             label.rectTransform.anchorMin=Vector2.zero;label.rectTransform.anchorMax=Vector2.one;label.rectTransform.offsetMin=new Vector2(42,0);label.rectTransform.offsetMax=new Vector2(-6,0);label.fontSize=24;label.alignment=TextAnchor.MiddleCenter;
             var effects=(Text)so.FindProperty("effectLabel").objectReferenceValue;
             for(int i=0;i<3;i++){var img=Icon(effects.transform,"M8Status"+i,new[]{"ui-shield","ui-overdrive","ui-support"}[i],new Vector2(1,.5f),new Vector2(30+i*32,0),new Vector2(26,26));Set(hud,new[]{"shieldIcon","overdriveIcon","supportIcon"}[i],img);}
+            var missile=(Button)so.FindProperty("missileButton").objectReferenceValue;Icon(missile.transform,"M8AmmoIcon","ui-ammo",new Vector2(0,.5f),new Vector2(22,0),new Vector2(26,26));
             var shard=(Text)so.FindProperty("shardLabel").objectReferenceValue;Icon(shard.transform.parent,"M8ShardIcon","ui-shard",new Vector2(0,.5f),new Vector2(16,0),new Vector2(26,26));
         }
         var view=root.GetComponent<ShellView>();if(view!=null)
@@ -224,6 +241,7 @@ public static class ConfigureM8Production
     }
     public static object FrontendEnvironment()
     {
+        EditMode();
         Prefab("UI/GameShellUI",Ui);var ui=UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();foreach(var root in ui)if(root.GetComponentInChildren<Canvas>(true)!=null)Ui(root);
         foreach(var root in ui)foreach(var r in root.GetComponentsInChildren<SpriteRenderer>(true))
         {
@@ -233,10 +251,11 @@ public static class ConfigureM8Production
             if(r.name=="AsteroidLeft"||r.name=="AsteroidRight"){r.sprite=S("parallax-debris");r.color=new Color(.35f,.45f,.6f,.3f);r.transform.localScale=Vector3.one*(r.name=="AsteroidLeft"?.28f:.20f);}
             if(r.name=="Star" || r.sprite.name.Contains("star-placeholder"))r.sprite=S("star");
         }
-        var intro=UnityEngine.Object.FindAnyObjectByType<MissionIntroPresentation>();Set(intro,"astraPlanet",S("astra-planet"));Set(intro,"crimsonPlanet",S("crimson-planet"));Set(intro,"farBackground",GameObject.Find("Main Camera/M8Environment").GetComponent<SpriteRenderer>());Set(intro,"astraBackground",S("background"));Set(intro,"crimsonBackground",S("crimson-background"));
+        var intro=UnityEngine.Object.FindAnyObjectByType<MissionIntroPresentation>();Set(intro,"session",UnityEngine.Object.FindAnyObjectByType<GameplaySession>());Set(intro,"astraPlanet",S("astra-planet"));Set(intro,"crimsonPlanet",S("crimson-planet"));Set(intro,"farBackground",GameObject.Find("Main Camera/M8Environment").GetComponent<SpriteRenderer>());Set(intro,"astraBackground",S("background"));Set(intro,"crimsonBackground",S("crimson-background"));
         var soIntro=new SerializedObject(intro);soIntro.FindProperty("planetStartScale").floatValue=.8f;soIntro.FindProperty("planetEndScale").floatValue=1.03f;soIntro.ApplyModifiedPropertiesWithoutUndo();
         Camera.main.clearFlags=CameraClearFlags.SolidColor;Camera.main.backgroundColor=new Color(8/255f,15/255f,32/255f,1);
         Save();return "Shared UI and regional environment bound";
     }
+    static void EditMode(){if(EditorApplication.isPlayingOrWillChangePlaymode)throw new InvalidOperationException("Edit Mode required");}
     static void Save(){AssetDatabase.SaveAssets();EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());EditorSceneManager.SaveOpenScenes();}
 }

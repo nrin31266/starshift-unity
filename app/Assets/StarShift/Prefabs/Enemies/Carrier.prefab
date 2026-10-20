@@ -413,7 +413,7 @@ MonoBehaviour:
   damagedTint: {r: 1, g: 1, b: 1, a: 1}
   damagedHealthFraction: 0.5
   flashDuration: 0.08
-  criticalHealthFraction: 0
+  criticalHealthFraction: 0.25
   criticalTint: {r: 1, g: 1, b: 1, a: 1}
   damagedSprite: {fileID: 21300000, guid: e3b064e22b065da81b7f474a93f1082f, type: 3}
   criticalSprite: {fileID: 21300000, guid: 9ed01a4dd11bfb9509981c228de9452f, type: 3}

@@ -34,7 +34,8 @@ local function plate(w,h,accent,kind)
 end
 for _,family in ipairs{"vanguard","warden"}do
  local accent=family=="vanguard"and 17 or 27
- for _,spec in ipairs{{"engine","engine"},{"reactor","core"},{"core","core"},{"missile-pod","missile"},{"beam-pod","gun"},{"beam-node","gun"},{"drone-node","missile"},{"plasma-node","core"}}do save(plate(96,96,accent,spec[2]),family.."-"..spec[1])end
+ local specs=family=="vanguard" and {{"engine","engine"},{"reactor","core"},{"missile-pod","missile"},{"beam-pod","gun"}} or {{"core","core"},{"beam-node","gun"},{"drone-node","missile"},{"plasma-node","core"}}
+ for _,spec in ipairs(specs)do save(plate(96,96,accent,spec[2]),family.."-"..spec[1])end
  local wing=image(256,112);poly(wing,{{2,35},{62,6},{180,9},{253,40},{240,92},{167,107},{60,87},{2,65}},1);poly(wing,{{5,37},{64,9},{178,12},{248,42},{236,88},{166,102},{62,83},{5,62}},4);poly(wing,{{9,38},{64,12},{171,15},{193,32},{67,37},{13,56}},6);line(wing,64,12,170,15,7);for x=50,210,24 do line(wing,x,43,x+19,82,3);line(wing,x+1,43,x+20,82,5);rect(wing,x,66,6,3,accent)end;save(wing,family.."-wing")
 end
 -- Biến thể đá dùng canvas native, cùng anchor và các dải sắc độ.
@@ -57,7 +58,7 @@ for index,id in ipairs(pickupIds)do
  elseif index==6 then poly(base,{{16,13},{24,23},{19,22},{16,26},{13,22},{8,23}},c);rect(base,15,15,2,7,8)
  elseif index==8 then rect(base,13,11,6,17,c);rect(base,8,17,16,5,c);rect(base,14,12,2,14,32)end end
  local frames={};for f=0,3 do local a=Image(base);local x=8+f*5;local y=10+f*5;line(a,x-2,y,x+2,y,8);line(a,x,y-2,x,y+2,24);frames[#frames+1]=a end
- local s=Sprite(32,40,ColorMode.RGB);local sheet=image(128,40);for f,a in ipairs(frames)do if f>1 then s:newFrame()end;s:newCel(s.layers[1],f,a,Point(0,0));s.frames[f].duration=.14;copy(sheet,a,(f-1)*32,0)end;s:saveAs(root.."/cleaned/"..id..".aseprite");s:close();base:saveAs(out.."/"..id..".png");sheet:saveAs(out.."/"..id.."-sheet.png")
+ local s=Sprite(32,40,ColorMode.RGB);local sheet=image(128,40);for f,a in ipairs(frames)do if f>1 then s:newFrame()end;s:newCel(s.layers[1],f,a,Point(0,0));s.frames[f].duration=.14;copy(sheet,a,(f-1)*32,0)end;s:saveAs(root.."/cleaned/"..id..".aseprite");s:close();frames[1]:saveAs(out.."/"..id..".png");sheet:saveAs(out.."/"..id.."-sheet.png")
 end
 -- Icon khác silhouette, dùng chung panel và giữ chữ native Unity.
 for i,id in ipairs{"ui-weapon-pulse","ui-weapon-plasma","ui-weapon-homing","ui-shield","ui-overdrive","ui-support","ui-ammo","ui-life","ui-shard"}do local src=load(pickupIds[i]);local icon=image(24,24);local crop=Image(src);crop:resize(19,24);copy(icon,crop,2,0);save(icon,id)end
@@ -85,4 +86,29 @@ print("PASS production source/export batch")
 do
  local base=load("warden-core");local sheet=image(384,96);local s=Sprite(96,96,ColorMode.RGB)
  for f=0,3 do local a=Image(base);disc(a,48,48,11+f,11+f,f%2==0 and 27 or 28,.8);if f>0 then s:newFrame()end;s:newCel(s.layers[1],f+1,a,Point(0,0));s.frames[f+1].duration=.16;copy(sheet,a,f*96,0)end;s:saveAs(root.."/cleaned/warden-core-loop.aseprite");s:close();sheet:saveAs(out.."/warden-core-loop-sheet.png")
+end
+-- Cửa hangar chỉ phát chuyển động khi EscortSpawner đã phóng drone thật.
+do
+ local sheet=image(256,32);local s=Sprite(64,32,ColorMode.RGB)
+ for f=0,3 do local a=image(64,32);poly(a,{{5,2},{58,2},{62,6},{62,26},{58,30},{5,30},{1,26},{1,6}},1);rect(a,5,5,54,22,3);rect(a,8,8,48,17,1);line(a,6,5,57,5,6)
+ for x=10,52,7 do rect(a,x,22,3,1,23)end
+ local door=math.floor(23*(1-f/3));if door>0 then rect(a,8,8,door,13,4);rect(a,56-door,8,door,13,5);for x=10,54,7 do if x<8+door or x>56-door then line(a,x,9,x,18,6)end end end
+ if f>0 then s:newFrame()end;s:newCel(s.layers[1],f+1,a,Point(0,0));s.frames[f+1].duration=.1;copy(sheet,a,f*64,0);if f==0 then a:saveAs(out.."/carrier-bay-loop.png")end end
+ s:saveAs(root.."/cleaned/carrier-bay-loop.aseprite");s:close();sheet:saveAs(out.."/carrier-bay-loop-sheet.png")
+end
+-- Khung giằng nối hull và module tại mount gameplay, không kéo giãn một hull duy nhất.
+for _,id in ipairs{"vanguard-truss","warden-truss"}do
+ local a=image(192,48);local accent=id=="vanguard-truss"and 17 or 27
+ poly(a,{{2,14},{17,7},{174,7},{189,14},{189,34},{174,41},{17,41},{2,34}},1);rect(a,9,13,174,22,3);rect(a,10,13,172,3,6);rect(a,10,32,172,2,4)
+ for x=17,168,24 do poly(a,{{x,16},{x+7,16},{x+22,30},{x+15,30}},5);line(a,x+2,17,x+17,30,7);rect(a,x+10,22,4,2,accent)end
+ rect(a,4,17,9,14,4);rect(a,179,17,9,14,4);line(a,5,17,11,17,7);save(a,id)
+end
+-- Nebula là các cụm kín, không chạm mép patch; planet dùng renderer riêng.
+for _,id in ipairs{"background","crimson-background"}do
+ local a=image(768,336);rect(a,0,0,768,336,1);local warm=id=="crimson-background"
+ poly(a,{{32,240},{58,213},{95,209},{128,221},{170,229},{200,251},{245,255},{283,275},{325,279},{376,309},{315,315},{267,304},{209,300},{166,282},{122,277},{87,264},{52,263}},warm and 14 or 2)
+ poly(a,{{64,239},{91,226},{121,237},{170,247},{190,264},{238,269},{270,286},{310,294},{256,290},{208,283},{161,266},{112,259}},warm and 15 or 3)
+ poly(a,{{430,30},{480,22},{530,34},{580,33},{620,46},{690,53},{725,72},{682,78},{632,65},{585,62},{550,51},{500,50},{466,37}},warm and 14 or 2)
+ for i=0,86 do local x=16+(i*293+97)%736;local y=16+(i*137+23)%304;put(a,x,y,i%7==0 and 5 or 3)end
+ save(a,id)
 end

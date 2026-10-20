@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: b0798958e296dcd78a1e0094b0d228eb
+guid: 0453e60f6a128091398165395ff543ce
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8190868167972389818
-    second: vanguard-plasma-node_0
+      213: -8706538922002595791
+    second: warden-truss_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: vanguard-plasma-node_0
+      name: warden-truss_0
       rect:
         serializedVersion: 2
         x: 1
-        y: 2
-        width: 94
-        height: 93
+        y: 6
+        width: 190
+        height: 36
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 64c73fd5cc0345e80800000000000000
-      internalID: -8190868167972389818
+      spriteID: 1304ceacaf82c2780800000000000000
+      internalID: -8706538922002595791
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      vanguard-plasma-node_0: -8190868167972389818
+      warden-truss_0: -8706538922002595791
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -18,7 +18,7 @@ def validate():
         if not output.exists():
             continue
         im = Image.open(output).convert('RGBA')
-        colors = set(im.getdata())
+        colors = set(im.get_flattened_data())
         assert colors and any(p[3] for p in colors), f'empty: {output}'
         assert all(p[3] in (0, 255) for p in colors), f'alpha fringe: {output}'
         assert all(p[:3] in PALETTE for p in colors if p[3]), f'palette: {output}'

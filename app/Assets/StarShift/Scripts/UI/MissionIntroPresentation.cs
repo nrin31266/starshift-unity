@@ -10,6 +10,7 @@ namespace StarShift.UI
         [SerializeField] private Sprite astraPlanet, crimsonPlanet;
         [SerializeField] private SpriteRenderer farBackground;
         [SerializeField] private Sprite astraBackground, crimsonBackground;
+        [SerializeField] private GameplaySession session;
         [SerializeField] private Transform stars;
         [SerializeField] private Camera gameplayCamera;
         [SerializeField] private SpriteRenderer ship;
@@ -94,6 +95,12 @@ namespace StarShift.UI
         }
         private void LateUpdate()
         {
+            if (!journeyVisible && farBackground != null && session != null && session.Flow?.Level != null)
+            {
+                var region = session.Flow.Level.RegionId;
+                if (region == "astra-frontier" && astraBackground != null) farBackground.sprite = astraBackground;
+                else if (region == "crimson-nebula" && crimsonBackground != null) farBackground.sprite = crimsonBackground;
+            }
             if (journeyVisible) ApplyJourneyVisuals(Time.deltaTime);
             else if (introVisible || cueVisible) ApplyVisuals(Time.deltaTime);
         }
