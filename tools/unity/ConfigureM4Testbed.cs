@@ -232,7 +232,7 @@ public static class ConfigureM4Testbed
             var plate=row.Find("Plate");if(plate!=null)Add<LayoutElement>(plate.gameObject).ignoreLayout=true;
             foreach(var text in row.GetComponentsInChildren<Text>()){text.resizeTextForBestFit=false;text.horizontalOverflow=HorizontalWrapMode.Overflow;text.verticalOverflow=VerticalWrapMode.Overflow;}
         }
-        Set(hud,"effectLabel",Cue(combat,"Effects",new Vector2(0,32),22));Set(hud,"pickupLabel",Cue(combat,"PickupCue",new Vector2(0,65),24));
+        Set(hud,"pickupLabel",Cue(combat,"PickupCue",new Vector2(0,65),24));
         foreach(var graphic in combat.GetComponentsInChildren<Graphic>())if(graphic.gameObject!=weapon.gameObject && graphic.transform.GetComponentInParent<Button>()==null)graphic.raycastTarget=false;
         foreach(var graphic in weapon.GetComponentsInChildren<Graphic>())if(graphic!=image)graphic.raycastTarget=false;
     }

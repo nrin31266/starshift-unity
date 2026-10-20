@@ -240,6 +240,7 @@ GameObject:
   - component: {fileID: 7141294690989510759}
   - component: {fileID: 7435043420330308838}
   - component: {fileID: 5371598160075963550}
+  - component: {fileID: 7249051576180760856}
   m_Layer: 0
   m_Name: Mission04
   m_TagString: Untagged
@@ -295,7 +296,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -327,10 +328,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -361,9 +362,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Outline
-  m_EffectColor: {r: 0.36, g: 0.9, b: 1, a: 1}
-  m_EffectDistance: {x: 3, y: -3}
+  m_EffectColor: {r: 0.35, g: 0.95, b: 1, a: 0.95}
+  m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &7249051576180760856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 54142501868258610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &71475448206381682
 GameObject:
   m_ObjectHideFlags: 0
@@ -440,7 +453,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "C\xC0I \u0110\u1EB6T"
 --- !u!1 &76097092796998280
@@ -519,7 +532,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "CH\u01A0I L\u1EA0I \u0110\u1EE2T"
 --- !u!1 &156973218009866488
@@ -664,7 +677,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 24
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -673,7 +686,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
 --- !u!1 &203986111903380557
@@ -689,6 +702,7 @@ GameObject:
   - component: {fileID: 3604882110762456426}
   - component: {fileID: 1869662477690451575}
   - component: {fileID: 9184318205175024381}
+  - component: {fileID: 5065590586913126879}
   m_Layer: 0
   m_Name: Tab1
   m_TagString: Untagged
@@ -711,10 +725,10 @@ RectTransform:
   - {fileID: 9036365151581549039}
   m_Father: {fileID: 9074537360938801413}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.61, y: 0.64}
-  m_AnchorMax: {x: 0.61, y: 0.64}
+  m_AnchorMin: {x: 0.73, y: 0.78}
+  m_AnchorMax: {x: 0.73, y: 0.78}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 330, y: 60}
+  m_SizeDelta: {x: 240, y: 54}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9032012784848980860
 CanvasRenderer:
@@ -744,7 +758,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1e61a6830e2ceef8096ec1f8b1fb823e, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -776,10 +790,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -810,9 +824,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Outline
-  m_EffectColor: {r: 0.36, g: 0.9, b: 1, a: 1}
-  m_EffectDistance: {x: 3, y: -3}
+  m_EffectColor: {r: 0.35, g: 0.95, b: 1, a: 0.95}
+  m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &5065590586913126879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 203986111903380557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &273331990085745557
 GameObject:
   m_ObjectHideFlags: 0
@@ -1021,7 +1047,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 25
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -1030,7 +1056,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "NHI\u1EC6M V\u1EE4 02"
 --- !u!1 &443451153208625638
@@ -1121,6 +1147,7 @@ GameObject:
   - component: {fileID: 5969743380266601665}
   - component: {fileID: 2344202476499434031}
   - component: {fileID: 7049649084791507778}
+  - component: {fileID: 7968820576496797623}
   m_Layer: 0
   m_Name: Credits
   m_TagString: Untagged
@@ -1176,7 +1203,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1208,10 +1235,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -1250,6 +1277,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &7968820576496797623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 636478455769549021}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &705509420253188308
 GameObject:
   m_ObjectHideFlags: 0
@@ -1404,7 +1443,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "TI\u1EBEP T\u1EE4C"
 --- !u!1 &817725970446773997
@@ -1499,7 +1538,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1464362499314435098
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1624,7 +1663,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 22
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -1633,7 +1672,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
 --- !u!1 &1086154059549066104
@@ -1723,6 +1762,7 @@ GameObject:
   - component: {fileID: 1106228033592772997}
   - component: {fileID: 3757206205295144718}
   - component: {fileID: 4711686615298966475}
+  - component: {fileID: 7816016756260223334}
   m_Layer: 0
   m_Name: ReloadSave
   m_TagString: Untagged
@@ -1778,7 +1818,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1810,10 +1850,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -1832,6 +1872,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7816016756260223334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089709912757331840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &1100080365087450897
 GameObject:
   m_ObjectHideFlags: 0
@@ -1844,6 +1896,7 @@ GameObject:
   - component: {fileID: 4988153271740325537}
   - component: {fileID: 3025235110897913732}
   - component: {fileID: 2160700489604280685}
+  - component: {fileID: 6881697194303193321}
   m_Layer: 0
   m_Name: Back
   m_TagString: Untagged
@@ -1899,7 +1952,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1931,10 +1984,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -1953,6 +2006,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6881697194303193321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1100080365087450897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &1128148215967103914
 GameObject:
   m_ObjectHideFlags: 0
@@ -2029,7 +2094,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "X\u01AF\u1EDENG"
 --- !u!1 &1138872314927547065
@@ -2100,7 +2165,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 881dc1c2008f159c2a6dc15bcc2d004a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 97332bb0ce084331a879a445830d9d2a, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2297,7 +2362,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "X\u01AF\u1EDENG T\xC0U"
 --- !u!1 &1168965763153871079
@@ -2443,7 +2508,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 22
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -2452,7 +2517,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "GI\u1EDAI THI\u1EC6U"
 --- !u!1 &1189486059916228574
@@ -2607,7 +2672,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "Ch\u1EA1m \u2161 \u0111\u1EC3 t\u1EA1m d\u1EEBng. B\u1EA1n c\xF3 th\u1EC3
     \u0111\u1ED5i c\xE0i \u0111\u1EB7t ho\u1EB7c ch\u01A1i l\u1EA1i \u0111\u1EE3t
@@ -2626,6 +2691,7 @@ GameObject:
   - component: {fileID: 1791380025854396998}
   - component: {fileID: 1498863958367562822}
   - component: {fileID: 7273088622219967876}
+  - component: {fileID: 6378762277471347338}
   m_Layer: 0
   m_Name: Mission01
   m_TagString: Untagged
@@ -2681,7 +2747,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2713,10 +2779,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -2747,9 +2813,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Outline
-  m_EffectColor: {r: 0.36, g: 0.9, b: 1, a: 1}
-  m_EffectDistance: {x: 3, y: -3}
+  m_EffectColor: {r: 0.35, g: 0.95, b: 1, a: 0.95}
+  m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &6378762277471347338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1259228849045708306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &1259990975449718071
 GameObject:
   m_ObjectHideFlags: 0
@@ -2826,7 +2904,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: STARSHIFT
 --- !u!1 &1293367871254001537
@@ -3070,7 +3148,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 23
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -3079,7 +3157,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "S\u01A0N T\xC0U"
 --- !u!1 &1335288723658022683
@@ -3149,7 +3227,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 25
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -3158,7 +3236,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "NHI\u1EC6M V\u1EE4 04"
 --- !u!1 &1368254606523284983
@@ -3173,6 +3251,7 @@ GameObject:
   - component: {fileID: 6061677934181194630}
   - component: {fileID: 4373880419179421418}
   - component: {fileID: 7833494392271729182}
+  - component: {fileID: 2439367000819965668}
   m_Layer: 0
   m_Name: Back
   m_TagString: Untagged
@@ -3228,7 +3307,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3260,10 +3339,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -3282,6 +3361,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2439367000819965668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1368254606523284983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &1450901195692881476
 GameObject:
   m_ObjectHideFlags: 0
@@ -3358,7 +3449,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "L\u01AFU V\xC0 QUAY L\u1EA0I"
 --- !u!1 &1506481375915897275
@@ -3597,7 +3688,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "X\u01AF\u1EDENG"
 --- !u!1 &1580058302201082111
@@ -3752,7 +3843,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "T\u1EA0M D\u1EEANG"
 --- !u!114 &8941043788435733725
@@ -3788,6 +3879,7 @@ GameObject:
   - component: {fileID: 1802363238533512203}
   - component: {fileID: 2623391670882576461}
   - component: {fileID: 5373457840902362450}
+  - component: {fileID: 613753019381197715}
   m_Layer: 0
   m_Name: Confirm
   m_TagString: Untagged
@@ -3875,10 +3967,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -3917,6 +4009,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &613753019381197715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1625359723947500606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &1629340650487366709
 GameObject:
   m_ObjectHideFlags: 0
@@ -3993,7 +4097,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "K\xE9o \u1EDF v\xF9ng tr\u1ED1ng \u0111\u1EC3 di chuy\u1EC3n t\u01B0\u01A1ng
     \u0111\u1ED1i. Gi\u1EEF ng\xF3n tay \u0111\u1EC3 b\u1EAFn; nh\u1EA5c tay \u0111\u1EC3
@@ -4065,7 +4169,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 25
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -4074,7 +4178,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "NHI\u1EC6M V\u1EE4 07"
 --- !u!1 &1828371608791127850
@@ -4393,7 +4497,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 22
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -4402,7 +4506,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
 --- !u!1 &1978274731431194377
@@ -4481,7 +4585,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "T\u1EA0O CHI\u1EBEN D\u1ECACH M\u1EDAI"
 --- !u!1 &1990043424051061174
@@ -4626,7 +4730,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 25
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -4635,7 +4739,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
 --- !u!1 &2011225472453210204
@@ -4651,6 +4755,7 @@ GameObject:
   - component: {fileID: 8885851291237143438}
   - component: {fileID: 6204807676351546681}
   - component: {fileID: 3365758997183368744}
+  - component: {fileID: 3914213562723012236}
   m_Layer: 0
   m_Name: Tab0
   m_TagString: Untagged
@@ -4673,10 +4778,10 @@ RectTransform:
   - {fileID: 7367498157061241273}
   m_Father: {fileID: 9074537360938801413}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.73, y: 0.78}
-  m_AnchorMax: {x: 0.73, y: 0.78}
+  m_AnchorMin: {x: 0.565, y: 0.78}
+  m_AnchorMax: {x: 0.565, y: 0.78}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 720, y: 60}
+  m_SizeDelta: {x: 240, y: 54}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4565673486781991167
 CanvasRenderer:
@@ -4706,7 +4811,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1e61a6830e2ceef8096ec1f8b1fb823e, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4738,10 +4843,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -4772,9 +4877,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Outline
-  m_EffectColor: {r: 0.36, g: 0.9, b: 1, a: 1}
-  m_EffectDistance: {x: 3, y: -3}
+  m_EffectColor: {r: 0.35, g: 0.95, b: 1, a: 0.95}
+  m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &3914213562723012236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2011225472453210204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &2014568342707065706
 GameObject:
   m_ObjectHideFlags: 0
@@ -4851,7 +4968,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "CH\u01A0I L\u1EA0I NHI\u1EC6M V\u1EE4"
 --- !u!1 &2044812185639341126
@@ -4930,7 +5047,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "RUNG THI\u1EBET B\u1ECA"
 --- !u!1 &2061261658605982700
@@ -5030,6 +5147,7 @@ GameObject:
   - component: {fileID: 7252970535846317083}
   - component: {fileID: 4134359089960246926}
   - component: {fileID: 6615824265012404264}
+  - component: {fileID: 2447569393640092315}
   m_Layer: 0
   m_Name: RetrySave
   m_TagString: Untagged
@@ -5085,7 +5203,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5117,10 +5235,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -5159,6 +5277,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &2447569393640092315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2092729609234994014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &2138892348070763064
 GameObject:
   m_ObjectHideFlags: 0
@@ -5235,7 +5365,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "GI\u1EDAI THI\u1EC6U"
 --- !u!1 &2181026747931796357
@@ -5326,6 +5456,7 @@ GameObject:
   - component: {fileID: 4363735173703333220}
   - component: {fileID: 7929397395378882155}
   - component: {fileID: 2228191177654156158}
+  - component: {fileID: 7832691772993660483}
   m_Layer: 0
   m_Name: Store
   m_TagString: Untagged
@@ -5381,7 +5512,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5413,10 +5544,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -5455,6 +5586,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &7832691772993660483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2226693711619464809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &2243417597161268291
 GameObject:
   m_ObjectHideFlags: 0
@@ -5542,6 +5685,7 @@ GameObject:
   - component: {fileID: 2175105849088793089}
   - component: {fileID: 179033206452654880}
   - component: {fileID: 6046192839439856628}
+  - component: {fileID: 1601906910996907044}
   m_Layer: 0
   m_Name: SaveSettings
   m_TagString: Untagged
@@ -5629,10 +5773,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -5651,6 +5795,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1601906910996907044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2296295773903090561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &2352786852720378879
 GameObject:
   m_ObjectHideFlags: 0
@@ -5808,7 +5964,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 24
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -5817,7 +5973,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
 --- !u!1 &2413804789345164853
@@ -6024,7 +6180,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "HI\u1EC6U \u1EE8NG \xC2M THANH"
 --- !u!1 &2464447931967634232
@@ -6040,6 +6196,7 @@ GameObject:
   - component: {fileID: 8028263347934971606}
   - component: {fileID: 1685226841335577317}
   - component: {fileID: 1468433689963879813}
+  - component: {fileID: 5279465204947827178}
   m_Layer: 0
   m_Name: Missions
   m_TagString: Untagged
@@ -6095,7 +6252,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6127,10 +6284,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -6169,6 +6326,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &5279465204947827178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2464447931967634232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &2550845256743600731
 GameObject:
   m_ObjectHideFlags: 0
@@ -6245,7 +6414,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "DI CHUY\u1EC2N V\xC0 B\u1EAEN"
 --- !u!1 &2625411064967268899
@@ -6402,7 +6571,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
 --- !u!114 &729329106772417275
@@ -6442,7 +6611,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7596772694256071137
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6513,6 +6682,7 @@ GameObject:
   - component: {fileID: 3961215736677124950}
   - component: {fileID: 1680894688758255578}
   - component: {fileID: 3658156771531032134}
+  - component: {fileID: 5789965877335376969}
   m_Layer: 0
   m_Name: Continue
   m_TagString: Untagged
@@ -6600,10 +6770,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -6642,6 +6812,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &5789965877335376969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2710138899227691194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &2740678319046422046
 GameObject:
   m_ObjectHideFlags: 0
@@ -6659,7 +6841,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3260998206608656013
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6943,7 +7125,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "CH\u01A0I M\u1EDAI"
 --- !u!1 &2864655041983552233
@@ -7097,7 +7279,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "M\xC0N H\xCCNH CH\xCDNH"
 --- !u!1 &3007159627773248437
@@ -7167,7 +7349,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 24
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -7176,7 +7358,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
 --- !u!1 &3017358942142911971
@@ -7192,6 +7374,7 @@ GameObject:
   - component: {fileID: 4295995743910768116}
   - component: {fileID: 5856565153547962645}
   - component: {fileID: 4810943364187466653}
+  - component: {fileID: 2204551873566936996}
   m_Layer: 0
   m_Name: Mission02
   m_TagString: Untagged
@@ -7247,7 +7430,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7279,10 +7462,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -7313,9 +7496,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Outline
-  m_EffectColor: {r: 0.36, g: 0.9, b: 1, a: 1}
-  m_EffectDistance: {x: 3, y: -3}
+  m_EffectColor: {r: 0.35, g: 0.95, b: 1, a: 0.95}
+  m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &2204551873566936996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3017358942142911971}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &3028825068834440046
 GameObject:
   m_ObjectHideFlags: 0
@@ -7392,7 +7587,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "C\u1EECA H\xC0NG"
 --- !u!1 &3070667688560983590
@@ -7471,7 +7666,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "H\u1EE6Y"
 --- !u!1 &3078790102040708925
@@ -7693,7 +7888,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 22
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -7702,7 +7897,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "C\xC0I \u0110\u1EB6T"
 --- !u!1 &3230209247051632547
@@ -7856,7 +8051,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "NH\u1EA0C"
 --- !u!1 &3261806150948200859
@@ -7961,6 +8156,7 @@ GameObject:
   - component: {fileID: 2071353835649214143}
   - component: {fileID: 1963876793442125905}
   - component: {fileID: 6550200966169530128}
+  - component: {fileID: 2244455015590571979}
   m_Layer: 0
   m_Name: Cosmetic0
   m_TagString: Untagged
@@ -8017,7 +8213,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a8d4d8ee929a2beea940a196a02ecbee, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8049,10 +8245,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -8083,9 +8279,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Outline
-  m_EffectColor: {r: 0.36, g: 0.9, b: 1, a: 1}
-  m_EffectDistance: {x: 3, y: -3}
+  m_EffectColor: {r: 0.35, g: 0.95, b: 1, a: 0.95}
+  m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &2244455015590571979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3321748179446566344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &3345326801634342812
 GameObject:
   m_ObjectHideFlags: 0
@@ -8162,7 +8370,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "CH\u01A0I L\u1EA0I NHI\u1EC6M V\u1EE4"
 --- !u!1 &3361633735498775376
@@ -8307,7 +8515,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 25
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -8316,7 +8524,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
 --- !u!1 &3601193860177527139
@@ -8482,6 +8690,7 @@ GameObject:
   - component: {fileID: 1565065938357658797}
   - component: {fileID: 2344165912451982819}
   - component: {fileID: 7958582737608649722}
+  - component: {fileID: 4043121155602652144}
   m_Layer: 0
   m_Name: MainMenu
   m_TagString: Untagged
@@ -8537,7 +8746,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8569,10 +8778,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -8611,6 +8820,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &4043121155602652144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3670213205261859184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &3689205189500988096
 GameObject:
   m_ObjectHideFlags: 0
@@ -8762,7 +8983,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "QUAY L\u1EA0I"
 --- !u!1 &3714462539170248382
@@ -8832,7 +9053,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 20
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -8841,7 +9062,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
 --- !u!1 &3782895545305628937
@@ -8857,6 +9078,7 @@ GameObject:
   - component: {fileID: 479979878930398996}
   - component: {fileID: 3324619818366981805}
   - component: {fileID: 8738068636922501250}
+  - component: {fileID: 260346409020300625}
   m_Layer: 0
   m_Name: Back
   m_TagString: Untagged
@@ -8912,7 +9134,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8944,10 +9166,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -8986,6 +9208,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &260346409020300625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3782895545305628937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &3819011402163467484
 GameObject:
   m_ObjectHideFlags: 0
@@ -9053,7 +9287,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 22
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -9062,7 +9296,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
 --- !u!1 &3822044953940040085
@@ -9153,6 +9387,7 @@ GameObject:
   - component: {fileID: 857172747560083230}
   - component: {fileID: 473698518356392027}
   - component: {fileID: 5536764781989933712}
+  - component: {fileID: 838141524221027200}
   m_Layer: 0
   m_Name: Retry
   m_TagString: Untagged
@@ -9208,7 +9443,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -9240,10 +9475,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -9282,6 +9517,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &838141524221027200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3854873525016566590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &3859335700964580776
 GameObject:
   m_ObjectHideFlags: 0
@@ -9549,6 +9796,7 @@ GameObject:
   - component: {fileID: 8772149008170169263}
   - component: {fileID: 4059034167028341464}
   - component: {fileID: 2756130920981379931}
+  - component: {fileID: 7566669135371881264}
   m_Layer: 0
   m_Name: Missions
   m_TagString: Untagged
@@ -9604,7 +9852,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -9636,10 +9884,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -9678,6 +9926,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &7566669135371881264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3914792682774448944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &3917511455000837538
 GameObject:
   m_ObjectHideFlags: 0
@@ -9755,7 +10015,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
 --- !u!114 &7106032326613088262
@@ -9791,6 +10051,7 @@ GameObject:
   - component: {fileID: 6662125554752805278}
   - component: {fileID: 6713236730223961485}
   - component: {fileID: 2191429051750052966}
+  - component: {fileID: 5585136689423653627}
   m_Layer: 0
   m_Name: MainMenu
   m_TagString: Untagged
@@ -9846,7 +10107,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -9878,10 +10139,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -9920,6 +10181,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &5585136689423653627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3926233813842544037}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &3935486139856010815
 GameObject:
   m_ObjectHideFlags: 0
@@ -10135,6 +10408,7 @@ GameObject:
   - component: {fileID: 5001954080444822837}
   - component: {fileID: 6083623966369643639}
   - component: {fileID: 5183075243303431596}
+  - component: {fileID: 9126171354171203907}
   m_Layer: 0
   m_Name: Back
   m_TagString: Untagged
@@ -10190,7 +10464,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -10222,10 +10496,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -10244,6 +10518,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &9126171354171203907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4001795005991244189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &4030886981623606746
 GameObject:
   m_ObjectHideFlags: 0
@@ -10257,6 +10543,7 @@ GameObject:
   - component: {fileID: 4987736868566754084}
   - component: {fileID: 9122315167089561049}
   - component: {fileID: 8230083546099449664}
+  - component: {fileID: 6337658984160824474}
   m_Layer: 0
   m_Name: Retry
   m_TagString: Untagged
@@ -10312,7 +10599,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -10344,10 +10631,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -10386,6 +10673,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &6337658984160824474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4030886981623606746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &4049677443979619208
 GameObject:
   m_ObjectHideFlags: 0
@@ -10462,7 +10761,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "QUAY L\u1EA0I"
 --- !u!1 &4075741373720628364
@@ -10477,6 +10776,7 @@ GameObject:
   - component: {fileID: 421155766577651115}
   - component: {fileID: 9172133048837712132}
   - component: {fileID: 3817986338899996649}
+  - component: {fileID: 716127860958012745}
   m_Layer: 0
   m_Name: HangarMode
   m_TagString: Untagged
@@ -10532,7 +10832,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1e61a6830e2ceef8096ec1f8b1fb823e, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -10564,10 +10864,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -10586,6 +10886,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &716127860958012745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4075741373720628364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &4139821617275578680
 GameObject:
   m_ObjectHideFlags: 0
@@ -10662,7 +10974,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "TI\u1EBEP T\u1EE4C"
 --- !u!1 &4151356306128822755
@@ -10753,6 +11065,7 @@ GameObject:
   - component: {fileID: 3107473756914655727}
   - component: {fileID: 7123185697996863096}
   - component: {fileID: 4234199434583218973}
+  - component: {fileID: 3732679597135954452}
   m_Layer: 0
   m_Name: Retry
   m_TagString: Untagged
@@ -10808,7 +11121,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -10840,10 +11153,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -10882,6 +11195,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &3732679597135954452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4212113524662659132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &4232069409106598262
 GameObject:
   m_ObjectHideFlags: 0
@@ -10895,6 +11220,7 @@ GameObject:
   - component: {fileID: 8942352304566860868}
   - component: {fileID: 7714618200716817217}
   - component: {fileID: 514556506299278998}
+  - component: {fileID: 387506758607719760}
   m_Layer: 0
   m_Name: Cosmetic2
   m_TagString: Untagged
@@ -10951,7 +11277,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a8d4d8ee929a2beea940a196a02ecbee, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -10983,10 +11309,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -11017,9 +11343,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Outline
-  m_EffectColor: {r: 0.36, g: 0.9, b: 1, a: 1}
-  m_EffectDistance: {x: 3, y: -3}
+  m_EffectColor: {r: 0.35, g: 0.95, b: 1, a: 0.95}
+  m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &387506758607719760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4232069409106598262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &4254824148279483685
 GameObject:
   m_ObjectHideFlags: 0
@@ -11088,7 +11426,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 25
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -11097,7 +11435,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
 --- !u!114 &5963864370271767579
@@ -11273,7 +11611,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "NHI\u1EC6M V\u1EE4"
 --- !u!1 &4405444941124344713
@@ -11289,6 +11627,7 @@ GameObject:
   - component: {fileID: 3185704833129946526}
   - component: {fileID: 2292399900595364523}
   - component: {fileID: 6753996948221356596}
+  - component: {fileID: 1240701739498147301}
   m_Layer: 0
   m_Name: Replay
   m_TagString: Untagged
@@ -11344,7 +11683,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -11376,10 +11715,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -11418,6 +11757,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &1240701739498147301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4405444941124344713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &4419453762253968385
 GameObject:
   m_ObjectHideFlags: 0
@@ -11490,7 +11841,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 881dc1c2008f159c2a6dc15bcc2d004a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 97332bb0ce084331a879a445830d9d2a, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -11602,7 +11953,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "QUAY L\u1EA0I"
 --- !u!1 &4567333511304691475
@@ -11681,7 +12032,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "M\xC0N H\xCCNH CH\xCDNH"
 --- !u!1 &4608413583634217117
@@ -11750,7 +12101,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 6a7d00a9a6ae62ecaa39e3c169069959, type: 3}
+    m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
     m_FontSize: 40
     m_FontStyle: 0
     m_BestFit: 0
@@ -11760,7 +12111,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "KHU V\u1EF0C B"
 --- !u!1 &4610556915412755682
@@ -11839,7 +12190,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "QUAY L\u1EA0I"
 --- !u!1 &4627231530975415893
@@ -11985,7 +12336,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 881dc1c2008f159c2a6dc15bcc2d004a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 97332bb0ce084331a879a445830d9d2a, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -12034,6 +12385,7 @@ GameObject:
   - component: {fileID: 6618331723464797187}
   - component: {fileID: 6117006397496334225}
   - component: {fileID: 7810493849070354200}
+  - component: {fileID: 8146125190004134699}
   m_Layer: 0
   m_Name: Mission06
   m_TagString: Untagged
@@ -12089,7 +12441,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -12121,10 +12473,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -12155,9 +12507,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Outline
-  m_EffectColor: {r: 0.36, g: 0.9, b: 1, a: 1}
-  m_EffectDistance: {x: 3, y: -3}
+  m_EffectColor: {r: 0.35, g: 0.95, b: 1, a: 0.95}
+  m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &8146125190004134699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4748380218912273857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &4873244458311569141
 GameObject:
   m_ObjectHideFlags: 0
@@ -12311,7 +12675,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "TH\u1EEC \u0110\u1ECCC L\u1EA0I"
 --- !u!1 &4908534160738654446
@@ -12465,7 +12829,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "STARSHIFT\n\nB\u1EA3n ch\u01A1i hi\u1EC7n t\u1EA1i: 8 nhi\u1EC7m v\u1EE5
     \xB7 Region A + Region B.\n\u0110\u01B0\u1EE3c x\xE2y d\u1EF1ng b\u1EB1ng Unity.\n\nH\xECnh
@@ -12485,6 +12849,7 @@ GameObject:
   - component: {fileID: 9037794309018070880}
   - component: {fileID: 3945107854853325564}
   - component: {fileID: 4163252608805313223}
+  - component: {fileID: 7639829994617377621}
   m_Layer: 0
   m_Name: StoreMode
   m_TagString: Untagged
@@ -12540,7 +12905,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1e61a6830e2ceef8096ec1f8b1fb823e, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -12572,10 +12937,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -12594,6 +12959,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7639829994617377621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4948139785337824507}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &4977605727070411962
 GameObject:
   m_ObjectHideFlags: 0
@@ -12661,7 +13038,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 23
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -12670,7 +13047,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
 --- !u!1 &4983215900010337300
@@ -12749,7 +13126,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "C\xC1CH CH\u01A0I"
 --- !u!1 &5131947914466322608
@@ -12765,6 +13142,7 @@ GameObject:
   - component: {fileID: 6534697823240273770}
   - component: {fileID: 7874506694209608409}
   - component: {fileID: 3751206455336347105}
+  - component: {fileID: 6753803444244378922}
   m_Layer: 0
   m_Name: Cancel
   m_TagString: Untagged
@@ -12820,7 +13198,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -12852,10 +13230,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -12894,6 +13272,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &6753803444244378922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5131947914466322608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &5168374765101358667
 GameObject:
   m_ObjectHideFlags: 0
@@ -12970,7 +13360,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "Ch\u1EA1m \xF4 v\u0169 kh\xED \u0111\u1EC3 \u0111\u1ED5i nh\xE1nh \u0111\xE3
     m\u1EDF. C\xE1c nh\xE1nh d\xF9ng chung nhi\u1EC7t. Khi qu\xE1 n\xF3ng, ch\u1EDD
@@ -13202,7 +13592,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
 --- !u!114 &5002959009540501607
@@ -13238,6 +13628,7 @@ GameObject:
   - component: {fileID: 9197708428716528604}
   - component: {fileID: 6100181875818910106}
   - component: {fileID: 1552769347080009768}
+  - component: {fileID: 8759067203445814951}
   m_Layer: 0
   m_Name: Mission08
   m_TagString: Untagged
@@ -13293,7 +13684,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -13325,10 +13716,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -13359,9 +13750,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Outline
-  m_EffectColor: {r: 0.36, g: 0.9, b: 1, a: 1}
-  m_EffectDistance: {x: 3, y: -3}
+  m_EffectColor: {r: 0.35, g: 0.95, b: 1, a: 0.95}
+  m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &8759067203445814951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5337811691206454886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &5360335187706755267
 GameObject:
   m_ObjectHideFlags: 0
@@ -13438,7 +13841,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "NHI\u1EC6M V\u1EE4 TI\u1EBEP THEO"
 --- !u!1 &5375856199670362815
@@ -13593,7 +13996,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "QUAY L\u1EA0I"
 --- !u!1 &5462424239691256993
@@ -13708,6 +14111,7 @@ GameObject:
   - component: {fileID: 5493570205509232268}
   - component: {fileID: 7318185967378833603}
   - component: {fileID: 4780646612610861762}
+  - component: {fileID: 96277198408417409}
   m_Layer: 0
   m_Name: Cosmetic1
   m_TagString: Untagged
@@ -13764,7 +14168,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a8d4d8ee929a2beea940a196a02ecbee, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -13796,10 +14200,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -13830,9 +14234,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Outline
-  m_EffectColor: {r: 0.36, g: 0.9, b: 1, a: 1}
-  m_EffectDistance: {x: 3, y: -3}
+  m_EffectColor: {r: 0.35, g: 0.95, b: 1, a: 0.95}
+  m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &96277198408417409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5490439781277041707}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &5513240647563050748
 GameObject:
   m_ObjectHideFlags: 0
@@ -13845,6 +14261,7 @@ GameObject:
   - component: {fileID: 6834474745945043243}
   - component: {fileID: 8958361747383217673}
   - component: {fileID: 2525582205279576321}
+  - component: {fileID: 6753784964796071948}
   m_Layer: 0
   m_Name: LaunchReplay
   m_TagString: Untagged
@@ -13932,10 +14349,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -13954,6 +14371,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6753784964796071948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5513240647563050748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &5539649135162130545
 GameObject:
   m_ObjectHideFlags: 0
@@ -14030,7 +14459,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "QUAY L\u1EA0I"
 --- !u!1 &5585056951517528789
@@ -14050,7 +14479,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5173606830212732711
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14120,6 +14549,7 @@ GameObject:
   - component: {fileID: 1089191161870547496}
   - component: {fileID: 2547057218387289824}
   - component: {fileID: 8629786152575141026}
+  - component: {fileID: 2535798703110480934}
   m_Layer: 0
   m_Name: Equip
   m_TagString: Untagged
@@ -14207,10 +14637,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -14229,6 +14659,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2535798703110480934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5597374063678423726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &5613824410589155157
 GameObject:
   m_ObjectHideFlags: 0
@@ -14296,7 +14738,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 25
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -14305,7 +14747,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "NHI\u1EC6M V\u1EE4 03"
 --- !u!1 &5622503098693053589
@@ -14400,7 +14842,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1091086483295654868
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14629,6 +15071,7 @@ GameObject:
   - component: {fileID: 265429039085867002}
   - component: {fileID: 7908364778828914516}
   - component: {fileID: 4640426279728392820}
+  - component: {fileID: 8404380412195459837}
   m_Layer: 0
   m_Name: Settings
   m_TagString: Untagged
@@ -14684,7 +15127,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -14716,10 +15159,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -14758,6 +15201,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &8404380412195459837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5719225909887758776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &5721905956809173769
 GameObject:
   m_ObjectHideFlags: 0
@@ -14834,7 +15289,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "NHI\u1EC6M V\u1EE4"
 --- !u!1 &5761280474887988492
@@ -14979,7 +15434,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 25
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -14988,7 +15443,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "NHI\u1EC6M V\u1EE4 06"
 --- !u!1 &5768936428091808167
@@ -15004,6 +15459,7 @@ GameObject:
   - component: {fileID: 2267518452000400038}
   - component: {fileID: 5821473857527066981}
   - component: {fileID: 7064449045360823695}
+  - component: {fileID: 7030006377600356859}
   m_Layer: 0
   m_Name: NextMission
   m_TagString: Untagged
@@ -15091,10 +15547,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -15133,6 +15589,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &7030006377600356859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5768936428091808167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &5771218235026125137
 GameObject:
   m_ObjectHideFlags: 0
@@ -15146,6 +15614,7 @@ GameObject:
   - component: {fileID: 5090305347329311682}
   - component: {fileID: 5990449920390074758}
   - component: {fileID: 6373185139362371841}
+  - component: {fileID: 7163782407409067046}
   m_Layer: 0
   m_Name: Help
   m_TagString: Untagged
@@ -15201,7 +15670,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -15233,10 +15702,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -15275,6 +15744,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &7163782407409067046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5771218235026125137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &5930498993716941054
 GameObject:
   m_ObjectHideFlags: 0
@@ -15351,7 +15832,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "C\u1EECA H\xC0NG"
 --- !u!1 &5943299550190048498
@@ -15599,7 +16080,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 25
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -15608,7 +16089,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "NHI\u1EC6M V\u1EE4 08"
 --- !u!1 &6060383732965549050
@@ -15687,7 +16168,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "RUNG M\xC0N H\xCCNH"
 --- !u!1 &6101288592838008083
@@ -15766,7 +16247,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "TH\u1EEC L\u01AFU L\u1EA0I"
 --- !u!1 &6134034284778276197
@@ -16091,7 +16572,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "S\u1ED0NG S\xD3T V\xC0 TI\u1EBEP T\u1EBE"
 --- !u!1 &6190737898140809699
@@ -16107,6 +16588,7 @@ GameObject:
   - component: {fileID: 8029549650037776831}
   - component: {fileID: 4313170360999278056}
   - component: {fileID: 974010804735691395}
+  - component: {fileID: 5170367514097462428}
   m_Layer: 0
   m_Name: Mission03
   m_TagString: Untagged
@@ -16162,7 +16644,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -16194,10 +16676,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -16228,9 +16710,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Outline
-  m_EffectColor: {r: 0.36, g: 0.9, b: 1, a: 1}
-  m_EffectDistance: {x: 3, y: -3}
+  m_EffectColor: {r: 0.35, g: 0.95, b: 1, a: 0.95}
+  m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &5170367514097462428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6190737898140809699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &6201136893553826730
 GameObject:
   m_ObjectHideFlags: 0
@@ -16307,7 +16801,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "T\u1EA0M D\u1EEANG V\xC0 TI\u1EBEP T\u1EE4C"
 --- !u!1 &6213073076425331066
@@ -16462,7 +16956,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 25
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -16471,7 +16965,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "NHI\u1EC6M V\u1EE4 01"
 --- !u!1 &6358825541627581433
@@ -16547,7 +17041,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 881dc1c2008f159c2a6dc15bcc2d004a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a8d4d8ee929a2beea940a196a02ecbee, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -16596,6 +17090,7 @@ GameObject:
   - component: {fileID: 8442235387042794957}
   - component: {fileID: 8779294645624077686}
   - component: {fileID: 9158947672817737900}
+  - component: {fileID: 5376105592414337055}
   m_Layer: 0
   m_Name: Mission07
   m_TagString: Untagged
@@ -16651,7 +17146,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -16683,10 +17178,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -16717,9 +17212,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Outline
-  m_EffectColor: {r: 0.36, g: 0.9, b: 1, a: 1}
-  m_EffectDistance: {x: 3, y: -3}
+  m_EffectColor: {r: 0.35, g: 0.95, b: 1, a: 0.95}
+  m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &5376105592414337055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6361881657930865609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &6381968339638688283
 GameObject:
   m_ObjectHideFlags: 0
@@ -16787,7 +17294,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 23
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -16796,7 +17303,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "V\u1EC6T \u0110\u1ED8NG C\u01A0"
 --- !u!1 &6386835401655302569
@@ -16866,7 +17373,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 20
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -16875,7 +17382,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "\u0110ANG TRANG B\u1ECA"
 --- !u!1 &6428114253062194850
@@ -17040,6 +17547,7 @@ GameObject:
   - component: {fileID: 2785721015734117783}
   - component: {fileID: 5641077024913056082}
   - component: {fileID: 8985798999293327880}
+  - component: {fileID: 6964118784154893046}
   m_Layer: 0
   m_Name: Back
   m_TagString: Untagged
@@ -17095,7 +17603,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -17127,10 +17635,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -17149,6 +17657,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6964118784154893046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6529916127227518908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &6587291234856195937
 GameObject:
   m_ObjectHideFlags: 0
@@ -17375,7 +17895,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "\u0110\u1ED2NG \xDD"
 --- !u!1 &6639738429951451143
@@ -17395,7 +17915,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1240702475070003094
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17755,7 +18275,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "NHI\u1EC6M V\u1EE4"
 --- !u!1 &6771124543522192380
@@ -17900,7 +18420,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 22
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -17909,7 +18429,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "C\xC1CH CH\u01A0I"
 --- !u!1 &6850793663961719714
@@ -17925,6 +18445,7 @@ GameObject:
   - component: {fileID: 1900489481886636500}
   - component: {fileID: 2685376181280383940}
   - component: {fileID: 4158014515902100732}
+  - component: {fileID: 8094092902322791796}
   m_Layer: 0
   m_Name: Tab2
   m_TagString: Untagged
@@ -17947,10 +18468,10 @@ RectTransform:
   - {fileID: 5497966138903307356}
   m_Father: {fileID: 9074537360938801413}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.85, y: 0.64}
-  m_AnchorMax: {x: 0.85, y: 0.64}
+  m_AnchorMin: {x: 0.895, y: 0.78}
+  m_AnchorMax: {x: 0.895, y: 0.78}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 350, y: 60}
+  m_SizeDelta: {x: 240, y: 54}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &251830621358669603
 CanvasRenderer:
@@ -17980,7 +18501,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1e61a6830e2ceef8096ec1f8b1fb823e, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -18012,10 +18533,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -18046,9 +18567,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Outline
-  m_EffectColor: {r: 0.36, g: 0.9, b: 1, a: 1}
-  m_EffectDistance: {x: 3, y: -3}
+  m_EffectColor: {r: 0.35, g: 0.95, b: 1, a: 0.95}
+  m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &8094092902322791796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6850793663961719714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &6930704700870885511
 GameObject:
   m_ObjectHideFlags: 0
@@ -18148,6 +18681,7 @@ GameObject:
   - component: {fileID: 7267240293949248166}
   - component: {fileID: 356031474449612413}
   - component: {fileID: 2440816767304183424}
+  - component: {fileID: 2130819891543926020}
   m_Layer: 0
   m_Name: Mission05
   m_TagString: Untagged
@@ -18203,7 +18737,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -18235,10 +18769,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -18269,9 +18803,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Outline
-  m_EffectColor: {r: 0.36, g: 0.9, b: 1, a: 1}
-  m_EffectDistance: {x: 3, y: -3}
+  m_EffectColor: {r: 0.35, g: 0.95, b: 1, a: 0.95}
+  m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &2130819891543926020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6986091871600351384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &6999458027794246061
 GameObject:
   m_ObjectHideFlags: 0
@@ -18348,7 +18894,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "V\u0168 KH\xCD V\xC0 NHI\u1EC6T"
 --- !u!1 &7106289811971494761
@@ -18364,6 +18910,7 @@ GameObject:
   - component: {fileID: 3161273059906695510}
   - component: {fileID: 4739665908901074255}
   - component: {fileID: 7934219622397799772}
+  - component: {fileID: 3182115222548658735}
   m_Layer: 0
   m_Name: Hangar
   m_TagString: Untagged
@@ -18419,7 +18966,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -18451,10 +18998,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -18493,6 +19040,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &3182115222548658735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7106289811971494761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &7112967271433955873
 GameObject:
   m_ObjectHideFlags: 0
@@ -18569,7 +19128,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "CH\u01A0I L\u1EA0I \u0110\u1EE2T"
 --- !u!1 &7177115182507310223
@@ -18780,7 +19339,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "TH\u1EEC L\u1EA0I"
 --- !u!1 &7280924583425596895
@@ -18859,7 +19418,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "C\xC0I \u0110\u1EB6T"
 --- !u!1 &7301231310515211451
@@ -18967,7 +19526,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6837411784668993284
 RectTransform:
   m_ObjectHideFlags: 0
@@ -19113,6 +19672,7 @@ GameObject:
   - component: {fileID: 8792959192861409696}
   - component: {fileID: 3397458535900436059}
   - component: {fileID: 9210588309711357087}
+  - component: {fileID: 2733359088859423239}
   m_Layer: 0
   m_Name: Resume
   m_TagString: Untagged
@@ -19200,10 +19760,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -19242,6 +19802,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &2733359088859423239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7403944231752459938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &7529900070909207076
 GameObject:
   m_ObjectHideFlags: 0
@@ -19254,6 +19826,7 @@ GameObject:
   - component: {fileID: 2899324774279120356}
   - component: {fileID: 262775009220689956}
   - component: {fileID: 4882106503973916358}
+  - component: {fileID: 6031807172242870439}
   m_Layer: 0
   m_Name: RecoverSave
   m_TagString: Untagged
@@ -19309,7 +19882,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -19341,10 +19914,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -19363,6 +19936,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6031807172242870439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7529900070909207076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &7602592092547264878
 GameObject:
   m_ObjectHideFlags: 0
@@ -19505,7 +20090,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 25
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -19514,7 +20099,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "NHI\u1EC6M V\u1EE4 05"
 --- !u!1 &7851219389306015366
@@ -19659,7 +20244,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 23
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -19668,7 +20253,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
 --- !u!1 &7887777236055168257
@@ -19747,7 +20332,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
 --- !u!1 &8051599504058705691
@@ -19903,7 +20488,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
 --- !u!114 &5173465507268351940
@@ -20263,7 +20848,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 6a7d00a9a6ae62ecaa39e3c169069959, type: 3}
+    m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
     m_FontSize: 40
     m_FontStyle: 0
     m_BestFit: 0
@@ -20273,7 +20858,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "KHU V\u1EF0C A"
 --- !u!1 &8324407537257486589
@@ -20452,7 +21037,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
 --- !u!114 &4785696891753050424
@@ -20542,7 +21127,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 23
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -20551,7 +21136,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "T\xC0U"
 --- !u!1 &8394405236415987265
@@ -20643,6 +21228,7 @@ GameObject:
   - component: {fileID: 7198830695885224142}
   - component: {fileID: 2413353825764320263}
   - component: {fileID: 5093467574971981078}
+  - component: {fileID: 5222705515004006000}
   m_Layer: 0
   m_Name: NewGame
   m_TagString: Untagged
@@ -20730,10 +21316,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -20772,6 +21358,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &5222705515004006000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8401144685964404130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &8422255102912086552
 GameObject:
   m_ObjectHideFlags: 0
@@ -20785,6 +21383,7 @@ GameObject:
   - component: {fileID: 6474894351097280737}
   - component: {fileID: 7211837695388950114}
   - component: {fileID: 695787171086093915}
+  - component: {fileID: 1208813725897232058}
   m_Layer: 0
   m_Name: Settings
   m_TagString: Untagged
@@ -20840,7 +21439,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -20872,10 +21471,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -20914,6 +21513,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &1208813725897232058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8422255102912086552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &8457908343932703158
 GameObject:
   m_ObjectHideFlags: 0
@@ -21047,7 +21658,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 23
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -21056,7 +21667,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
 --- !u!1 &8532056137106362653
@@ -21372,6 +21983,7 @@ GameObject:
   - component: {fileID: 7898354417268867213}
   - component: {fileID: 8328710191618330627}
   - component: {fileID: 3582691607027093274}
+  - component: {fileID: 8291313914133974877}
   m_Layer: 0
   m_Name: Back
   m_TagString: Untagged
@@ -21427,7 +22039,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5d904a1af8cfc428e867187725f877da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebbdfb724b66a035abf445529f206373, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -21459,10 +22071,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.85, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.55, g: 0.7, b: 0.8, a: 1}
+    m_HighlightedColor: {r: 0.82, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.55, g: 0.8, b: 0.9, a: 1}
     m_SelectedColor: {r: 0.7, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.5, b: 0.6, a: 0.6}
+    m_DisabledColor: {r: 0.45, g: 0.52, b: 0.6, a: 0.55}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.08
   m_SpriteState:
@@ -21481,6 +22093,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8291313914133974877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8677529538348121806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!1 &8697996209274354896
 GameObject:
   m_ObjectHideFlags: 0
@@ -21557,7 +22181,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "\u0110ANG CHU\u1EA8N B\u1ECA\u2026"
 --- !u!1 &8932813062577221610
@@ -21668,7 +22292,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 25
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -21677,7 +22301,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
 --- !u!114 &3705666154360258561
@@ -21717,7 +22341,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2418451888978540960
 RectTransform:
   m_ObjectHideFlags: 0
@@ -21993,7 +22617,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 95afe81a48a8a31ae84a71620b3e2d97, type: 3}
-    m_FontSize: 24
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -22002,7 +22626,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
 --- !u!114 &8693889554617382347
@@ -22101,7 +22725,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "M\u1EA5t m\u1EA1ng l\xE0m gi\u1EA3m c\u1EA5p v\u0169 kh\xED \u0111ang
     d\xF9ng. Sau h\u1ED3i sinh c\xF3 b\u1EA3o v\u1EC7 ng\u1EAFn. Nh\u1EB7t Core v\xE0

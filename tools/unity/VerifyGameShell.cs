@@ -602,7 +602,9 @@ public static class VerifyGameShell
             var shield=AssetDatabase.FindAssets("t:PickupDefinition").Select(id=>AssetDatabase.LoadAssetAtPath<PickupDefinition>(AssetDatabase.GUIDToAssetPath(id))).First(item=>item.Kind==PickupKind.Shield);
             Check(pickup.TryCollect(shield),"Shield presentation fixture");await Task.Delay(100);
             Text HudLabel(string field)=>(Text)typeof(GameplayHud).GetField(field,Fields).GetValue(hud);
-            Check(HudLabel("weaponLabel").text.Contains("Homing · CẤP")&&HudLabel("effectLabel").text.Contains("KHIÊN")&&HudLabel("pickupLabel").text=="KHIÊN"&&HudLabel("missileCount").text.StartsWith("TÊN LỬA"),"HUD retained shorthand");
+            Check(HudLabel("weaponLabel").text=="LV1"&&HudLabel("pickupLabel").text=="KHIÊN"&&HudLabel("missileCount").text.Contains("/"),"HUD retained shorthand");
+            var shieldIcon=(Image)typeof(GameplayHud).GetField("shieldIcon",Fields).GetValue(hud);
+            Check(shieldIcon!=null&&shieldIcon.enabled&&shieldIcon.rectTransform.rect.height>=44,"HUD buff icon too small");
             await Capture("hud-equipped-"+width);
             Session.Pause();await Until(()=>Shell.Screen==ShellScreen.Pause,1000,"Pause");await Capture("pause-"+width);
             await Click(View.PauseMenu);await Capture("confirmation-"+width);await Click(View.Cancel);await Click(View.Resume);rig.Protect();

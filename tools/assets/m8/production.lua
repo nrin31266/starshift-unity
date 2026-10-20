@@ -1,5 +1,5 @@
 local root=assert(app.params.root);local out=assert(app.params.out)
-local hex={"080f20","111d32","1c2e46","2d4660","46617a","6e899b","a6bfcb","e5f4f2","0b3948","126578","1b9bb2","41d2de","a0f1ec","271b32","50273d","87354c","bb4057","ed6470","ffb69c","3b2836","745047","ad704b","e8aa58","ffe0a0","282846","505073","8484ac","c0b8d1","464025","7e7745","bab773","f1edb3"}
+local hex={"080f20","111d32","1c2e46","2d4660","46617a","6e899b","a6bfcb","e5f4f2","0b3948","126578","1b9bb2","41d2de","a0f1ec","271b32","50273d","87354c","bb4057","ed6470","ffb69c","3b2836","745047","ad704b","e8aa58","ffe0a0","282846","505073","8484ac","c0b8d1","464025","7e7745","bab773","f1edb3","16324a","275878","3f87ad","74bcd8","c6ecf7","5c1714","a82b22","e5482f","ff7d55","ffc09e","3c2009","8a4a12","c9751f","f2a333","ffd889","26280b","555614","8e8f24","c6c652","eae9a2","17102b","33205c","5d3aab","9a6ff2","d4bbff","1c2124","353e3d","56645f","92a89b","b6e05a","e4ff9b","0e3a3c","1f7273","47b8b2","9fe7dd","3b566b","6c8ba3","f7c94a","ff3b4e","35e0c8","f2e35a","fffbc0","ff2fd0","ff9ee8"}
 local pal={};for i,h in ipairs(hex)do pal[i]=app.pixelColor.rgba(tonumber(h:sub(1,2),16),tonumber(h:sub(3,4),16),tonumber(h:sub(5,6),16),255)end
 local function image(w,h)return Image(w,h,ColorMode.RGB)end
 local function put(im,x,y,c)x=math.floor(x);y=math.floor(y);if x>=0 and y>=0 and x<im.width and y<im.height then im:putPixel(x,y,c==0 and 0 or pal[c])end end
@@ -60,13 +60,9 @@ for index,id in ipairs(pickupIds)do
  local frames={};for f=0,3 do local a=Image(base);local x=8+f*5;local y=10+f*5;line(a,x-2,y,x+2,y,8);line(a,x,y-2,x,y+2,24);frames[#frames+1]=a end
  local s=Sprite(32,40,ColorMode.RGB);local sheet=image(128,40);for f,a in ipairs(frames)do if f>1 then s:newFrame()end;s:newCel(s.layers[1],f,a,Point(0,0));s.frames[f].duration=.14;copy(sheet,a,(f-1)*32,0)end;s:saveAs(root.."/cleaned/"..id..".aseprite");s:close();frames[1]:saveAs(out.."/"..id..".png");sheet:saveAs(out.."/"..id.."-sheet.png")
 end
--- Icon khác silhouette, dùng chung panel và giữ chữ native Unity.
-for i,id in ipairs{"ui-weapon-pulse","ui-weapon-plasma","ui-weapon-homing","ui-shield","ui-overdrive","ui-support","ui-ammo","ui-life","ui-shard"}do local src=load(pickupIds[i]);local icon=image(24,24);local crop=Image(src);crop:resize(19,24);copy(icon,crop,2,0);save(icon,id)end
-im=image(24,24);rect(im,5,4,5,16,7);rect(im,14,4,5,16,7);rect(im,6,5,2,13,8);rect(im,15,5,2,13,8);save(im,"ui-icon-pause")
-im=image(24,24);poly(im,{{12,1},{23,21},{1,21}},1);poly(im,{{12,4},{20,19},{4,19}},23);rect(im,11,9,2,6,1);rect(im,11,17,2,2,8);save(im,"ui-boss-warning");save(im,"ui-mission-state")
-im=plate(24,24,12,"core");save(im,"ui-cosmetic-state");save(im,"ui-heat")
+-- HUD icon/pickup container do final-ui.lua sở hữu (canvas 48px), không generate ở đây.
 local drone=image(32,32);poly(drone,{{16,3},{22,13},{30,23},{21,21},{16,28},{11,21},{2,23},{10,13}},1);poly(drone,{{16,6},{20,15},{27,21},{20,19},{16,25},{12,19},{5,21},{12,15}},7);rect(drone,14,12,4,9,12);line(drone,15,12,15,18,8);save(drone,"support-companion")
-for _,spec in ipairs{{"engine-loop",32,40,12},{"muzzle-flash",32,32,12},{"hit-sparks",32,32,23},{"smoke-debris",64,64,6},{"missile-splash",64,64,23},{"shield-activate-break",64,64,11},{"pickup-collect-upgrade",48,48,23},{"buff-activate-expire",48,48,12},{"death-respawn",64,80,11},{"boost-warp",64,64,12},{"attack-telegraphs",64,64,27},{"warden-shield-phase",128,128,11}}do
+for _,spec in ipairs{{"engine-loop",32,40,12},{"muzzle-flash",32,32,12},{"hit-sparks",32,32,23},{"smoke-debris",64,64,6},{"missile-splash",64,64,23},{"shield-activate-break",64,64,11},{"pickup-collect-upgrade",48,48,23},{"death-respawn",64,80,11},{"boost-warp",64,64,12},{"attack-telegraphs",64,64,27},{"warden-shield-phase",128,128,11}}do
  local id,w,h,c=table.unpack(spec);local sheet=image(w*4,h);local s=Sprite(w,h,ColorMode.RGB)
  for f=0,3 do local a=image(w,h);if id=="engine-loop"then poly(a,{{w/2,2},{w*.8,9},{w*.65,23+f*3},{w/2,h-2-f*2},{w*.35,23+f*3},{w*.2,9}},10);poly(a,{{w/2,4},{w*.64,10},{w/2,29+f},{w*.36,10}},c);rect(a,w/2-1,6,2,13+f*2,8)
  elseif id=="smoke-debris"then for k=0,5 do local t=k*math.pi/3+.4;local cx=w/2+math.cos(t)*(8+f*4);local cy=h/2+math.sin(t)*(8+f*4);disc(a,cx,cy,4+f,3+f,f<2 and 4 or 3);line(a,cx,cy,cx+3,cy-2,6)end

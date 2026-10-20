@@ -141,6 +141,7 @@ namespace StarShift.UI
                 var approach = phase == MissionIntroPhase.Briefing ? 0 : phase == MissionIntroPhase.Approach ? t : 1;
                 planet.transform.position = World(PlayDirectionSpace.Point(Vector2.Lerp(new Vector2(.7f,.76f),new Vector2(.67f,.8f),approach),direction));
                 planet.transform.localScale = Vector3.one * Mathf.Lerp(planetStartScale,planetEndScale,approach);
+                planet.transform.Rotate(0, 0, -10f * delta);
                 var color = planet.color;
                 color.a = phase == MissionIntroPhase.Travel ? 1-Mathf.SmoothStep(0,1,progress/.3f) : 1;
                 planet.color = color;
@@ -193,6 +194,7 @@ namespace StarShift.UI
                 planet.transform.position=World(Vector2.Lerp(new Vector2(1.1f,.3f),target,Mathf.SmoothStep(0,1,journeyReveal)));
                 planet.transform.localScale=Vector3.one*Mathf.Lerp(.25f,planetStartScale,journeyReveal);
                 if (crimsonPlanet != null) planet.sprite = crimsonPlanet;
+                planet.transform.Rotate(0, 0, -10f * delta);
                 planet.color=new Color(1,1,1,Mathf.Clamp01(journeyReveal*4));
             }
         }

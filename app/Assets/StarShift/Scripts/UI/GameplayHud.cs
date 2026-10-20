@@ -22,9 +22,9 @@ namespace StarShift.UI
         [SerializeField] private Image weaponIcon;
         [SerializeField] private Sprite[] weaponIcons;
         [SerializeField] private Image shieldIcon, overdriveIcon, supportIcon;
-        [SerializeField] private Text weaponInventory;
         [SerializeField] private Image heatFill;
         [SerializeField] private Image heatFrame;
+        [SerializeField] private Image[] heatNotches;
         [SerializeField] private Text heatStatus;
         [SerializeField] private Text scoreLabel;
         [SerializeField] private Text shardLabel;
@@ -40,11 +40,11 @@ namespace StarShift.UI
         [SerializeField] private PlayerPickupReceiver pickupReceiver;
         [SerializeField] private RunRewards rewards;
         [SerializeField] private Button weaponButton;
-        [SerializeField] private Text effectLabel;
         [SerializeField] private Text pickupLabel;
         [SerializeField] private EmergencyMissileReserve missileReserve;
         [SerializeField] private Button missileButton;
         [SerializeField] private Text missileCount;
+        [SerializeField] private Text overdriveTimer, supportTimer;
         private int previousMissiles = -1;
         private PlayerGameplayGate playerGate;
         private GameShell shell;
@@ -129,40 +129,24 @@ namespace StarShift.UI
             {
                 previousLevel = weapon.CurrentLevel;
                 previousBranch = (int)weapon.CurrentBranch;
-                weaponLabel.text = $"{GameplayCopy.WeaponName(weapon.CurrentBranch)} · CẤP {previousLevel}";
+                weaponLabel.text = GameplayCopy.WeaponLevel(previousLevel);
                 if (weaponIcon != null && weaponIcons != null && previousBranch < weaponIcons.Length)
                     weaponIcon.sprite = weaponIcons[previousBranch];
-            }
-            if (weaponInventory != null)
-            {
-                var text = "";
-                for (int i = 0; i < 3; i++)
-                {
-                    var branch = (StarShift.Combat.WeaponBranch)i;
-                    if (loadout.Level(branch) <= 0 || branch == loadout.ActiveBranch) continue;
-                    text += (text.Length > 0 ? " · " : "Đổi sang: ") + GameplayCopy.WeaponName(branch);
-                }
-                weaponInventory.text = text;
             }
             var score = session.Persistence != null ? session.Persistence.DisplayScore : rewards != null ? rewards.Score : 0;
             if (previousScore != score) { previousScore = score; scoreLabel.text = previousScore.ToString(); }
             var shardBalance = session.Persistence != null ? session.Persistence.ShardBalance : rewards != null ? rewards.Shards : 0;
             if (previousShards != shardBalance) { previousShards = shardBalance; shardLabel.text = previousShards.ToString(); }
-            if (effectLabel != null)
+            var second = Mathf.CeilToInt(effects.OverdriveRemaining);
+            var drone = Mathf.CeilToInt(effects.DroneRemaining);
+            if (second != previousOverdriveSeconds || drone != previousDroneSeconds || effects.HasShield != previousShield)
             {
-                var second = Mathf.CeilToInt(effects.OverdriveRemaining);
-                var drone = Mathf.CeilToInt(effects.DroneRemaining);
-                if (second != previousOverdriveSeconds || drone != previousDroneSeconds || effects.HasShield != previousShield)
-                {
-                    previousOverdriveSeconds = second; previousDroneSeconds = drone; previousShield = effects.HasShield;
-                    if (shieldIcon != null) shieldIcon.enabled = previousShield;
-                    if (overdriveIcon != null) overdriveIcon.enabled = second > 0;
-                    if (supportIcon != null) supportIcon.enabled = drone > 0;
-                    var text = previousShield ? "KHIÊN" : "";
-                    if (second > 0) text += $"  CƯỜNG HÓA {second}s";
-                    if (drone > 0) text += $"  HỖ TRỢ {drone}s";
-                    effectLabel.text = text.Trim();
-                }
+                previousOverdriveSeconds = second; previousDroneSeconds = drone; previousShield = effects.HasShield;
+                if (shieldIcon != null) shieldIcon.enabled = previousShield;
+                if (overdriveIcon != null) overdriveIcon.enabled = second > 0;
+                if (supportIcon != null) supportIcon.enabled = drone > 0;
+                if (overdriveTimer != null) overdriveTimer.text = second > 0 ? second + "s" : "";
+                if (supportTimer != null) supportTimer.text = drone > 0 ? drone + "s" : "";
             }
             if (pickupLabel != null)
             {
@@ -176,7 +160,7 @@ namespace StarShift.UI
                 if (previousMissiles != missileReserve.Current)
                 {
                     previousMissiles = missileReserve.Current;
-                    missileCount.text = $"TÊN LỬA {previousMissiles}/{missileReserve.Capacity}";
+                    missileCount.text = $"{previousMissiles}/{missileReserve.Capacity}";
                 }
             }
             RefreshHeat();
@@ -201,17 +185,23 @@ namespace StarShift.UI
 
         private void RefreshHeat()
         {
-            if (heatFill == null || heatFrame == null || heatStatus == null) return;
+            if (heatFill == null || heatFrame == null) return;
             var fraction = weapon.HeatFraction;
             var overheated = weapon.IsOverheated;
             if (Mathf.Approximately(previousHeat, fraction) && previousOverheated == overheated) return;
             previousHeat = fraction;
             previousOverheated = overheated;
             heatFill.rectTransform.anchorMax = new Vector2(fraction, 1);
-            var color = overheated ? new Color(1, .34f, .2f) : fraction >= .8f ? new Color(1, .72f, .25f) : new Color(.3f, .9f, 1);
+            bool hot = overheated || fraction >= .8f;
+            var color = overheated ? new Color(1, .36f, .22f) : hot ? new Color(1, .74f, .2f) : new Color(.26f, .92f, 1);
             heatFill.color = color;
-            heatFrame.color = overheated ? color : new Color(.3f, .9f, 1, .65f);
-            heatStatus.text = overheated ? GameplayCopy.HeatOverheated : "";
+            // Housing sáng lên theo trạng thái; giữ notch đọc được cả khi khung đổi màu.
+            heatFrame.color = overheated ? new Color(1, .62f, .45f) : hot ? new Color(1, .86f, .55f) : Color.white;
+            if (heatNotches != null)
+                foreach (var notch in heatNotches)
+                    if (notch != null) notch.color = hot ? new Color(1, .9f, .7f, .9f) : new Color(.86f, .96f, 1, .8f);
+            if (heatStatus == null) return;
+            heatStatus.text = overheated ? GameplayCopy.HeatOverheated : hot ? GameplayCopy.HeatHot : "";
             heatStatus.color = color;
         }
 

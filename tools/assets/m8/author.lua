@@ -2,7 +2,7 @@ local root = app.params.root
 assert(root and root ~= "", "Pass --script-param root=/absolute/path/tools/assets/m8")
 local out = app.params.out
 assert(out and out ~= "", "Pass --script-param out=/absolute/path/app/Assets/StarShift/Art/M8")
-local colors = {"080f20","111d32","1c2e46","2d4660","46617a","6e899b","a6bfcb","e5f4f2","0b3948","126578","1b9bb2","41d2de","a0f1ec","271b32","50273d","87354c","bb4057","ed6470","ffb69c","3b2836","745047","ad704b","e8aa58","ffe0a0","282846","505073","8484ac","c0b8d1","464025","7e7745","bab773","f1edb3"}
+local colors = {"080f20","111d32","1c2e46","2d4660","46617a","6e899b","a6bfcb","e5f4f2","0b3948","126578","1b9bb2","41d2de","a0f1ec","271b32","50273d","87354c","bb4057","ed6470","ffb69c","3b2836","745047","ad704b","e8aa58","ffe0a0","282846","505073","8484ac","c0b8d1",464025","7e7745","bab773","f1edb3","16324a","275878","3f87ad","74bcd8","c6ecf7","5c1714","a82b22","e5482f","ff7d55","ffc09e","3c2009","8a4a12","c9751f","f2a333","ffd889","26280b","555614","8e8f24","c6c652","eae9a2","17102b","33205c","5d3aab","9a6ff2","d4bbff","1c2124","353e3d","56645f","92a89b","b6e05a","e4ff9b","0e3a3c","1f7273","47b8b2","9fe7dd","3b566b","6c8ba3","f7c94a","ff3b4e","35e0c8","f2e35a","fffbc0","ff2fd0","ff9ee8"}
 local palette = {}
 for i, h in ipairs(colors) do palette[i]=app.pixelColor.rgba(tonumber(h:sub(1,2),16),tonumber(h:sub(3,4),16),tonumber(h:sub(5,6),16),255) end
 local function put(im,x,y,c) if x>=0 and y>=0 and x<im.width and y<im.height then im:putPixel(x,y,c==0 and 0 or palette[c]) end end
@@ -102,8 +102,6 @@ end
 save(im,"enemy-telegraph")
 im=Image(32,40,ColorMode.RGB)
 poly(im,{{16,2},{27,14},{23,28},{15,37},{6,28},{3,14}},1);poly(im,{{16,5},{25,15},{21,27},{15,34},{8,27},{6,15}},23);poly(im,{{16,5},{16,19},{8,27},{6,15}},24);poly(im,{{16,19},{25,15},{21,27},{15,34}},22);line(im,16,5,16,19,8);line(im,16,5,24,15,24);save(im,"stellar-shard")
-im=Image(24,28,ColorMode.RGB)
-poly(im,{{12,2},{17,14},{21,22},{14,19},{12,25},{10,19},{3,22},{7,14}},1);poly(im,{{12,4},{15,14},{19,20},{13,17},{12,22},{11,17},{5,20},{9,14}},8);rect(im,11,11,2,7,12);save(im,"hud-ship")
 im=Image(5,5,ColorMode.RGB);put(im,2,2,7);put(im,1,2,4);put(im,3,2,4);put(im,2,1,4);put(im,2,3,4);save(im,"star")
 im=Image(32,32,ColorMode.RGB)
 poly(im,{{5,0},{26,0},{31,5},{31,26},{26,31},{5,31},{0,26},{0,5}},1);poly(im,{{5,1},{26,1},{30,5},{30,26},{26,30},{5,30},{1,26},{1,5}},5);poly(im,{{6,3},{25,3},{28,6},{28,25},{25,28},{6,28},{3,25},{3,6}},2);line(im,5,2,25,2,7);line(im,2,5,2,25,4);line(im,5,29,25,29,3);line(im,29,6,29,25,1);save(im,"ui-panel")

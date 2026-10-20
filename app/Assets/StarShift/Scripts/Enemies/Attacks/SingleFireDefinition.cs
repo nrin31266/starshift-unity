@@ -17,6 +17,14 @@ namespace StarShift.Enemies
         [SerializeField, Range(0, 80)] private float spreadDegrees;
         [SerializeField, Range(1, 3)] private int burstCount = 1;
         [SerializeField, Min(.1f)] private float burstInterval = .22f;
+        [Header("Visual")]
+        [SerializeField, Tooltip("Coral/lemon cho normal hostile; magenta chỉ dành cho special danger.")]
+        private Sprite projectileSprite;
+        [SerializeField] private Color projectileColor = Color.white;
+        [SerializeField] private Vector2 projectileScale = Vector2.one;
+        public Sprite ProjectileSprite => projectileSprite;
+        public Color ProjectileColor => projectileColor;
+        public Vector2 ProjectileScale => projectileScale;
         public int BurstCount => burstCount;
         public float BurstInterval => burstInterval;
         public int ProjectileCount => projectileCount;
@@ -27,6 +35,7 @@ namespace StarShift.Enemies
         public float Cooldown => cooldown;
         public float ProjectileSpeed => projectileSpeed;
         public float ProjectileLifetime => projectileLifetime;
+        public bool HasProjectileVisual => projectileSprite != null;
 
         private void OnValidate()
         {

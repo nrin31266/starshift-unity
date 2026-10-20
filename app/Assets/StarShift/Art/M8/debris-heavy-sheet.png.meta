@@ -1,0 +1,316 @@
+fileFormatVersion: 2
+guid: 6c44ea7eaa71829948114dc9ae5bc581
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2015475678293315976
+    second: debris-heavy-sheet_0
+  - first:
+      213: -1138674321130529729
+    second: debris-heavy-sheet_1
+  - first:
+      213: -5243174128864345563
+    second: debris-heavy-sheet_2
+  - first:
+      213: -1323970329107836934
+    second: debris-heavy-sheet_3
+  - first:
+      213: 9081634957163865378
+    second: debris-heavy-sheet_4
+  - first:
+      213: 8553562923468925619
+    second: debris-heavy-sheet_5
+  - first:
+      213: -992068412171247187
+    second: debris-heavy-sheet_6
+  - first:
+      213: 2530445019878124615
+    second: debris-heavy-sheet_7
+  - first:
+      213: -5924099843754407832
+    second: debris-heavy-sheet_8
+  - first:
+      213: 1040296547110242687
+    second: debris-heavy-sheet_9
+  - first:
+      213: 5337299280768517879
+    second: debris-heavy-sheet_10
+  - first:
+      213: 5755977371088288271
+    second: debris-heavy-sheet_11
+  - first:
+      213: -4381980320575089099
+    second: debris-heavy-sheet_12
+  - first:
+      213: 3182011440739690623
+    second: debris-heavy-sheet_13
+  - first:
+      213: 1886470982426951595
+    second: debris-heavy-sheet_14
+  - first:
+      213: -1312214327111119193
+    second: debris-heavy-sheet_15
+  - first:
+      213: 5595997686430835166
+    second: debris-heavy-sheet_16
+  - first:
+      213: 7644707666355751200
+    second: debris-heavy-sheet_17
+  - first:
+      213: -28121677713914639
+    second: debris-heavy-sheet_18
+  - first:
+      213: -6868414994138109639
+    second: debris-heavy-sheet_19
+  - first:
+      213: 8565399772590522349
+    second: debris-heavy-sheet_20
+  - first:
+      213: -3790522311705970956
+    second: debris-heavy-sheet_21
+  - first:
+      213: -5440821074335311066
+    second: debris-heavy-sheet_22
+  - first:
+      213: 3962270778458926364
+    second: debris-heavy-sheet_23
+  - first:
+      213: -7850722821897335354
+    second: debris-heavy-sheet_24
+  - first:
+      213: 1707676079813954691
+    second: debris-heavy-sheet_25
+  - first:
+      213: -1945657761620055859
+    second: debris-heavy-sheet_26
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 56.25
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: debris-heavy_00
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d63a6f52a0c9b069c8c06ba429e067bc
+      internalID: 300732477
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: debris-heavy_01
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a513b0b5dfd1a2198b1b20b64502b701
+      internalID: -377836533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: debris-heavy_02
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0e248f217b07cf3d180990da4fc79b46
+      internalID: 983190550
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: debris-heavy_03
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1cdd684be2a7fc48eaf73a56231f25ac
+      internalID: 1416457895
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: ba407a8707af79280a1808ed6159ab16
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      debris-heavy_00: 300732477
+      debris-heavy_01: -377836533
+      debris-heavy_02: 983190550
+      debris-heavy_03: 1416457895
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

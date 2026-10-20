@@ -130,7 +130,7 @@ public static class ConfigureM8Art
         {
             if (image.name == "Card" || image.name.StartsWith("Block") || image.name == "Plate")
             { image.sprite = Sprite("ui-panel"); image.type = Image.Type.Sliced; image.color = Color.white; }
-            if (image.name == "LifeIcon") { image.sprite = Sprite("hud-ship"); image.color = Color.white; image.preserveAspect = true; image.rectTransform.sizeDelta = new Vector2(24, 28); }
+            if (image.name == "LifeIcon") { image.sprite = Sprite("ui-life"); image.color = Color.white; image.preserveAspect = true; image.rectTransform.sizeDelta = new Vector2(44, 44); }
             if (image.name == "Ship" && image.transform.parent.name == "ShipPreview")
             { image.sprite = Sprite("player"); image.color = Color.white; image.rectTransform.sizeDelta = new Vector2(256, 320); image.preserveAspect = true; }
         }

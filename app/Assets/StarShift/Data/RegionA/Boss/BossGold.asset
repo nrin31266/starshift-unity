@@ -22,7 +22,7 @@ MonoBehaviour:
   - {fileID: -1453416206, guid: a9a0ce0d33c81a3e2bb988465c6ff937, type: 3}
   - {fileID: -2119539415, guid: a9a0ce0d33c81a3e2bb988465c6ff937, type: 3}
   - {fileID: 1731368704, guid: a9a0ce0d33c81a3e2bb988465c6ff937, type: 3}
-  VisualScale: 0.55
+  VisualScale: 1
   Amount: 1
   Lifetime: 12
   DriftSpeed: 1.2

@@ -99,11 +99,8 @@ public static class ConfigureFlowPolish
         var wr=weaponButton.GetComponent<RectTransform>();var mr=missile.GetComponent<RectTransform>();
         mr.anchorMin=mr.anchorMax=mr.pivot=new Vector2(1,0);mr.anchoredPosition=new Vector2(-8,96);mr.sizeDelta=new Vector2(96,48);
         Get<Text>(hud,"missileCount").fontSize=22;
-        var inventory=wr.parent.Find("WeaponInventory")?.GetComponent<Text>();
-        if(inventory==null){var go=new GameObject("WeaponInventory",typeof(RectTransform),typeof(CanvasRenderer),typeof(Text));go.transform.SetParent(wr.parent,false);inventory=go.GetComponent<Text>();}
-        var ir=inventory.rectTransform;ir.anchorMin=ir.anchorMax=ir.pivot=new Vector2(1,0);ir.anchoredPosition=new Vector2(-8,60);ir.sizeDelta=new Vector2(188,26);
-        inventory.font=Get<Text>(hud,"weaponLabel").font;inventory.fontSize=16;inventory.alignment=TextAnchor.MiddleRight;inventory.color=new Color(.55f,.8f,.88f);inventory.raycastTarget=false;
-        Set(hud,"weaponInventory",inventory);EditorSceneManager.MarkSceneDirty(scene);EditorSceneManager.SaveScene(scene);
+        // HUD hiện icon-first; nhãn "Đổi sang" đã bỏ khỏi GameplayHud.
+        EditorSceneManager.MarkSceneDirty(scene);EditorSceneManager.SaveScene(scene);
         return new{configured=true,scout=4,asteroidHp=new[]{1,2,4,6},shooterLimits=limits,bossGold=28,rewardSeconds=12,backup};
     }
 }

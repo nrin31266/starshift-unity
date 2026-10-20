@@ -712,3 +712,24 @@ snapshots và `screenshots/production-*`. Game View smoke/save-byte guards và s
 regression đã pass; collider/balance snapshot khớp baseline. Final primary recapture đã pass sau khi owner về Menu; các QA passes bảo vệ bytes
 của save đang có tại đầu mỗi pass, không rollback tiến trình owner chơi giữa các pass.
 Không Android/build/release hoặc full historical suite.
+
+## M8 clean rebuild — 2026-10-21
+
+Owner yêu cầu rebuild presentation L1–L8 từ working tree hiện tại. Các checkpoint
+M8 ở trên là lịch sử, không còn chứng minh binding/readiness/visual acceptance hiện tại.
+[Rebuild audit](../../tools/assets/m8/rebuild-audit.json) ghi file, GUID và serialized
+references; [production manifest](../../tools/assets/m8/production-manifest.json) bắt đầu
+lại với runtime verification false. KEEP chỉ là ứng viên salvage, phải review trong Unity.
+Không khôi phục art đã xóa hàng loạt; chỉ giữ lại metadata cho asset cùng path cần
+tái tạo và vẫn còn references. Baseline chứa cả thay đổi còn dở của pass trước để
+giữ lịch sử, không coi chúng đã được review hoặc đạt yêu cầu.
+
+PixelLab là công cụ pixel-art chính; Aseprite cho repaint/cleanup/derivatives và
+spritesheet. AI local chỉ tùy việc phù hợp. Fresh trial được xác thực 40/40, $0 credit;
+mục tiêu 12–18 fast generations, dừng đánh giá lại ở 20. Không dùng Pro multi-candidate
+trừ lý do ngoại lệ. Quota còn lại được suy ra từ jobs/charges, không poll balance liên tục.
+
+Mọi batch dùng isolated save/input, gameplay contract snapshot và Unity motion review
+1600×900; kiểm tra quan trọng thêm 2000×900/farthest zoom. Không thay balance, collider,
+progression hoặc save semantics. Reorganize final runtime art bằng AssetDatabase sau
+integration; migration/tooling cũ chỉ retire khi replacement đã đủ để reproduce.

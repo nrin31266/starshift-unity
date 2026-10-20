@@ -203,6 +203,9 @@ namespace StarShift.UI
             }
             for (int i = 0; i < view.CosmeticCards.Length; i++)
             {
+                var cardRect = view.CosmeticCards[i].GetComponent<RectTransform>();
+                cardRect.anchorMin = cardRect.anchorMax = new Vector2(.73f + (i - (options.Length - 1) * .5f) * (options.Length > 2 ? .165f : .24f), .44f);
+                cardRect.sizeDelta = new Vector2(options.Length > 2 ? 230 : 320, 220);
                 view.CosmeticCards[i].gameObject.SetActive(i < options.Length);
                 if (i >= options.Length) continue;
                 var option = options[i];

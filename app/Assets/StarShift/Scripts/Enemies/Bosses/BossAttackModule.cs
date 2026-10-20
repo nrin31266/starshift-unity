@@ -27,6 +27,19 @@ namespace StarShift.Enemies
         private float beamX;
         public bool IsBeamActive { get; private set; }
         public Bounds BeamBounds { get; private set; }
+        // Phase chỉ để presentation đọc; BeginAttack/cancel/timing giữ nguyên.
+        public AttackPhase Phase { get; private set; }
+        public event System.Action<AttackPhase> PhaseChanged;
+        private void SetPhase(AttackPhase next) { if (Phase == next) return; Phase = next; PhaseChanged?.Invoke(next); }
+        public AttackPhase CurrentPhase
+        {
+            get
+            {
+                if (barrage != null) return barrage.Phase;
+                if (directed != null) return directed.Phase;
+                return Phase;
+            }
+        }
         private EnemyHealth health;
         private EnemyFireGate gate;
         private PlayerGameplayGate player;
@@ -66,6 +79,7 @@ namespace StarShift.Enemies
             if (barrage != null) return barrage.BeginAttack();
             if (directed != null) return directed.TryRequestAttack();
             busy = true; IsBeamActive = false; remaining = definition.TelegraphDuration;
+            SetPhase(AttackPhase.Prepare);
             if (beam != null)
             {
                 flight.SetMotionPaused(true);
@@ -78,6 +92,7 @@ namespace StarShift.Enemies
             barrage?.CancelAttack();
             directed?.CancelAttack();
             busy = IsBeamActive = false;
+            SetPhase(AttackPhase.Idle);
             if (telegraph != null) telegraph.color = idleColor;
             if (extraIdleColors != null) for (int i = 0; i < extraTelegraphs.Length; i++) extraTelegraphs[i].color = extraIdleColors[i];
             if (beam != null) { beam.Hide(); flight?.SetMotionPaused(false); }
@@ -87,6 +102,8 @@ namespace StarShift.Enemies
             if (barrage != null || directed != null || !IsBusy) return;
             if (!health.IsAlive || !gate.CanFire) { CancelAttack(); return; }
             remaining -= Time.fixedDeltaTime;
+            // LOCK ở nửa sau telegraph để cue đọc đúng lúc sắp bắn.
+            if (!IsBeamActive && remaining <= definition.TelegraphDuration * .5f) SetPhase(AttackPhase.Lock);
             telegraph.color = Color.Lerp(idleColor, Color.white, .5f + .5f * Mathf.Sin(remaining * 24));
             for (int i = 0; i < extraTelegraphs.Length; i++) extraTelegraphs[i].color = Color.Lerp(extraIdleColors[i], Color.white, .5f + .5f * Mathf.Sin(remaining * 24));
             if (beam != null)
@@ -102,7 +119,7 @@ namespace StarShift.Enemies
                     for (int i = 0; i < count; i++) beamHits[i].GetComponentInParent<PlayerContactReceiver>()?.ReceiveEnemyHit(health.gameObject);
                 }
                 if (remaining > 0) return;
-                if (!IsBeamActive) { IsBeamActive = true; remaining = beamSeconds; ShotsFired++; }
+                if (!IsBeamActive) { IsBeamActive = true; remaining = beamSeconds; ShotsFired++; SetPhase(AttackPhase.Attack); }
                 else CancelAttack();
                 return;
             }
@@ -112,6 +129,7 @@ namespace StarShift.Enemies
                 for (int i = 0; i < escortVolleyCount; i++) if (escorts.SpawnEscort()) ShotsFired++;
                 CancelAttack(); return;
             }
+            SetPhase(AttackPhase.Attack);
             foreach (var muzzle in muzzles)
             for (int i = 0; i < definition.ProjectileCount; i++)
             {
@@ -119,6 +137,8 @@ namespace StarShift.Enemies
                 pool.Get().Launch(definition, muzzle, health.gameObject, player.gameObject, Release, angle);
                 ShotsFired++;
             }
+            // RECOVERY ngắn trước khi về Idle; không giữ damage/motion pause.
+            SetPhase(AttackPhase.Recovery);
             CancelAttack();
         }
         private void Release(EnemyProjectile shot) { if (shuttingDown) Destroy(shot.gameObject); else pool.Release(shot); }

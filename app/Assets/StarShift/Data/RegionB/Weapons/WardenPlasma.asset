@@ -22,3 +22,6 @@ MonoBehaviour:
   spreadDegrees: 48
   burstCount: 1
   burstInterval: 0.22
+  projectileSprite: {fileID: 21300000, guid: f89831a90a8536ff38edd12fd53307de, type: 3}
+  projectileColor: {r: 1, g: 1, b: 1, a: 1}
+  projectileScale: {x: 1, y: 1}

@@ -6,6 +6,8 @@ namespace StarShift.Enemies
     public sealed class BossDeathSequence : MonoBehaviour
     {
         [SerializeField] private SpriteRenderer[] explosions;
+        [SerializeField, Tooltip("Staged module/fragment destruction; tùy chọn, không đổi timing death.")]
+        private StagedDestructionPresentation staged;
         [SerializeField, Min(.1f)] private float duration = 2.4f;
         private float elapsed;
         private Action completed;
@@ -16,6 +18,7 @@ namespace StarShift.Enemies
             if (IsPlaying) return;
             IsPlaying = true; elapsed = 0; completed = onCompleted;
             view = Camera.main.GetComponent<GameplayViewController>();
+            staged?.Begin();
         }
         private void Update()
         {

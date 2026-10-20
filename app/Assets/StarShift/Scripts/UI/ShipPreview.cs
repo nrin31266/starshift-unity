@@ -25,8 +25,11 @@ namespace StarShift.UI
                 var socket = ship.EngineSockets[i % ship.EngineSockets.Length] * (56.25f * fit);
                 Engines[i].rectTransform.anchoredPosition = socket + Vector2.down * (20 * fit * ship.PlumeScale);
                 Engines[i].rectTransform.sizeDelta = new Vector2(32, 40) * (fit * ship.PlumeScale);
-                Ribbons[i].rectTransform.anchoredPosition = socket + Vector2.down * ((trail.Id == "trail-none" ? 19 : 27) * fit);
-                Ribbons[i].rectTransform.sizeDelta = new Vector2(16 * ship.PlumeScale, trail.Id == "trail-none" ? 29 : 45) * fit;
+            }
+            if (Ribbons != null)
+            {
+                for (int i = 0; i < Ribbons.Length; i++)
+                    if (Ribbons[i] != null) Ribbons[i].gameObject.SetActive(false);
             }
         }
         private void OnEnable() => age = 0;
@@ -36,8 +39,8 @@ namespace StarShift.UI
             age += Time.unscaledDeltaTime;
             for (int i = 0; i < Engines.Length; i++)
             {
+                // 2 tia lửa phản lực của tàu cố định, không đổi khi đổi vệt động cơ
                 if (catalog.EngineFrames.Length > 0) Engines[i].sprite = catalog.EngineFrames[(int)(age / .075f + i) % catalog.EngineFrames.Length];
-                if (trail.AnimationFrames.Length > 0) Ribbons[i].sprite = trail.AnimationFrames[(int)(age / .08f + i) % trail.AnimationFrames.Length];
             }
             Hull.rectTransform.localRotation = Quaternion.Euler(0, 0, Mathf.Sin(age * 1.1f) * 1.4f);
         }

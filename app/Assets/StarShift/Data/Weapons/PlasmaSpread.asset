@@ -55,7 +55,7 @@ MonoBehaviour:
   trackingLaunchSeconds: 0.16
   trackingLaunchArcDegrees: 9
   projectileScale: {x: 1, y: 1}
-  projectileSprite: {fileID: 21300000, guid: c79a66b737cf8ccb898c2b442866eadd, type: 3}
+  projectileSprite: {fileID: 21300000, guid: 662679dfc6fd3e429a32777f10454838, type: 3}
   trailSeconds: 0
   projectilePrefab: {fileID: 6313352160549666604, guid: 689fd7f0b61bc39b798a1aea031257f6, type: 3}
   fireInterval: 0.2

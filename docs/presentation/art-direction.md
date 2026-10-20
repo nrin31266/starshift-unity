@@ -47,9 +47,12 @@ hiển thị nhỏ trên mobile.
 
 ### Enemy
 
-Enemy dùng dark metal, restrained role accents và ngôn ngữ mechanical/military/alien-tech.
-Crimson/red là baseline chung; các ngoại lệ slate/bronze/violet của M8 production ở bên dưới.
-Silhouette phải phân biệt vai trò; không chỉ recolor cùng hình cho toàn roster.
+Enemy dùng ngôn ngữ mechanical/military/alien-tech với **7 armor family màu riêng biệt**;
+không kéo mọi family về gray/red. Cohesion đến từ construction, shading, 1px contour
+và chuyển động, không từ việc dùng chung một hue. Silhouette phải phân biệt vai trò;
+không chỉ recolor cùng hình cho toàn roster. Family swatch và mapping ở
+[M8 fleet family](#m8-fleet-family-và-damage-state-provisional) bên dưới; bảng
+color semantics `[LOCKED]` vẫn giữ vai trò cho player/reward/shield/hazard.
 
 ### Boss
 
@@ -72,8 +75,9 @@ không gian. Giữ contrast cho projectile; background không tranh cùng mức 
 | Nhóm | Màu định hướng |
 |---|---|
 | Player/friendly base | ivory/slate hull, cyan / electric-blue identity |
-| Enemy normal | dark gunmetal; crimson baseline, restrained role accents theo production family |
-| Enemy special / dangerous telegraph | magenta |
+| Enemy hull | 7 family ramps riêng (xem M8 fleet family); không dùng một gray/red chung |
+| Enemy normal shot | coral hoặc pale lemon, outline tối + lõi sáng |
+| Enemy special / dangerous telegraph | magenta (chỉ special, không dùng cho shot thường) |
 | Reward / currency | amber / gold |
 | Shield / defensive | teal |
 | Extra life / positive survival | green-white |
@@ -95,18 +99,21 @@ packs khác vẫn [TUNABLE] và cần review riêng.
 
 Friendly base cyan/blue; Pulse cyan/blue, Plasma purple, Missile orange theo
 [weapon identity](../content/weapons-items-drops.md). Enemy shots phải phân biệt
-được với cả ba nhánh, đặc biệt enemy special magenta so với Plasma và hazard
-orange-red so với Missile. Cần shape/value/outline và telegraph bổ trợ;
-không dựa duy nhất vào hue. Final contrast pass [TBD]/playtest mobile.
+được với cả ba nhánh: normal hostile dùng coral hoặc pale lemon, special danger
+dùng magenta. Cần shape/value/outline và telegraph bổ trợ; không dựa duy nhất vào
+hue. Mỗi branch giữ charge/muzzle/hit/trail riêng; silhouette khác nhau để đọc khi
+nhiều projectile cùng hiện diện. Final contrast pass [TBD]/playtest mobile.
 Reward amber/gold nghĩa worth collecting; Stellar Shard có icon tinh thể/ngôi sao
 đơn giản, không coin cartoon.
 
 ## Asteroid, Supply Drone và crate
 
 Normal asteroid gray/brown; golden/resource có crystal vein amber/gold, đọc khác
-neutral debris. Supply Drone là unmanned cargo craft hard-surface white/dark metal,
-amber navigation/reward accent; không hộp quà cute tự bay.
-Crate có cargo/reward silhouette rõ, nhận ra là vật cần pickup.
+neutral debris. Supply Drone là tàu vận tải cơ khí chở một **hộp quà/cargo crate
+lớn** ở trung tâm: crate amber với ribbon kem, đai hazard, kẹp kim loại và khóa năng
+lượng teal; không phải hộp quà cute tự bay. Khi trúng, lớp giấy gói rách lộ hộp quà
+bên trong; khi nổ, crate bung ra cùng burst riêng thay vì explosion chung.
+Crate drop có cargo/reward silhouette rõ, nhận ra là vật cần pickup.
 Exact crate motif vẫn [TBD].
 
 ## Damage visual và gameplay-scale readability
@@ -134,9 +141,56 @@ Asset production sau phải tham chiếu approved anchors; quy trình tạo/duy�
 
 AI generation phải theo family thay vì prompt từng asset độc lập. Cùng family giữ
 approved anchor, material, viewing angle, lighting, detail density và emissive logic.
-Ví dụ enemy roster Scout/Raider/Bomber/Sniper/Interceptor/Carrier dùng dark gunmetal,
-crimson emissive, angular hull và cùng shading language, nhưng vẫn phân biệt vai trò
-bằng silhouette. Không tạo lore/faction mới để giải thích một style khác.
+Enemy roster dùng 7 family ramp riêng nhưng cùng angular hull, cùng hướng sáng
+upper-left và cùng shading language; phân biệt vai trò bằng silhouette, không bằng
+cách recolor toàn roster về một hue. Không tạo lore/faction mới để giải thích một
+style khác.
+
+## M8 fleet family và damage state `[PROVISIONAL]`
+
+Quyết định Batch 3: bỏ baseline crimson chung cho mọi enemy. Mỗi family có ramp
+riêng, accent emissive riêng; cohesion giữ bằng construction, 1px navy contour,
+3–4 value bands, light upper-left và chuyển động. Không family nào được trôi về
+gray/red đơn điệu. Ramp/accent/glow của từng family nằm trong
+[author script](../../tools/assets/m8/fleet-combat.lua); runtime sprite ở
+`app/Assets/StarShift/Art/M8/`.
+
+| Family | Armor ramp | Accent / emissive | Native canvas |
+|---|---|---|---|
+| Scout | steel xanh lạnh (navy → pale steel) | cyan sáng | 80×64 |
+| Raider | navy xanh đêm | coral | 80×80 |
+| Bomber | bronze ấm | orange | 128×112 |
+| Bulwark | olive | cream/amber | 112×96 |
+| Sniper | violet/indigo | violet sáng | 80×112 |
+| Interceptor | graphite | lime | 64×80 |
+| Carrier | teal | teal sáng + blue-gray | 160×128 |
+| Supply Drone | ivory/khung thép | amber | 112×80 |
+| Vanguard | steel-tím riêng | crimson + reactor vàng | modules 96×96 |
+| Warden | indigo riêng | teal energy | modules 96×96 |
+
+Mọi flying archetype có propulsion và muzzle đúng hướng bay/bắn: engine plume
+sau đuôi, muzzle ở đầu vũ khí; Carrier bay mở theo launch thật. Không vẽ exhaust
+lệch trục hoặc muzzle ở thân.
+
+### Damage và destruction
+
+Damage state là repaint thật, không tint: mảng giáp bị cắt khỏi silhouette theo
+đa giác răng cưa, khoang lộ ra có depth band, dầm ngang, conduit và highlight mép
+trên/trái. Damaged mở một vùng; Critical mở thêm vùng thứ hai, có sparks/smoke tại
+chỗ hỏng. Không mất quá nửa silhouette; family identity phải còn đọc được.
+Asteroid mất khối, nứt sâu và bong đá; resource asteroid giữ crystal identity và
+lộ cụm tinh thể amber ở Critical thay vì lỗ trống.
+Heavy/boss dùng staged destruction: nổ cục bộ theo module, mảnh văng và khói, giữ
+respawn gate và death timing hiện có. Player death có flash, hull breakup và debris
+độc lập với hull bị ẩn.
+
+### Hit type và impact
+
+Projectile gửi point/normal/type tới presentation; damage/splash không đổi.
+Shield block dùng vòng teal/lục giác, hull dùng sparks vàng-cam, module dùng vòng
+vuông + tia. Impact hiện tại mép cánh/module bị trúng, không luôn ở tâm enemy.
+Owner của HP/damage state vẫn là [enemies/bosses](../content/enemies-bosses.md).
+
 
 
 ## M6 gameplay proxy readability `[PROVISIONAL]`
@@ -290,8 +344,10 @@ không scale background theo camera và không triệt tiêu cảm giác zoom.
 [Production manifest](../../tools/assets/m8/production-manifest.json) ghi source,
 output, binding và lifecycle từng asset. Source/import readiness không tự đồng nghĩa
 runtime verified. Remaining polish: selective amber skin mask; riêng buff-expiry/warp
-sheet playback; asteroid damage repaint; audit các overlay/result variants ít gặp.
+sheet playback; audit các overlay/result variants ít gặp.
 Không chốt device readability/FPS hoặc full audio trong pass này.
+Asteroid damage repaint đã hoàn tất trong Batch 3; xem
+[M8 fleet family](#m8-fleet-family-và-damage-state-provisional).
 
 ## M8 final overhaul `[PROVISIONAL]`
 
@@ -302,3 +358,9 @@ approach và UI preview/card. Amber là repaint vùng giáp, không tint toàn h
 Default propulsion luôn hiện; Ion giữ 8 Shards, Rainbow mới 8 Shards qua catalog
 hiện có. Banking chỉ đổi visual child. Source và evidence status ở
 [production manifest](../../tools/assets/m8/production-manifest.json).
+
+Batch 3 hoàn thiện fleet/combat visual: 7 armor family + Supply Drone crate +
+2 boss palette riêng, damage/destruction thật, projectile family riêng và
+PREPARE → LOCK → ATTACK → RECOVERY cho Sniper/Interceptor/boss skill. Contract
+chi tiết ở [M8 fleet family](#m8-fleet-family-và-damage-state-provisional).
+

@@ -141,7 +141,10 @@ namespace StarShift.Combat
             }
             if (nearestTarget != null)
             {
-                FinishFlight(FindTarget(nearestTarget));
+                var contact = body.position;
+                foreach (var sweep in sweepHits)
+                    if (sweep.collider == nearestTarget) { contact = sweep.point; break; }
+                FinishFlight(FindTarget(nearestTarget), contact);
                 return;
             }
             body.position += direction * distance;
@@ -153,7 +156,7 @@ namespace StarShift.Combat
         {
             if (!flying) return;
             var target = FindTarget(other);
-            if (target != null) FinishFlight(target);
+            if (target != null) FinishFlight(target, other.ClosestPoint(body.position));
         }
 
         private IPlayerProjectileTarget FindTarget(Collider2D other)
@@ -163,7 +166,7 @@ namespace StarShift.Combat
             return target is EnemyHealth enemy && !enemy.CanReceiveDamage && !enemy.BlocksPlayerProjectiles ? null : target;
         }
 
-        private void FinishFlight(IPlayerProjectileTarget target = null)
+        private void FinishFlight(IPlayerProjectileTarget target = null, Vector2? contact = null)
         {
             if (!flying) return;
             // Khóa trước callback: nhiều collider/sweep/trigger vẫn chỉ resolve một hit.
@@ -171,6 +174,7 @@ namespace StarShift.Combat
             hitbox.enabled = false;
             var release = onReleased;
             onReleased = null;
+            var impactPosition = contact ?? body.position;
             try
             {
                 splashTargets.Clear();
@@ -181,7 +185,9 @@ namespace StarShift.Combat
                         if (enemy.IsAlive && enemy.gameObject.scene == gameObject.scene && !ReferenceEquals(enemy, target) &&
                             ((Vector2)enemy.transform.position - impact).sqrMagnitude <= splashRadius * splashRadius)
                             splashTargets.Add(enemy);
-                target?.ReceivePlayerHit(damage, Owner);
+                if (target is EnemyHealth enemyTarget)
+                    enemyTarget.ReceivePlayerHit(damage, Owner, ImpactInfo(enemyTarget, impactPosition));
+                else target?.ReceivePlayerHit(damage, Owner);
                 foreach (var enemy in splashTargets) if (enemy != null && enemy.IsAlive) enemy.ReceivePlayerHit(damage, Owner);
             }
             finally
@@ -189,6 +195,16 @@ namespace StarShift.Combat
                 if (release != null) release(this);
                 else Destroy(gameObject);
             }
+        }
+
+        // Vị trí trúng thật trên hull: mép/module trúng nhận impact tại chỗ, không luôn ở tâm.
+        private EnemyHitInfo ImpactInfo(EnemyHealth enemy, Vector2 point)
+        {
+            var delta = point - (Vector2)enemy.transform.position;
+            var normal = delta.sqrMagnitude > .000001f ? -delta.normalized : Vector2.up;
+            // Shield block đã resolve ở nhánh BlockedHit; ở đây module node khác hull core.
+            var kind = enemy.GetComponent<BossAttackModule>() != null ? EnemyHitKind.Module : EnemyHitKind.Hull;
+            return new EnemyHitInfo(kind, point, normal, damage);
         }
 
         public void Release() => FinishFlight();

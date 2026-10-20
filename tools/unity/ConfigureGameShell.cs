@@ -316,7 +316,6 @@ public static class ConfigureGameShell
         {var text=(Text)new SerializedObject(hud).FindProperty(field).objectReferenceValue;text.text=copy;var rect=text.rectTransform;rect.sizeDelta=new Vector2(width,rect.sizeDelta.y);}
         HudText("weaponLabel","Pulse · CẤP 1",240);HudText("missileCount","TÊN LỬA 1/3",230);
         var weapon=(RectTransform)combat.Find("Weapon");Place(weapon,1,0,-140,32,264,52);
-        var inventory=(Text)new SerializedObject(hud).FindProperty("weaponInventory").objectReferenceValue;Place(inventory.rectTransform,1,0,-285,68,550,28);inventory.text="";
         var missile=(Button)new SerializedObject(hud).FindProperty("missileButton").objectReferenceValue;
         Place((RectTransform)missile.transform,1,0,-140,112,264,72);
         var counters=(RectTransform)combat.Find("Counters");
@@ -330,8 +329,6 @@ public static class ConfigureGameShell
             var count=row.Find("Count").GetComponent<Text>();Place(count.rectTransform,1,.5f,-60,0,110,46);count.fontSize=28;
         }
         var heatCaption=combat.Find("HeatGauge/Caption").GetComponent<Text>();heatCaption.text="NHIỆT";heatCaption.rectTransform.sizeDelta=new Vector2(90,26);heatCaption.rectTransform.anchoredPosition=new Vector2(50,-17);
-        var effects=(Text)new SerializedObject(hud).FindProperty("effectLabel").objectReferenceValue;
-        Place(effects.rectTransform,0,0,450,30,640,40);effects.alignment=TextAnchor.MiddleLeft;effects.fontSize=20;
         var cue=(Text)new SerializedObject(hud).FindProperty("pickupLabel").objectReferenceValue;
         Place(cue.rectTransform,0,0,326,82,620,40);cue.alignment=TextAnchor.MiddleLeft;cue.fontSize=24;
     }

@@ -22,6 +22,8 @@ namespace StarShift.Combat
         private Camera gameplayCamera;
         private SpriteRenderer visual;
         private Color launchColor;
+        private Vector3 launchScale;
+        private Sprite launchSprite;
         private bool cleaningUp;
         private bool fading;
         private float cleanupRemaining;
@@ -48,6 +50,8 @@ namespace StarShift.Combat
             hitbox = GetComponent<BoxCollider2D>();
             visual = GetComponentInChildren<SpriteRenderer>();
             launchColor = visual.color;
+            launchScale = visual.transform.localScale;
+            launchSprite = visual.sprite;
         }
 
         public void Launch(SingleFireDefinition definition, Transform muzzle, GameObject owner,
@@ -63,7 +67,12 @@ namespace StarShift.Combat
             gameplayCamera = Camera.main;
             cleaningUp = fading = false;
             cleanupRemaining = fadeRemaining = fadeSeconds = 0;
-            visual.color = launchColor;
+            // Visual theo definition: coral/lemon normal, magenta special; prefab fallback giữ cũ.
+            visual.color = definition.HasProjectileVisual ? definition.ProjectileColor : launchColor;
+            visual.sprite = definition.HasProjectileVisual ? definition.ProjectileSprite : launchSprite;
+            visual.transform.localScale = definition.HasProjectileVisual
+                ? Vector3.Scale(launchScale, new Vector3(definition.ProjectileScale.x, definition.ProjectileScale.y, 1))
+                : launchScale;
             onReleased = release;
             var rotation = Quaternion.FromToRotation(Vector3.up, direction);
             transform.SetPositionAndRotation(muzzle.position, rotation);
@@ -90,7 +99,7 @@ namespace StarShift.Combat
                 else
                 {
                     fadeRemaining = Mathf.Max(0, fadeRemaining - Time.fixedDeltaTime);
-                    var color = launchColor;
+                    var color = visual.color;
                     color.a *= fadeRemaining / fadeSeconds;
                     visual.color = color;
                     if (fadeRemaining <= 0) { FinishFlight(); return; }
@@ -174,6 +183,8 @@ namespace StarShift.Combat
             cleaningUp = fading = false;
             cleanupRemaining = fadeRemaining = fadeSeconds = 0;
             visual.color = launchColor;
+            visual.sprite = launchSprite;
+            visual.transform.localScale = launchScale;
             sweepHits.Clear();
             body.linearVelocity = Vector2.zero;
             body.angularVelocity = 0;

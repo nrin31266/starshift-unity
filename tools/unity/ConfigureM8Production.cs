@@ -96,7 +96,9 @@ public static class ConfigureM8Production
         {
             for(int sign=-1;sign<=1;sign+=2)
             {
-                float y=S(id).bounds.size.y*.37f;var r=Visual(hull.gameObject,"M8Engine"+sign,"engine-loop",new Vector3(sign*.25f,y,0),4,.45f);r.transform.localRotation=Quaternion.Euler(0,0,180);Loop(r,"engine-loop");
+                float y = id == "bulwark" ? .50f : S(id).bounds.size.y*.37f;
+                float x = id == "bulwark" ? .28f : .25f;
+                var r=Visual(hull.gameObject,"M8Engine"+sign,"engine-loop",new Vector3(sign*x,y,0),4,.45f);r.transform.localRotation=Quaternion.Euler(0,0,180);Loop(r,"engine-loop");
             }
         }
     }
@@ -224,7 +226,7 @@ public static class ConfigureM8Production
             var so=new SerializedObject(hud);var label=(Text)so.FindProperty("weaponLabel").objectReferenceValue;
             var icon=Icon(label.transform.parent,"M8WeaponIcon","ui-weapon-pulse",new Vector2(0,.5f),new Vector2(28,0),new Vector2(28,28));Set(hud,"weaponIcon",icon);Array(hud,"weaponIcons",new[]{S("ui-weapon-pulse"),S("ui-weapon-plasma"),S("ui-weapon-homing")});
             label.rectTransform.anchorMin=Vector2.zero;label.rectTransform.anchorMax=Vector2.one;label.rectTransform.offsetMin=new Vector2(42,0);label.rectTransform.offsetMax=new Vector2(-6,0);label.fontSize=24;label.alignment=TextAnchor.MiddleCenter;
-            var effects=(Text)so.FindProperty("effectLabel").objectReferenceValue;
+            var effects=((Image)so.FindProperty("shieldIcon").objectReferenceValue).transform.parent;
             for(int i=0;i<3;i++){var img=Icon(effects.transform,"M8Status"+i,new[]{"ui-shield","ui-overdrive","ui-support"}[i],new Vector2(1,.5f),new Vector2(30+i*32,0),new Vector2(26,26));Set(hud,new[]{"shieldIcon","overdriveIcon","supportIcon"}[i],img);}
             var missile=(Button)so.FindProperty("missileButton").objectReferenceValue;Icon(missile.transform,"M8AmmoIcon","ui-ammo",new Vector2(0,.5f),new Vector2(22,0),new Vector2(26,26));
             var shard=(Text)so.FindProperty("shardLabel").objectReferenceValue;Icon(shard.transform.parent,"M8ShardIcon","ui-shard",new Vector2(0,.5f),new Vector2(16,0),new Vector2(26,26));

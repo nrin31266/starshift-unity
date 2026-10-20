@@ -29,6 +29,10 @@ namespace StarShift.Enemies
         private int pulseIndex;
         public bool IsBusy { get; private set; }
         public bool IsActive { get; private set; }
+        // Phase đọc bởi presentation; charge/pulse/active timing không đổi.
+        public AttackPhase Phase { get; private set; }
+        public event System.Action<AttackPhase> PhaseChanged;
+        private void SetPhase(AttackPhase next) { if (Phase == next) return; Phase = next; PhaseChanged?.Invoke(next); }
         public float SafeLane { get; private set; }
         public int PulsesFired { get; private set; }
         public int ShotsFired { get; private set; }
@@ -62,11 +66,13 @@ namespace StarShift.Enemies
             var bossPosition = PlayDirectionSpace.LocalPoint(gameplayCamera.WorldToViewportPoint(bossHealth.transform.position), bossFlight.Direction);
             originForward = Mathf.Clamp(bossPosition.y - .10f, .60f, .86f);
             pulseIndex = 0; phaseRemaining = definition.ChargeSeconds; IsBusy = true; IsActive = false;
+            SetPhase(AttackPhase.Prepare);
             return true;
         }
         public void CancelAttack()
         {
             IsBusy = IsActive = false; phaseRemaining = 0; pulseIndex = 0;
+            SetPhase(AttackPhase.Idle);
             if (lowerBandPresentation != null) lowerBandPresentation.Hide(); if (upperBandPresentation != null) upperBandPresentation.Hide();
         }
         private Vector3 GetWorldPoint(float lateral, float forward)
@@ -106,10 +112,12 @@ namespace StarShift.Enemies
             }
             if (laser && IsActive) { ApplyBandDamage(LowerBounds); ApplyBandDamage(UpperBounds); }
             phaseRemaining -= Time.fixedDeltaTime;
+            // LOCK ở nửa sau charge: người chơi thấy khe an toàn đã chốt.
+            if (!IsActive && Phase == AttackPhase.Prepare && phaseRemaining <= definition.ChargeSeconds * .45f) SetPhase(AttackPhase.Lock);
             if (phaseRemaining > 0) return;
             if (laser)
             {
-                if (!IsActive) { IsActive = true; PulsesFired++; phaseRemaining = definition.ActiveSeconds; }
+                if (!IsActive) { IsActive = true; PulsesFired++; phaseRemaining = definition.ActiveSeconds; SetPhase(AttackPhase.Attack); }
                 else if (++pulseIndex >= definition.PulseCount) CancelAttack();
                 else
                 {
@@ -119,7 +127,7 @@ namespace StarShift.Enemies
             }
             else if (pulseIndex < definition.PulseCount)
             {
-                IsActive = true; lowerBandPresentation.Hide(); upperBandPresentation.Hide(); FireRow(); pulseIndex++; PulsesFired++;
+                IsActive = true; lowerBandPresentation.Hide(); upperBandPresentation.Hide(); FireRow(); pulseIndex++; PulsesFired++; SetPhase(AttackPhase.Attack);
                 float distance = Vector3.Distance(GetWorldPoint(.5f, originForward), GetWorldPoint(.5f, -.05f));
                 phaseRemaining = pulseIndex == definition.PulseCount ? distance / definition.Projectile.ProjectileSpeed : definition.PulseInterval;
             }

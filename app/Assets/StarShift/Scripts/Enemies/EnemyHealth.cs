@@ -29,6 +29,8 @@ namespace StarShift.Enemies
         public void SetDamageBlocked(bool blocked) => damageBlocked = blocked;
         public bool BlocksPlayerProjectiles => damageBlocked && Definition.MissileTier == MissileDamageTier.Boss && flight != null && flight.IsHolding;
         public event Action BlockedHit;
+        // Presentation thuần: point/normal/kind đi kèm hit, damage/splash không đổi.
+        public event Action<EnemyHitInfo> HitPresented;
         public bool CanReceiveDamage
         {
             get
@@ -68,13 +70,25 @@ namespace StarShift.Enemies
         }
 
         public void ReceivePlayerHit(int damage, GameObject owner)
+            => ReceivePlayerHit(damage, owner, EnemyHitInfo.AtCenter(transform, EnemyHitKind.Hull, damage));
+
+        public void ReceivePlayerHit(int damage, GameObject owner, EnemyHitInfo hit)
         {
             if (damage <= 0) return;
-            if (BlocksPlayerProjectiles) { BlockedHit?.Invoke(); return; }
+            if (BlocksPlayerProjectiles)
+            {
+                try { BlockedHit?.Invoke(); }
+                finally { HitPresented?.Invoke(new EnemyHitInfo(EnemyHitKind.ShieldBlock, hit.Point, hit.Normal, damage)); }
+                return;
+            }
             if (!CanReceiveDamage) return;
             CurrentHp = Mathf.Max(0, CurrentHp - damage);
             var lethal = CurrentHp == 0;
-            try { Damaged?.Invoke(); }
+            try
+            {
+                Damaged?.Invoke();
+                HitPresented?.Invoke(new EnemyHitInfo(hit.Kind, hit.Point, hit.Normal, damage));
+            }
             finally { if (lethal) ResolveDeath(); }
         }
 

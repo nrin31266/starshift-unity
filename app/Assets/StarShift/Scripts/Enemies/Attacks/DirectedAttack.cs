@@ -23,7 +23,18 @@ namespace StarShift.Enemies
         public bool IsBusy { get; private set; }
         public bool IsActive { get; private set; }
         public int AttacksFired { get; private set; }
+        // Phase chỉ đọc cho presentation; damage vẫn do ActiveSeconds/tracking hiện có quyết.
+        public AttackPhase Phase { get; private set; }
+        public event System.Action<AttackPhase> PhaseChanged;
+        private void SetPhase(AttackPhase next)
+        {
+            if (Phase == next) return;
+            Phase = next;
+            PhaseChanged?.Invoke(next);
+        }
         public Bounds DamageBounds { get; private set; }
+        // Aim đã khóa (viewport) để telegraph strike bám đúng điểm lao.
+        public Vector2 AttackAim { get; private set; }
         public DirectedAttackDefinition Definition => definition;
         private void Awake()
         {
@@ -40,28 +51,50 @@ namespace StarShift.Enemies
         private bool Eligible => isActiveAndEnabled && health.IsAlive && gate.CanFire && flight.CanShoot && flight.IsHolding && !flight.IsStriking && flight.IsPointVisible(muzzle.position);
         public bool TryRequestAttack()
         {
-            if (IsBusy || cooldown > 0 || !Eligible) return false;
+            if (IsBusy || recovery > 0 || cooldown > 0 || !Eligible) return false;
             IsBusy = true; IsActive = false; elapsed = 0;
             aim = view.WorldToViewportPoint(player.transform.position);
+            SetPhase(AttackPhase.Prepare);
             return true;
         }
-        private void OnEnable() { AttacksFired = 0; DamageBounds = default; CancelAttack(); }
+        private void OnEnable() { AttacksFired = 0; DamageBounds = default; recovery = 0; SetPhase(AttackPhase.Idle); CancelAttack(); }
+        private void Recover()
+        {
+            // Giữ cue thêm .18 s để đọc pha hồi; damage đã dừng cùng ActiveSeconds.
+            recovery = recoverySeconds;
+            SetPhase(AttackPhase.Recovery);
+            presentation.Hide();
+            IsBusy = IsActive = false;
+            cooldown = definition != null ? definition.CooldownSeconds : 1;
+        }
+        [SerializeField, Min(0)] private float recoverySeconds = .18f;
+        private float recovery;
         public void CancelAttack()
         {
             IsBusy = IsActive = false;
+            if (Phase != AttackPhase.Idle) SetPhase(AttackPhase.Idle);
             cooldown = definition != null ? (AttacksFired == 0 ? Mathf.Min(.35f, definition.CooldownSeconds) : definition.CooldownSeconds) : 1;
             if (presentation != null) presentation.Hide();
         }
         private void FixedUpdate()
         {
             cooldown = Mathf.Max(0, cooldown - Time.fixedDeltaTime);
+            if (recovery > 0)
+            {
+                recovery = Mathf.Max(0, recovery - Time.fixedDeltaTime);
+                if (recovery <= 0 && !IsBusy) SetPhase(AttackPhase.Idle);
+            }
             if (!IsBusy) return;
             if (!health.IsAlive || !gate.CanFire || !isActiveAndEnabled || flight.IsExiting) { CancelAttack(); return; }
             elapsed += Time.fixedDeltaTime;
             if (!IsActive && elapsed <= definition.TrackingSeconds) aim = view.WorldToViewportPoint(player.transform.position);
+            // LOCK: hết cửa sổ tracking, aim đã khóa; ATTACK bắt đầu ở ChargeSeconds.
+            if (!IsActive && elapsed > definition.TrackingSeconds && elapsed < definition.ChargeSeconds) SetPhase(AttackPhase.Lock);
             if (!IsActive && elapsed >= definition.ChargeSeconds)
             {
                 IsActive = true; elapsed = 0; AttacksFired++;
+                AttackAim = aim;
+                SetPhase(AttackPhase.Attack);
                 if (definition.Kind == DirectedAttackKind.Strike)
                 {
                     presentation.Hide();
@@ -70,7 +103,11 @@ namespace StarShift.Enemies
             }
             if (definition.Kind == DirectedAttackKind.Strike && IsActive)
             {
-                if (!flight.IsStriking) CancelAttack();
+                if (!flight.IsStriking)
+                {
+                    // Strike xong, Interceptor quay về: chuyển sang RECOVERY thay vì cắt cue tức thời.
+                    Recover();
+                }
                 return;
             }
             var from = (Vector2)view.WorldToViewportPoint(muzzle.position);
@@ -108,7 +145,11 @@ namespace StarShift.Enemies
                 DamageBounds = new Bounds(center, new Vector3(Mathf.Abs(delta.x) + definition.BeamWidth, Mathf.Abs(delta.y) + definition.BeamWidth, 1));
                 int count = Physics2D.OverlapBox(center, size, Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg, filter, hits);
                 for (int i = 0; i < count; i++) hits[i].GetComponentInParent<PlayerContactReceiver>()?.ReceiveEnemyHit(health.gameObject);
-                if (elapsed >= definition.ActiveSeconds) CancelAttack();
+                if (elapsed >= definition.ActiveSeconds)
+                {
+                    // RECOVERY: beam tắt, cue giữ ngắn rồi mới về Idle/cooldown.
+                    Recover();
+                }
             }
         }
         private void OnDisable() => CancelAttack();

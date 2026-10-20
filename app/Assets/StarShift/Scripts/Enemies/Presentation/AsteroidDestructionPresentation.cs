@@ -11,11 +11,13 @@ namespace StarShift.Enemies
     {
         [SerializeField] private Sprite burstSprite;
         [SerializeField] private Sprite[] frames;
+        [SerializeField, Tooltip("Burst riêng cho Supply Drone: hộp quà bung ra.")]
+        private Sprite[] supplyFrames;
         [SerializeField, Min(.01f)] private float seconds = .35f;
         private EncounterRunner runner;
         private ObjectPool<SpriteRenderer> pool;
         private readonly List<Burst> active = new List<Burst>();
-        private sealed class Burst { public SpriteRenderer Visual; public float Age; public float Scale; }
+        private sealed class Burst { public SpriteRenderer Visual; public float Age; public float Scale; public Sprite[] Frames; }
 
         private void Awake()
         {
@@ -37,8 +39,11 @@ namespace StarShift.Enemies
             if (!supply && enemy.GetComponent<AsteroidVisualMotion>() == null && (frames == null || frames.Length == 0)) return;
             var visual = pool.Get();
             visual.transform.position = position;
-            visual.sprite = frames != null && frames.Length > 0 ? frames[0] : burstSprite;
-            active.Add(new Burst { Visual = visual, Scale = supply ? .6f : enemy.transform.localScale.x });
+            // Supply Drone nổ tung để lộ hộp quà; asteroid dùng burst đá chung.
+            var chosen = supply && supplyFrames != null && supplyFrames.Length > 0 ? supplyFrames : frames;
+            visual.sprite = chosen != null && chosen.Length > 0 ? chosen[0] : burstSprite;
+            visual.color = Color.white;
+            active.Add(new Burst { Visual = visual, Frames = chosen, Scale = supply ? .9f : enemy.transform.localScale.x });
         }
         private void Update()
         {
@@ -46,8 +51,8 @@ namespace StarShift.Enemies
             {
                 var burst = active[i]; burst.Age += Time.deltaTime;
                 float t = Mathf.Clamp01(burst.Age / seconds);
-                bool animated = frames != null && frames.Length > 0;
-                if (animated) burst.Visual.sprite = frames[Mathf.Min(frames.Length - 1, (int)(t * frames.Length))];
+                bool animated = burst.Frames != null && burst.Frames.Length > 0;
+                if (animated) burst.Visual.sprite = burst.Frames[Mathf.Min(burst.Frames.Length - 1, (int)(t * burst.Frames.Length))];
                 burst.Visual.transform.localScale = Vector3.one * burst.Scale * (animated ? 1 : Mathf.Lerp(.25f, 1.4f, t));
                 burst.Visual.color = animated ? Color.white : new Color(1, Mathf.Lerp(.85f, .25f, t), .12f, 1 - t);
                 if (t < 1) continue;

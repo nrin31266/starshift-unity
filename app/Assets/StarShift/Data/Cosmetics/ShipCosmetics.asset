@@ -23,10 +23,10 @@ MonoBehaviour:
     FlipY: 0
     Tint: {r: 1, g: 1, b: 1, a: 1}
     EngineSockets:
-    - {x: -0.15111111, y: -0.5511111}
-    - {x: 0.15111111, y: -0.5511111}
-    MuzzleSocket: {x: 0, y: 0.75}
-    PlumeScale: 0.42
+    - {x: -0.16888888, y: -0.5777778}
+    - {x: 0.16888888, y: -0.5777778}
+    MuzzleSocket: {x: 0, y: 0.61333334}
+    PlumeScale: 0.5
     AnimationFrames: []
     TrailSeconds: 0.16
   - Id: chassis-swept
@@ -39,10 +39,10 @@ MonoBehaviour:
     FlipY: 0
     Tint: {r: 1, g: 1, b: 1, a: 1}
     EngineSockets:
-    - {x: -0.27555555, y: -0.40888888}
-    - {x: 0.27555555, y: -0.40888888}
-    MuzzleSocket: {x: 0, y: 0.75}
-    PlumeScale: 0.48
+    - {x: -0.16888888, y: -0.5777778}
+    - {x: 0.16888888, y: -0.5777778}
+    MuzzleSocket: {x: 0, y: 0.61333334}
+    PlumeScale: 0.5
     AnimationFrames: []
     TrailSeconds: 0.16
   - Id: skin-cyan

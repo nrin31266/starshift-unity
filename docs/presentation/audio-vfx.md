@@ -46,6 +46,49 @@ death fade, particles hoặc SFX. Cue reset khi object reuse; thời gian flash 
 scaled time. Đây là presentation tạm cho [Scout checkpoint](../content/enemies-bosses.md#scout-drone),
 không phải approved final palette/art hoặc authority cho HP/death.
 
+### M8 impact và damage presentation `[PROVISIONAL]`
+
+`EnemyHealth.HitPresented` gửi `EnemyHitInfo` (kind, point, normal, damage) tới
+presentation; damage/splash/HP không đổi. `PlayerProjectile` truyền contact point
+thật từ sweep/trigger, nên impact hiện ở mép cánh/module bị trúng thay vì tâm enemy.
+Ba loại phản hồi khác nhau:
+
+| Loại trúng | Cue | Sprite |
+|---|---|---|
+| Hull | sparks vàng-cam + mảnh tối, flash hull ngắn | `impact-hull` |
+| Module | vòng vuông + tia ngắn tại module | `impact-module` |
+| Shield block | vòng teal lục giác, không spark hull | `impact-shield` |
+
+Damage state dùng repaint thật (`-damaged` / `-critical`) với mảng giáp bị cắt,
+khoang máy lộ và sparks/smoke tại vùng hỏng; không tint đè family. Smoke chỉ hiện
+ở Critical. Thời gian flash vàng-cam là cue presentation; không thay threshold
+[enemy owner](../content/enemies-bosses.md#damage-state).
+
+### M8 muzzle, charge và telegraph theo branch `[PROVISIONAL]`
+
+Mỗi weapon branch có charge/muzzle/hit/trail riêng:
+
+| Branch | Charge | Muzzle | Projectile |
+|---|---|---|---|
+| Pulse | vòng cyan co vào lõi | needle cyan | needle cyan/white |
+| Plasma | vòng tím | orb tím | orb tím |
+| Missile | vòng cam | rocket + lửa | rocket cam |
+| Beam (hostile) | cột magenta | beam magenta | beam magenta |
+
+Hostile normal dùng coral hoặc pale lemon với outline tối + lõi sáng; magenta chỉ
+dành cho special danger. Telegraph bracket đổi màu theo loại (coral/lemon/magenta)
+và đậm dần từ PREPARE sang LOCK. Sniper beam dùng cột cảnh báo dọc; Interceptor
+strike dùng cue bám điểm khóa. Không đổi timing ability có sẵn.
+
+### M8 heavy/boss destruction `[PROVISIONAL]`
+
+`StagedDestructionPresentation` nổ cục bộ theo cụm module, văng mảnh và khói theo
+giai đoạn; `BossDeathSequence.Begin` gọi staged trước khi chạy beat cũ nên respawn
+gate và duration không đổi. Player death có flash, hull breakup và debris độc lập
+(`debris-hull`) để hull bị ẩn không kéo theo debris. Supply Drone nổ ra burst hộp
+quà riêng (`supply-burst`), không dùng explosion đá chung.
+
+
 ### Scout fire telegraph
 
 VS-015 placeholder đổi Core từ red emissive sang magenta khi fire component báo

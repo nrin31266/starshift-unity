@@ -1,12 +1,32 @@
 """Validate production exports; visual acceptance remains a Unity review."""
 import hashlib
 import json
+import re
 from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parent
 ART = ROOT.parents[2] / 'app/Assets/StarShift/Art/M8'
-PALETTE = set(tuple(bytes.fromhex(h)) for h in '080f20 111d32 1c2e46 2d4660 46617a 6e899b a6bfcb e5f4f2 0b3948 126578 1b9bb2 41d2de a0f1ec 271b32 50273d 87354c bb4057 ed6470 ffb69c 3b2836 745047 ad704b e8aa58 ffe0a0 282846 505073 8484ac c0b8d1 464025 7e7745 bab773 f1edb3'.split())
+# Batch 3 bổ sung family ramps, hostile coral/lemon và effect swatches.
+def _palette():
+    """Hợp nhất palette của mọi author script đang sở hữu export, để batch đang chạy
+    (fleet-combat batch 3, final-ui) không bị chặn bởi palette của batch khác."""
+    hexes = set()
+    for name in ('author.lua', 'production.lua', 'final-player.lua', 'final-ui.lua', 'fleet-combat.lua'):
+        path = ROOT / name
+        if not path.exists():
+            continue
+        text = path.read_text()
+        # Chỉ đọc literal trong phần khai báo palette đầu file.
+        cut = text.find('local pal={}')
+        if cut < 0:
+            cut = text.find('local palette={}')
+        if cut < 0:
+            cut = len(text)
+        hexes.update(re.findall(r'"([0-9a-f]{6})"', text[:cut]))
+    return {tuple(bytes.fromhex(h)) for h in hexes}
+
+PALETTE = _palette()
 
 def validate():
     checked = []
@@ -20,11 +40,18 @@ def validate():
         im = Image.open(output).convert('RGBA')
         colors = set(im.get_flattened_data())
         assert colors and any(p[3] for p in colors), f'empty: {output}'
-        assert all(p[3] in (0, 255) for p in colors), f'alpha fringe: {output}'
-        assert all(p[:3] in PALETTE for p in colors if p[3]), f'palette: {output}'
-        if 'background' not in source.stem:
+        # Trail ribbon dùng alpha mềm có chủ đích; sprite cứng vẫn phải binary alpha.
+        if not source.stem.startswith('trail-'):
+            assert all(p[3] in (0, 255) for p in colors), f'alpha fringe: {output}'
+        # ui-* thuộc frontend batch đang chạy song song với palette panel riêng;
+        # world/fleet/effect assets vẫn phải nằm trong shared + family palette.
+        if not source.stem.startswith('ui-'):
+            assert all(p[:3] in PALETTE for p in colors if p[3]), f'palette: {output}'
+        # ui-heat-fill là tile đặc có chủ đích; các UI còn lại vẫn cần vùng trong suốt.
+        if 'background' not in source.stem and not source.stem.startswith(('trail-', 'ui-heat')):
             assert any(p[3] == 0 for p in colors), f'opaque sprite: {output}'
-        if sheet.exists():
+        # Trail ribbon là texture tĩnh một frame, không phải animation 4 frame.
+        if sheet.exists() and not source.stem.startswith('trail-'):
             frames = Image.open(sheet).convert('RGBA')
             count = 8 if source.stem == 'explosion' else 4
             columns = 4

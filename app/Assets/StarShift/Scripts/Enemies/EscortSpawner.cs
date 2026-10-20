@@ -27,6 +27,10 @@ namespace StarShift.Enemies
         }
         public int Capacity => capacity;
         public int SpawnCount { get; private set; }
+        // Presentation đọc chu kỳ phóng; không đổi interval/spawn permission.
+        public float LaunchRemaining => remaining;
+        public float LaunchInterval => intervalSeconds;
+        public bool ReadyToLaunch => isActiveAndEnabled && health != null && health.IsAlive && flight != null && flight.IsHolding && LiveCount < capacity;
         private void Awake()
         {
             health = GetComponentInParent<EnemyHealth>(); flight = GetComponentInParent<EntryHoldFlight>();

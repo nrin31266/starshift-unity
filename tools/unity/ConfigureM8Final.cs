@@ -42,17 +42,19 @@ public static class ConfigureM8Final
     { var so=new SerializedObject(target);var p=so.FindProperty(field);var all=values.ToArray();p.arraySize=all.Length;for(int i=0;i<all.Length;i++)p.GetArrayElementAtIndex(i).objectReferenceValue=all[i];so.ApplyModifiedPropertiesWithoutUndo(); }
     static void SpriteEngines(ShipAppearance appearance,SpriteRenderer hull,bool approach)
     {
-        var plumes=new List<SpriteRenderer>();var tails=new List<SpriteRenderer>();
+        var plumes=new List<SpriteRenderer>();
         for(int i=0;i<2;i++)
         {
             var plume=Visual(hull.gameObject,"M8Engine"+(i==0?-1:1),"engine-loop",Vector3.zero,hull.sortingOrder-1,.6f);
             var old=plume.GetComponent<SpriteFrameLoop>();if(old!=null)UnityEngine.Object.DestroyImmediate(old);
             plume.transform.localRotation=Quaternion.identity;
-            plumes.Add(plume);tails.Add(Visual(hull.gameObject,"EngineRibbon"+i,"trail-standard",Vector3.zero,hull.sortingOrder-2,.6f));
+            plumes.Add(plume);
+            // Xóa triệt để các sprite ribbon cũ dán dính vào đuôi tàu để không còn lỗi 2 loại vệt chồng lên nhau
+            var oldRibbon=hull.transform.Find("EngineRibbon"+i);
+            if(oldRibbon!=null)UnityEngine.Object.DestroyImmediate(oldRibbon.gameObject);
         }
         if(appearance==null)return;
         Objects(appearance,approach?"approachPlumes":"enginePlumes",plumes);
-        Objects(appearance,approach?"approachRibbons":"ribbons",tails);
     }
     static Image PreviewImage(Transform parent,string name)
     {
@@ -65,10 +67,11 @@ public static class ConfigureM8Final
     {
         image.preserveAspect=true;
         var preview=Component<ShipPreview>(image.gameObject);preview.Hull=image;
-        preview.Engines=new Image[2];preview.Ribbons=new Image[2];
+        preview.Engines=new Image[2];
         for(int i=0;i<2;i++)
         {
-            preview.Ribbons[i]=PreviewImage(image.transform,"Ribbon"+i);preview.Ribbons[i].sprite=S("trail-standard");
+            var oldRibbon=image.transform.Find("Ribbon"+i);
+            if(oldRibbon!=null)oldRibbon.gameObject.SetActive(false);
             preview.Engines[i]=PreviewImage(image.transform,"Engine"+i);preview.Engines[i].sprite=S("engine-loop");
         }
     }
@@ -82,7 +85,10 @@ public static class ConfigureM8Final
         var so=new SerializedObject(appearance);var approach=(SpriteRenderer)so.FindProperty("approachHull").objectReferenceValue;
         if(approach!=null){approach.sprite=S("player");SpriteEngines(appearance,approach,true);}
         var motionTrail=(TrailRenderer)so.FindProperty("engineTrail").objectReferenceValue;
-        motionTrail.startWidth=.07f;motionTrail.endWidth=0;motionTrail.time=.16f;motionTrail.sortingOrder=hull.sortingOrder-3;
+        if(motionTrail!=null)
+        {
+            motionTrail.startWidth=.22f;motionTrail.endWidth=0.02f;motionTrail.time=.22f;motionTrail.sortingOrder=hull.sortingOrder-3;
+        }
     }
     static void PlayerUi(GameObject root)
     {
@@ -114,9 +120,8 @@ public static class ConfigureM8Final
         foreach(var spec in new[]{new[]{"chassis-arrow","MŨI GIÁO","player"},new[]{"chassis-swept","ƯNG KÍCH","player-swept"}})
         {
             var c=catalog.Find(spec[0]);c.DisplayName=spec[1];c.Sprite=S(spec[2]);c.AmberSprite=S(spec[2]+"-amber");c.FlipY=false;
-            bool arrow=spec[0]=="chassis-arrow";
-            c.EngineSockets=new[]{new Vector2(arrow?-8.5f/56.25f:-15.5f/56.25f,arrow?-31f/56.25f:-23f/56.25f),new Vector2(arrow?8.5f/56.25f:15.5f/56.25f,arrow?-31f/56.25f:-23f/56.25f)};
-            c.MuzzleSocket=new Vector2(0,.75f);c.PlumeScale=arrow?.42f:.48f;
+            c.EngineSockets=new[]{new Vector2(-9.5f/56.25f,-32.5f/56.25f),new Vector2(9.5f/56.25f,-32.5f/56.25f)};
+            c.MuzzleSocket=new Vector2(0,34.5f/56.25f);c.PlumeScale=0.5f;
         }
         catalog.Find("skin-amber").Tint=Color.white;
         var rainbow=catalog.Find("trail-rainbow");if(rainbow==null){rainbow=new CosmeticOption{Id="trail-rainbow",DisplayName="CẦU VỒNG",Slot=CosmeticSlot.Trail,ShardCost=8};catalog.Options=catalog.Options.Concat(new[]{rainbow}).ToArray();}
@@ -128,6 +133,99 @@ public static class ConfigureM8Final
         foreach(var root in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())PlayerUi(root);
         AssetDatabase.SaveAssets();EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());EditorSceneManager.SaveOpenScenes();
         return new{chassis=2,trails=3,cards=3,perChassisSockets=true};
+    }
+
+
+    static UnityEngine.Object Ref(UnityEngine.Object target,string field)=>new SerializedObject(target).FindProperty(field).objectReferenceValue;
+    static void Position(RectTransform t,Vector2 anchor,Vector2 offset,Vector2 size)
+    {t.anchorMin=t.anchorMax=anchor;t.pivot=Vector2.one*.5f;t.anchoredPosition=offset;t.sizeDelta=size;}
+    static Image Icon(Transform parent,string name,string id,Vector2 anchor,Vector2 offset,Vector2 size)
+    {var r=PreviewImage(parent,name);r.sprite=S(id);r.preserveAspect=true;Position(r.rectTransform,anchor,offset,size);return r;}
+    static Text Timer(Transform parent,string name,Vector2 offset)
+    {
+        var t=parent.Find(name)as RectTransform;if(t==null){t=new GameObject(name,typeof(RectTransform),typeof(CanvasRenderer),typeof(Text)).GetComponent<RectTransform>();t.SetParent(parent,false);}
+        var label=t.GetComponent<Text>();label.font=AssetDatabase.LoadAssetAtPath<Font>("Assets/StarShift/UI/Fonts/VT323-Regular.ttf");label.fontSize=26;label.alignment=TextAnchor.MiddleCenter;label.color=Color.white;label.raycastTarget=false;
+        Position(t,Vector2.one*.5f,offset,new Vector2(64,28));return label;
+    }
+    static void SkinUi(GameObject root)
+    {
+        var font=AssetDatabase.LoadAssetAtPath<Font>("Assets/StarShift/UI/Fonts/VT323-Regular.ttf");
+        foreach(var text in root.GetComponentsInChildren<Text>(true))
+        {
+            text.font=font;text.fontStyle=FontStyle.Normal;text.resizeTextForBestFit=false;
+            if(text.fontSize<26)text.fontSize=26;
+            text.verticalOverflow=VerticalWrapMode.Truncate;
+        }
+        foreach(var image in root.GetComponentsInChildren<Image>(true))
+        {
+            if(image.name=="Plate"||image.name=="Card"||image.name.StartsWith("Block"))
+            {image.sprite=S("ui-panel");image.type=Image.Type.Sliced;image.color=Color.white;}
+        }
+        var view=root.GetComponentInChildren<ShellView>(true);
+        foreach(var button in root.GetComponentsInChildren<Button>(true))
+        {
+            if(!(button.targetGraphic is Image image))continue;
+            bool card=view!=null&&view.CosmeticCards.Contains(button);
+            bool tab=view!=null&&(view.CosmeticTabs.Contains(button)||button==view.HangarMode||button==view.StoreMode);
+            bool primary=view!=null&&(button==view.Continue||button==view.NewGame||button==view.CosmeticAction||button==view.Next||button==view.LaunchReplay||button==view.Confirm);
+            image.sprite=S(card?"ui-card":tab?"ui-tab":primary?"ui-button":"ui-button-secondary");image.type=Image.Type.Sliced;image.color=Color.white;
+            var c=button.colors;c.normalColor=Color.white;c.highlightedColor=new Color(.8f,1,1);c.selectedColor=new Color(.65f,1,1);c.pressedColor=new Color(.45f,.68f,.78f);c.disabledColor=new Color(.43f,.5f,.6f,.6f);button.colors=c;
+            Component<UiButtonMotion>(button.gameObject);
+        }
+        if(view!=null)
+        {
+            view.MenuShip.rectTransform.anchoredPosition=new Vector2(0,90);
+            for(int i=0;i<3;i++)Position((RectTransform)view.CosmeticTabs[i].transform,new Vector2(.565f+i*.165f,.78f),Vector2.zero,new Vector2(240,54));
+            foreach(var modal in new[]{view.Confirmation,view.Error,view.Loading})
+            {
+                foreach(var plate in modal.GetComponentsInChildren<Image>(true).Where(i=>i.name=="Card"||i.name=="Plate"))
+                {plate.sprite=S("ui-modal");plate.type=Image.Type.Sliced;}
+            }
+        }
+        var hud=root.GetComponentInChildren<GameplayHud>(true);if(hud==null)return;
+        var level=(Text)Ref(hud,"weaponLabel");var weapon=level.transform.parent;
+        Position((RectTransform)weapon,new Vector2(1,0),new Vector2(-94,44),new Vector2(164,72));
+        var weaponIcon=(Image)Ref(hud,"weaponIcon");Position(weaponIcon.rectTransform,new Vector2(0,.5f),new Vector2(38,0),new Vector2(48,48));
+        level.rectTransform.anchorMin=level.rectTransform.anchorMax=new Vector2(1,.5f);level.rectTransform.pivot=Vector2.one*.5f;level.rectTransform.anchoredPosition=new Vector2(-42,0);level.rectTransform.sizeDelta=new Vector2(72,56);level.fontSize=34;
+        foreach(var p in weapon.GetComponentsInChildren<Image>(true).Where(i=>i.name=="Plate"))p.color=Color.clear;
+        var missile=(Button)Ref(hud,"missileButton");
+        Position((RectTransform)missile.transform,new Vector2(1,0),new Vector2(-94,126),new Vector2(164,72));((Image)missile.targetGraphic).color=new Color(1,1,1,0);
+        Icon(missile.transform,"M8AmmoIcon","ui-ammo",new Vector2(0,.5f),new Vector2(38,0),new Vector2(48,48));
+        var ammo=(Text)Ref(hud,"missileCount");ammo.rectTransform.anchorMin=ammo.rectTransform.anchorMax=new Vector2(1,.5f);ammo.rectTransform.anchoredPosition=new Vector2(-42,0);ammo.rectTransform.sizeDelta=new Vector2(78,56);ammo.fontSize=34;
+        var effect=((Image)Ref(hud,"shieldIcon")).transform.parent;
+        foreach(var pair in new[]{new[]{"shieldIcon","ui-shield"},new[]{"overdriveIcon","ui-overdrive"},new[]{"supportIcon","ui-support"}}.Select((v,i)=>(v,i)))
+        {var img=(Image)Ref(hud,pair.v[0]);img.sprite=S(pair.v[1]);Position(img.rectTransform,Vector2.one*.5f,new Vector2((pair.i-1)*80,10),new Vector2(40,40));}
+        Set(hud,"overdriveTimer",Timer(effect,"OverdriveTimer",new Vector2(0,-25)));
+        Set(hud,"supportTimer",Timer(effect,"SupportTimer",new Vector2(80,-25)));
+        var lives=(Text)Ref(hud,"livesLabel");foreach(var p in lives.transform.parent.GetComponentsInChildren<Image>(true).Where(i=>i.name=="Plate"))p.color=Color.clear;
+        var life=lives.transform.parent.Find("LifeIcon").GetComponent<Image>();life.sprite=S("ui-life");Position(life.rectTransform,new Vector2(0,.5f),new Vector2(24,0),new Vector2(40,40));lives.fontSize=36;
+        foreach(var field in new[]{"scoreLabel","shardLabel"})
+        {
+            var count=(Text)Ref(hud,field);var parent=count.transform.parent;
+            Position((RectTransform)parent,new Vector2(field=="scoreLabel"?.48f:.65f,1),new Vector2(0,-36),new Vector2(210,56));
+            foreach(var p in parent.GetComponentsInChildren<Image>(true).Where(i=>i.name=="Plate"))p.color=Color.clear;
+            foreach(var label in parent.GetComponentsInChildren<Text>(true).Where(t=>t!=count))label.text=field=="scoreLabel"?"ĐIỂM":"";
+            count.fontSize=34;
+            if(field=="shardLabel")Icon(parent,"M8ShardIcon","ui-shard",new Vector2(0,.5f),new Vector2(46,0),new Vector2(36,36));
+        }
+        var heat=(Image)Ref(hud,"heatFrame");var gauge=heat.transform.parent;
+        foreach(var p in gauge.GetComponentsInChildren<Image>(true).Where(i=>i.name=="Plate"))p.color=Color.clear;
+        heat.sprite=S("ui-heat-housing");heat.type=Image.Type.Sliced;heat.color=Color.white;
+        var fill=(Image)Ref(hud,"heatFill");fill.sprite=S("ui-heat-fill");fill.type=Image.Type.Tiled;
+        var boss=root.GetComponentInChildren<BossHud>(true);if(boss!=null)
+        {var b=(Image)Ref(boss,"fill");b.sprite=S("ui-heat-fill");b.type=Image.Type.Filled;b.fillMethod=Image.FillMethod.Horizontal;}
+    }
+    public static object Ui()
+    {
+        if(EditorApplication.isPlayingOrWillChangePlaymode)throw new Exception("Edit Mode required");
+        foreach(var id in new[]{"ui-panel","ui-button","ui-button-secondary","ui-tab","ui-card","ui-modal","ui-heat-housing"})
+        {var importer=(TextureImporter)AssetImporter.GetAtPath(Art+id+".png");importer.spriteBorder=id=="ui-heat-housing"?new Vector4(6,4,6,4):new Vector4(6,6,6,6);importer.SaveAndReimport();}
+        foreach(var guid in AssetDatabase.FindAssets("t:PickupDefinition",new[]{"Assets/StarShift/Data"}))
+        {var item=AssetDatabase.LoadAssetAtPath<PickupDefinition>(AssetDatabase.GUIDToAssetPath(guid));if(item.Kind==PickupKind.Shard)continue;item.VisualScale=1.2f;EditorUtility.SetDirty(item);}
+        Prefab("UI/GameShellUI",SkinUi);
+        foreach(var root in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())SkinUi(root);
+        AssetDatabase.SaveAssets();EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());EditorSceneManager.SaveOpenScenes();
+        return new{ui="mechanical pixel",pickupVisualScale=1.2f,minimumPixelsAt900=52*1.2f*900/(19.2f*56.25f),font="VT323"};
     }
 
 }

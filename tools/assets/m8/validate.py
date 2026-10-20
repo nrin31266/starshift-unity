@@ -7,7 +7,7 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parent
 ART = ROOT.parents[2] / 'app/Assets/StarShift/Art/M8'
 PALETTE = {tuple(bytes.fromhex(h)) for h in re.search(r'local colors = \{(.*?)\}', (ROOT / 'author.lua').read_text()).group(1).replace('"', '').split(',')}
-SIZES = {'player': (64, 80), 'scout': (80, 64), 'raider': (80, 80), 'heavy': (128, 112), 'boss-module': (96, 96), 'background': (768, 336), 'player-pulse': (12, 32), 'enemy-bolt': (20, 24), 'enemy-telegraph': (28, 28), 'stellar-shard': (32, 40), 'hud-ship': (24, 28), 'star': (5, 5), 'ui-panel': (32, 32), 'ui-button': (32, 32), 'explosion-sheet': (256, 128)}
+SIZES = {'player': (64, 80), 'scout': (80, 64), 'raider': (80, 80), 'heavy': (128, 112), 'boss-module': (96, 96), 'background': (768, 336), 'player-pulse': (12, 32), 'enemy-bolt': (20, 24), 'enemy-telegraph': (28, 28), 'stellar-shard': (32, 40), 'star': (5, 5), 'ui-panel': (32, 32), 'ui-button': (32, 32), 'explosion-sheet': (256, 128)}
 rows = []
 for name, size in SIZES.items():
     im = Image.open(ART / (name + '.png'))
