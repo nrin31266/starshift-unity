@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace StarShift.UI
 {
-    public enum ShellScreen { Playing, Menu, Missions, Settings, Help, Credits, Pause, Results, Hangar }
+    public enum ShellScreen { Playing, Menu, Missions, Settings, Help, Credits, Pause, Results, Hangar, Store }
 
     [DisallowMultipleComponent]
     public sealed class ShellView : MonoBehaviour
@@ -14,9 +14,12 @@ namespace StarShift.UI
         public Button[] BackButtons, MissionCards;
         public Text[] MissionLabels;
         public Button LaunchReplay;
-        public Button Hangar, ShipPreview, CosmeticAction;
-        public Image MenuShip, MenuTrail, HangarShip, HangarTrail;
-        public Text MenuShipName, MenuEquipped, HangarShipName, HangarWallet, CosmeticDetail;
+        public Button Hangar, Store, HangarMode, StoreMode, CosmeticAction;
+        public GameObject ShipStage;
+        public Image MenuShip, MenuTrail;
+        public Image[] CosmeticSwatches;
+        public Text MenuShipName, MenuEquipped, CosmeticContext, CosmeticDetail;
+        public Text VibrationState, ShakeState;
         public Button[] CosmeticTabs, CosmeticCards;
         public Text[] CosmeticLabels;
         public Text MenuStatus, Wallet, MissionDetail, MenuNotice;
@@ -37,10 +40,11 @@ namespace StarShift.UI
         public void Show(ShellScreen screen)
         {
             Screen = screen;
-            for (int i = 1; i < Screens.Length; i++) Screens[i].SetActive(i == (int)screen);
+            for (int i = 1; i < Screens.Length; i++) Screens[i].SetActive(i == (int)screen || i == (int)ShellScreen.Hangar && screen == ShellScreen.Store);
+            ShipStage.SetActive(screen == ShellScreen.Menu || screen == ShellScreen.Hangar || screen == ShellScreen.Store);
             Focus(screen == ShellScreen.Menu ? (Continue.interactable ? Continue : NewGame.interactable ? NewGame : ReloadSave) :
                 screen == ShellScreen.Pause ? Resume : screen == ShellScreen.Missions ? (MissionCards[0].interactable ? MissionCards[0] : BackButtons[0]) :
-                screen == ShellScreen.Hangar ? CosmeticCards[0] : screen == ShellScreen.Settings ? SaveSettings : screen == ShellScreen.Results ? ResultMenu : null);
+                (screen == ShellScreen.Hangar || screen == ShellScreen.Store) ? CosmeticCards[0] : screen == ShellScreen.Settings ? SaveSettings : screen == ShellScreen.Results ? ResultMenu : null);
         }
         public void ShowConfirmation(string copy)
         {

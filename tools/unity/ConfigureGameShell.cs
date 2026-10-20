@@ -25,7 +25,7 @@ public static class ConfigureGameShell
         var scene = SceneManager.GetActiveScene();
         if (Application.isPlaying || scene.isDirty || scene.path != "Assets/StarShift/Scenes/02_Gameplay.unity") throw new InvalidOperationException("Open saved Gameplay scene in Edit Mode.");
         var runner = UnityEngine.Object.FindAnyObjectByType<EncounterRunner>();
-        if (runner.GetComponent<GameShell>() != null) { EnsureRecoveryAction(); EnsureHangar(); PolishPreview(); RemoveLegacyOverlay(); return Inspect(); }
+        if (runner.GetComponent<GameShell>() != null) { EnsureRecoveryAction(); EnsureHangar(); PolishPreview(); PolishProduct(); RemoveLegacyOverlay(); return Inspect(); }
         Backs.Clear();
         var canvas = new GameObject("GameShellUI", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
         canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
@@ -73,7 +73,7 @@ public static class ConfigureGameShell
         view.Vibration=Toggle(settings,ShellCopy.Vibration,.35f);
         view.Shake=Toggle(settings,ShellCopy.Shake,.23f);
         view.SaveSettings=Button("SaveSettings",settings,ShellCopy.SaveSettings,0);Place((RectTransform)view.SaveSettings.transform,.5f,.10f,0,0,590,72);
-        Info(view.Screens[(int)ShellScreen.Help].transform,ShellCopy.Help,ShellCopy.HelpText,27);
+        Info(view.Screens[(int)ShellScreen.Help].transform,ShellCopy.Help,string.Join("\n\n", ShellCopy.HelpBlocks),27);
         Info(view.Screens[(int)ShellScreen.Credits].transform,ShellCopy.Credits,ShellCopy.CreditsText,30);
 
         var pause=view.Screens[(int)ShellScreen.Pause].transform;
@@ -127,6 +127,7 @@ public static class ConfigureGameShell
         EnsureRecoveryAction();
         EnsureHangar();
         PolishPreview();
+        PolishProduct();
         RemoveLegacyOverlay();
         return Inspect();
     }
@@ -157,24 +158,23 @@ public static class ConfigureGameShell
         var menu=view.Screens[(int)ShellScreen.Menu].transform;
         foreach(var name in new[]{"Subtitle","Release"}){var old=menu.Find(name);if(old!=null)UnityEngine.Object.DestroyImmediate(old.gameObject);}
         var title=menu.Find("Title").GetComponent<Text>();title.fontSize=70;Place(title.rectTransform,.08f,.84f,0,0,730,100,new Vector2(0,.5f));
-        view.ShipPreview=Button("ShipPreview",menu,"",0);Place((RectTransform)view.ShipPreview.transform,.28f,.53f,0,0,430,350);
-        view.ShipPreview.GetComponent<Image>().color=new Color(.025f,.06f,.09f,.3f);
-        view.MenuTrail=PreviewTrail(view.ShipPreview.transform);
-        view.MenuShip=PreviewShip(view.ShipPreview.transform,hull.sprite);
+        var initialPreview=Rect("ShipPreview",menu);Place(initialPreview,.28f,.53f,0,0,430,350);
+        view.MenuTrail=PreviewTrail(initialPreview);
+        view.MenuShip=PreviewShip(initialPreview,hull.sprite);
         view.MenuShipName=Text("ShipName",menu,"",34,Color.white);Place(view.MenuShipName.rectTransform,.28f,.31f,0,0,650,55);
         view.MenuEquipped=Text("Equipped",menu,ShellCopy.Equipped,22,Cyan);Place(view.MenuEquipped.rectTransform,.28f,.265f,0,0,650,40);
         view.MenuStatus.alignment=TextAnchor.MiddleCenter;view.MenuStatus.fontSize=23;Place(view.MenuStatus.rectTransform,.28f,.20f,0,0,660,70);
         view.MenuNotice=Text("RecoveryNotice",menu,"",20,Muted);Place(view.MenuNotice.rectTransform,.28f,.75f,0,0,660,62);
         Place(view.Wallet.rectTransform,.28f,.125f,0,0,650,44);view.Wallet.alignment=TextAnchor.MiddleCenter;
-        view.Hangar=Button("Hangar",menu,ShellCopy.ChangeShip,0);Place((RectTransform)view.Hangar.transform,.28f,.055f,0,0,480,60);
+        view.Hangar=Button("Hangar",menu,ShellCopy.Hangar,0);Place((RectTransform)view.Hangar.transform,.28f,.055f,0,0,480,60);
         var screens=view.Screens;Array.Resize(ref screens,9);view.Screens=screens;
         var hangar=Screen("Hangar",menu.parent);view.Screens[(int)ShellScreen.Hangar]=hangar.gameObject;
         Header(hangar,ShellCopy.Hangar);
         var back=Button("Back",hangar,ShellCopy.Back,0);Place((RectTransform)back.transform,.94f,.88f,0,0,250,64,new Vector2(1,.5f));view.BackButtons=view.BackButtons.Concat(new[]{back}).ToArray();
         var preview=Rect("ShipPreview",hangar);Place(preview,.25f,.50f,0,0,470,420);
-        view.HangarTrail=PreviewTrail(preview);view.HangarShip=PreviewShip(preview,hull.sprite);
-        view.HangarShipName=Text("ShipName",hangar,"",34,Color.white);Place(view.HangarShipName.rectTransform,.25f,.23f,0,0,600,65);
-        view.HangarWallet=Text("Wallet",hangar,"",26,new Color(1,.78f,.4f));Place(view.HangarWallet.rectTransform,.25f,.14f,0,0,600,60);
+        PreviewTrail(preview);PreviewShip(preview,hull.sprite);
+        var initialName=Text("ShipName",hangar,"",34,Color.white);Place(initialName.rectTransform,.25f,.23f,0,0,600,65);
+        var initialWallet=Text("Wallet",hangar,"",26,new Color(1,.78f,.4f));Place(initialWallet.rectTransform,.25f,.14f,0,0,600,60);
         view.CosmeticTabs=new Button[3];
         for(int i=0;i<3;i++){view.CosmeticTabs[i]=Button("Tab"+i,hangar,ShellCopy.CosmeticTabs[i],0);Place((RectTransform)view.CosmeticTabs[i].transform,.51f+i*.158f,.74f,0,0,245,78);view.CosmeticTabs[i].GetComponentInChildren<Text>().fontSize=23;}
         view.CosmeticCards=new Button[2];view.CosmeticLabels=new Text[2];
@@ -193,9 +193,147 @@ public static class ConfigureGameShell
         var presentation=new SerializedObject(UnityEngine.Object.FindAnyObjectByType<MissionIntroPresentation>());
         Bind(UnityEngine.Object.FindAnyObjectByType<ShipAppearance>(),"approachHull",presentation.FindProperty("ship").objectReferenceValue);
         foreach(var screen in new[]{ShellScreen.Menu,ShellScreen.Missions,ShellScreen.Settings,ShellScreen.Help,ShellScreen.Credits,ShellScreen.Hangar}) { var image=view.Screens[(int)screen].GetComponent<Image>();var color=image.color;color.a=1;image.color=color; }
-        foreach(var trail in new[]{view.MenuTrail,view.HangarTrail}) { var rect=trail.rectTransform;Place(rect,.5f,.25f,0,0,22,90); }
+        foreach(var trail in new[]{view.MenuTrail}) { var rect=trail.rectTransform;Place(rect,.5f,.25f,0,0,22,90); }
         var catalog=AssetDatabase.LoadAssetAtPath<CosmeticCatalog>("Assets/StarShift/Data/Cosmetics/ShipCosmetics.asset");catalog.Find("chassis-swept").FlipY=true;EditorUtility.SetDirty(catalog);AssetDatabase.SaveAssets();
         if(PrefabUtility.IsPartOfPrefabInstance(view.gameObject))PrefabUtility.ApplyPrefabInstance(view.gameObject,InteractionMode.AutomatedAction);
+    }
+    public static object FinishProduct()
+    {
+        if(Application.isPlaying)throw new InvalidOperationException("Edit Mode required");
+        PolishProduct();RemoveLegacyOverlay();return Inspect();
+    }
+    static void PolishProduct()
+    {
+        const string path="Assets/StarShift/Prefabs/UI/GameShellUI.prefab";
+        var root=PrefabUtility.LoadPrefabContents(path);
+        try { PolishProductView(root.GetComponent<ShellView>());PrefabUtility.SaveAsPrefabAsset(root,path); }
+        finally { PrefabUtility.UnloadPrefabContents(root); }
+        PolishHud();
+    }
+    static void PolishProductView(ShellView view)
+    {
+        var menu=view.Screens[(int)ShellScreen.Menu].transform;
+        var hangar=view.Screens[(int)ShellScreen.Hangar].transform;
+        if(view.ShipStage==null)
+        {
+            var stage=Rect("ShipStage",menu.parent);Stretch(stage);view.ShipStage=stage.gameObject;
+            var preview=view.MenuShip.transform.parent;
+            preview.SetParent(stage,false);Place((RectTransform)preview,.28f,.54f,0,0,580,420);
+            var previewButton=preview.GetComponent<Button>();if(previewButton!=null)UnityEngine.Object.DestroyImmediate(previewButton);
+            var backdrop=preview.GetComponent<Image>();if(backdrop!=null)UnityEngine.Object.DestroyImmediate(backdrop);
+            var label=preview.Find("Label");if(label!=null)UnityEngine.Object.DestroyImmediate(label.gameObject);
+            foreach(var item in new[]{view.MenuShipName,view.MenuEquipped,view.MenuStatus,view.Wallet})item.transform.SetParent(stage,false);
+            foreach(var name in new[]{"ShipPreview","ShipName","Wallet"}) {var old=hangar.Find(name);if(old!=null)UnityEngine.Object.DestroyImmediate(old.gameObject);}
+            view.Store=Button("Store",view.Continue.transform.parent,ShellCopy.Store,64);
+            view.Hangar.transform.SetParent(view.Continue.transform.parent,false);
+            view.Hangar.gameObject.AddComponent<LayoutElement>().preferredHeight=64;
+            view.Hangar.transform.SetSiblingIndex(2);view.Store.transform.SetSiblingIndex(3);
+            view.Hangar.GetComponentInChildren<Text>().text=ShellCopy.Hangar;
+            view.HangarMode=Button("HangarMode",hangar,ShellCopy.Hangar,0);Place((RectTransform)view.HangarMode.transform,.64f,.87f,0,0,230,64);
+            view.StoreMode=Button("StoreMode",hangar,ShellCopy.Store,0);Place((RectTransform)view.StoreMode.transform,.81f,.87f,0,0,270,64);
+            view.CosmeticContext=Text("ShipContext",hangar,"",25,Muted);Place(view.CosmeticContext.rectTransform,.73f,.71f,0,0,720,48);
+            view.CosmeticSwatches=new Image[view.CosmeticCards.Length];
+            for(int i=0;i<view.CosmeticCards.Length;i++)
+            {
+                var card=view.CosmeticCards[i];var swatch=Rect("Swatch",card.transform);Place(swatch,.5f,.72f,0,0,70,80);
+                view.CosmeticSwatches[i]=swatch.gameObject.AddComponent<Image>();view.CosmeticSwatches[i].preserveAspect=true;view.CosmeticSwatches[i].raycastTarget=false;
+            }
+        }
+        Place((RectTransform)view.MenuShip.transform.parent,.28f,.54f,0,0,580,420);
+        Place(view.MenuShipName.rectTransform,.28f,.31f,0,0,650,52);
+        Place(view.MenuEquipped.rectTransform,.28f,.265f,0,0,650,32);view.MenuEquipped.fontSize=20;
+        Place(view.MenuStatus.rectTransform,.28f,.20f,0,0,660,70);
+        Place(view.Wallet.rectTransform,.28f,.12f,0,0,650,48);
+        var actions=(RectTransform)view.Continue.transform.parent;
+        var utility=menu.Find("UtilityActions") as RectTransform;
+        if(utility==null){utility=Rect("UtilityActions",menu);Row(utility);}
+        foreach(var button in new[]{view.Help,view.Settings,view.Credits})
+        {button.transform.SetParent(utility,false);button.GetComponentInChildren<Text>().fontSize=22;}
+        Place(utility,.75f,.17f,0,0,560,68);
+        var destinations=actions.Find("CosmeticDestinations") as RectTransform;
+        if(destinations==null){destinations=Rect("CosmeticDestinations",actions);Row(destinations);Height(destinations.gameObject,76);}
+        view.Hangar.transform.SetParent(destinations,false);view.Store.transform.SetParent(destinations,false);destinations.SetSiblingIndex(2);
+        Place(actions,.75f,.54f,0,0,560,420);
+        actions.GetComponent<VerticalLayoutGroup>().spacing=22;
+        view.Continue.GetComponent<LayoutElement>().preferredHeight=84;
+        view.Continue.GetComponent<Image>().color=new Color(.10f,.38f,.46f);
+        view.Continue.GetComponentInChildren<Text>().fontSize=34;
+        Place((RectTransform)menu.Find("Title"),.08f,.91f,0,0,730,100,new Vector2(0,.5f));
+        Place(view.MenuNotice.rectTransform,.28f,.80f,0,0,660,64);
+        var header=hangar.Find("Title");if(header!=null)header.gameObject.SetActive(false);
+        // Tàu là ngữ cảnh chính; sơn và vệt động cơ nằm trong phần ngoại hình của tàu.
+        Place((RectTransform)view.CosmeticTabs[0].transform,.73f,.78f,0,0,720,60);
+        Place((RectTransform)view.CosmeticTabs[1].transform,.61f,.64f,0,0,330,60);
+        Place((RectTransform)view.CosmeticTabs[2].transform,.85f,.64f,0,0,350,60);
+        for(int i=0;i<view.CosmeticTabs.Length;i++)view.CosmeticTabs[i].GetComponentInChildren<Text>().text=ShellCopy.CosmeticTabs[i];
+        for(int i=0;i<view.CosmeticCards.Length;i++)
+        {
+            Place((RectTransform)view.CosmeticCards[i].transform,.61f+i*.24f,.44f,0,0,340,220);
+            Place(view.CosmeticLabels[i].rectTransform,.5f,.29f,0,0,316,90);view.CosmeticLabels[i].fontSize=22;
+        }
+        Place(view.CosmeticDetail.rectTransform,.73f,.24f,0,0,720,100);view.CosmeticDetail.fontSize=23;
+        Place((RectTransform)view.CosmeticAction.transform,.73f,.11f,0,0,720,76);view.CosmeticAction.GetComponentInChildren<Text>().fontSize=25;
+        foreach(var button in view.CosmeticTabs.Concat(view.CosmeticCards).Concat(view.MissionCards))
+        {var outline=button.GetComponent<Outline>()??button.gameObject.AddComponent<Outline>();outline.effectColor=Cyan;outline.effectDistance=new Vector2(3,-3);outline.enabled=false;}
+        // Back ở góc trái, tách hẳn hai điểm đến Xưởng và Cửa hàng.
+        Place((RectTransform)view.BackButtons[4].transform,.06f,.88f,0,0,250,64,new Vector2(0,.5f));
+        foreach(var toggle in new[]{view.Vibration,view.Shake})
+        {
+            toggle.transform.Find("Label").GetComponent<Text>().text=toggle==view.Vibration?ShellCopy.Vibration:ShellCopy.Shake;
+            var check=(RectTransform)toggle.transform.Find("Check");Place(check,.94f,.5f,0,0,72,46);
+            var mark=(RectTransform)check.Find("Mark");Stretch(mark,4);
+            var state=toggle.transform.Find("State")?.GetComponent<Text>()??Text("State",toggle.transform,"",24,Cyan);
+            Place(state.rectTransform,.82f,.5f,0,0,100,60);
+            if(toggle==view.Vibration)view.VibrationState=state;else view.ShakeState=state;
+        }
+        var help=view.Screens[(int)ShellScreen.Help].transform;
+        var body=help.Find("Body");if(body!=null)UnityEngine.Object.DestroyImmediate(body.gameObject);
+        for(int i=0;i<4;i++)
+        {
+            var block=help.Find("Block"+i) as RectTransform;
+            if(block==null)
+            {
+                block=Rect("Block"+i,help);block.gameObject.AddComponent<Image>().color=Panel;
+                var title=Text("Title",block,ShellCopy.HelpTitles[i],27,Cyan);title.alignment=TextAnchor.MiddleLeft;
+                Place(title.rectTransform,.5f,.81f,0,0,600,60);
+                var copy=Text("Body",block,ShellCopy.HelpBlocks[i],26,Color.white);copy.alignment=TextAnchor.UpperLeft;
+                Place(copy.rectTransform,.5f,.40f,0,0,600,155);
+            }
+            Place(block,.28f+(i%2)*.44f,.62f-(i/2)*.34f,0,0,660,280);
+        }
+        foreach(var text in view.GetComponentsInChildren<Text>(true))
+        {
+            if(text.text=="REGION A")text.text="KHU VỰC A";if(text.text=="REGION B")text.text="KHU VỰC B";
+            if(text.text=="VỀ MENU CHÍNH")text.text=GameplayCopy.MainMenu;
+        }
+        EditorUtility.SetDirty(view);
+    }
+    static void PolishHud()
+    {
+        var hud=GameObject.Find("GameplayUI").GetComponent<GameplayHud>();
+        var combat=GameObject.Find("GameplayUI").transform.Find("SafeArea/CombatHud");
+        void HudText(string field,string copy,float width)
+        {var text=(Text)new SerializedObject(hud).FindProperty(field).objectReferenceValue;text.text=copy;var rect=text.rectTransform;rect.sizeDelta=new Vector2(width,rect.sizeDelta.y);}
+        HudText("weaponLabel","Pulse · CẤP 1",240);HudText("missileCount","TÊN LỬA 1/3",230);
+        var weapon=(RectTransform)combat.Find("Weapon");Place(weapon,1,0,-140,32,264,52);
+        var inventory=(Text)new SerializedObject(hud).FindProperty("weaponInventory").objectReferenceValue;Place(inventory.rectTransform,1,0,-285,68,550,28);inventory.text="";
+        var missile=(Button)new SerializedObject(hud).FindProperty("missileButton").objectReferenceValue;
+        Place((RectTransform)missile.transform,1,0,-140,112,264,72);
+        var counters=(RectTransform)combat.Find("Counters");
+        var counterLayout=counters.GetComponent<HorizontalLayoutGroup>();if(counterLayout!=null)UnityEngine.Object.DestroyImmediate(counterLayout);
+        var counterFitter=counters.GetComponent<ContentSizeFitter>();if(counterFitter!=null)UnityEngine.Object.DestroyImmediate(counterFitter);
+        Place(counters,.5f,1,0,-8,590,48);
+        foreach(var name in new[]{"Score","Shard"})
+        {
+            var row=(RectTransform)combat.Find("Counters/"+name);Place(row,.5f,1,name=="Score"?-150:145,-30,280,48);
+            var icon=row.Find("Icon").GetComponent<Text>();icon.text=name=="Score"?"ĐIỂM":"Stellar Shard";icon.fontSize=22;Place(icon.rectTransform,0,.5f,name=="Score"?42:80,0,name=="Score"?80:160,46);
+            var count=row.Find("Count").GetComponent<Text>();Place(count.rectTransform,1,.5f,-60,0,110,46);count.fontSize=28;
+        }
+        var heatCaption=combat.Find("HeatGauge/Caption").GetComponent<Text>();heatCaption.text="NHIỆT";heatCaption.rectTransform.sizeDelta=new Vector2(90,26);heatCaption.rectTransform.anchoredPosition=new Vector2(50,-17);
+        var effects=(Text)new SerializedObject(hud).FindProperty("effectLabel").objectReferenceValue;
+        Place(effects.rectTransform,0,0,450,30,640,40);effects.alignment=TextAnchor.MiddleLeft;effects.fontSize=20;
+        var cue=(Text)new SerializedObject(hud).FindProperty("pickupLabel").objectReferenceValue;
+        Place(cue.rectTransform,0,0,326,82,620,40);cue.alignment=TextAnchor.MiddleLeft;cue.fontSize=24;
     }
     static void EnsureRecoveryAction()
     {

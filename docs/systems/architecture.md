@@ -96,7 +96,8 @@ adapter; không có audio framework. Các màn hình và Back semantics thuộc
 
 `GameplaySession` tiếp tục là owner duy nhất của Time.timeScale/AudioListener.pause.
 Shell giữ session ở Entry + cinematic lock khi Menu; background gameplay đang chạy
-được pause qua cùng clock owner, kể cả giữa intro. Pointer bị cancel ở các boundary.
+được pause qua cùng clock owner, kể cả giữa intro. Loading giữ transition hold trên
+clock owner này; RunStarted không nhả clock trước khi blocker kết thúc. Pointer bị cancel ở các boundary.
 Mission Results chặn tự-advance trong Campaign/Replay production; Next mới gọi lại
 RegionCampaignFlow/PlanetJourney của M6. DevTest giữ fast transition để các verifier
 cũ tiếp tục sử dụng. Không thay đổi encounter/region transition choreography. ShipAppearance chỉ áp cosmetic

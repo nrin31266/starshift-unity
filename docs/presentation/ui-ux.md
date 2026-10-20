@@ -322,7 +322,7 @@ không thêm screen/settings/progression mới.
 ## M7 functional shell `[PROVISIONAL]`
 
 Production boot ở cùng Gameplay scene và vào Menu trước mọi gameplay. Main Menu có
-sáu action trong contract; no save làm Continue disabled và giải thích cần New Game.
+các action chiến dịch cùng Xưởng/Cửa hàng; no save làm Continue disabled và giải thích cần New Game.
 Valid Active/region checkpoint cho Continue đúng semantic state; completed save mở
 Victory, không spawn Warden hoặc grant reward lại. Unreadable/unsupported save giữ
 nguyên bytes, tắt actions cần data và có modal thử đọc lại; backup recovery có notice
@@ -330,14 +330,14 @@ rằng tiến độ gần nhất có thể thiếu. Có explicit recovery có co
 Preserve/archive policy thuộc [save owner](../systems/save-profile.md#m7-profile-cosmetics-và-explicit-recovery-provisional).
 
 `GameShell` dùng explicit `ShellScreen`: Playing, Menu, Missions, Settings, Help,
-Credits, Pause, Results, Hangar. Confirmation/Error/Loading là modal trên screen hiện tại.
+Credits, Pause, Results, Hangar, Store. Confirmation/Error/Loading là modal trên screen hiện tại.
 `ShellView` giữ refs tới các authored panels trong `GameShellUI`; `ShellCopy` tập
 trung copy tách navigation. Các shape/font hiện là placeholder để thay skin sau.
 Menu có starfield nhẹ chạy unscaled; không chạy gameplay simulation phía sau menu.
 
 Mission Hub có hai hàng Region A/B, đúng tám cards từ RegionCampaignFlow catalog.
 Unlock/current lấy Campaign/Profile; record existence là cleared evidence. Card có
-text locked/unlocked/current/cleared và selected, best score/time khi có. Không tạo
+text locked/unlocked/current/cleared; selection dùng viền sáng, best score/time khi có. Không tạo
 unlock database khác. Chọn card mở Replay với preset hiện có; replay result không
 có Next Mission, cho replay lại hoặc về Missions/Menu. Exit Replay rồi Continue vẫn
 đọc campaign gốc.
@@ -346,7 +346,8 @@ Pause có Resume, Retry checkpoint, Settings, Main Menu. Retry từ Pause và ab
 mission cần confirmation; cancel giữ Pause. New Game có campaign cần confirmation
 và giữ profile/settings. Harmless Back không hỏi. Settings có chung bốn controls,
 hiển thị saved values và nút Lưu và quay lại; Back bỏ draft và về đúng Menu/Pause.
-How to Play mô tả relative drag/hold, weapon/heat, lives/protection, supply và Pause.
+Settings toggles hiển thị Bật/Tắt ngay khi chạm, tách rung thiết bị và rung màn hình.
+How to Play chia bốn khối chức năng: điều khiển, vũ khí/nhiệt, sống sót/tiếp tế và tạm dừng.
 Credits chỉ nêu Unity và trạng thái release/placeholder đã biết.
 
 Result contexts phân biệt Game Over, Campaign clear, Replay clear và current-release
@@ -365,23 +366,39 @@ trước, gameplay → Pause, Pause → Resume, Result → Menu (Replay → Miss
 panels đặt selected control cho keyboard. All modal backgrounds raycast và chặn
 underlying UI; navigation/transition cancel pointer qua existing adapter. Loading
 fade ngắn dùng unscaled time, giữ blocker qua release frame và chống double activation.
-Không thêm input/time ownership thứ hai.
+Trong toàn bộ loading, GameplaySession giữ clock/audio frozen kể cả khi RunStarted
+reset session; nhả hold sau blocker và giữ Pause nếu app mất focus. Không thêm input/time ownership thứ hai.
 
 SafeAreaLayout được reuse; shell scaler theo height 1600×900, anchors responsive.
 16:9 và 2000×900 là functional QA targets; touch controls lớn, labels không bake
 vào sprites. Final art/font/pixel spec và thiết bị Android thật không thuộc M7.
 
 
-### Main Menu và Hangar
+### Main Menu, Xưởng và Cửa hàng
 
-Menu bỏ build/content-count labels và filler không có action. Left side là tàu đang
-trang bị với tên chassis, equipped state, wallet và dynamic current Region/Mission
-hoặc current-campaign completion. Preview và nút Đổi tàu đều mở Xưởng tàu.
+Menu bỏ build/content-count labels và filler không có action. Tàu đang trang bị,
+tên tàu, equipped state, wallet và dynamic current Khu vực/Nhiệm vụ hoặc completion
+là trọng tâm trái. Preview không phải button; hai action XƯỞNG và CỬA HÀNG có vai trò
+riêng, không thêm lối Đổi tàu trùng action.
 
-Hangar có ba tabs Chassis/Skin/Trail, preview đủ ba slot, trạng thái owned/equipped,
-giá thật từ catalog, wallet và action mua/trang bị. Preview món chưa sở hữu không
-đổi Profile; mua có confirmation nêu đúng tên/giá. Đã sở hữu đổi miễn phí; insufficient
-funds và equipped state được disable có label rõ. Save error có retry và giữ lựa chọn
-cũ; Back về Menu và cập nhật preview theo Profile đã commit. Cosmetics chỉ ngoại
-hình, scope/giá thuộc [economy owner](../gameplay/progression-economy.md#m7-cosmetic-hangar-provisional).
-`GameShellUI.prefab` là authored reskin surface; không tạo inventory framework.
+Menu/Xưởng/Cửa hàng dùng một authored ShipStage với cùng position/scale và vùng
+trống quanh tàu. Stage không nhận input; shell ẩn stage khi vào gameplay/intro.
+Đây là điểm đặt presentation để art phase sau animate tàu vào gameplay, chưa implement
+cinematic hoặc đổi choreography M6. Shell dùng tiếng Việt nhất quán; tên riêng như
+STARSHIFT/Pulse/Core/Stellar Shard được giữ. HUD dùng tên vũ khí và CẤP, Nhiệt,
+Tên lửa, Khiên/Cường hóa/Hỗ trợ thay mã debug.
+
+Xưởng chỉ liệt kê cosmetic đã sở hữu/default để trang bị miễn phí. Cửa hàng là điểm
+mua nội dung mới, có mode navigation riêng nhưng reuse panel/catalog hiện có.
+Tàu là lựa chọn chính; Sơn tàu/Vệt động cơ nằm dưới ngữ cảnh tàu đang trang bị và
+preview trực tiếp trên tàu đó. Selection dùng viền, equipped có dấu check cùng một
+state line; không xếp thêm dòng Đang chọn. Catalog vẫn chỉ có ba slots, không thêm
+shop/inventory framework; nhóm hàng tương lai có thể mở rộng Cửa hàng mà không đổi
+luồng quản lý đồ đã sở hữu của Xưởng.
+
+Preview không đổi Profile. Mua & trang bị có confirmation đúng tên/giá từ catalog;
+owned trong Store không bị tính tiền/trang bị lại. Insufficient funds/equipped state
+được disable có label rõ. Save error có retry, giữ wallet/equip đã commit. Back về
+Menu reset preview theo Profile. Cosmetics chỉ ngoại hình, giao dịch/giá thuộc
+[economy owner](../gameplay/progression-economy.md#m7-cosmetic-hangar-provisional).
+`GameShellUI.prefab` là authored reskin surface.

@@ -48,6 +48,7 @@ public static class VerifyGameShell
     public static object BeginFailures()=>Begin("failures",Failures);
     public static object BeginSceneRelaunch()=>Begin("scene-relaunch",SceneRelaunch);
     public static object BeginInput()=>Begin("input",Input);
+    public static object BeginLoading()=>Begin("loading",Loading);
     public static object BeginRecovery()=>Begin("recovery",Recovery);
     public static object BeginTeardown()=>Begin("teardown",Teardown);
     public static object BeginHangar(int width)=>Begin("hangar-"+width,()=>Hangar(width));
@@ -55,7 +56,7 @@ public static class VerifyGameShell
     public static object BeginLayouts(int width)=>Begin("layouts-"+width,()=>Layouts(width));
     public static object Inspect()=>new{task=currentTask?.Status.ToString(),screen=Shell.Screen.ToString(),busy=Shell.IsBusy,mission=Runner.Flow.Level.Id,stage=Runner.Stage.ToString(),pending=Save.HasPendingClear,Save.Dirty,Save.Diagnostic};
     static async Task Capture(string name)
-    {Directory.CreateDirectory("../.design/m7/screenshots");ScreenCapture.CaptureScreenshot(Path.GetFullPath("../.design/m7/screenshots/"+name+".png"));await Task.Delay(180);}
+    {await Task.Delay(120);Canvas.ForceUpdateCanvases();Directory.CreateDirectory("../.design/m7/screenshots");ScreenCapture.CaptureScreenshot(Path.GetFullPath("../.design/m7/screenshots/"+name+".png"));await Task.Delay(180);}
     static async Task Click(Button button)
     {
         await Task.Delay(75);Canvas.ForceUpdateCanvases();
@@ -91,6 +92,7 @@ public static class VerifyGameShell
         readonly bool oldAudio=Time.timeScale>0?AudioListener.pause:(bool)typeof(GameplaySession).GetField("previousAudioPause",Fields).GetValue(Session);
         readonly Dictionary<string,byte[]> production=new Dictionary<string,byte[]>();
         public readonly string Path;
+        public int BackgroundResumes;
         public UiRig(int width,string path=null)
         {
             Input=Player.GetComponent<InputSystemPointerInput>();Gate=Player.GetComponent<PlayerGameplayGate>();
@@ -169,7 +171,18 @@ public static class VerifyGameShell
     {
         await Until(()=>Runner.Flow.CanContinue,4500,"Establishing prompt");
         await rig.Mouse(new Vector2(600,400),true);await rig.Mouse(new Vector2(600,400),false);
-        await Until(()=>Runner.Stage==EncounterStage.Running,7000,"First combat");rig.Protect();
+        var end=Time.realtimeSinceStartup+7;
+        while(Runner.Stage!=EncounterStage.Running&&Time.realtimeSinceStartup<end)
+        {
+            // Desktop có thể mất focus khi người dùng đang chat; phục hồi bằng đúng UI Resume.
+            if(Session.IsPaused)
+            {
+                await Until(()=>Shell.Screen==ShellScreen.Pause,1000,"Background Pause UI");
+                await Click(View.Resume);rig.BackgroundResumes++;
+            }
+            await Task.Delay(25);
+        }
+        Check(Runner.Stage==EncounterStage.Running,"First combat");rig.Protect();
     }
     static async Task ClearCurrent(UiRig rig,int timeout=50000)
     {
@@ -398,6 +411,46 @@ public static class VerifyGameShell
             return new{status="PASS",multitouchPause=true,freshTouchAfterResume=true,escapeHierarchy=true,pauseRetry=true};
         }
     }
+    static async Task<object> Loading()
+    {
+        using(var rig=new UiRig(1600))
+        {
+            Seed(rig,5,1);
+            async Task CheckLaunch(Button button,bool background=false)
+            {
+                bool started=false;float seconds=0,elapsed=0;int samples=0;
+                Action observe=()=>{started=true;seconds=Rewards.PlaySeconds;elapsed=Runner.Elapsed;};
+                Runner.RunStarted+=observe;
+                try
+                {
+                    var operation=Click(button);
+                    while(!operation.IsCompleted)
+                    {
+                        if(started&&Shell.IsBusy)
+                        {
+                            Check(View.Loading.activeSelf&&Time.timeScale==0,"Loading released clock early");
+                            Check(Rewards.PlaySeconds==seconds&&Runner.Elapsed==elapsed,"Gameplay advanced under loading");
+                            samples++;
+                            if(background)typeof(GameplaySession).GetMethod("OnApplicationFocus",Fields).Invoke(Session,new object[]{false});
+                        }
+                        await Task.Delay(10);
+                    }
+                    await operation;Check(started&&samples>1,"Post-launch loading not observed");
+                    Check(!rig.Input.FireHeld,"Loading retained input");
+                }
+                finally{Runner.RunStarted-=observe;}
+            }
+            await CheckLaunch(View.Continue);rig.Protect();
+            float timer=Rewards.PlaySeconds;await Task.Delay(200);Check(Rewards.PlaySeconds>timer&&!Session.IsPaused,"Continue did not release clock");
+            Session.Pause();await Until(()=>Shell.Screen==ShellScreen.Pause,1000,"Pause Retry");await Click(View.Retry);await CheckLaunch(View.Confirm);rig.Protect();
+            timer=Rewards.PlaySeconds;await Task.Delay(200);Check(Rewards.PlaySeconds>timer&&!Session.IsPaused,"Retry did not release clock");
+            Session.Pause();await Until(()=>Shell.Screen==ShellScreen.Pause,1000,"Background Retry");await Click(View.Retry);await CheckLaunch(View.Confirm,true);
+            await Until(()=>Shell.Screen==ShellScreen.Pause,1000,"Loading background pause lost");
+            Check(Session.IsPaused&&Time.timeScale==0,"Loading auto-resumed background gameplay");
+            await Click(View.Resume);Check(!Session.IsPaused&&!rig.Input.FireHeld,"Background Resume input");
+            return new{status="PASS",continueLoadingFrozen=true,retryLoadingFrozen=true,clockResumes=true,backgroundPausePreserved=true,freshInput=true};
+        }
+    }
     static async Task<object> Recovery()
     {
         using(var rig=new UiRig(1600))
@@ -416,7 +469,13 @@ public static class VerifyGameShell
         {
             Seed(rig,1,0,50);await Task.Delay(250);await Capture("menu-ship-"+width);
             var catalog=AssetDatabase.LoadAssetAtPath<CosmeticCatalog>("Assets/StarShift/Data/Cosmetics/ShipCosmetics.asset");
-            var original=JsonUtility.ToJson(Save.PersistentSnapshot.Profile);await Click(View.ShipPreview);Check(Shell.Screen==ShellScreen.Hangar,"Ship preview Hangar");
+            var original=JsonUtility.ToJson(Save.PersistentSnapshot.Profile);
+            var stage=View.MenuShip.rectTransform.position;
+            await Click(View.Hangar);Check(Shell.Screen==ShellScreen.Hangar,"Menu Hangar");
+            Check(!View.CosmeticCards[1].gameObject.activeSelf&&!View.CosmeticAction.interactable,"Hangar exposed unowned items");
+            Check(View.MenuShip.gameObject.activeInHierarchy&&View.MenuShip.rectTransform.position==stage&&View.MenuShip.GetComponentInParent<Button>()==null,"Stage moved or remains clickable");
+            await Capture("workshop-owned-"+width);
+            await Click(View.StoreMode);Check(Shell.Screen==ShellScreen.Store,"Workshop Store");
             await Click(View.CosmeticCards[1]);Check(JsonUtility.ToJson(Save.PersistentSnapshot.Profile)==original,"Preview mutated ownership");await Capture("hangar-chassis-"+width);
             await Click(View.CosmeticAction);await Capture("hangar-purchase-"+width);await Click(View.Cancel);Check(Save.PersistentSnapshot.Profile.StellarShardBalance==50,"Canceled purchase spent currency");
             await Click(View.CosmeticAction);await Click(View.Confirm);Check(Save.PersistentSnapshot.Profile.StellarShardBalance==38&&catalog.Equipped(Save.PersistentSnapshot.Profile,CosmeticSlot.Chassis).Id=="chassis-swept","Chassis purchase/equip");
@@ -435,14 +494,14 @@ public static class VerifyGameShell
             Check(trail.emitting&&trail.positionCount>1&&((Color32)trail.startColor).Equals((Color32)catalog.Find("trail-ion").Tint),"Runtime trail consumer: emit="+trail.emitting+" count="+trail.positionCount+" color="+trail.startColor+" expected="+catalog.Find("trail-ion").Tint+" gate="+rig.Gate.CanInput+" held="+rig.Input.FireHeld+" pos="+rig.Player.transform.position);await rig.Mouse(new Vector2(700,450),false);
             var stats=rig.Player.GetComponent<PlayerMovementBounds>();Check(stats!=null&&rig.Player.GetComponent<PulseLaserWeapon>().CurrentLevel==1,"Cosmetic changed combat entry");await Capture("cosmetic-gameplay-"+width);
             Session.Pause();await Until(()=>Shell.Screen==ShellScreen.Pause,1000,"Hangar Pause");await Click(View.PauseMenu);await Click(View.Confirm);await Click(View.Hangar);
-            Check(View.CosmeticAction.interactable,"Owned default should allow free equip");
+            Check(!View.CosmeticAction.interactable,"Equipped selection should not offer equip");
             await Click(View.CosmeticCards[0]);Directory.CreateDirectory(rig.Path+".tmp");await Click(View.CosmeticAction);
             Check(View.Error.activeSelf&&catalog.Equipped(Save.PersistentSnapshot.Profile,CosmeticSlot.Chassis).Id=="chassis-swept"&&Save.PersistentSnapshot.Profile.StellarShardBalance==24,"Failed equip rollback");await Capture("hangar-save-error-"+width);
             Directory.Delete(rig.Path+".tmp");await Click(View.ErrorRetry);Check(catalog.Equipped(Save.PersistentSnapshot.Profile,CosmeticSlot.Chassis).Id=="chassis-arrow"&&Save.PersistentSnapshot.Profile.StellarShardBalance==24,"Free equip retry");
             await Click(View.BackButtons[4]);await Click(View.Missions);await Click(View.MissionCards[0]);await Click(View.LaunchReplay);rig.Protect();var before=File.ReadAllBytes(rig.Path);
             Check(!Save.EquipCosmetic(catalog,"skin-cyan")&&Save.Mode==SessionMode.Replay&&File.ReadAllBytes(rig.Path).SequenceEqual(before),"Replay cosmetic mutation");
             Runner.StartRun("ENCOUNTER_1",true,true,null,null);rig.Protect();Check(Save.Mode==SessionMode.DevTest&&!Save.EquipCosmetic(catalog,"skin-cyan")&&File.ReadAllBytes(rig.Path).SequenceEqual(before),"Dev cosmetic mutation");
-            return new{status="PASS",width,height=900,shipPreview=true,categories=3,options=6,transactionalPurchase=true,persistedEquip=true,newGamePreservation=true,replayDevIsolation=true,saveFailureRollback=true,wallet=24};
+            return new{status="PASS",width,height=900,backgroundResumes=rig.BackgroundResumes,sharedStage=true,ownedWorkshop=true,separateStore=true,categories=3,options=6,transactionalPurchase=true,persistedEquip=true,newGamePreservation=true,replayDevIsolation=true,saveFailureRollback=true,wallet=24};
         }
     }
     static Task<object> Teardown()
@@ -463,17 +522,28 @@ public static class VerifyGameShell
         using(var rig=new UiRig(width))
         {
             await Task.Delay(350);await Capture("menu-"+width);
-            await Click(View.Settings);await Capture("settings-"+width);await Click(View.BackButtons[1]);
+            await Click(View.Settings);await Capture("settings-"+width);
+            View.Vibration.isOn=false;View.Shake.isOn=false;Check(View.VibrationState.text=="TẮT"&&View.ShakeState.text=="TẮT","Toggle state unreadable");
+            await Capture("settings-off-"+width);await Click(View.BackButtons[1]);
             await Click(View.Help);await Capture("help-"+width);await Click(View.BackButtons[2]);
             await Click(View.Missions);await Capture("missions-"+width);await Click(View.BackButtons[0]);
             var transition=Click(View.NewGame);await Until(()=>Shell.IsBusy,1500,"Loading visible");await Task.Delay(110);await Capture("loading-"+width);await transition;
             await EnterGameplay(rig);await Capture("hud-"+width);
+            var hud=UnityEngine.Object.FindAnyObjectByType<GameplayHud>();
+            var loadout=rig.Player.GetComponent<WeaponLoadout>();
+            foreach(var branch in new[]{WeaponBranch.Plasma,WeaponBranch.Homing})loadout.ApplyCore(branch,true);
+            var pickup=rig.Player.GetComponent<PlayerPickupReceiver>();
+            var shield=AssetDatabase.FindAssets("t:PickupDefinition").Select(id=>AssetDatabase.LoadAssetAtPath<PickupDefinition>(AssetDatabase.GUIDToAssetPath(id))).First(item=>item.Kind==PickupKind.Shield);
+            Check(pickup.TryCollect(shield),"Shield presentation fixture");await Task.Delay(100);
+            Text HudLabel(string field)=>(Text)typeof(GameplayHud).GetField(field,Fields).GetValue(hud);
+            Check(HudLabel("weaponLabel").text.Contains("Homing · CẤP")&&HudLabel("effectLabel").text.Contains("KHIÊN")&&HudLabel("pickupLabel").text=="KHIÊN"&&HudLabel("missileCount").text.StartsWith("TÊN LỬA"),"HUD retained shorthand");
+            await Capture("hud-equipped-"+width);
             Session.Pause();await Until(()=>Shell.Screen==ShellScreen.Pause,1000,"Pause");await Capture("pause-"+width);
             await Click(View.PauseMenu);await Capture("confirmation-"+width);await Click(View.Cancel);await Click(View.Resume);rig.Protect();
             Directory.CreateDirectory(rig.Path+".tmp");await ClearCurrent(rig);
             Check(Save.HasPendingClear&&!View.Next.interactable&&!View.ResultRecord.text.Contains("KỶ LỤC MỚI"),"Save failure false progress");await Capture("clear-save-error-"+width);
             Directory.Delete(rig.Path+".tmp");await Click(View.ResultRetrySave);Check(!Save.HasPendingClear&&View.Next.interactable,"Clear retry save");await Capture("clear-"+width);
-            return new{status="PASS",width,height=900,saveFailureRecovery=true,screens=9};
+            return new{status="PASS",width,height=900,backgroundResumes=rig.BackgroundResumes,saveFailureRecovery=true,screens=9};
         }
     }
 }

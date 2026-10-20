@@ -1725,8 +1725,9 @@ View PNG giữ cục bộ trong ignored `.design/m7/`; không đưa QA captures 
 | Input / input.json | Real multitouch second-finger Pause, canceled held intent, fresh Resume, Escape hierarchy và Pause checkpoint Retry |
 | Failures / failures.json | Region A→B failed destination transaction rồi Resume recovery, background pause, corrupt read retry, backup notice, failed NewGame return/retry, AudioSource volume consumers |
 | Recovery / recovery.json | Invalid save confirmation/cancel, archive original bytes, successful fresh Campaign; không overwrite unsupported save |
-| Hangar / hangar-1600.json, hangar-2000.json | Real UI preview, ba slots/sáu options, purchase/cancel/re-equip, wallet once, save rollback, reload/NewGame preservation, runtime chassis và Replay/Dev denial |
-| Layouts / layouts-1600.json, layouts-2000.json | Menu/Missions/Settings/Help/HUD/Pause/confirmation và clear save-error/retry tại native aspects |
+| Hangar / hangar-1600.json, hangar-2000.json | Shared stage, Workshop owned-only/Store navigation, ba slots/sáu options, preview/purchase/cancel/re-equip, wallet once, rollback, reload/NewGame preservation, runtime chassis và Replay/Dev denial |
+| Layouts / layouts-1600.json, layouts-2000.json | Menu/Missions/Settings Bật-Tắt/Help bốn khối/HUD có vũ khí/hỗ trợ/Pause/confirmation và clear save-error/retry tại native aspects |
+| Loading / loading.json | Real Continue/Retry, runner elapsed + playable timer frozen trong loading, clock release, background Pause và fresh input |
 | Terminal / terminal-layouts-2000.json | Wide Boss HUD, GameOver/Retry, Victory, overwrite confirmation và Replay GameOver/Retry |
 | Scene relaunch / scene-relaunch.json | Hai lần recreate production scene; completed Continue không spawn/regrant và Region B Encounter checkpoint đúng |
 | Full flow / flow.json | Real Menu/NewGame/Pause/Settings/Result/Menu/storage reopen/Continue/Missions/Replay/result/exit/Continue/GameOver/Retry, sau đó L2–L8 qua Next/journey tap, tám records, Victory và completed Continue |
@@ -1742,7 +1743,11 @@ JSON/high-water compatibility regression.
 Game View functional review gồm 1600×900 và 2000×900: ship-led Main Menu, ba Hangar
 tabs/purchase/error, Missions, Settings, Pause, GameOver, clear, Victory, HUD,
 confirmation/loading và invalid/recovered state. Bỏ build/filler menu copy, thu gọn
-trail để không chạm ship name, menu/hangar opaque để không hiện tàu world phía sau.
+trail để không chạm ship name, shell opaque để không hiện tàu world phía sau.
+Product pass cuối dùng một ShipStage không nhận input cho Menu/Xưởng/Cửa hàng,
+selection viền sáng, copy tiếng Việt, toggle Bật/Tắt và How To Play bốn khối.
+HUD thay shorthand bằng tên đầy đủ; labels hỗ trợ tách khỏi vị trí tàu.
+Prefab authoring qua LoadPrefabContents giữ GUID và local IDs của object còn dùng.
 Static checks: docs checker và diff whitespace; native inspector kiểm missing
 scripts/references, required UI refs, catalog defaults và production build entry.
 

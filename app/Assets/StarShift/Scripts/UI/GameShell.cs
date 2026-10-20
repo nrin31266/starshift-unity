@@ -59,8 +59,9 @@ namespace StarShift.UI
                 if (save.PersistentSnapshot?.HasCampaign == true) Confirm(ShellCopy.ConfirmNew, () => StartGame(save.NewGame));
                 else StartGame(save.NewGame);
             });
-            Bind(view.Hangar, OpenHangar); Bind(view.ShipPreview, OpenHangar);
-            for (int i = 0; i < view.CosmeticTabs.Length; i++) { int index = i; Bind(view.CosmeticTabs[i], () => { cosmeticSlot = (CosmeticSlot)index; selectedCosmetic = 0; RefreshHangar(); }); }
+            Bind(view.Hangar, () => OpenCosmetics(false)); Bind(view.Store, () => OpenCosmetics(true));
+            Bind(view.HangarMode, () => OpenCosmetics(false)); Bind(view.StoreMode, () => OpenCosmetics(true));
+            for (int i = 0; i < view.CosmeticTabs.Length; i++) { int index = i; Bind(view.CosmeticTabs[i], () => { cosmeticSlot = (CosmeticSlot)index; SelectEquippedCosmetic(); RefreshHangar(); }); }
             for (int i = 0; i < view.CosmeticCards.Length; i++) { int index = i; Bind(view.CosmeticCards[i], () => { selectedCosmetic = index; RefreshHangar(); }); }
             Bind(view.CosmeticAction, EquipCosmetic);
             Bind(view.Missions, OpenMissions); Bind(view.Help, () => Navigate(ShellScreen.Help));
@@ -70,6 +71,8 @@ namespace StarShift.UI
             for (int i = 0; i < view.MissionCards.Length; i++) { int index = i; Bind(view.MissionCards[i], () => SelectMission(index)); }
             Bind(view.LaunchReplay, () => StartGame(() => save.BeginReplay(region.Missions[selectedMission].Id)));
             Bind(view.SaveSettings, ApplySettings);
+            view.Vibration.onValueChanged.AddListener(RefreshSettingStates);
+            view.Shake.onValueChanged.AddListener(RefreshSettingStates);
             Bind(view.Resume, Resume); Bind(view.Retry, RequestRetry);
             Bind(view.PauseSettings, () => OpenSettings(ShellScreen.Pause));
             Bind(view.PauseMenu, () => Confirm(ShellCopy.ConfirmExit, () => ReturnToShell(ShellScreen.Menu)));
@@ -106,7 +109,7 @@ namespace StarShift.UI
             if (screen == ShellScreen.Missions) RefreshMissions();
             if (screen == ShellScreen.Pause) RefreshPause();
             if (screen == ShellScreen.Results) RefreshResults();
-            if (screen == ShellScreen.Hangar) RefreshHangar();
+            if (screen == ShellScreen.Hangar || screen == ShellScreen.Store) RefreshHangar(screen);
             view.Show(screen);
             if (view.Error.activeSelf) ShellView.Focus(view.ErrorRetry);
         }
@@ -118,7 +121,8 @@ namespace StarShift.UI
             view.ReloadSave.gameObject.SetActive(snapshot == null);
             view.RecoverSave.gameObject.SetActive(snapshot == null && save.LoadStatus == SaveLoadStatus.Invalid);
             view.Wallet.gameObject.SetActive(snapshot != null);
-            view.ShipPreview.gameObject.SetActive(snapshot != null);
+            view.Store.interactable = snapshot != null;
+            view.MenuShip.transform.parent.gameObject.SetActive(snapshot != null);
             view.MenuShipName.gameObject.SetActive(snapshot != null); view.MenuEquipped.gameObject.SetActive(snapshot != null);
             view.Hangar.gameObject.SetActive(snapshot != null);
             Preview(view.MenuShip, view.MenuTrail, snapshot?.Profile);
@@ -141,7 +145,7 @@ namespace StarShift.UI
         {
             var missions = region.Missions;
             int index = Array.IndexOf(missions, region.FindMission(missionId));
-            return (index < 4 ? "REGION A" : "REGION B") + " · " + ShellCopy.Mission(index);
+            return (index < 4 ? "KHU VỰC A" : "KHU VỰC B") + " · " + ShellCopy.Mission(index);
         }
         private void Preview(Image ship, Image trail, PlayerProfile profile)
         {
@@ -151,38 +155,66 @@ namespace StarShift.UI
             ship.color = cosmetics.Equipped(profile, CosmeticSlot.Skin).Tint;
             trail.color = cosmetics.Equipped(profile, CosmeticSlot.Trail).Tint;
         }
-        private void OpenHangar() { cosmeticSlot = CosmeticSlot.Chassis; selectedCosmetic = 0; Navigate(ShellScreen.Hangar); }
-        private CosmeticOption[] SlotOptions() => Array.FindAll(cosmetics.Options, o => o.Slot == cosmeticSlot);
-        private void RefreshHangar()
+        private bool inStore;
+        private void OpenCosmetics(bool store)
         {
+            inStore = store;
+            cosmeticSlot = CosmeticSlot.Chassis;
+            SelectEquippedCosmetic();
+            Navigate(store ? ShellScreen.Store : ShellScreen.Hangar);
+        }
+        private CosmeticOption[] SlotOptions() => Array.FindAll(cosmetics.Options, o => o.Slot == cosmeticSlot &&
+            (inStore || cosmetics.Owns(save.PersistentSnapshot.Profile, o)));
+        private void SelectEquippedCosmetic()
+        {
+            var options = SlotOptions();
+            selectedCosmetic = Mathf.Max(0, Array.FindIndex(options, o => inStore ? !cosmetics.Owns(save.PersistentSnapshot.Profile, o) :
+                cosmetics.Equipped(save.PersistentSnapshot.Profile, cosmeticSlot).Id == o.Id));
+        }
+        private void RefreshHangar() => RefreshHangar(Screen);
+        private void RefreshHangar(ShellScreen screen)
+        {
+            inStore = screen == ShellScreen.Store;
             var profile = save.PersistentSnapshot.Profile;
             var options = SlotOptions();
-            var selected = options[Mathf.Clamp(selectedCosmetic, 0, options.Length - 1)];
+            selectedCosmetic = Mathf.Clamp(selectedCosmetic, 0, options.Length - 1);
+            var selected = options[selectedCosmetic];
             var preview = CampaignProgress.Copy(profile);
             preview.EquippedCosmetics = new[] { cosmetics.Equipped(profile, CosmeticSlot.Chassis).Id, cosmetics.Equipped(profile, CosmeticSlot.Skin).Id, cosmetics.Equipped(profile, CosmeticSlot.Trail).Id };
             preview.EquippedCosmetics[(int)cosmeticSlot] = selected.Id;
             preview.OwnedCosmetics = Array.ConvertAll(cosmetics.Options, o => o.Id);
-            Preview(view.HangarShip, view.HangarTrail, preview);
-            view.HangarShipName.text = cosmetics.Equipped(preview, CosmeticSlot.Chassis).DisplayName;
-            view.HangarWallet.text = ShellCopy.Wallet(profile.StellarShardBalance);
+            Preview(view.MenuShip, view.MenuTrail, preview);
+            view.MenuShipName.text = cosmetics.Equipped(preview, CosmeticSlot.Chassis).DisplayName;
+            bool owned = cosmetics.Owns(profile, selected), equipped = cosmetics.Equipped(profile, cosmeticSlot).Id == selected.Id;
+            view.MenuEquipped.text = equipped ? ShellCopy.Equipped : "XEM TRƯỚC";
+            view.MenuStatus.text = cosmeticSlot == CosmeticSlot.Chassis ? "Chọn tàu, rồi tùy chỉnh sơn và vệt động cơ." :
+                ShellCopy.CosmeticTabs[(int)cosmeticSlot] + " · " + cosmetics.Equipped(profile, CosmeticSlot.Chassis).DisplayName;
+            view.Wallet.text = ShellCopy.Wallet(profile.StellarShardBalance);
+            view.HangarMode.interactable = inStore;
+            view.StoreMode.interactable = !inStore;
+            view.CosmeticContext.text = cosmeticSlot == CosmeticSlot.Chassis ? (inStore ? "KHÁM PHÁ TÀU" : "TÀU CỦA BẠN") :
+                "NGOẠI HÌNH CỦA " + cosmetics.Equipped(profile, CosmeticSlot.Chassis).DisplayName;
             for (int i = 0; i < view.CosmeticTabs.Length; i++)
             {
                 view.CosmeticTabs[i].interactable = i != (int)cosmeticSlot;
-                view.CosmeticTabs[i].GetComponentInChildren<Text>().text = ShellCopy.CosmeticTabs[i] + (i == (int)cosmeticSlot ? "\nĐANG CHỌN" : "");
+                view.CosmeticTabs[i].GetComponent<Outline>().enabled = i == (int)cosmeticSlot;
             }
             for (int i = 0; i < view.CosmeticCards.Length; i++)
             {
                 view.CosmeticCards[i].gameObject.SetActive(i < options.Length);
                 if (i >= options.Length) continue;
                 var option = options[i];
-                var state = cosmetics.Equipped(profile, cosmeticSlot).Id == option.Id ? ShellCopy.Equipped : cosmetics.Owns(profile, option) ? ShellCopy.Owned : option.ShardCost + " SHARD";
-                view.CosmeticLabels[i].text = option.DisplayName + "\n" + state + (i == selectedCosmetic ? "\nĐANG CHỌN" : "");
+                bool wearing = cosmetics.Equipped(profile, cosmeticSlot).Id == option.Id;
+                view.CosmeticLabels[i].text = option.DisplayName + "\n" + (wearing ? "✓ " + ShellCopy.Equipped : cosmetics.Owns(profile, option) ? ShellCopy.Owned : option.ShardCost + " Stellar Shard");
+                view.CosmeticCards[i].GetComponent<Outline>().enabled = i == selectedCosmetic;
+                var swatch = view.CosmeticSwatches[i];
+                swatch.sprite = cosmeticSlot == CosmeticSlot.Chassis ? option.Sprite : cosmetics.Equipped(profile, CosmeticSlot.Chassis).Sprite;
+                swatch.rectTransform.localScale = new Vector3(1, (cosmeticSlot == CosmeticSlot.Chassis ? option.FlipY : cosmetics.Equipped(profile, CosmeticSlot.Chassis).FlipY) ? -1 : 1, 1);
+                swatch.color = cosmeticSlot == CosmeticSlot.Chassis ? cosmetics.Equipped(profile, CosmeticSlot.Skin).Tint : option.Tint.a == 0 ? Color.white : option.Tint;
             }
-            bool owned = cosmetics.Owns(profile, selected), equipped = cosmetics.Equipped(profile, cosmeticSlot).Id == selected.Id;
-            view.CosmeticDetail.text = selected.DisplayName + "\nChỉ thay đổi ngoại hình. Mọi chỉ số chiến đấu được giữ nguyên.";
-            view.CosmeticAction.GetComponentInChildren<Text>().text = equipped ? ShellCopy.Equipped : owned ? ShellCopy.Equip :
-                profile.StellarShardBalance >= selected.ShardCost ? ShellCopy.Purchase(selected.ShardCost) : ShellCopy.NeedShards(selected.ShardCost - profile.StellarShardBalance);
-            view.CosmeticAction.interactable = !equipped && (owned || profile.StellarShardBalance >= selected.ShardCost);
+            view.CosmeticDetail.text = selected.DisplayName + "\n" + (inStore ? "Mua và trang bị bằng Stellar Shard." : "Đã sở hữu · thay đổi miễn phí.") + " Chỉ thay đổi ngoại hình.";
+            view.CosmeticAction.GetComponentInChildren<Text>().text = inStore ? (owned ? ShellCopy.Owned : profile.StellarShardBalance >= selected.ShardCost ? ShellCopy.Purchase(selected.ShardCost) : ShellCopy.NeedShards(selected.ShardCost - profile.StellarShardBalance)) : equipped ? ShellCopy.Equipped : ShellCopy.Equip;
+            view.CosmeticAction.interactable = inStore ? !owned && profile.StellarShardBalance >= selected.ShardCost : !equipped;
         }
         private void EquipCosmetic()
         {
@@ -215,8 +247,9 @@ namespace StarShift.UI
                 var record = data != null ? Array.Find(data.Profile.Records, r => r.MissionId == mission.Id) : null;
                 bool current = data?.HasCampaign == true && data.Campaign.Status == CampaignStatus.Active && data.Campaign.MissionId == mission.Id;
                 view.MissionCards[i].interactable = unlocked;
+                view.MissionCards[i].GetComponent<Outline>().enabled = i == selectedMission;
                 view.MissionLabels[i].text = ShellCopy.Mission(i) + "\n" + ShellCopy.MissionState(unlocked, current, record != null) +
-                    (record == null ? "" : $"\n{record.BestScore:N0} · {ShellCopy.Time(record.BestTimeSeconds)}") + (i == selectedMission ? "\nĐANG CHỌN" : "");
+                    (record == null ? "" : $"\n{record.BestScore:N0} · {ShellCopy.Time(record.BestTimeSeconds)}");
             }
             var selected = missions[selectedMission];
             var best = data != null ? Array.Find(data.Profile.Records, r => r.MissionId == selected.Id) : null;
@@ -231,7 +264,13 @@ namespace StarShift.UI
             view.Sfx.SetValueWithoutNotify(settings.SfxVolume);
             view.Vibration.SetIsOnWithoutNotify(settings.VibrationEnabled);
             view.Shake.SetIsOnWithoutNotify(settings.ScreenShakeEnabled);
+            RefreshSettingStates(false);
             Navigate(ShellScreen.Settings);
+        }
+        private void RefreshSettingStates(bool _)
+        {
+            view.VibrationState.text = view.Vibration.isOn ? "BẬT" : "TẮT";
+            view.ShakeState.text = view.Shake.isOn ? "BẬT" : "TẮT";
         }
         private void ApplySettings()
         {
@@ -246,7 +285,7 @@ namespace StarShift.UI
             view.Retry.interactable = session.CanRetry;
             var loadout = pointer.GetComponent<WeaponLoadout>();
             view.PauseDetail.text = save.HasPendingRegionTransition || save.Dirty && !string.IsNullOrEmpty(save.Diagnostic) ? ShellCopy.SaveFailed :
-                $"{ShellCopy.Mission(Array.IndexOf(region.Missions, session.Flow.Level))} · {GameplayCopy.Encounter(runner.CurrentIndex + 1)}\n{loadout.ActiveBranch} · CẤP {loadout.Level(loadout.ActiveBranch)}";
+                $"{ShellCopy.Mission(Array.IndexOf(region.Missions, session.Flow.Level))} · {GameplayCopy.Encounter(runner.CurrentIndex + 1)}\n{GameplayCopy.WeaponName(loadout.ActiveBranch)} · CẤP {loadout.Level(loadout.ActiveBranch)}";
         }
         private void Resume()
         {
@@ -288,6 +327,7 @@ namespace StarShift.UI
         private IEnumerator Transition(Func<bool> action, Action success, string failure, bool returnOnFailure)
         {
             busy = true;
+            session.HoldForTransition();
             pointer.CancelGesture();
             view.Loading.SetActive(true); ShellView.Focus(null);
             for (float t = 0; t < .16f; t += Time.unscaledDeltaTime) { view.Fade.alpha = t / .16f; yield return null; }
@@ -308,6 +348,7 @@ namespace StarShift.UI
             view.Loading.SetActive(false);
             pointer.CancelGesture();
             busy = false;
+            session.ReleaseTransition();
         }
         private void Confirm(string copy, Action action)
         {
@@ -345,6 +386,9 @@ namespace StarShift.UI
         }
         private void OnDisable()
         {
+            view.Vibration.onValueChanged.RemoveListener(RefreshSettingStates);
+            view.Shake.onValueChanged.RemoveListener(RefreshSettingStates);
+            session.ReleaseTransition();
             runner.RunStarted -= OnRunStarted;
             foreach (var binding in bindings) binding.button.onClick.RemoveListener(binding.action);
             bindings.Clear();

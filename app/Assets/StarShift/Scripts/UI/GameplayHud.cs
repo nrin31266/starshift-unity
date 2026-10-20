@@ -126,18 +126,18 @@ namespace StarShift.UI
             {
                 previousLevel = weapon.CurrentLevel;
                 previousBranch = (int)weapon.CurrentBranch;
-                weaponLabel.text = $"T{previousBranch + 1} L{previousLevel}";
+                weaponLabel.text = $"{GameplayCopy.WeaponName(weapon.CurrentBranch)} · CẤP {previousLevel}";
             }
             if (weaponInventory != null)
             {
-                var text = ""; var others = 0;
+                var text = "";
                 for (int i = 0; i < 3; i++)
                 {
-                    var level = loadout.Level((StarShift.Combat.WeaponBranch)i);
-                    if (level > 0 && i != (int)loadout.ActiveBranch) others++;
-                    text += (i > 0 ? "  " : "") + (i == (int)loadout.ActiveBranch ? "[" : "") + (level > 0 ? $"T{i+1}" : "-") + (i == (int)loadout.ActiveBranch ? "]" : "");
+                    var branch = (StarShift.Combat.WeaponBranch)i;
+                    if (loadout.Level(branch) <= 0 || branch == loadout.ActiveBranch) continue;
+                    text += (text.Length > 0 ? " · " : "Đổi sang: ") + GameplayCopy.WeaponName(branch);
                 }
-                weaponInventory.text = text + $"  +{others}";
+                weaponInventory.text = text;
             }
             if (rewards != null && previousScore != rewards.Score) { previousScore = rewards.Score; scoreLabel.text = previousScore.ToString(); }
             var shardBalance = session.Persistence != null ? session.Persistence.ShardBalance : rewards != null ? rewards.Shards : 0;
@@ -149,9 +149,9 @@ namespace StarShift.UI
                 if (second != previousOverdriveSeconds || drone != previousDroneSeconds || effects.HasShield != previousShield)
                 {
                     previousOverdriveSeconds = second; previousDroneSeconds = drone; previousShield = effects.HasShield;
-                    var text = previousShield ? "SH" : "";
-                    if (second > 0) text += $"  OD {second}";
-                    if (drone > 0) text += $"  DR {drone}";
+                    var text = previousShield ? "KHIÊN" : "";
+                    if (second > 0) text += $"  CƯỜNG HÓA {second}s";
+                    if (drone > 0) text += $"  HỖ TRỢ {drone}s";
                     effectLabel.text = text.Trim();
                 }
             }
@@ -167,7 +167,7 @@ namespace StarShift.UI
                 if (previousMissiles != missileReserve.Current)
                 {
                     previousMissiles = missileReserve.Current;
-                    missileCount.text = $"M {previousMissiles}/{missileReserve.Capacity}";
+                    missileCount.text = $"TÊN LỬA {previousMissiles}/{missileReserve.Capacity}";
                 }
             }
             RefreshHeat();
@@ -179,7 +179,16 @@ namespace StarShift.UI
         {
             if (!session.IsPaused && !session.IsTerminal && playerGate.CanInput) loadout.Cycle();
         }
-        private void OnPickup(string code) { if (pickupLabel == null) return; pickupLabel.text = code; cueRemaining = 1.2f; }
+        private void OnPickup(PickupDefinition item)
+        {
+            if (pickupLabel == null) return;
+            pickupLabel.text = item.Kind switch {
+                PickupKind.WeaponCore => $"{GameplayCopy.WeaponName(item.Branch)} · CẤP {loadout.Level(item.Branch)}",
+                PickupKind.Shard => $"+{item.Amount} Stellar Shard", PickupKind.Shield => "KHIÊN",
+                PickupKind.Overdrive => "CƯỜNG HÓA", PickupKind.SupportDrone => "TÀU HỖ TRỢ",
+                PickupKind.MissileAmmo => "+1 TÊN LỬA", PickupKind.ExtraLife => "+1 MẠNG", _ => "" };
+            cueRemaining = 1.2f;
+        }
 
         private void RefreshHeat()
         {
