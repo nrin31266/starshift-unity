@@ -204,9 +204,11 @@ namespace StarShift.UI
             cueVisible = false;
             if (!introVisible) return;
             introVisible = false;
-            playerVisual.SetActive(visualWasActive);
-            gameplayBackdrop.SetActive(backdropWasActive);
-            for (int i = 0; i < backdropRenderers.Length; i++) backdropRenderers[i].color = backdropColors[i];
+            // Teardown scene không đảm bảo thứ tự hủy Player và backdrop.
+            if (playerVisual != null) playerVisual.SetActive(visualWasActive);
+            if (gameplayBackdrop != null) gameplayBackdrop.SetActive(backdropWasActive);
+            for (int i = 0; i < backdropRenderers.Length; i++)
+                if (backdropRenderers[i] != null) backdropRenderers[i].color = backdropColors[i];
         }
         private void OnDisable() => Hide();
     }

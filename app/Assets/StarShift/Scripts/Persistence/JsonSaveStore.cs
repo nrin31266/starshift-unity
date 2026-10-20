@@ -48,6 +48,16 @@ namespace StarShift.Persistence
             }
             catch (ArgumentException) { return SaveLoadStatus.Invalid; }
         }
+        internal SaveEnvelope ReadForRecovery()
+        {
+            try
+            {
+                var source = File.Exists(Path) ? Path : Path + ".bak";
+                return JsonUtility.FromJson<SaveEnvelope>(File.ReadAllText(source));
+            }
+            catch (Exception e) when (e is IOException || e is UnauthorizedAccessException || e is ArgumentException)
+            { Diagnostic = e.Message; return null; }
+        }
         public bool Write(SaveEnvelope data, Func<SaveEnvelope, bool> validate)
         {
             if (!validate(data)) { Diagnostic = "Refused invalid state."; return false; }

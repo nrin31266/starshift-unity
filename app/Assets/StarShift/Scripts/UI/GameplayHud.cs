@@ -26,21 +26,12 @@ namespace StarShift.UI
         [SerializeField] private Text scoreLabel;
         [SerializeField] private Text shardLabel;
         [SerializeField] private Button pauseButton;
-        [SerializeField] private GameObject overlay;
-        [SerializeField] private Text title;
-        [SerializeField] private Button resumeButton;
-        [SerializeField] private Button restartButton;
-        [SerializeField] private Button settingsButton;
-        [SerializeField] private Button menuButton;
-        [SerializeField] private Button continueButton;
-        [SerializeField] private Text unavailableLabel;
         [SerializeField] private GameplayAnnouncement announcement;
         [SerializeField] private CanvasGroup gameplayHud;
         [SerializeField] private Image establishingTapArea;
         [SerializeField] private Text continueHint;
         [SerializeField, Min(.1f)] private float maximumTapSeconds = .6f;
         [SerializeField, Min(.01f)] private float hintFadeSeconds = .4f;
-        [SerializeField, Min(0)] private float clearDelay = .45f;
         [SerializeField] private WeaponLoadout loadout;
         [SerializeField] private PlayerTemporaryEffects effects;
         [SerializeField] private PlayerPickupReceiver pickupReceiver;
@@ -53,15 +44,19 @@ namespace StarShift.UI
         [SerializeField] private Text missileCount;
         private int previousMissiles = -1;
         private PlayerGameplayGate playerGate;
+        private GameShell shell;
         private int previousOverdriveSeconds = -1;
         private int previousDroneSeconds = -1;
         private bool previousShield;
         private float cueRemaining;
-        private void Awake() => playerGate = weapon.GetComponent<PlayerGameplayGate>();
+        private void Awake()
+        {
+            playerGate = weapon.GetComponent<PlayerGameplayGate>();
+            shell = session.GetComponent<GameShell>();
+        }
         private int previousBranch = -1;
         private int previousScore = -1;
         private int previousShards = -1;
-        private float clearRemaining;
         private int previousLives = -1;
         private int previousLevel = -1;
         private float previousHeat = -1;
@@ -74,24 +69,13 @@ namespace StarShift.UI
             session.MissionStarted += OnMissionStarted;
             session.MissionTitleRequested += OnMissionTitle;
             pauseButton.onClick.AddListener(session.Pause);
-            resumeButton.onClick.AddListener(session.Resume);
-            restartButton.onClick.AddListener(session.RetryEncounter);
             continueHint.text = GameplayCopy.TapToContinue;
-            Label(resumeButton, GameplayCopy.Resume);
-            Label(restartButton, GameplayCopy.RestartEncounter);
-            Label(settingsButton, GameplayCopy.Settings);
-            Label(menuButton, GameplayCopy.MainMenu);
-            Label(continueButton, GameplayCopy.Continue);
-            settingsButton.interactable = menuButton.interactable = continueButton.interactable = false;
             if (weaponButton != null) weaponButton.onClick.AddListener(CycleWeapon);
             if (missileButton != null) missileButton.onClick.AddListener(UseMissile);
             if (pickupReceiver != null) pickupReceiver.Collected += OnPickup;
             previousScore = previousShards = previousBranch = -1;
-            unavailableLabel.text = GameplayCopy.Unavailable;
             RefreshOverlay();
         }
-
-        private static void Label(Button button, string copy) => button.GetComponentInChildren<Text>().text = copy;
 
         private void OnMissionStarted()
         {
@@ -108,14 +92,6 @@ namespace StarShift.UI
 
         private void RefreshOverlay()
         {
-            clearRemaining = session.IsClear ? clearDelay : 0;
-            overlay.SetActive(session.IsPaused || (session.IsTerminal && !session.IsClear));
-            title.text = session.IsClear ? (session.IsCampaignVictory ? "CHIẾN THẮNG · REGION B" : GameplayCopy.MissionClear) : session.IsTerminal ? GameplayCopy.GameOver : GameplayCopy.Pause;
-            resumeButton.gameObject.SetActive(session.IsPaused);
-            restartButton.gameObject.SetActive(!session.IsClear);
-            restartButton.interactable = session.CanRetry;
-            settingsButton.gameObject.SetActive(session.IsPaused);
-            continueButton.gameObject.SetActive(session.IsClear && !session.IsCampaignVictory);
             var flow = session.Flow;
             var cinematic = flow != null && flow.IsCinematic;
             var awaitingStart = flow != null && flow.IsAwaitingStart;
@@ -138,7 +114,9 @@ namespace StarShift.UI
 
         private void Update()
         {
-            gameplayHud.alpha = session.Flow != null ? session.Flow.HudOpacity : 1;
+            var visible = shell == null || shell.GameplayVisible;
+            gameplayHud.alpha = visible ? (session.Flow != null ? session.Flow.HudOpacity : 1) : 0;
+            gameplayHud.blocksRaycasts = gameplayHud.interactable = visible && (session.Flow == null || !session.Flow.IsCinematic);
             if (previousLives != lives.CurrentLives)
             {
                 previousLives = lives.CurrentLives;
@@ -148,18 +126,18 @@ namespace StarShift.UI
             {
                 previousLevel = weapon.CurrentLevel;
                 previousBranch = (int)weapon.CurrentBranch;
-                weaponLabel.text = $"T{previousBranch + 1} L{previousLevel}";
+                weaponLabel.text = $"{GameplayCopy.WeaponName(weapon.CurrentBranch)} · CẤP {previousLevel}";
             }
             if (weaponInventory != null)
             {
-                var text = ""; var others = 0;
+                var text = "";
                 for (int i = 0; i < 3; i++)
                 {
-                    var level = loadout.Level((StarShift.Combat.WeaponBranch)i);
-                    if (level > 0 && i != (int)loadout.ActiveBranch) others++;
-                    text += (i > 0 ? "  " : "") + (i == (int)loadout.ActiveBranch ? "[" : "") + (level > 0 ? $"T{i+1}" : "-") + (i == (int)loadout.ActiveBranch ? "]" : "");
+                    var branch = (StarShift.Combat.WeaponBranch)i;
+                    if (loadout.Level(branch) <= 0 || branch == loadout.ActiveBranch) continue;
+                    text += (text.Length > 0 ? " · " : "Đổi sang: ") + GameplayCopy.WeaponName(branch);
                 }
-                weaponInventory.text = text + $"  +{others}";
+                weaponInventory.text = text;
             }
             if (rewards != null && previousScore != rewards.Score) { previousScore = rewards.Score; scoreLabel.text = previousScore.ToString(); }
             var shardBalance = session.Persistence != null ? session.Persistence.ShardBalance : rewards != null ? rewards.Shards : 0;
@@ -171,9 +149,9 @@ namespace StarShift.UI
                 if (second != previousOverdriveSeconds || drone != previousDroneSeconds || effects.HasShield != previousShield)
                 {
                     previousOverdriveSeconds = second; previousDroneSeconds = drone; previousShield = effects.HasShield;
-                    var text = previousShield ? "SH" : "";
-                    if (second > 0) text += $"  OD {second}";
-                    if (drone > 0) text += $"  DR {drone}";
+                    var text = previousShield ? "KHIÊN" : "";
+                    if (second > 0) text += $"  CƯỜNG HÓA {second}s";
+                    if (drone > 0) text += $"  HỖ TRỢ {drone}s";
                     effectLabel.text = text.Trim();
                 }
             }
@@ -189,13 +167,10 @@ namespace StarShift.UI
                 if (previousMissiles != missileReserve.Current)
                 {
                     previousMissiles = missileReserve.Current;
-                    missileCount.text = $"M {previousMissiles}/{missileReserve.Capacity}";
+                    missileCount.text = $"TÊN LỬA {previousMissiles}/{missileReserve.Capacity}";
                 }
             }
             RefreshHeat();
-            if (!session.IsClear || overlay.activeSelf) return;
-            clearRemaining -= Time.unscaledDeltaTime;
-            if (clearRemaining <= 0) overlay.SetActive(true);
         }
 
         private void UseMissile() => missileReserve.TryUse();
@@ -204,7 +179,16 @@ namespace StarShift.UI
         {
             if (!session.IsPaused && !session.IsTerminal && playerGate.CanInput) loadout.Cycle();
         }
-        private void OnPickup(string code) { if (pickupLabel == null) return; pickupLabel.text = code; cueRemaining = 1.2f; }
+        private void OnPickup(PickupDefinition item)
+        {
+            if (pickupLabel == null) return;
+            pickupLabel.text = item.Kind switch {
+                PickupKind.WeaponCore => $"{GameplayCopy.WeaponName(item.Branch)} · CẤP {loadout.Level(item.Branch)}",
+                PickupKind.Shard => $"+{item.Amount} Stellar Shard", PickupKind.Shield => "KHIÊN",
+                PickupKind.Overdrive => "CƯỜNG HÓA", PickupKind.SupportDrone => "TÀU HỖ TRỢ",
+                PickupKind.MissileAmmo => "+1 TÊN LỬA", PickupKind.ExtraLife => "+1 MẠNG", _ => "" };
+            cueRemaining = 1.2f;
+        }
 
         private void RefreshHeat()
         {
@@ -259,8 +243,6 @@ namespace StarShift.UI
             session.MissionStarted -= OnMissionStarted;
             session.MissionTitleRequested -= OnMissionTitle;
             pauseButton.onClick.RemoveListener(session.Pause);
-            resumeButton.onClick.RemoveListener(session.Resume);
-            restartButton.onClick.RemoveListener(session.RetryEncounter);
             tapStarts.Clear();
             establishingTapArea.raycastTarget = false;
         }

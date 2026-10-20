@@ -478,12 +478,11 @@ public static class VerifyRegionB
             await Until(()=>boss.CanReceiveDamage,2000,"Victory visual core exposure");boss.ReceivePlayerHit(boss.CurrentHp,rig.Player);
             await Until(()=>Runner.Stage==EncounterStage.RewardGrace,2500,"Victory visual reward");foreach(var reward in UnityEngine.Object.FindObjectsByType<RewardPickup>())reward.Release();
             await Until(()=>Session.IsClear,1200,"Victory terminal state");await Task.Delay(2400);
-            var hud=UnityEngine.Object.FindAnyObjectByType<StarShift.UI.GameplayHud>();var type=hud.GetType();var flags=BindingFlags.Instance|BindingFlags.NonPublic;
-            var overlay=(GameObject)type.GetField("overlay",flags).GetValue(hud);var title=(UnityEngine.UI.Text)type.GetField("title",flags).GetValue(hud);
-            var next=(UnityEngine.UI.Button)type.GetField("continueButton",flags).GetValue(hud);
-            Check(overlay.activeSelf&&title.text=="CHIẾN THẮNG · REGION B"&&!next.gameObject.activeSelf,"Victory overlay/next route incorrect");
+            var shell=UnityEngine.Object.FindAnyObjectByType<StarShift.UI.GameShell>();
+            var view=UnityEngine.Object.FindAnyObjectByType<StarShift.UI.ShellView>();
+            Check(shell.Screen==StarShift.UI.ShellScreen.Results&&view.ResultTitle.text==StarShift.UI.ShellCopy.Victory&&!view.Next.gameObject.activeSelf,"Victory overlay/next route incorrect");
             await Capture("final-victory-1600");
-            return new{status="PASS",overlay=true,title=title.text,noNextMissionButton=true,frozen=Time.timeScale==0};
+            return new{status="PASS",overlay=true,title=view.ResultTitle.text,noNextMissionButton=true,frozen=Time.timeScale==0};
         }
     });
     public static object BeginDevRoutes()=>Begin("dev-routes",async()=>{

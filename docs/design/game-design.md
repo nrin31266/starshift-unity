@@ -142,9 +142,10 @@ Các nhóm sau nằm ngoài scope hiện tại:
 - Multiplayer/networking, cloud save, online leaderboard, backend và procedural galaxy.
 - Endless mode bắt buộc, complex inventory, crafting, talent tree và gacha.
 - ECS/DOTS, third-party DI, custom visual scripting hoặc custom level editor trước khi data model chứng minh nhu cầu.
-- Shop, ad SDK và analytics SDK.
+- Store/inventory tổng quát, ad SDK và analytics SDK.
 
-[FUTURE] Shop, hangar, cosmetic và permanent progression bằng Shard; online
+M7 có cosmetic Hangar giới hạn ba slot theo [progression/economy](../gameplay/progression-economy.md#m7-cosmetic-hangar-provisional).
+[FUTURE] Store/inventory tổng quát và permanent combat progression bằng Shard; online
 leaderboard cũng chỉ là ý tưởng tương lai, không phải requirement để triển khai.
 
 ## Trình tự phát triển

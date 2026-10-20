@@ -28,6 +28,7 @@ namespace StarShift.Player
             if (burst != null) burst.enabled = true;
             var shakeEnabled = persistence == null || persistence.PersistentSnapshot?.Settings.ScreenShakeEnabled != false;
             if (shakeEnabled && view != null) view.TriggerReserveImpact();
+            persistence?.GetComponent<StarShift.Gameplay.SettingsFeedback>()?.Vibrate();
         }
         public void ResetForSession()
         {

@@ -73,7 +73,7 @@ minimum API 26, target/compile API 36 và activity landscape. BuildReport có 0 
 đổi package để né warnings. ADB không có device nên chưa xác minh install/launch,
 startup crash hoặc landscape trên thiết bị thật. Build cache `.utmp/` cũng được ignore.
 
-Build list vẫn chỉ có `Assets/Scenes/SampleScene.unity` với Main Camera và Global
+Ở baseline ban đầu build list chỉ có `Assets/Scenes/SampleScene.unity` với Main Camera và Global
 Light 2D; scene template không phải level. SampleScene đã chạy Play Mode với frame
 counter tăng, Renderer2D active và Input System event probe thành công trong memory.
 Các kiểm tra này không xác nhận Android runtime, touch thật hoặc gameplay.
@@ -82,31 +82,33 @@ post-processing off và Input System event probe thành công trong memory.
 
 ## Scene structure `[PROVISIONAL]`
 
-Baseline screen-level scenes vừa thể hiện Scene Management, vừa tránh duplicated
-setup giữa các level:
+M7 dùng một production scene: `Assets/StarShift/Scenes/02_Gameplay.unity`, là entry
+đầu tiên và duy nhất trong Build Settings. `GameShell` bootstrap Menu trong cùng
+scene; không cần Boot/Menu/Results scenes riêng hoặc persistent singleton.
+`EncounterRunner.Start` giữ DevFastStart isolated khi được bật chủ động; saved
+production content tắt Dev mode, đi qua `CampaignLifecycle.TryBoot` tới shell.
 
-```text
-00_Boot
-01_MainMenu
-02_Gameplay
-03_Results
-```
+`GameShell` sở hữu navigation/actions và transition blocker; `ShellView` giữ authored
+uGUI references, `ShellCopy` giữ frontend copy, `GameplayHud` tiếp tục đọc runtime
+state. `SettingsFeedback` giữ hai AudioSource Music/SFX cho content về sau và haptic
+adapter; không có audio framework. Các màn hình và Back semantics thuộc
+[UI owner](../presentation/ui-ux.md#m7-functional-shell-provisional).
 
-12 level chạy data-driven trong `02_Gameplay`; direction, camera, background và
-encounters đến từ LevelDefinition. Không cần 12 Unity scenes. Scene naming có thể
-đổi khi implementation bắt đầu nhưng phải nhất quán và vẫn giữ trạng thái provisional.
-
-Boot chỉ cần khởi tạo save/profile, persistent services cần thiết và route first screen;
-có thể tối giản nếu project chưa cần nhiều initialization. Persistent service chỉ
-sống qua scene khi lifetime đòi hỏi, không biến mọi domain thành singleton.
-Scene transition SHOULD hỗ trợ async loading khi phù hợp, không dựng loading framework
-phức tạp. [SceneManager.LoadSceneAsync](https://docs.unity3d.com/ScriptReference/SceneManagement.SceneManager.LoadSceneAsync.html)
-là reference để kiểm tra khi implementation, không phải yêu cầu tạo scene ngay.
+`GameplaySession` tiếp tục là owner duy nhất của Time.timeScale/AudioListener.pause.
+Shell giữ session ở Entry + cinematic lock khi Menu; background gameplay đang chạy
+được pause qua cùng clock owner, kể cả giữa intro. Loading giữ transition hold trên
+clock owner này; RunStarted không nhả clock trước khi blocker kết thúc. Pointer bị cancel ở các boundary.
+Campaign tự-advance qua RegionCampaignFlow/PlanetJourney của M6 sau clear/save;
+Replay dừng ở Results. Save failure vẫn giữ kết quả để retry trước khi đi tiếp. DevTest giữ fast transition để các verifier
+cũ tiếp tục sử dụng. Không thay đổi encounter/region transition choreography. ShipAppearance chỉ áp cosmetic
+renderer/tint/trail từ Profile lên Player và intro representation; giữ visual envelope
+và không đổi collider/movement/loadout. Session reset dọn cosmetic trail cùng các
+transient presentation khác.
 
 ### M2 scene và Player baseline `[PROVISIONAL]`
 
 VS-001–003 có foundation tại `app/Assets/StarShift/Scenes/02_Gameplay.unity`.
-Mở scene này trực tiếp để Play; build list vẫn giữ SampleScene của baseline trước.
+M7 mở scene này là production entry; build list theo scene structure hiện tại ở trên.
 Camera orthographic dùng seed L1 từ
 [camera owner](../content/levels-encounters.md#master-campaign-table-và-camera-profiles),
 giữ Renderer2D và post-processing off. Global Light 2D chiếu sáng sprite;
@@ -419,7 +421,7 @@ unscaled time. Disable/teardown session trả clock/audio đã mượn, không g
 sang lượt Play sau. Input cancel tại Pause/Resume theo
 [player owner](../gameplay/player-combat.md#m2-ui-pointer-ownership).
 
-Full mission completion đặt gate `Result` ngay, stop runner/coordinator, block enemy
+`ShowRegionComplete` đặt gate `Result` ngay, stop runner/coordinator, block enemy
 fire, release hostile/friendly projectiles về existing pools và freeze simulation.
 Không chờ presentation delay mới khóa damage/input/fire. Game Over dùng cùng cleanup
 sau signal của lifecycle; session không sở hữu lives/death/respawn timers.

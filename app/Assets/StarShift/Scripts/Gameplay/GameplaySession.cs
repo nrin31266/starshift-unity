@@ -16,9 +16,12 @@ namespace StarShift.Gameplay
         private InputSystemPointerInput pointer;
         private PulseLaserWeapon weapon;
         private RegionCampaignFlow region;
+        public bool RequireMissionResults { get; set; }
         private float previousScale;
         private bool previousAudioPause;
         private bool ownsClock;
+        private bool transitionHeld;
+        private bool transitionBackgrounded;
         public StarShift.Persistence.CampaignLifecycle Persistence => runner.GetComponent<StarShift.Persistence.CampaignLifecycle>();
         public bool CanRetry => Persistence != null && Persistence.CanRetry;
         public void RetryEncounter() => Persistence?.RetryEncounter();
@@ -84,6 +87,7 @@ namespace StarShift.Gameplay
         public void ResetRuntime(bool preserveInput = false)
         {
             region?.Cancel();
+            lifecycle.GetComponent<ShipAppearance>()?.ResetTrail();
             lifecycle.GetComponent<PlayerTemporaryEffects>()?.ResetForSession();
             lifecycle.GetComponent<EmergencyMissileReserve>()?.CancelPending();
             lifecycle.GetComponent<EmergencyMissilePresentation>()?.ResetForSession();
@@ -105,8 +109,57 @@ namespace StarShift.Gameplay
         private void OnMissionCompleted()
         {
             if (lifecycle.GetComponent<PlayerLives>().CurrentLives <= 0 || IsTerminal) return;
+            if (RequireMissionResults && Persistence.Mode == StarShift.Persistence.SessionMode.Replay)
+            { ShowRegionComplete(); return; }
             if (region != null && region.QueueAdvance()) return;
             ShowRegionComplete();
+        }
+
+        public bool ContinueAfterResult()
+        {
+            if (!IsClear || IsCampaignVictory || Persistence.Mode != StarShift.Persistence.SessionMode.Campaign ||
+                !Persistence.Flush()) return false;
+            RestoreClock();
+            playerGate.SetState(PlayerGameplayState.Active);
+            return region.QueueAdvance();
+        }
+
+        public void HoldForShell()
+        {
+            runner.StopRun();
+            ResetRuntime();
+            playerGate.SetState(PlayerGameplayState.Entry);
+            playerGate.SetCinematicLock(true);
+            Freeze();
+        }
+
+        public void HoldForTransition() { transitionHeld = true; transitionBackgrounded = false; Freeze(); }
+        public void ReleaseTransition()
+        {
+            if (!transitionHeld) return;
+            transitionHeld = false;
+            if (transitionBackgrounded && HasActiveRun && !IsTerminal)
+            {
+                IsPaused = true;
+                Freeze();
+                Changed?.Invoke();
+            }
+            transitionBackgrounded = false;
+            if (playerGate != null && HasActiveRun && !IsPaused && !IsTerminal) RestoreClock();
+        }
+
+        private void OnApplicationFocus(bool focused) { if (!focused) PauseForBackground(); }
+        private void OnApplicationPause(bool paused) { if (paused) PauseForBackground(); }
+        private void PauseForBackground()
+        {
+            if (transitionHeld) transitionBackgrounded = true;
+            pointer.CancelGesture();
+            if (HasActiveRun && !IsPaused && !IsTerminal)
+            {
+                IsPaused = true;
+                Freeze();
+                Changed?.Invoke();
+            }
         }
 
         public void PrepareMajorTravel()
@@ -157,7 +210,8 @@ namespace StarShift.Gameplay
 
         private void RestoreClock()
         {
-            if (!ownsClock) return;
+            // RunStarted không được nhả clock khi loading vẫn chặn điều khiển.
+            if (!ownsClock || transitionHeld) return;
             ownsClock = false;
             Time.timeScale = previousScale;
             AudioListener.pause = previousAudioPause;
@@ -174,6 +228,7 @@ namespace StarShift.Gameplay
             }
             runner.MissionCompleted -= OnMissionCompleted;
             lifecycle.GameOver -= OnGameOver;
+            transitionHeld = false;
             RestoreClock();
             IsPaused = false;
         }

@@ -363,6 +363,7 @@ public static class VerifyPacingRefinement
         readonly object oldSize;
         readonly GameplayViewController view;
         readonly GameplayViewSettings oldView;
+        readonly bool oldRequireResults = Session.RequireMissionResults;
         readonly float oldScale = Time.timeScale;
         readonly bool oldAudio = AudioListener.pause;
         readonly string[] definitions;
@@ -371,6 +372,7 @@ public static class VerifyPacingRefinement
         public Rig(int width, float size, bool intro = false)
         {
             Require(Application.isPlaying, "Play Mode required.");
+            Session.RequireMissionResults = false;
             Session.enabled = false; Runner.StopRun(); Time.timeScale = 1; AudioListener.pause = false; Session.enabled = true;
             Gate = Player.GetComponent<PlayerGameplayGate>(); Lives = Player.GetComponent<PlayerLives>(); Input = Player.GetComponent<InputSystemPointerInput>();
             var life = Player.GetComponent<PlayerDamageLifecycle>(); life.enabled = false; life.enabled = true;
@@ -465,7 +467,7 @@ public static class VerifyPacingRefinement
             view.SetBaseline(Runner.Flow.Level.Camera.View); view.RequestView(oldView, 0); gameView.GetType().GetMethod("SizeSelectionCallback").Invoke(gameView, new object[] { oldSize, null });
             gameViewZoom.GetType().GetMethod("SetTransform").Invoke(gameViewZoom, new object[] { oldGameViewPan, oldGameViewZoom });
             UnityEngine.Object.Destroy(profile);
-            Session.enabled = true; Time.timeScale = oldScale; AudioListener.pause = oldAudio;
+            Session.enabled = true; Session.RequireMissionResults = oldRequireResults; Time.timeScale = oldScale; AudioListener.pause = oldAudio;
             Require(definitions.SequenceEqual(Configs().Select(EditorJsonUtility.ToJson)), "QA mutated encounter config assets.");
         }
     }

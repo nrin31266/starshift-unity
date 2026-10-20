@@ -12,12 +12,7 @@ namespace StarShift.Persistence
         {
             if (data == null || data.SchemaVersion != CurrentVersion || !IsValid(data.Settings)) return false;
             var p = data.Profile;
-            if (p == null || p.StellarShardBalance < 0 || p.HighScore < 0 || p.UnlockedMissions == null || p.Records == null) return false;
-            var ids = new HashSet<string>();
-            foreach (var id in p.UnlockedMissions) if (string.IsNullOrWhiteSpace(id) || !ids.Add(id)) return false;
-            ids.Clear();
-            foreach (var r in p.Records)
-                if (r == null || string.IsNullOrWhiteSpace(r.MissionId) || r.BestScore < 0 || !NonNegative(r.BestTimeSeconds) || !ids.Add(r.MissionId)) return false;
+            if (!IsValid(p)) return false;
             var c = data.Campaign;
             if (!data.HasCampaign) return true;
             if (c == null) return false;
@@ -31,6 +26,24 @@ namespace StarShift.Persistence
             var stats = s.Stats;
             return s.WeaponLevels[(int)s.ActiveWeapon] > 0 && stats != null && stats.Score >= 0 && stats.Shards >= 0 &&
                 stats.EnemiesDestroyed >= 0 && stats.CoresCollected >= 0 && stats.SupplyCaptured >= 0 && stats.LivesLost >= 0 && NonNegative(stats.PlaySeconds);
+        }
+        public static bool IsValid(PlayerProfile p)
+        {
+            if (p == null || p.StellarShardBalance < 0 || p.HighScore < 0 || p.UnlockedMissions == null || p.Records == null) return false;
+            var ids = new HashSet<string>();
+            foreach (var id in p.UnlockedMissions) if (string.IsNullOrWhiteSpace(id) || !ids.Add(id)) return false;
+            ids.Clear();
+            foreach (var r in p.Records)
+                if (r == null || string.IsNullOrWhiteSpace(r.MissionId) || r.BestScore < 0 || !NonNegative(r.BestTimeSeconds) || !ids.Add(r.MissionId)) return false;
+            ids.Clear();
+            if (p.OwnedCosmetics != null)
+                foreach (var id in p.OwnedCosmetics) if (string.IsNullOrWhiteSpace(id) || !ids.Add(id)) return false;
+            if (p.EquippedCosmetics != null && p.EquippedCosmetics.Length > 0)
+            {
+                if (p.EquippedCosmetics.Length != 3) return false;
+                foreach (var id in p.EquippedCosmetics) if (string.IsNullOrWhiteSpace(id)) return false;
+            }
+            return true;
         }
         public static bool IsValid(SettingsData s) => s != null && Unit(s.MusicVolume) && Unit(s.SfxVolume);
         private static bool NonNegative(float value) => !float.IsNaN(value) && !float.IsInfinity(value) && value >= 0;

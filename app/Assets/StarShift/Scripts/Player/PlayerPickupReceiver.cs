@@ -13,7 +13,7 @@ namespace StarShift.Player
         private WeaponLoadout loadout;
         private PlayerLives lives;
         private EmergencyMissileReserve missiles;
-        public event Action<string> Collected;
+        public event Action<PickupDefinition> Collected;
         private void Awake()
         {
             gate = GetComponent<PlayerGameplayGate>(); effects = GetComponent<PlayerTemporaryEffects>();
@@ -42,7 +42,7 @@ namespace StarShift.Player
                 case PickupKind.MissileAmmo: if (!missiles.TryAdd()) return false; break;
                 default: if (!effects.Apply(item)) return false; break;
             }
-            Collected?.Invoke(item.Kind == PickupKind.WeaponCore ? $"T{(int)item.Branch + 1} L{loadout.Level(item.Branch)}" : item.ShortCode);
+            Collected?.Invoke(item);
             return true;
         }
     }

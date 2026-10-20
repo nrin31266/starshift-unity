@@ -82,7 +82,8 @@ namespace StarShift.Rewards
         }
         private void OnEnemyDefeated(EnemyHealth enemy, RewardDropTable table, Vector3 position)
         {
-            rewards.AddKill(enemy.Definition.Score * (enemy.Modifier != null ? 2 : 1));
+            rewards.AddKill(enemy.Definition.Score * (enemy.Modifier != null ? 2 : 1),
+                enemy.Definition.BodyDamagesPlayer && enemy.GetComponent<AsteroidVisualMotion>() == null);
             table = table != null ? table : defaultDrops;
             if (table.Source == RewardSource.MajorCrate)
             {
