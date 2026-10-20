@@ -237,9 +237,16 @@ thêm content IDs hoặc status; client cũ không hiểu status mới vẫn rej
 Clear L4 commit record và resolved checkpoint với `RegionTransition` trong một
 transaction. Journey Up→Right giữ checkpoint L4 cho tới khi destination approach
 hoàn tất. Sau đó `AdvanceMission` commit L5 entry/checkpoint/unlock trước khi launch.
+Nếu ghi đĩa thất bại trong `CompleteRegionTravel`, in-memory state được rollback về snapshot
+L4/`RegionTransition` chưa advance, session dừng ở trạng thái Pause và không vào màn hình Result
+hay advance sang L5 khi chưa ghi thành công; khi Resume hoặc reload Continue, hệ thống thử ghi lại/chạy
+lại transition an toàn mà không duplicate records hay corrupt save.
 Continue marker `RegionTransition` của M5 chạy lại journey; `RegionReady` legacy
 chuyển trực tiếp sang entry L5. Không replay Vanguard hoặc cấp lại record/reward.
 Continue checkpoint Active L5–L8 load đúng definition qua catalog trước restore.
+Rời Replay hoặc DevTest để Continue Campaign thực thi `ResetRuntime()`, reset `CurrentIndex = 0`
+và clamp bounds của `Current` encounter, khôi phục snapshot persistent chính xác mà không rò rỉ
+encounter index hay state từ phiên test/isolated.
 
 Clear L1–L3 và L5–L7 dùng same-region mission boundary hiện có: record + next entry checkpoint
 trong cùng transaction, reset mission-local stats và giữ player loadout/lives/reserve.

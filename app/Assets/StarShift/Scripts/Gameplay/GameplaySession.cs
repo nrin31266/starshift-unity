@@ -23,7 +23,7 @@ namespace StarShift.Gameplay
         public bool CanRetry => Persistence != null && Persistence.CanRetry;
         public void RetryEncounter() => Persistence?.RetryEncounter();
         public LevelFlow Flow => runner.Flow;
-        public bool HasActiveRun => runner.HasActiveRun || (Persistence != null && Persistence.IsAdvancingMission) || (region != null && region.IsTravelling);
+        public bool HasActiveRun => runner.HasActiveRun || (Persistence != null && (Persistence.IsAdvancingMission || Persistence.HasPendingRegionTransition)) || (region != null && (region.IsTravelling || region.DestinationReady));
         public bool CanPause => !IsTerminal && HasActiveRun && (Flow == null || !Flow.IsCinematic);
         public bool IsPaused { get; private set; }
         public bool IsTerminal => playerGate.State == PlayerGameplayState.Result || playerGate.State == PlayerGameplayState.GameOver;
@@ -63,7 +63,9 @@ namespace StarShift.Gameplay
 
         public void Pause()
         {
-            if (IsPaused || !CanPause) return;
+            if (IsPaused || IsTerminal) return;
+            // Cho phép pause khi run đang chạy hoặc khi save failure trong chuyển vùng cần giữ màn hình tạm dừng.
+            if (!CanPause && (Persistence == null || !Persistence.HasPendingRegionTransition)) return;
             IsPaused = true;
             Freeze();
             Changed?.Invoke();

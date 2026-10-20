@@ -66,19 +66,32 @@ namespace StarShift.Player
                 enabled = false;
                 return;
             }
-            projectileRoot = new GameObject("PlayerProjectiles").transform;
-            SceneManager.MoveGameObjectToScene(projectileRoot.gameObject, gameObject.scene);
-            projectiles = new ObjectPool<PlayerProjectile>(CreateProjectile, null,
-                projectile => projectile.ResetForPool(), projectile =>
-                {
-                    // Scene teardown có thể hủy projectile root trước weapon.
-                    if (projectile != null) Destroy(projectile.gameObject);
-                },
-                true, 8, 64);
+            EnsurePool();
+        }
+
+        private void EnsurePool()
+        {
+            if (projectiles != null && projectileRoot != null) return;
+            if (projectileRoot == null)
+            {
+                projectileRoot = new GameObject("PlayerProjectiles").transform;
+                SceneManager.MoveGameObjectToScene(projectileRoot.gameObject, gameObject.scene);
+            }
+            if (projectiles == null)
+            {
+                projectiles = new ObjectPool<PlayerProjectile>(CreateProjectile, null,
+                    projectile => projectile.ResetForPool(), projectile =>
+                    {
+                        // Scene teardown có thể hủy projectile root trước weapon.
+                        if (projectile != null) Destroy(projectile.gameObject);
+                    },
+                    true, 8, 64);
+            }
         }
 
         private void OnEnable()
         {
+            EnsurePool();
             if (loadout != null) loadout.Changed += ResetCadence;
             if (gameplayGate != null) gameplayGate.StateChanged += OnGameplayStateChanged;
             if (pointerInput != null) pointerInput.FireIntentChanged += ResetCadence;
@@ -112,6 +125,7 @@ namespace StarShift.Player
                 nextShotTime = now;
             }
             if (now + .000001 < nextShotTime) return;
+            EnsurePool();
             var config = ActiveDefinition;
             var pattern = config.Pattern(CurrentLevel);
             var count = pattern != null ? pattern.ProjectileCount : 1;

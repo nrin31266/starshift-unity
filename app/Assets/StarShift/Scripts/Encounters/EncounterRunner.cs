@@ -43,7 +43,15 @@ namespace StarShift.Encounters
         public bool PreservePlayerInput { get; private set; }
         public int ActiveEnemyCount => LiveCount(-1);
         public float BeatStartTime(int beat) => beatStarts != null && beat >= 0 && beat < beatStarts.Length ? beatStarts[beat] : -1;
-        public EncounterDefinition Current => Definitions[CurrentIndex];
+        public EncounterDefinition Current
+        {
+            get
+            {
+                var defs = Definitions;
+                if (defs == null || defs.Length == 0) return null;
+                return defs[Mathf.Clamp(CurrentIndex, 0, defs.Length - 1)];
+            }
+        }
         private EncounterDefinition[] Definitions => levelFlow != null ? levelFlow.Level.Encounters : encounters;
         public LevelFlow Flow => levelFlow;
         public int CurrentIndex { get; private set; }
@@ -495,6 +503,7 @@ namespace StarShift.Encounters
         {
             generation++;
             Stage = EncounterStage.Idle;
+            CurrentIndex = 0;
             dyingBoss = null;
             clearPauseRemaining = travelRemaining = 0;
             travelStarted = false;

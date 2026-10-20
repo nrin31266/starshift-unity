@@ -1701,3 +1701,10 @@ Delivery naming cleanup: đổi 76 generated camera/formation/flight assets bằ
 AssetDatabase, giữ GUID; tên mô tả encounter/combat view/entry direction/required
 hold, bỏ temporary Feedback/M6 prefixes. Bỏ thêm tám Region B camera assets không
 có inbound references; không retune gameplay data. Builder dùng cùng tên mới.
+
+PR #7 review closure: `BeginReplayContinuation` xác nhận rời Replay/DevTest để Continue
+Campaign khôi phục đúng snapshot persistent (reset `CurrentIndex = 0` và clamp bounds,
+không rò rỉ isolated encounter index hay mode). `BeginRegionSaveFailure` xác nhận
+transaction-safe khi lưu đĩa thất bại trong major transition (in-memory rollback về L4/`RegionTransition`,
+pause session, không advance level hay vào Result, recovery mượt qua Resume hoặc Continue reload).
+Cả hai probe PASS, 0 console error/warning, production bytes nguyên vẹn.

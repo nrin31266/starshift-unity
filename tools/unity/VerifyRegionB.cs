@@ -333,6 +333,102 @@ public static class VerifyRegionB
             return new{status="PASS",incomingMission="L6",checkpoint="ENCOUNTER_1",productionUntouched=true};
         }
     });
+    public static object BeginReplayContinuation()=>Begin("replay-continuation",async()=>{
+        using(var rig=new Rig(1600,6))using(var store=new Storage())
+        {
+            Time.timeScale=3;
+            // 1. RegionTransition sau lượt isolated ở encounter index 2
+            store.Seed(4,2,CampaignStatus.RegionTransition);
+            Runner.StopRun();Runner.Flow.LoadLevel(Region.FindMission("L6"));
+            Runner.StartRun("ENCOUNTER_3",true,true,null,null);rig.Protect();
+            Check(Runner.Flow.Level.Id=="L6"&&Runner.CurrentIndex==2,"Isolated setup L6 index 2");
+            var loadout=rig.Player.GetComponent<WeaponLoadout>();loadout.ApplyCore(WeaponBranch.Plasma);
+            rig.Player.GetComponent<PlayerDamageLifecycle>().TryReceiveHit(null);
+            Check(Save.Mode!=SessionMode.Campaign,"Isolated mode corrupted");
+            Check(Save.Continue(),"Continue failed after isolated index 2");rig.Protect();
+            Check(Runner.Flow.Level.Id=="L4"&&Runner.CurrentIndex==0,"Continue did not load L4 or did not reset index");
+            Check(rig.Player.GetComponent<PlayerLives>().CurrentLives==3,"Lives leaked from isolated run");
+            Check(loadout.Level(WeaponBranch.Plasma)==2,"Loadout leaked from isolated run");
+            Check(Save.Mode==SessionMode.Campaign,"Mode is not Campaign after Continue");
+            await Until(()=>Runner.GetComponent<PlanetJourney>().IsAwaitingTap,5500,"L4 transition reveal");
+            Check(Runner.Flow.BeginApproach(),"Journey tap rejected");
+            await Until(()=>Runner.Flow.Level.Id=="L5",3500,"L4 to L5 handoff");
+            Check(Runner.Flow.Level.Id=="L5"&&Runner.CurrentIndex==0,"L5 did not start at index 0");
+            Check(Save.PersistentSnapshot.Campaign.MissionId=="L5"&&Save.PersistentSnapshot.Campaign.Status==CampaignStatus.Active,"L5 entry not persisted");
+            Check(Save.PersistentSnapshot.Profile.Records.Length==0,"Transition granted duplicate record");
+
+            // 2. RegionReady sau lượt isolated ở encounter index 2
+            store.Seed(4,2,CampaignStatus.RegionReady);
+            Runner.StopRun();Runner.Flow.LoadLevel(Region.FindMission("L7"));
+            Runner.StartRun("ENCOUNTER_3",true,true,null,null);rig.Protect();
+            Check(Runner.Flow.Level.Id=="L7"&&Runner.CurrentIndex==2,"Isolated setup L7 index 2");
+            Check(Save.Continue(),"Continue failed after isolated index 2 on RegionReady");rig.Protect();
+            Check(Runner.Flow.Level.Id=="L5"&&Runner.CurrentIndex==0,"RegionReady did not handoff to L5 at index 0");
+            Check(Save.PersistentSnapshot.Campaign.MissionId=="L5","L5 entry not persisted on RegionReady");
+
+            // 3. Active checkpoint sau lượt isolated
+            store.Seed(6,2,CampaignStatus.Active);
+            Runner.StopRun();Runner.Flow.LoadLevel(Region.FindMission("L8"));
+            Runner.StartRun("ENCOUNTER_2",true,true,null,null);rig.Protect();
+            Check(Save.Continue(),"Continue failed after isolated L8");rig.Protect();
+            Check(Runner.Flow.Level.Id=="L6"&&Runner.CurrentIndex==1,"Active checkpoint did not restore correctly");
+            Check(Save.Mode==SessionMode.Campaign,"Mode not Campaign after active Continue");
+
+            return new{status="PASS",transitionAfterIndex2=true,readyAfterIndex2=true,activeAfterIsolated=true,noIndexException=true,productionUntouched=true};
+        }
+    });
+    public static object BeginRegionSaveFailure()=>Begin("region-save-failure",async()=>{
+        using(var rig=new Rig(1600,6))using(var store=new Storage())
+        {
+            store.Seed(4,2,CampaignStatus.RegionTransition);Time.timeScale=3;rig.Protect();
+            await Until(()=>Runner.GetComponent<PlanetJourney>().IsAwaitingTap,10000,"L4 transition reveal");
+            Check(Runner.Flow.BeginApproach(),"Journey tap rejected");
+
+            var blocker=store.Path+".tmp";
+            if(Directory.Exists(blocker))Directory.Delete(blocker,true);
+            Directory.CreateDirectory(blocker);
+
+            try
+            {
+                await Until(()=>Session.IsPaused||Runner.Flow.Level.Id=="L5",10000,"Save failure timeout");
+                Check(Runner.Flow.Level.Id=="L4","Runtime level advanced to "+Runner.Flow.Level.Id+" despite write failure");
+                Check(Save.PersistentSnapshot.Campaign.MissionId=="L4","Campaign mission advanced in memory despite write failure");
+                Check(Save.PersistentSnapshot.Campaign.Status==CampaignStatus.RegionTransition,"Campaign status advanced in memory despite write failure");
+                Check(!Session.IsClear,"Session entered terminal Result screen on write failure");
+                Check(Session.IsPaused,"Session was not paused on save failure");
+
+                Directory.Delete(blocker,true);
+                Session.Resume();
+
+                await Until(()=>Runner.Flow.Level.Id=="L5",8000,"L5 did not launch after save recovery");
+                Check(Runner.Flow.Level.Id=="L5"&&Runner.CurrentIndex==0,"L5 did not start at index 0 after recovery");
+                Check(Save.PersistentSnapshot.Campaign.MissionId=="L5"&&Save.PersistentSnapshot.Campaign.Status==CampaignStatus.Active,"L5 entry was not persisted after recovery");
+                Check(Save.PersistentSnapshot.Profile.Records.Length==0,"Duplicate records granted during recovery");
+                Check(!Session.IsPaused,"Session remained paused after recovery");
+
+                // Kiểm tra tiếp recovery qua Continue/reload khi file ghi thất bại
+                store.Seed(4,2,CampaignStatus.RegionTransition);Time.timeScale=3;
+                await Until(()=>Runner.GetComponent<PlanetJourney>().IsAwaitingTap,10000,"L4 second reveal");
+                Check(Runner.Flow.BeginApproach(),"Second journey tap rejected");
+                Directory.CreateDirectory(blocker);
+                await Until(()=>Session.IsPaused,10000,"Second save failure pause");
+                var diskData=new JsonSaveStore(store.Path);
+                Check(diskData.Load(d=>true,out var loaded)==SaveLoadStatus.Loaded&&loaded.Campaign.MissionId=="L4","Disk save corrupted");
+                Directory.Delete(blocker,true);
+                Check(Save.Continue(),"Continue failed after reload recovery");
+                Time.timeScale=3;
+                await Until(()=>Runner.GetComponent<PlanetJourney>().IsAwaitingTap,10000,"Reloaded journey reveal");
+                Check(Runner.Flow.BeginApproach(),"Reloaded journey tap");
+                await Until(()=>Runner.Flow.Level.Id=="L5",8000,"Reloaded handoff to L5");
+                Check(Save.PersistentSnapshot.Campaign.MissionId=="L5","Reloaded L5 entry persisted");
+            }
+            finally
+            {
+                if(Directory.Exists(blocker))Directory.Delete(blocker,true);
+            }
+            return new{status="PASS",saveFailurePaused=true,memoryNotAdvanced=true,resumeRecovers=true,l5StartsOnce=true,reloadContinueRecovers=true,productionUntouched=true};
+        }
+    });
     public static object BeginShardBalance()=>Begin("shard-balance",async()=>{
         using(var rig=new Rig(1600,6))using(var store=new Storage())
         {
