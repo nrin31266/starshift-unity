@@ -21,6 +21,7 @@ namespace StarShift.Gameplay
         private bool previousAudioPause;
         private bool ownsClock;
         private bool transitionHeld;
+        private bool transitionBackgrounded;
         public StarShift.Persistence.CampaignLifecycle Persistence => runner.GetComponent<StarShift.Persistence.CampaignLifecycle>();
         public bool CanRetry => Persistence != null && Persistence.CanRetry;
         public void RetryEncounter() => Persistence?.RetryEncounter();
@@ -132,11 +133,18 @@ namespace StarShift.Gameplay
             Freeze();
         }
 
-        public void HoldForTransition() { transitionHeld = true; Freeze(); }
+        public void HoldForTransition() { transitionHeld = true; transitionBackgrounded = false; Freeze(); }
         public void ReleaseTransition()
         {
             if (!transitionHeld) return;
             transitionHeld = false;
+            if (transitionBackgrounded && HasActiveRun && !IsTerminal)
+            {
+                IsPaused = true;
+                Freeze();
+                Changed?.Invoke();
+            }
+            transitionBackgrounded = false;
             if (playerGate != null && HasActiveRun && !IsPaused && !IsTerminal) RestoreClock();
         }
 
@@ -144,6 +152,7 @@ namespace StarShift.Gameplay
         private void OnApplicationPause(bool paused) { if (paused) PauseForBackground(); }
         private void PauseForBackground()
         {
+            if (transitionHeld) transitionBackgrounded = true;
             pointer.CancelGesture();
             if (HasActiveRun && !IsPaused && !IsTerminal)
             {

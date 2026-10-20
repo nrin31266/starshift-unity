@@ -1727,7 +1727,8 @@ View PNG giữ cục bộ trong ignored `.design/m7/`; không đưa QA captures 
 | Recovery / recovery.json | Invalid save confirmation/cancel, archive original bytes, successful fresh Campaign; không overwrite unsupported save |
 | Hangar / hangar-1600.json, hangar-2000.json | Shared stage, Workshop owned-only/Store navigation, ba slots/sáu options, preview/purchase/cancel/re-equip, wallet once, rollback, reload/NewGame preservation, runtime chassis và Replay/Dev denial |
 | Layouts / layouts-1600.json, layouts-2000.json | Menu/Missions/Settings Bật-Tắt/Help bốn khối/HUD có vũ khí/hỗ trợ/Pause/confirmation và clear save-error/retry tại native aspects |
-| Loading / loading.json | Real Continue/Retry, runner elapsed + playable timer frozen trong loading, clock release, background Pause và fresh input |
+| Loading / loading.json | Real Continue/Retry, runner elapsed + playable timer frozen trong loading, clock release; một focus-loss event trước/sau RunStarted vẫn giữ Pause, fresh input |
+| Production damage / production-damage.json | Reload scene thật, lifecycle enabled từ saved scene trước fixture, Continue vào combat không Protect/enable override, một hit giảm lives và production bytes giữ nguyên |
 | Terminal / terminal-layouts-2000.json | Wide Boss HUD, GameOver/Retry, Victory, overwrite confirmation và Replay GameOver/Retry |
 | Scene relaunch / scene-relaunch.json | Hai lần recreate production scene; completed Continue không spawn/regrant và Region B Encounter checkpoint đúng |
 | Full flow / flow.json | Real Menu/NewGame/Pause/Settings/Result/Menu/storage reopen/Continue/Missions/Replay/result/exit/Continue/GameOver/Retry, sau đó L2–L8 qua Next/journey tap, tám records, Victory và completed Continue |

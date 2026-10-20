@@ -48,6 +48,7 @@ public static class VerifyGameShell
     public static object BeginFailures()=>Begin("failures",Failures);
     public static object BeginSceneRelaunch()=>Begin("scene-relaunch",SceneRelaunch);
     public static object BeginInput()=>Begin("input",Input);
+    public static object BeginProductionDamage()=>Begin("production-damage",ProductionDamage);
     public static object BeginLoading()=>Begin("loading",Loading);
     public static object BeginRecovery()=>Begin("recovery",Recovery);
     public static object BeginTeardown()=>Begin("teardown",Teardown);
@@ -411,14 +412,29 @@ public static class VerifyGameShell
             return new{status="PASS",multitouchPause=true,freshTouchAfterResume=true,escapeHierarchy=true,pauseRetry=true};
         }
     }
+    static async Task<object> ProductionDamage()
+    {
+        var load=UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("Assets/StarShift/Scenes/02_Gameplay.unity");
+        while(!load.isDone)await Task.Delay(25);await Task.Delay(300);
+        var damage=GameObject.Find("Player").GetComponent<PlayerDamageLifecycle>();
+        Check(damage.enabled,"Saved production damage lifecycle is disabled");
+        using(var rig=new UiRig(1600))
+        {
+            Seed(rig,5,1);await Click(View.Continue);
+            await Until(()=>rig.Gate.CanTakeDamage,6000,"Production damage gate");
+            int lives=rig.Player.GetComponent<PlayerLives>().CurrentLives;
+            Check(damage.TryReceiveHit(null)&&rig.Player.GetComponent<PlayerLives>().CurrentLives==lives-1,"Production hit did not reduce lives");
+            return new{status="PASS",sceneReload=true,unprotectedLifecycle=true,hitReducesLives=true,productionFilesUnchanged=true};
+        }
+    }
     static async Task<object> Loading()
     {
         using(var rig=new UiRig(1600))
         {
             Seed(rig,5,1);
-            async Task CheckLaunch(Button button,bool background=false)
+            async Task CheckLaunch(Button button,bool background=false,bool beforeStart=false)
             {
-                bool started=false;float seconds=0,elapsed=0;int samples=0;
+                bool started=false,injected=false;float seconds=0,elapsed=0;int samples=0;
                 Action observe=()=>{started=true;seconds=Rewards.PlaySeconds;elapsed=Runner.Elapsed;};
                 Runner.RunStarted+=observe;
                 try
@@ -426,16 +442,20 @@ public static class VerifyGameShell
                     var operation=Click(button);
                     while(!operation.IsCompleted)
                     {
+                        if(background&&!injected&&Shell.IsBusy&&(beforeStart?!started:started))
+                        {
+                            typeof(GameplaySession).GetMethod("OnApplicationFocus",Fields).Invoke(Session,new object[]{false});
+                            injected=true;
+                        }
                         if(started&&Shell.IsBusy)
                         {
                             Check(View.Loading.activeSelf&&Time.timeScale==0,"Loading released clock early");
                             Check(Rewards.PlaySeconds==seconds&&Runner.Elapsed==elapsed,"Gameplay advanced under loading");
                             samples++;
-                            if(background)typeof(GameplaySession).GetMethod("OnApplicationFocus",Fields).Invoke(Session,new object[]{false});
                         }
                         await Task.Delay(10);
                     }
-                    await operation;Check(started&&samples>1,"Post-launch loading not observed");
+                    await operation;Check(started&&samples>1&&(!background||injected),"Post-launch loading/background not observed");
                     Check(!rig.Input.FireHeld,"Loading retained input");
                 }
                 finally{Runner.RunStarted-=observe;}
@@ -448,7 +468,12 @@ public static class VerifyGameShell
             await Until(()=>Shell.Screen==ShellScreen.Pause,1000,"Loading background pause lost");
             Check(Session.IsPaused&&Time.timeScale==0,"Loading auto-resumed background gameplay");
             await Click(View.Resume);Check(!Session.IsPaused&&!rig.Input.FireHeld,"Background Resume input");
-            return new{status="PASS",continueLoadingFrozen=true,retryLoadingFrozen=true,clockResumes=true,backgroundPausePreserved=true,freshInput=true};
+            Session.Pause();await Until(()=>Shell.Screen==ShellScreen.Pause,1000,"Early-background Retry");await Click(View.Retry);await CheckLaunch(View.Confirm,true,true);
+            await Until(()=>Shell.Screen==ShellScreen.Pause,1000,"Early Retry focus lost");Check(Time.timeScale==0,"Early Retry resumed in background");await Click(View.Resume);
+            Session.Pause();await Until(()=>Shell.Screen==ShellScreen.Pause,1000,"Early-background Menu");await Click(View.PauseMenu);await Click(View.Confirm);
+            await CheckLaunch(View.Continue,true,true);await Until(()=>Shell.Screen==ShellScreen.Pause,1000,"Early Continue focus lost");
+            Check(Time.timeScale==0&&!rig.Input.FireHeld,"Early Continue resumed in background");await Click(View.Resume);
+            return new{status="PASS",earlyContinueBackground=true,earlyRetryBackground=true,continueLoadingFrozen=true,retryLoadingFrozen=true,clockResumes=true,backgroundPausePreserved=true,freshInput=true};
         }
     }
     static async Task<object> Recovery()

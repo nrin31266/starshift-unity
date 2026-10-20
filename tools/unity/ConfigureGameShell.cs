@@ -432,9 +432,11 @@ public static class ConfigureGameShell
         var catalog=AssetDatabase.LoadAssetAtPath<CosmeticCatalog>("Assets/StarShift/Data/Cosmetics/ShipCosmetics.asset");
         if(catalog.Options.Select(o=>o.Id).Distinct().Count()!=catalog.Options.Length||catalog.Options.Any(o=>o.ShardCost<0||string.IsNullOrWhiteSpace(o.Id)||o.Slot==CosmeticSlot.Chassis&&o.Sprite==null)||
             Enum.GetValues(typeof(CosmeticSlot)).Cast<CosmeticSlot>().Any(slot=>catalog.Options.Count(o=>o.Slot==slot&&o.IsDefault)!=1))throw new InvalidOperationException("Invalid cosmetic catalog");
+        bool playerDamageEnabled=UnityEngine.Object.FindAnyObjectByType<PlayerDamageLifecycle>().enabled;
+        if(!playerDamageEnabled)throw new InvalidOperationException("Production player damage lifecycle is disabled");
         bool devMode=new SerializedObject(UnityEngine.Object.FindAnyObjectByType<DevFastStart>()).FindProperty("devModeEnabled").boolValue;
         if(broken!=0||missingUi!=0||devMode||view.Screens.Length!=9||GameObject.Find("GameplayUI").transform.Find("Overlay")!=null)throw new InvalidOperationException("Shell wiring/production entry invalid");
         return new{scene=scene.path,entry=EditorBuildSettings.scenes[0].path,shell=UnityEngine.Object.FindAnyObjectByType<GameShell>()!=null,
-            missingReferences=broken,missingUiReferences=missingUi,devMode,cosmetics=catalog.Options.Length,missingScripts=nodes.Sum(t=>GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(t.gameObject)),missions=UnityEngine.Object.FindAnyObjectByType<RegionCampaignFlow>().Missions.Length,scene.isDirty};
+            missingReferences=broken,missingUiReferences=missingUi,playerDamageEnabled,devMode,cosmetics=catalog.Options.Length,missingScripts=nodes.Sum(t=>GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(t.gameObject)),missions=UnityEngine.Object.FindAnyObjectByType<RegionCampaignFlow>().Missions.Length,scene.isDirty};
     }
 }

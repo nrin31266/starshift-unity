@@ -3041,7 +3041,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 3592564819596248323}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1776963113}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 524e619d19492c01ca7e154fb08f06d0, type: 3}
   m_Name:
@@ -10727,7 +10727,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3485224116064423165, guid: a82d5580647c6a958825836a390fc992, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3485224116064423165, guid: a82d5580647c6a958825836a390fc992, type: 3}
       propertyPath: deathDuration
