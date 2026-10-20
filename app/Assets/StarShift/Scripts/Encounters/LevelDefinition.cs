@@ -48,6 +48,8 @@ namespace StarShift.Encounters
         [Min(1)] public int MissionNumber = 1;
         [Min(1), Tooltip("Nhân HP quái thường theo mission, làm tròn lên; không áp Boss/thiên thạch.")]
         public float EnemyHealthMultiplier = 1;
+        [Min(1), Tooltip("Nhân thêm theo region; độc lập mission/weapon level, không áp Boss/thiên thạch.")]
+        public float RegionEnemyHealthMultiplier = 1;
         public string RegionId = "astra-frontier";
         [Tooltip("Để trống khi chưa có tên location canonical; không suy diễn từ RegionId.")]
         public string LocationName;
@@ -73,6 +75,7 @@ namespace StarShift.Encounters
         {
             error = "Invalid level config: " + name;
             if (string.IsNullOrWhiteSpace(Id) || string.IsNullOrWhiteSpace(RegionId) || MissionNumber < 1 || !ConfigValue.Positive(EnemyHealthMultiplier) || EnemyHealthMultiplier < 1 ||
+                !ConfigValue.Positive(RegionEnemyHealthMultiplier) || RegionEnemyHealthMultiplier < 1 ||
                 !Enum.IsDefined(typeof(PlayDirection), Direction) || Camera == null || !Camera.IsValid ||
                 Intro == null || !Intro.IsValid ||
                 Encounters == null || Encounters.Length == 0 || AdditionalStarts == null) return false;

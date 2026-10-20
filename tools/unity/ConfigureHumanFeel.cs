@@ -189,7 +189,7 @@ public static class ConfigureHumanFeel
             var missilePod=Part(root.transform,"MissilePod",bolt,new Vector2(5.8f,-.9f),new Vector2(.65f,1.2f),new Color(1,.55f,.12f),6);
             Set(modules[1],"telegraph",missilePod);
             Set(modules[2],"telegraph",root.transform.Find("BeamPod").GetComponent<SpriteRenderer>());
-            var beam=modules[2].GetComponent<BossBeamPresentation>();if(beam==null)beam=modules[2].gameObject.AddComponent<BossBeamPresentation>();
+            var beam=modules[2].GetComponent<AttackBeamPresentation>();if(beam==null)beam=modules[2].gameObject.AddComponent<AttackBeamPresentation>();
             var material=StarShift.Editor.RegionAAssetPaths.Load<Material>(R+"BeamMaterial.mat");
             if(material==null){material=new Material(Shader.Find("Sprites/Default"));AssetDatabase.CreateAsset(material,StarShift.Editor.RegionAAssetPaths.Resolve<Material>(R+"BeamMaterial.mat"));}
             for(int i=0;i<2;i++) {

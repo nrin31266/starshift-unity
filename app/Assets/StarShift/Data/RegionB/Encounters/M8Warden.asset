@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f1d586d44955cc0fa3b4b57b2d5444f, type: 3}
+  m_Name: M8Warden
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Encounters.EncounterDefinition
+  Id: ENCOUNTER_2
+  Completion: 3
+  CompleteWhenScheduleExhausted: 0
+  EntryBeats: []
+  EntryLeadSeconds: 0.5
+  TitleSeconds: 1.3
+  HazardStream: {fileID: 0}
+  ScoutPrefab: {fileID: 0}
+  Duration: 180
+  Groups:
+  - EntryBeat: 0
+    SpawnScale: 1
+    VisualSpin: 0
+    ContinuousTransit: 0
+    Count: 1
+    StartTime: 0
+    Stagger: 0
+    EnemyPrefab: {fileID: 6430369222520202953, guid: 0dd07d02ba939384990e1f2da1fe7fac, type: 3}
+    EnemyDefinition: {fileID: 11400000, guid: 31ae4d07d93973b769a545c72462b3f1, type: 2}
+    RewardOverride: {fileID: 11400000, guid: 737ed0ab9483fe93ebb7d684e82c9ec6, type: 2}
+    Elite: {fileID: 0}
+    Required: 1
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 11400000, guid: 38b76299379b3cee289074f84b4d2fd1, type: 2}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 0
+    EntryAnchor: {x: 0.5, y: 1.12}
+    HoldAnchor: {x: 0.5, y: 0.78}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 3
+    ExitAnchor: {x: 1.18, y: 0.3}
+    ExitDuration: 3
+  OptionalEvents: []
+  CameraOverride: {fileID: 11400000, guid: 7ef92ae92a6f8d1469996f910700cc70, type: 2}
+  GuaranteedMajorCount: 0
+  GuaranteeTable: {fileID: 11400000, guid: 3f21893fa1f0805d69ff96a39947511f, type: 2}
+  ActiveShooterLimit: 4
+  ShotSpacing: 0.5
+  ShotsPerVolley: 4
+  VolleyPause: 3.2
+  ClearPauseSeconds: 0.7
+  HandoffTravelSeconds: 0.85
+  HandoffDelay: 2
+  ProjectileGraceSeconds: 0.45
+  ProjectileFadeSeconds: 0.25
+  TransitionTitle:
+  TransitionDescription:
+  RewardGraceSeconds: 14
+  BossPostDeathSeconds: 3

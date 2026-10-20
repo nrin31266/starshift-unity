@@ -292,3 +292,17 @@ missile pod riêng, beam pod hãm tàu trước khai hỏa. Magenta lane warning
 presentation, giữ safe space rõ hai bên. Native 16:9/20:9 review phải xem beam còn
 nối đúng pod khi active. Timing/HP/movement thuộc [enemy owner](../content/enemies-bosses.md#boss-1--vanguard-frigate-provisional),
 không để animation/color quyết damage. Defeat chain vẫn 2.4 s trước direct reward pair/handoff.
+
+
+## M6 gameplay placeholder feedback `[PROVISIONAL]`
+
+M6 không thêm final art/audio. Sniper/Interceptor dùng mảnh aim line khi charge và
+beam/committed strike khi active; cue là presentation, hit query do attack owner giữ.
+Warden Beam Sweep có magenta direction arrow trong charge để đọc chiều quét trước
+khi active; line/core tăng độ sáng và bề rộng khi fire, không dùng cue làm hit authority.
+
+Shield hit pulse .1 s; từng node có local break burst .4 s, final node dẫn sang
+shield flicker/collapse và recoil. Khi expose, core phase cue khác protected network;
+không có shield regeneration. Các duration này là placeholder `[TUNABLE]`, chưa có
+final SFX, particle pack hoặc music. Collapse/vulnerability/attack timing do
+[enemy owner](../content/enemies-bosses.md#m6-region-b-runtime-mechanics-provisional) quyết.

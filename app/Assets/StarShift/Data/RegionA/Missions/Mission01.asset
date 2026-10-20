@@ -16,6 +16,7 @@ MonoBehaviour:
   DisplayName: "NHI\u1EC6M V\u1EE4 01"
   MissionNumber: 1
   EnemyHealthMultiplier: 1
+  RegionEnemyHealthMultiplier: 1
   RegionId: astra-frontier
   LocationName:
   MissionBriefing: "Gi\u1EEF \u0111\u01B0\u1EDDng b\u1EAFn v\xE0 ph\xE1 \u0111\u1ED9i

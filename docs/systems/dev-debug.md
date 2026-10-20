@@ -1511,3 +1511,193 @@ held drag sau movement re-enable và touch/second-finger isolation. Cần bắt 
 skip-intro trước suite này; chạy ngay sau terminal fixture với overlay còn mở sẽ
 bị UI chặn pointer. Compile và native Console không có error/warning mới.
 Không chạy lại full campaign hoặc Android cho sửa này.
+
+
+## M6 Region B verification `[PROVISIONAL]`
+
+Production catalog L1–L8; M6 current release dừng sau Warden, không có L9 content.
+DevFastStart dùng existing StartLevel và exact Encounter IDs. L6 thêm SNIPER/CORRIDOR;
+L7 CARRIER/DUAL_SNIPER; L8 PRE_BOSS/BOSS/BOSS_PHASE_B và special VICTORY route.
+VICTORY chạy real boss/module/death path trong DevTest; không giả campaign completed
+hoặc ghi save. BOSS_PHASE_B phá các node sau entry qua health authority, không restore
+serialized phase snapshot. Production scene DevModeEnabled giữ OFF.
+
+`tools/unity/prepare_region_b_verification.py` ghép `VerifyRegionB`, `VerifyPickupMotion` và existing
+`VerifyPacingRefinement.Rig` vào ignored `.design/m6/Verification.cs` cho MCP run_script.
+Không duplicate input/Game View rig, không đưa verifier vào Assets. Probe CurrentTask
+cho biết work còn live; chỉ chạy probe tiếp khi task trước terminal. Entry/usage ở
+[authoring README](../../tools/unity/README.md#m6-region-b-authoring-và-verification).
+
+Evidence từ protected bot/virtual Input System và native Game View chỉ chứng minh
+Editor behavior; không chứng minh Android touch, FPS, audio, human difficulty hoặc
+representative human mission duration. Không chạy full historical M5 matrix trong M6.
+
+Editor evidence M6 ngày 2026-10-20:
+
+- Fresh Unity compile PASS; targeted Inspector/ref validation và Console check ở closure.
+- Native Game View: 17 major formations × 1600×900 và 2000×900, 0 settled collider
+  overlaps ở cả hai aspects. Final proxy/beam-arrow review thêm 6 captures.
+- Mechanics PASS: Sniper charge/fire/Pause; dual Sniper max 1 busy sequence; Interceptor
+  committed strike; Carrier spawn/cap/death retreat; corridor right→left và natural ExitDrain.
+- Player Right PASS: virtual mouse delta (55,35) pixels; Pulse/Plasma/Homing held fire;
+  shared heat qua switch, gate-disabled cooling, Pause freeze, death/downgrade/respawn
+  và held drag/fire continuity.
+- Warden PASS: entry protection cho core/modules, shield block, 3 node deaths, collapse,
+  exposed phase, Beam Sweep/Plasma Burst/Drone Spawn, staged death/reward và completion once.
+- Trước human-feedback pass bên dưới: sáu real-weapon boss probes `[TUNABLE]`: Lv3 Pulse/Plasma/Homing khoảng
+  48.84/75.22/71.08 s simulation; Lv5 khoảng 27.66/68.78/40.66 s. Core 360 HP
+  cố định; cả sáu có beam/plasma/drone và shield loop. Bot được bảo vệ, Plasma dùng
+  forward firing position phù hợp range; không phải human difficulty benchmark.
+- Persistence PASS: L6 Continue/Retry, Warden Retry reset nodes/phase, Replay bytes isolation,
+  legacy L4 RegionTransition/RegionReady → L5, completed-save Continue không spawn lại boss.
+- Real Vanguard death/reward → journey → approach → L5 PASS, held gesture/pose giữ;
+  max sampled camera step .263 ortho ở sim speed 2, L4 record đúng 1 và L5 entry saved.
+- Incoming mission travel Retry regression PASS: Pause/Retry trong L5→L6 khởi động L6 E1
+  đã commit, không replay outgoing L5. Đây là grouped persistence boundary fix.
+- Supply Right PASS bằng held Pulse: destroy → Core/support pair trực tiếp → collect;
+  không legacy BOX và SupplyCaptured đúng 1. Chín DevFastStart routes PASS, production bytes unchanged.
+- Trước human-feedback pass bên dưới: continuous full Region B PASS trên reward configuration M6 đầu: L5 61.20 s,
+  L6 59.88 s, L7 62.22 s, L8 119.08 s; tổng 302.38 s simulation, peak EnemyHealth 17.
+  Played đủ 11 encounters bằng actual held weapons, protected aiming bot ở sim speed 3.
+  Bốn Mission records, unlock tới L8, CampaignCompleted saved và Continue victory PASS.
+  Observed entry/exit weapon levels chưa tự max: sau L5/L6 [3,2,2], sau L7 [4,2,2];
+  bot không cố thu hết pickup, không dùng số này thay economy approval.
+- Tất cả campaign probes dùng storage riêng và compare production save bytes. Không
+  đổi schema/storage path, không author Region C, không Android QA/FPS/audio claim.
+
+Evidence local `.design/m6/` gồm mechanics, boss, boss-balance, player-right, persistence,
+mission-travel-retry, astra-to-crimson, supply-right, dev-routes, formations-1600/2000,
+presentation và full-region-b JSON; screenshots không commit. Các failed draft probes
+được sửa theo runtime/contract rồi chỉ chạy lại nhóm liên quan; không full historical suite.
+
+
+### M6 human-feedback pass — 2026-10-20 `[PROVISIONAL]`
+
+Actual Editor probes sau front-guard/bounds/idle/cadence changes:
+
+- `BeginPressure` PASS trên L1 E2, L3 E3, L6 E1, L7 E2, Vanguard và Warden.
+  Busy sources tối đa 1/2/1/3/2/2, đều dưới authored limit và hard cap 4.
+  Collective quiet gaps >=3 s; peak live projectile counts 3/4/2/6/16/10.
+  Vanguard/Warden có escort spawn từ hull/pod; không dùng edge spawn giả.
+- `BeginCoverAndIdle` PASS: L6 Bulwark 48 HP nhận 9 damage từ held Pulse, rear
+  Sniper chưa mất HP; formation delta cùng hướng/biên độ, camera footprint clamp đúng.
+- `BeginGoldRain` PASS real Warden entry → nodes → core → staged death: 36 gold,
+  rải theo screen height và trôi trái, grace hoàn tất, CampaignCompleted saved;
+  production bytes unchanged. Lỗi cũ là Warden dùng Supply table có BossShardCount 0.
+- `BeginVanguardTuning` PASS bằng held Pulse L3: 680 HP, hai phase, 53.12 s simulation
+  gồm staged reward; 10 escort spawns tổng, peak living 3, giữ 28 gold.
+- `BeginHomingPaths` PASS 8 Up/Right × L1/L5 ×1/2/3 target cases. Compact arc vẫn
+  phân biệt từng rocket trong native captures, assignment đều, actual damage đủ;
+  Pause, dead/reused target và reuse sang Pulse không giữ tracking/arc.
+- `BeginHomingBalance` PASS Warden 520 core +3×110 nodes bằng real held Homing:
+  L3 96.48 s, L5 53.12 s simulation. Bot protected; forward viewport .29 để nằm
+  trong tracking range sau khi arena rộng hơn. Mẫu cũ đứng .17 đã timeout ngoài
+  tầm lock, không dùng số đó làm balance acceptance. Không tăng weapon range.
+- 17 formation views ×1600/2000 PASS 0 settled overlaps sau guard authoring.
+  Bản hint 3.5% alpha ở lượt này đã bị thay bằng reactive boundary cue bên dưới.
+- `BeginObjectives` PASS: M2 Raider, M3 Sine, M6 Sniper, M8 Fortress giữ required
+  enemies sau deadline cũ, không auto-clear/escape; clear và optional cleanup được
+  sau kill. Non-kill encounters còn lại giữ transit/survival làm nhịp nghỉ xen kẽ.
+
+Probe evidence local `.design/m6/feedback-*`, `homing-paths`, `homing-balance`,
+refreshed formations và screenshots. Đây là protected bot/controlled input trong
+Editor, không thay representative human difficulty hoặc Android QA.
+
+
+Integration trước correction cuối về boundary cue và no-target Homing: `BeginFullRegion` PASS đủ 11
+encounters L5→L8→Warden→victory, 292.20 s simulation (58.22 / 64.18 / 68.10 /
+101.70 s theo mission), peak 17 EnemyHealth. Actual held weapons, protected aim/
+collection bot ở sim speed 3; bốn records, tám unlocked missions, CampaignCompleted
+saved và Continue terminal PASS, production bytes unchanged. Collected loadout sau
+L5 [4,3,2], L6 [4,4,3], L7 [4,4,4]; không injection Core trong flow.
+Không coi thời gian bot hoặc số pickup thu được là human balance acceptance.
+
+Correction cuối theo feedback về hộp giới hạn và viên Homing giữa:
+
+- Bỏ hẳn mask thường trực, bỏ inset hai bên/đáy. Vẫn dùng normalized camera region
+  và PlayerMovementBounds hiện có; chỉ thêm telemetry BoundaryPressure cho visual.
+- `BeginBoundaryHint` PASS Up/Right: idle/giữ bắn không vẽ, cố đẩy cạnh .2 s mới hiện
+  đoạn .14 viewport ×2 pixel, kéo vào trong hoặc nhả tay thì tắt. Native idle/held
+  Game View captures đã review, không tách màu nền hoặc khung hộp.
+- `BeginHomingEmpty` PASS 10 cases Lv1–5 ×Up/Right: no-target fan đối xứng, gap ratio
+  dưới 1.15; center Lv1/3/5 lệch trục <.001 world units. Lv5 Right đo ~4.5e-7.
+- `BeginHomingPaths` rerun PASS 8 targeted cases sau center correction: chia đều
+  mục tiêu, damage thật đủ, bốn đường ngoài vẫn cong khi có một đích; Pause và pool
+  reuse không leak target/arc. Central rocket của volley lẻ giữ đúng trục launch.
+- `BeginPlayer` rerun PASS: drag (55,35), cả ba branch, shared thermal state,
+  cooling khi gate khóa, Pause, death/downgrade và held drag/fire sau Right respawn.
+  Failed draft “Respawn lost held fire” không tái hiện trong fresh controlled rerun.
+- `BeginHandoff` rerun PASS sau half-region correction: real Vanguard defeat → reward
+  → planet journey/approach → L5; held gesture/pose giữ, max camera step .2195 ortho
+  ở sim speed 2; L4 record đúng một, L5 checkpoint saved, production bytes unchanged.
+- Final Edit Mode inspection PASS: tám mission hợp lệ, 11 Region B encounters,
+  missing scripts/references 0/0, Dev mode OFF; scene không dirty, không compile/import
+  đang chạy. Console không có warning/error. `python tools/check_docs.py` PASS
+  19 docs/388 relative links và `git diff --check` sạch. Sau correction cuối chỉ
+  rerun nhóm liên quan; không lặp full historical matrix hoặc Android benchmark.
+
+### M6 threat/boss/UI closure — 2026-10-20 `[PROVISIONAL]`
+
+Sau source/module cleanup và authored tuning, Editor verification:
+
+- `BeginThreatProtection` PASS 21 cases: bảy encounters ×Pulse/Plasma/Homing Lv3.
+  Threat sống lúc ra đòn đầu ở 3.66–4.26 s simulation; còn frontline guard.
+- `BeginBossBarrage` PASS Vanguard/Warden ×1600/2000: ba nhịp, kéo thật vào khe
+  không mất mạng, đứng ngoài mất đúng một life; Warden đổi hành lang ba lần.
+  Pause/cancel PASS; rail endpoints trùng mép damage gap; node-damage HUD cập nhật.
+  Origin trước mặt boss, không sinh hàng đạn đè thanh tên.
+- 17 formation captures ×hai aspects PASS zero collider overlaps. Sau chỉnh các
+  hàng sát HUD, `BeginClosureLayouts` rerun sáu changed layouts ×hai aspects PASS
+  zero overlap, hull không clip hoặc chồng top/right HUD. Representative native
+  changed-layout và boss captures đã review.
+- `BeginPressure` PASS sáu scenarios, max sources 1/2/1/3/3/2; collective quiet gaps
+  3.00–3.28 s. Peak projectiles 3/4/2/6/49/7; Vanguard peak gồm đợt curtain có hình
+  rõ và hữu hạn, không stream liên tục. Hai boss vẫn spawn escorts.
+- `BeginVanguardTuning` PASS held Pulse Lv3: 680 HP, hai phase, 53.68 s simulation,
+  10 escorts tổng/peak 3, 28 gold; production save bytes unchanged.
+- `BeginFullRegion` PASS L5→L8→Warden→victory, đủ 11 encounters, 330.30 s simulation
+  (65.64/70.16/78.06/116.44 s), peak 17 enemies. Protected aiming/collection bot,
+  real held weapons ở speed 3; bốn records, persisted victory/Continue PASS.
+  Collected loadout sau L5 [4,2,2], L6 [4,3,3], L7 [4,3,4]; không inject Core.
+- `BeginPersistence` PASS Continue/Retry, boss nodes/phase reset, Replay isolation,
+  legacy L4→L5 và completed Continue; production bytes unchanged.
+- `BeginPlayer` PASS ba branch, relative drag (55,35), shared heat, cooling khi
+  blocked, Pause, death/downgrade/respawn và held continuity.
+- Cả sáu probes integration chạy nối tiếp PASS; Console không warning/error.
+
+Draft pressure failure được truy ra fixture tắt AI trong isolated barrage test nhưng
+chưa phục hồi trên pooled instances. Đã restore đúng enabled states trong finally;
+barrage→pressure và cả chuỗi integration rerun PASS. Không sửa cadence để che lỗi test.
+Một queued Editor hot reload ở draft trước làm mất nonserialized pools trong phiên
+đang Play; fresh Play và chuỗi final giữ reload lock không tái hiện. Không claim
+hot-reload support hoặc human/device difficulty benchmark.
+
+Cleanup: 18 scripts được nhóm theo responsibility, giữ GUID; bỏ 11 generated
+formation/flight assets không còn inbound references. Không đổi namespace/assembly,
+Editor/packages/save schema hoặc ProjectSettings ngoài scope; không commit/push.
+Evidence ignored local: `.design/m6/closure-*`, refreshed pressure/Vanguard/full-region/
+persistence/player JSON và native screenshots; test tooling ở `tools/unity`.
+
+Final closure checks sau script move/whitespace-only serialization cleanup: compile
+xong, gameplay scene không dirty; missing scene/prefab scripts/references 0, missing
+beam materials 0, unused generated formation/flight candidates 0. GUID check giữ cả
+13 tracked scripts đã chuyển và metadata của 5 script mới. Fresh-Play `BeginPlayer`
+smoke PASS sau lần move cuối; Console 0 warning/error. Docs checker PASS 19 docs/
+389 relative links, `git diff --check` sạch. Workspace để lại Edit Mode.
+
+Follow-up input regression: QA rig phải gỡ synthetic devices và phục hồi native
+input trước cleanup gameplay, kể cả khi dừng Play hoặc reload cắt ngang async probe.
+`BeginTapInput` kiểm cú click qua UI thật để rời establishing, rồi assert không còn
+device giả hoặc native device bị disable thủ công. PASS cả normal disposal và
+manual interrupted-Play/re-enter smoke; Console không warning/error.
+
+Wallet follow-up: `BeginShardBalance` PASS actual HUD balance qua same-region và
+Up→Right handoff, mission-local stats reset, Retry high-water deduplication,
+Continue, New Game giữ wallet, Replay isolation và Dev wallet carry/reset.
+Production save bytes unchanged. HUD không đọc mission-local collected counter
+làm currency nữa; authority/policy ở [economy owner](../gameplay/progression-economy.md#m4-a-runtime-boundary-provisional).
+
+Delivery naming cleanup: đổi 76 generated camera/formation/flight assets bằng
+AssetDatabase, giữ GUID; tên mô tả encounter/combat view/entry direction/required
+hold, bỏ temporary Feedback/M6 prefixes. Bỏ thêm tám Region B camera assets không
+có inbound references; không retune gameplay data. Builder dùng cùng tên mới.

@@ -179,9 +179,9 @@ Không biến mọi wave cuối thành toàn elite.
 
 ## Minion
 
-Carrier sinh micro-drone/Scout-like units. HP, fire profile, cap minion, spawn cadence
-và minion có thuộc required kill set hay không [TBD] theo encounter cụ thể;
-không tự copy Scout stats thành locked minion contract.
+Carrier sinh micro-drone/Scout-like units. M6 đã author bounded minion contract
+[ở runtime mechanics](#m6-region-b-runtime-mechanics-provisional); các future minion
+variants vẫn [TBD], không tự copy Scout stats thành locked contract.
 
 ## Balance seed table
 
@@ -241,13 +241,13 @@ với curve (.12,.012), ở upper combat zone. Không dive vào Player start.
 
 ### Phase structure `[TUNABLE]`
 
-HP 520, không scale theo Player weapon. Phase A lần lượt twin cannon → missile fan
-→ twin cannon, rest 1.9 s. Cannon 3 viên/pod ×2 pod (fan 38°), missile 5 viên/fan 62°.
+HP 680, không scale theo Player weapon. Phase A lần lượt projectile curtain → twin cannon
+→ missile fan → twin cannon, rest 1.9 s. Cannon 3 viên/pod ×2 pod (fan 38°), missile 5 viên/fan 62°.
 Cannon telegraph .55 s, missile 1 s. Telegraph xuất phát
 từ các pod đang fire; hai cannon cùng cue.
 
 Phase B tại 50% HP: cancel attack hiện tại, core/engine cue 1.5 s, reposition offset
-(-.06,.015) qua flight owner và motion envelope ×1.2. Order lane lock → cannon →
+(-.06,.015) qua flight owner và motion envelope ×1.2. Order projectile curtain → lane lock → cannon →
 missile fan → lane lock; rest 1.7 s. Không nhân projectile count cho toàn bộ phase.
 
 ### Signature lane lock `[TUNABLE]`
@@ -258,11 +258,12 @@ khi cancel/end/death/Retry phải nhả motion pause. Luôn còn safe space rộ
 Không instant hit, không beam tracking vô hạn hoặc AoE explosion.
 
 `BossAttackModule` tính active beam bounds, query Player hitbox và route vào existing
-life/protection receiver; `BossBeamPresentation` chỉ vẽ cùng bounds. Gate/Pause/death
+life/protection receiver; `AttackBeamPresentation` chỉ vẽ cùng bounds. Gate/Pause/death
 hủy damage đúng owner. Beam không trở thành collider nhận friendly projectile.
 
-Không thêm minion hoặc pickup giữa phase ở lượt này: ba attack identities và defeat
-pair là đủ cho Boss 1; tránh chồng threat/reward paths. Duration là tuning, phải
+Không thêm pickup giữa phase. Vanguard có escort producer cap 3, mỗi 4.5 s thử
+phóng một drone từ thân tàu; drones bay ra rồi bắn qua cùng budget với boss.
+Lifecycle theo [escort contract](#m6-region-b-runtime-mechanics-provisional); tránh chồng threat/reward paths. Duration là tuning, phải
 đủ thấy cả hai phase và nhiều signature attacks; benchmark không thay human approval.
 
 ### Death
@@ -355,11 +356,11 @@ eligibility thuộc [weapon/item owner](weapons-items-drops.md#tên-lửa-dự-t
 |---|---:|---|
 | Scout | 4 / 5 / 5 | HP gốc 4, mission 1 / 2 / 3 |
 | Raider | 7 / 8 | HP gốc 6, mission 2 / 3 |
-| Bomber | 14 | HP gốc 12, mission 2; scale 1.45 |
-| Elite Bomber | 23 | Mission 3 Bomber 15 ×1.5 rounded up; scale ×1.12, cooldown ×.8 |
+| Bomber | 18 | HP gốc 16, mission 2; scale 1.45 |
+| Elite Bomber | 30 | Mission 3 Bomber 20 ×1.5; scale ×1.12, cooldown ×.8 |
 
 `LevelDefinition.EnemyHealthMultiplier` theo mission 1–4: 1 / 1.1 / 1.2 / 1.25.
-Làm tròn lên HP gốc × mission multiplier, sau đó Elite multiplier; không áp cho
+Làm tròn lên HP gốc × mission multiplier × region multiplier, sau đó Elite multiplier; không áp cho
 Boss, asteroid hoặc supply/resource. Không scale HP theo weapon level. Common
 hostile chỉ nhận damage sau .2 s hiện trong viewport; Boss còn phải tới Hold/Combat.
 Player projectile bỏ qua target chưa nhận damage, kể cả Homing acquisition/splash.
@@ -390,3 +391,97 @@ AoE damage hoặc reserve-scale shake. Exact choreography thuộc
 
 Vanguard HP/movement/attacks ở [Boss 1](#boss-1--vanguard-frigate-provisional), không
 coi HP/timing thành final balance. Death/handoff theo audio/VFX và encounter owner.
+
+
+## M6 Region B runtime mechanics `[PROVISIONAL]`
+
+Static balance seeds `[TUNABLE]`:
+
+| Target | Base HP | Placeholder footprint |
+|---|---:|---|
+| Sniper | 18 | .95 × 1.1, medium |
+| Interceptor | 16 | .85 × 1.2, directional |
+| Carrier | 34 | 2 × 1.65, large anchor |
+| Warden Drone | 2 | .55 × .65, light minion |
+| Bulwark | 28 | 1.65 × 1.45, front armor; không bắn |
+| Nebula Warden core | 520 | Capital hull + protected front |
+| Shield module | 110 each, 3 modules | Beam / Drone / Plasma, distinct accents |
+
+Normal enemies dùng mission HP multipliers L5–L8 = 1.25 / 1.30 / 1.35 / 1.40,
+nhân thêm `RegionEnemyHealthMultiplier` = 1.30 ở Region B (Region A = 1).
+Ví dụ Scout L5 7 HP, L8 8 HP; Bulwark L6 48 HP.
+không áp cho boss/modules/asteroids, không scale theo loadout. Raider placeholder
+hull tăng lên .8 × 1.05 để role không nhỏ hơn gameplay footprint; không thu nhỏ unit
+để nhét nhiều slot. Bulwark dùng body blocking và HP, không có shield/invulnerability
+riêng; front guard đứng cùng lane với Sniper/Bomber để chặn đường đạn thẳng.
+Flank và splash vẫn là cách vòng qua guard. Interceptor vào từ M2, Sniper xuất hiện
+muộn ở M3; Carrier giữ cho Region B.
+
+Sniper `DirectedAttack`: initial delay .35 s → coordinator permission → charge 1.15 s,
+tracking chỉ .3 s đầu → fixed aim beam .45 s → cooldown 3.6 s. Beam width .20 world;
+Tracking dùng line mảnh vàng nhạt; khi khóa hướng line dày/sáng hơn và ngừng bám; active có core sáng. `PlayerContactReceiver`/damage lifecycle resolve hit,
+`AttackBeamPresentation` chỉ vẽ segment. Không lấy aim line làm authority riêng.
+
+Interceptor dùng cùng attack gate nhưng strike: charge .85 s, tracking .2 s,
+committed dash .65 s qua target snapshot/overshoot .12 viewport, return 1.1 s và
+cooldown 4.5 s sau đòn đầu; initial delay .35 s. Aim line kết thúc ở vị trí đã nhắm,
+không kéo xuyên cả màn như beam. `EntryHoldFlight` là pose writer, không homing sau commit. Bounded
+return về slot cũ, không rời required kill set; ExitDrain hủy strike để retreat.
+
+Carrier có single secondary fire nhẹ và `EscortSpawner`: sau Hold, mỗi 5 s thử sinh
+một Warden Drone, cap 3 living units/owner. Drone xuất phát tại owner/pod, entry 1.1 s → hold/idle 9 s rồi exit,
+attack vẫn qua coordinator. Spawn/register/reward ownership ở encounter runner;
+minion không required và không roll loot/score/quota. Owner death/disable cho drone
+retreat; Retry/reset/handoff thu hồi toàn bộ bằng runner/pool, không coroutine vô hạn.
+
+Warden bảo vệ core tới khi cả ba shield modules bị hạ và collapse 1.2 s kết thúc.
+Arrival bảo vệ cả core lẫn modules; chỉ sau Hold mới nhận module damage. Shield
+chặn normal projectiles vào core, feedback hit riêng; Homing chỉ acquire target có
+thể nhận damage. Module có HP riêng, không có normal floating health bar hoặc reward.
+Destroy module tắt attack tương ứng trong shield phase. Local break cue, shield flicker
+và recoil dẫn sang exposed core; không tái tạo shield hoặc thêm lớp HP.
+
+Warden root scale 1.55 so với placeholder M6 ban đầu; collider, movement envelope,
+nodes và các pod đi cùng scale. Không tăng camera để triệt tiêu kích thước mới.
+
+Phase 1 rotate Ion Shelter → Beam Sweep → Plasma Burst → Drone Spawn → Plasma Burst, rest 1.25 s.
+Phase 2 core exposed dùng core emitters với rest .9 s, Ion Shelter → plasma → sweep → drone.
+Không cần phase 3. Core emitters giữ attack pressure sau khi các module đã hạ;
+module destroy giảm rotation của phase 1, không làm exposed boss vô hiệu.
+
+Beam Sweep charge 1.15 s rồi active 2.2 s, quét lane .07↔.93 theo screen height khi
+Right, đổi chiều mỗi lần dùng; arrow báo đúng chiều sắp quét. Width .36 world,
+aim không chase Player. Plasma gồm 5 viên trong fan 48°,
+charge .9 s, speed 4.8. Drone spawn có charge .9 s, mỗi lần tối đa 2 drone, cap 3/owner; node drones retreat
+khi module chết trước core spawner tiếp tục. Boss death giữ generation-safe staged
+sequence, clear producers/shots, reward, completion đúng một lần theo runner M5.
+Presentation không quyết damage/vulnerability/completion.
+
+### Boss shelter attacks `[TUNABLE]`
+
+Vanguard Projectile Curtain: báo trước 1.1 s, chọn khe ở lateral .25 hoặc .75 phía
+xa vị trí Player lúc bắt đầu. Đạn xuất phát trước mặt boss .10 viewport, không sinh sau HUD/ngoài mép trên.
+Ba hàng đạn song song cách .55 s, speed 8.5; mỗi hàng
+21 vị trí, bỏ các viên thuộc khe .24 viewport và cộng margin bằng nửa chiều rộng
+đạn. Projectile riêng là đoạn plasma amber 2.1×.24 world, đủ chặn các khoảng đứng
+lọt giữa viên ở 16:9/20:9. Giữ khe trong cả ba hàng; lần dùng sau chọn lại theo Player.
+Producer giữ busy tới lúc hàng cuối bay khỏi view rồi mới vào rest; không stream vô hạn.
+
+Warden Ion Shelter: hai dải laser phủ ngoài khe .24 viewport, active .55 s mỗi nhịp,
+ba nhịp. Báo trước lần đầu 1.15 s; hai lần sau đổi khe .25↔.75 với .25 s nghỉ cộng
+1.15 s báo trước. Không đổi khe trong lúc damage đang bật. Charge tint nhạt bao
+đúng diện tích sẽ đánh; active tăng độ sáng hai mép hành lang, không vẽ lõi trắng
+rộng che actor/HUD. Fill alpha .035 charge/.13 active, mép .03/.05 world. Pause freeze, death/gate/cancel tắt
+hit query và visual; Retry/pool reset mọi timer. Player phải tìm khe rồi đổi chỗ,
+không thể đứng ở góc cố định hết đợt. Đây là hành lang né riêng của attack, không
+thay playable bounds và không phải vật thể cover chặn mọi projectile khác.
+
+Hai đòn dùng `BossBarrage` qua `BossAttackModule` hiện có; vẫn tính một nguồn trong
+shared cap 4, không scheduler song song mới. Warden sweep/plasma/drone tiếp tục
+phân biệt với Shelter; không thay shield → exposed-core contract.
+
+Tham khảo ý tưởng: [community boss rework](https://forum.chickeninvaders.com/t/my-full-list-of-boss-rework/8206)
+đề xuất phá blind spots và ép thay vị trí; đây là đề xuất cộng đồng, không phải
+changelog đã phát hành. [Dev discussion về danger zones/beam warnings](https://forum.chickeninvaders.com/t/mysterious-boss-danger-zone-warning/1619)
+phân biệt gợi ý vị trí với cảnh báo beam tức thời. StarShift vận dụng nguyên tắc
+telegraph rõ và khe né luân chuyển; không sao chép asset, tên boss hay mã CIU.

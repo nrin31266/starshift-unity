@@ -73,6 +73,7 @@ namespace StarShift.Encounters
             public EntryHoldFlight Flight;
             public SingleFireAttack Attack;
             public bool Required;
+            public bool GrantsRewards;
             public int Beat;
             public bool Optional;
             public bool Resolved;
@@ -287,7 +288,7 @@ namespace StarShift.Encounters
                 else if (Stage == EncounterStage.ExitDrain || !slot.Required || (Current.Completion != EncounterCompletion.Eliminate && Current.Completion != EncounterCompletion.Boss))
                 {
                     if (slot.Flight != null && (slot.Flight.HasExited || (slot.Flight.IsExiting && slot.Flight.IsOutsideView)))
-                    { EnemyEscaped?.Invoke(slot.Health); Release(slot); }
+                    { if (slot.GrantsRewards) EnemyEscaped?.Invoke(slot.Health); Release(slot); }
                 }
             }
         }
@@ -332,17 +333,23 @@ namespace StarShift.Encounters
             foreach (var e in spawned) if (!e.Resolved && e.Health != null && e.Health.IsAlive) return true;
             return false;
         }
-        private void Spawn(SpawnAction group, int index, bool required, bool optional = false)
+        public EnemyHealth SpawnReinforcement(SpawnAction group, int token)
+        {
+            if (token != generation || Stage != EncounterStage.Running || group == null ||
+                !group.IsValid(null, EncounterCompletion.Timeline, float.MaxValue, out _)) return null;
+            return Spawn(group, 0, false, true);
+        }
+        private EnemyHealth Spawn(SpawnAction group, int index, bool required, bool optional = false)
         {
             var root = pool.Rent(group.EnemyPrefab != null ? group.EnemyPrefab : Current.ScoutPrefab);
             var slot = new EnemySlot { Health = root.GetComponent<EnemyHealth>(), Flight = root.GetComponent<EntryHoldFlight>(),
-                Attack = root.GetComponent<SingleFireAttack>(), Required = required, Beat = group.EntryBeat, Optional = optional };
+                Attack = root.GetComponent<SingleFireAttack>(), Required = required, GrantsRewards = group.GrantsRewards, Beat = group.EntryBeat, Optional = optional };
             var hp = group.HpOverride;
             if (levelFlow != null && slot.Health.Definition.BodyDamagesPlayer && slot.Health.Definition.MissileTier != MissileDamageTier.Boss && root.GetComponent<AsteroidVisualMotion>() == null)
-                hp = Mathf.CeilToInt((hp > 0 ? hp : slot.Health.Definition.MaxHp) * levelFlow.Level.EnemyHealthMultiplier);
+                hp = Mathf.CeilToInt((hp > 0 ? hp : slot.Health.Definition.MaxHp) * levelFlow.Level.EnemyHealthMultiplier * levelFlow.Level.RegionEnemyHealthMultiplier);
             slot.Health.ConfigureModifier(group.Elite, hp);
             var direction = levelFlow != null ? levelFlow.Direction : PlayDirection.Up;
-            if (group.Sequence != null) slot.Flight.ConfigureSequence(group.Sequence, group.Anchor + group.SlotOffset(index), direction);
+            if (group.Sequence != null) slot.Flight.ConfigureSequence(group.Sequence, group.Anchor + group.SlotOffset(index), direction, Elapsed);
             else
             {
                 var offset = group.SlotOffset(index);
@@ -373,7 +380,7 @@ namespace StarShift.Encounters
                         NotifyBossPresentationComplete(token);
                     });
                 }
-                else EnemyDefeated?.Invoke(slot.Health, group.RewardOverride, slot.Health.transform.position);
+                else if (group.GrantsRewards) EnemyDefeated?.Invoke(slot.Health, group.RewardOverride, slot.Health.transform.position);
             };
             slot.Health.Died += slot.DeathHandler;
             root.SetActive(true);
@@ -381,6 +388,7 @@ namespace StarShift.Encounters
             if (group.Elite == null) root.transform.localScale = prefab.transform.localScale * group.SpawnScale;
             root.GetComponent<AsteroidVisualMotion>()?.Configure(group.VisualSpin);
             spawned.Add(slot);
+            return slot.Health;
         }
         private void Release(EnemySlot slot)
         {

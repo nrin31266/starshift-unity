@@ -51,7 +51,7 @@ namespace StarShift.Encounters
         public CameraProfile CameraOverride;
         [Min(0)] public int GuaranteedMajorCount;
         public RewardDropTable GuaranteeTable;
-        [Range(1, 6)] public int ActiveShooterLimit = 1;
+        [Range(1, 4)] public int ActiveShooterLimit = 1;
         [Min(.02f)] public float ShotSpacing = 1f;
         [Min(1)] public int ShotsPerVolley = 1;
         [Min(.02f)] public float VolleyPause = 1f;
@@ -80,7 +80,7 @@ namespace StarShift.Encounters
             error = "Invalid encounter config: " + name;
             if (string.IsNullOrWhiteSpace(Id) || Groups == null || OptionalEvents == null ||
                 !ConfigValue.Positive(Duration) || !ConfigValue.Positive(ShotSpacing) || !ConfigValue.Positive(VolleyPause) ||
-                ActiveShooterLimit < 1 || ActiveShooterLimit > 6 || ShotsPerVolley < 1 || !ConfigValue.Nonnegative(HandoffDelay) ||
+                ActiveShooterLimit < 1 || ActiveShooterLimit > 4 || ShotsPerVolley < 1 || !ConfigValue.Nonnegative(HandoffDelay) ||
                 !ConfigValue.Nonnegative(ClearPauseSeconds) || !ConfigValue.Nonnegative(HandoffTravelSeconds) ||
                 !ConfigValue.Nonnegative(ProjectileGraceSeconds) || !ConfigValue.Positive(ProjectileFadeSeconds) ||
                 !ConfigValue.Positive(RewardGraceSeconds) || !ConfigValue.Nonnegative(BossPostDeathSeconds) ||
@@ -96,7 +96,7 @@ namespace StarShift.Encounters
                 if (!g.IsValid(ScoutPrefab, Completion, Duration, out error)) return false;
                 var prefab = g.EnemyPrefab != null ? g.EnemyPrefab : ScoutPrefab;
                 var health = prefab.GetComponent<StarShift.Enemies.EnemyHealth>();
-                if (health.Definition.BodyDamagesPlayer && health.Definition.MissileTier != StarShift.Enemies.MissileDamageTier.Boss &&
+                if (g.GrantsRewards && health.Definition.BodyDamagesPlayer && health.Definition.MissileTier != StarShift.Enemies.MissileDamageTier.Boss &&
                     prefab.GetComponent<StarShift.Enemies.AsteroidVisualMotion>() == null) rewardEligibleCount += g.Count;
             }
             if (GuaranteedMajorCount < 0 || (GuaranteedMajorCount > 0 &&

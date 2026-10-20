@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4179b97c92ab72e0bcc1e13a4938118, type: 3}
+  m_Name: Mission05
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Encounters.LevelDefinition
+  Id: L5
+  DisplayName: "NHI\u1EC6M V\u1EE4 05"
+  MissionNumber: 5
+  EnemyHealthMultiplier: 1.25
+  RegionEnemyHealthMultiplier: 1.3
+  RegionId: crimson-nebula
+  LocationName:
+  MissionBriefing: "T\u1EA5n c\xF4ng t\u1EEB b\xEAn ph\u1EA3i. Gi\u1EEF kho\u1EA3ng
+    tr\u1ED1ng \u0111\u1EC3 di chuy\u1EC3n."
+  Direction: 1
+  Camera: {fileID: 11400000, guid: 9d4b67ba8e7651455b9953145e31bbe9, type: 2}
+  ReplayPreset:
+    Lives: 3
+    Missiles: 1
+    ActiveWeapon: 0
+    WeaponLevels: 030000000200000002000000
+  Intro:
+    Enabled: 0
+    ContinueDelaySeconds: 1.8
+    ArrivalTitle: "NHI\u1EC6M V\u1EE4 05"
+    MissionTitleSeconds: 2.1
+    MissionEntryLeadSeconds: 0.75
+    ApproachView:
+      orthographicSize: 8
+      playableViewport:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1
+        height: 1
+    TravelView:
+      orthographicSize: 9
+      playableViewport:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1
+        height: 1
+    ApproachSeconds: 0.7
+    TravelSeconds: 1.8
+    BrakeSeconds: 0.8
+  Encounters:
+  - {fileID: 11400000, guid: 17d9da4c24272ec61a36dff7a1c707d0, type: 2}
+  - {fileID: 11400000, guid: 6229a0e0357872492b97643aa369d2ca, type: 2}
+  - {fileID: 11400000, guid: 23ee7cc89ed38110a8b2f5e2f11584b1, type: 2}
+  AdditionalStarts: []

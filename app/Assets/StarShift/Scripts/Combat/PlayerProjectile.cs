@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using StarShift.Enemies;
+using UnityEngine.SceneManagement;
 
 namespace StarShift.Combat
 {
@@ -22,16 +23,26 @@ namespace StarShift.Combat
         private EnemyHealth trackingTarget;
         private float turnRate;
         private float trackingRange;
-        private void AcquireTarget(Vector2 position)
+        private float launchRemaining;
+        private float launchTurnRate;
+        internal static EnemyHealth SelectTrackingTarget(Vector2 position, Vector2 forward, float range, Scene scene,
+            List<EnemyHealth> assigned = null)
         {
-            trackingTarget = null;
-            var nearest = trackingRange * trackingRange;
+            EnemyHealth target = null;
+            var nearest = range * range;
             foreach (var enemy in EnemyHealth.Active)
             {
                 var delta = (Vector2)enemy.transform.position - position;
-                if (!enemy.CanReceiveDamage || enemy.gameObject.scene != gameObject.scene || Vector2.Dot(direction, delta) <= 0 || delta.sqrMagnitude >= nearest) continue;
-                nearest = delta.sqrMagnitude; trackingTarget = enemy; trackingVersion = enemy.SpawnVersion;
+                if (!enemy.CanReceiveDamage || enemy.gameObject.scene != scene || Vector2.Dot(forward, delta) <= 0 ||
+                    delta.sqrMagnitude >= nearest || (assigned != null && assigned.Contains(enemy))) continue;
+                nearest = delta.sqrMagnitude; target = enemy;
             }
+            return target;
+        }
+        private void AcquireTarget(Vector2 position)
+        {
+            trackingTarget = SelectTrackingTarget(position, direction, trackingRange, gameObject.scene);
+            trackingVersion = trackingTarget != null ? trackingTarget.SpawnVersion : 0;
         }
         private int trackingVersion;
         private float splashRadius;
@@ -56,7 +67,8 @@ namespace StarShift.Combat
             => Launch(definition, muzzle.position, muzzle.up, definition.Damage, 0, owner, release);
 
         public void Launch(PulseLaserDefinition definition, Vector3 position, Vector2 forward, int hitDamage,
-            float splash, GameObject owner, Action<PlayerProjectile> release)
+            float splash, GameObject owner, Action<PlayerProjectile> release, EnemyHealth preferredTarget = null,
+            float launchLane = 0)
         {
             Owner = owner;
             direction = forward.normalized;
@@ -64,9 +76,13 @@ namespace StarShift.Combat
             damage = hitDamage;
             splashRadius = splash;
             turnRate = definition.TrackingDegreesPerSecond;
-            trackingTarget = null;
+            trackingTarget = turnRate > 0 && preferredTarget != null && preferredTarget.CanReceiveDamage &&
+                preferredTarget.gameObject.scene == gameObject.scene ? preferredTarget : null;
+            trackingVersion = trackingTarget != null ? trackingTarget.SpawnVersion : 0;
             trackingRange = definition.TrackingRange;
-            if (turnRate > 0) AcquireTarget(position);
+            if (turnRate > 0 && trackingTarget == null) AcquireTarget(position);
+            launchRemaining = turnRate > 0 ? definition.TrackingLaunchSeconds : 0;
+            launchTurnRate = launchRemaining > 0 ? definition.TrackingLaunchArcDegrees * Mathf.Clamp(launchLane, -1, 1) / launchRemaining : 0;
             if (visual != null)
             {
                 visual.color = definition.ProjectileColor;
@@ -99,13 +115,19 @@ namespace StarShift.Combat
             if (!flying) return;
             var step = Mathf.Min(Time.fixedDeltaTime, remainingLifetime);
             if (turnRate > 0 && (trackingTarget == null || !trackingTarget.CanReceiveDamage || trackingTarget.SpawnVersion != trackingVersion)) AcquireTarget(body.position);
-            if (trackingTarget != null && trackingTarget.CanReceiveDamage && trackingTarget.SpawnVersion == trackingVersion)
+            if (launchRemaining > 0)
+            {
+                var launchStep = Mathf.Min(step, launchRemaining);
+                direction = Quaternion.AngleAxis(launchTurnRate * launchStep, Vector3.forward) * direction;
+                launchRemaining = Mathf.Max(0, launchRemaining - step);
+            }
+            else if (trackingTarget != null && trackingTarget.CanReceiveDamage && trackingTarget.SpawnVersion == trackingVersion)
             {
                 var targetDirection = (Vector2)trackingTarget.transform.position - body.position;
                 var angle = Vector2.SignedAngle(direction, targetDirection);
                 direction = Quaternion.AngleAxis(Mathf.Clamp(angle, -turnRate * step, turnRate * step), Vector3.forward) * direction;
-                transform.rotation = Quaternion.FromToRotation(Vector3.up, direction);
             }
+            if (turnRate > 0) transform.rotation = Quaternion.FromToRotation(Vector3.up, direction);
             var distance = speed * step;
             var filter = new ContactFilter2D { useTriggers = true };
             body.Cast(direction, filter, sweepHits, distance);
@@ -138,7 +160,7 @@ namespace StarShift.Combat
         {
             if (other == null || (Owner != null && other.transform.IsChildOf(Owner.transform))) return null;
             var target = other.GetComponentInParent<IPlayerProjectileTarget>();
-            return target is EnemyHealth enemy && !enemy.CanReceiveDamage ? null : target;
+            return target is EnemyHealth enemy && !enemy.CanReceiveDamage && !enemy.BlocksPlayerProjectiles ? null : target;
         }
 
         private void FinishFlight(IPlayerProjectileTarget target = null)
@@ -180,7 +202,7 @@ namespace StarShift.Combat
             speed = remainingLifetime = 0;
             damage = 0;
             trackingTarget = null;
-            turnRate = splashRadius = 0;
+            turnRate = splashRadius = trackingRange = launchRemaining = launchTurnRate = 0;
             trackingVersion = 0;
             splashTargets.Clear();
             sweepHits.Clear();

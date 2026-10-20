@@ -2088,6 +2088,7 @@ GameObject:
   - component: {fileID: 519420030}
   - component: {fileID: 519420033}
   - component: {fileID: 519420034}
+  - component: {fileID: 519420035}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2248,7 +2249,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38226db57204c9cf6b15fb3ab406607a, type: 3}
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Gameplay.FrameRateLimit
-  targetFrameRate: 60
+  targetFrameRate: 120
+--- !u!114 &519420035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76632df6919c73be784b374dbf7dd461, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Gameplay.PlayableAreaPresentation
+  movement: {fileID: 3592564819596248343}
+  hintColor: {r: 0.45, g: 0.72, b: 0.8, a: 0.24}
+  holdSeconds: 0.2
+  segmentLength: 0.14
 --- !u!1 &538816950
 GameObject:
   m_ObjectHideFlags: 0
@@ -2979,7 +2996,7 @@ SpriteRenderer:
   m_SortingOrder: -10
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: a2c7215861e4660d18b5881062f29d7b, type: 3}
-  m_Color: {r: 0.3, g: 0.33, b: 0.37, a: 1}
+  m_Color: {r: 0.08, g: 0.1, b: 0.12, a: 0.35}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -3810,7 +3827,7 @@ SpriteRenderer:
   m_SortingOrder: -10
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: a2c7215861e4660d18b5881062f29d7b, type: 3}
-  m_Color: {r: 0.24, g: 0.29, b: 0.34, a: 1}
+  m_Color: {r: 0.08, g: 0.1, b: 0.12, a: 0.35}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -8949,7 +8966,7 @@ MonoBehaviour:
   devModeEnabled: 0
   startPoint: TRANSITION
   standalone: 0
-  startLevel: {fileID: 11400000, guid: 5f971138825cc7e818687ade679f32fd, type: 2}
+  startLevel: {fileID: 11400000, guid: d960e07ae2afaf8b5b7e69587b6703af, type: 2}
   skipIntro: 0
   overrideDirection: 0
   direction: 0
@@ -9135,6 +9152,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 657a5f1cd89d938b98a7ff2c194a6b85, type: 2}
   - {fileID: 11400000, guid: d960e07ae2afaf8b5b7e69587b6703af, type: 2}
   - {fileID: 11400000, guid: 5f971138825cc7e818687ade679f32fd, type: 2}
+  - {fileID: 11400000, guid: 5b7376419b8ea798599637440341e3cc, type: 2}
+  - {fileID: 11400000, guid: f660679b89e5b1997be2324ee2db33d1, type: 2}
+  - {fileID: 11400000, guid: 7a80b0cd69d749a84967e5fdaaafdbcf, type: 2}
+  - {fileID: 11400000, guid: 4b1276dbc73e7aac6b36edd231336d64, type: 2}
   missionClearSeconds: 2.3
 --- !u!114 &1730183995
 MonoBehaviour:
@@ -11824,18 +11845,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 6601152673651682127, guid: a82d5580647c6a958825836a390fc992, type: 3}
-      propertyPath: m_Color.b
-      value: 0.12156862
-      objectReference: {fileID: 0}
-    - target: {fileID: 6601152673651682127, guid: a82d5580647c6a958825836a390fc992, type: 3}
-      propertyPath: m_Color.g
-      value: 0.18425247
-      objectReference: {fileID: 0}
-    - target: {fileID: 6601152673651682127, guid: a82d5580647c6a958825836a390fc992, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7202778992839510452, guid: a82d5580647c6a958825836a390fc992, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -11970,6 +11979,17 @@ MonoBehaviour:
   bossDamageFraction: 0.1
   protectionSeconds: 0.7
   flightSeconds: 0.32
+--- !u!114 &3592564819596248343 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6377972777835097908, guid: a82d5580647c6a958825836a390fc992, type: 3}
+  m_PrefabInstance: {fileID: 3592564819596248323}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1776963113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71b1ce275f3474d49b50f63cd5a4c015, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Player.RelativeDragMovement
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

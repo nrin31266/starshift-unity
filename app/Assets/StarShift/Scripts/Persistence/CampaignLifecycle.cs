@@ -24,9 +24,12 @@ namespace StarShift.Persistence
         private bool restoring;
         private RegionCampaignFlow region;
         private LevelDefinition testFixture;
+        private int isolatedShardBalance;
+        public int ShardBalance => Mode == SessionMode.Campaign ? progress.ShardBalance : isolatedShardBalance;
         public bool IsAdvancingMission { get; private set; }
         public SessionMode Mode { get; private set; } = SessionMode.DevTest;
-        public bool CanRetry => checkpoint != null && !session.IsClear && (session.IsPaused || session.IsTerminal);
+        public bool CanRetry => checkpoint != null && !session.IsClear && (session.IsPaused || session.IsTerminal) &&
+            (region == null || !region.IsTravelling || !region.IsRegionTravel);
         public SaveEnvelope PersistentSnapshot => progress.Snapshot;
         public SaveLoadStatus LoadStatus => progress.LoadStatus;
         public string Diagnostic => progress.Diagnostic;
@@ -65,11 +68,18 @@ namespace StarShift.Persistence
 
         private bool RegionStatusValid(SaveEnvelope data)
         {
-            if (!data.HasCampaign || (data.Campaign.Status != CampaignStatus.RegionTransition && data.Campaign.Status != CampaignStatus.RegionReady)) return true;
+            if (!data.HasCampaign) return true;
+            var status = data.Campaign.Status;
+            if (status != CampaignStatus.RegionTransition && status != CampaignStatus.RegionReady && status != CampaignStatus.CampaignCompleted) return true;
             if (region == null) return false;
-            var missions = region.Missions; var last = missions[missions.Length - 1];
-            return data.Campaign.MissionId == last.Id && Array.Exists(last.Encounters, e => e.Id == data.Campaign.Checkpoint.EncounterId && e.Completion == EncounterCompletion.Boss);
+            var level = region.FindMission(data.Campaign.MissionId);
+            if (level == null || !Array.Exists(level.Encounters, e => e.Id == data.Campaign.Checkpoint.EncounterId && e.Completion == EncounterCompletion.Boss)) return false;
+            var missions = region.Missions;
+            int index = Array.IndexOf(missions, level);
+            return status == CampaignStatus.CampaignCompleted ? index == missions.Length - 1 :
+                index >= 0 && index + 1 < missions.Length && missions[index + 1].RegionId != level.RegionId;
         }
+
         public void UseTestStorage(string path, LevelDefinition fixture = null)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -100,6 +110,7 @@ namespace StarShift.Persistence
             if (launching) return;
             if (!Flush()) throw new IOException(Diagnostic);
             Mode = SessionMode.DevTest;
+            isolatedShardBalance = 0;
             checkpoint = null;
         }
         private CheckpointData Capture() => new CheckpointData { EncounterId = runner.Current.Id,
@@ -138,6 +149,13 @@ namespace StarShift.Persistence
                 if (c.Status == CampaignStatus.RegionReady) region.RestoreDestination(); else { runner.Flow.ResetRegionDeparture(); region.QueueAdvance(); }
                 return true;
             }
+            if (c.Status == CampaignStatus.CampaignCompleted)
+            {
+                session.ResetRuntime(); player.RestoreCheckpoint(c.Checkpoint.Lives);
+                loadout.Restore(c.Checkpoint.ActiveWeapon, c.Checkpoint.WeaponLevels);
+                missiles.RestoreCheckpoint(c.Checkpoint.Missiles); rewards.Restore(c.Checkpoint.Stats);
+                session.ShowRegionComplete(); return true;
+            }
             checkpoint = c.Checkpoint;
             Launch(checkpoint.EncounterId, checkpoint, true);
             return true;
@@ -148,6 +166,7 @@ namespace StarShift.Persistence
             if (profile == null || Array.IndexOf(profile.UnlockedMissions, runner.Flow.Level.Id) < 0) return false;
             if (!Flush()) return false;
             Mode = SessionMode.Replay;
+            isolatedShardBalance = 0;
             checkpoint = null;
             var preset = runner.Flow.Level.ReplayPreset;
             Launch("LEVEL_START", preset != null ? new CheckpointData { EncounterId = runner.Flow.Level.Encounters[0].Id, Lives = preset.Lives, Missiles = preset.Missiles, ActiveWeapon = preset.ActiveWeapon, WeaponLevels = (int[])preset.WeaponLevels.Clone(), Stats = new RunStatsData() } : null, true);
@@ -161,12 +180,20 @@ namespace StarShift.Persistence
             player.RestoreCheckpoint(3);
             player.GetComponent<PlayerGameplayGate>().SetState(PlayerGameplayState.Entry);
             Mode = SessionMode.DevTest;
+            isolatedShardBalance = 0;
             checkpoint = null;
         }
         public bool RetryEncounter()
         {
             if (!CanRetry) return false;
             if (!Flush()) return false;
+            if (Mode == SessionMode.Campaign && region != null && region.IsMissionTravel)
+            {
+                // Clear đã commit entry kế tiếp; Retry không được quay lại mission vừa resolve.
+                var next = region.NextMission;
+                checkpoint = progress.Snapshot.Campaign.Checkpoint;
+                runner.StopRun(); runner.Flow.LoadLevel(next);
+            }
             Launch(checkpoint.EncounterId, checkpoint, true);
             return true;
         }
@@ -202,9 +229,14 @@ namespace StarShift.Persistence
             progress.Capture(checkpoint);
             Flush();
         }
-        private void OnShardsChanged()
+        private void OnShardsChanged(int amount)
         {
-            if (Mode != SessionMode.Campaign || checkpoint == null) return;
+            if (Mode != SessionMode.Campaign)
+            {
+                isolatedShardBalance = checked(isolatedShardBalance + amount);
+                return;
+            }
+            if (checkpoint == null) return;
             progress.CreditEncounterShards(rewards.Shards - checkpoint.Stats.Shards);
         }
         private void OnMissionCompleted()
@@ -214,12 +246,12 @@ namespace StarShift.Persistence
             if (region != null && testFixture == null)
             {
                 var next = region.NextMission;
-                if (next != null)
+                if (next != null && next.RegionId == runner.Flow.Level.RegionId)
                 {
                     var entry = Capture(); entry.EncounterId = next.Encounters[0].Id; entry.Stats = new RunStatsData();
                     progress.AdvanceMission(next.Id, entry);
                 }
-                else { progress.Capture(Capture()); progress.SetRegionStatus(CampaignStatus.RegionTransition); }
+                else { progress.Capture(Capture()); progress.SetRegionStatus(next != null ? CampaignStatus.RegionTransition : CampaignStatus.CampaignCompleted); }
             }
             Flush();
         }
@@ -236,8 +268,15 @@ namespace StarShift.Persistence
         }
         public void CompleteRegionTravel()
         {
-            if (Mode != SessionMode.Campaign) return;
-            progress.SetRegionStatus(CampaignStatus.RegionReady); Flush();
+            var next = region.NextMission;
+            if (next == null) return;
+            if (Mode == SessionMode.Campaign)
+            {
+                var entry = Capture(); entry.EncounterId = next.Encounters[0].Id; entry.Stats = new RunStatsData();
+                progress.AdvanceMission(next.Id, entry);
+                if (!Flush()) { session.ShowRegionComplete(); return; }
+            }
+            AdvanceMission(next, true);
         }
         private void FixedUpdate()
         {

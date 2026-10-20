@@ -28,6 +28,8 @@ namespace StarShift.Gameplay
         public bool IsPaused { get; private set; }
         public bool IsTerminal => playerGate.State == PlayerGameplayState.Result || playerGate.State == PlayerGameplayState.GameOver;
         public bool IsClear => playerGate.State == PlayerGameplayState.Result;
+        public bool IsCampaignVictory => IsClear && region != null && region.FindMission(Flow.Level.Id) == Flow.Level &&
+            region.NextMission == null && Persistence.Mode != StarShift.Persistence.SessionMode.Replay;
         public event Action Changed;
         public event Action MissionStarted;
         public event Action<string, string, float> MissionTitleRequested;

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88187d176e0df4aeba26ff1c463e04cc, type: 3}
+  m_Name: CarrierSingle
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.SingleFireDefinition
+  projectilePrefab: {fileID: 7463552803728451147, guid: 14d6bb71ad509260b8cd2839644a6457, type: 3}
+  initialDelay: 0.6
+  telegraphDuration: 0.8
+  cooldown: 3.5
+  projectileSpeed: 3.6
+  projectileLifetime: 6
+  projectileCount: 1
+  spreadDegrees: 0
+  burstCount: 1
+  burstInterval: 0.22

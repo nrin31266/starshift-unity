@@ -14,10 +14,12 @@ public static class VerifyPickupMotion
     const BindingFlags Fields = BindingFlags.Instance | BindingFlags.NonPublic;
     static void Check(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); }
 
-    public static async Task<object> Run()
+    public static async Task<object> Run(int mission = 1)
     {
         Check(Application.isPlaying, "Play Mode required");
         var runner = UnityEngine.Object.FindAnyObjectByType<EncounterRunner>();
+        runner.StopRun();
+        runner.Flow.LoadLevel(runner.GetComponent<RegionCampaignFlow>().FindMission("L" + mission));
         runner.StartRun("LEVEL_START", true, true, null, null);
         var gate = GameObject.Find("Player").GetComponent<PlayerGameplayGate>();
         gate.SetState(PlayerGameplayState.Transition);
@@ -28,7 +30,12 @@ public static class VerifyPickupMotion
         var velocity = typeof(RewardPickup).GetField("fallVelocity", Fields);
         var session = runner.GetComponent<GameplaySession>();
         PickupDefinition Item(string path) => AssetDatabase.LoadAssetAtPath<PickupDefinition>(path);
-        Vector3 At(float y) => camera.ViewportToWorldPoint(new Vector3(.8f, y, -camera.transform.position.z));
+        Vector3 At(float y)
+        {
+            var p=PlayDirectionSpace.Point(new Vector2(.8f,y),runner.Flow.Direction);
+            return camera.ViewportToWorldPoint(new Vector3(p.x,p.y,-camera.transform.position.z));
+        }
+        float Depth(RewardPickup p) => runner.Flow.Direction == PlayDirection.Right ? camera.WorldToViewportPoint(p.transform.position).x : camera.WorldToViewportPoint(p.transform.position).y;
         RewardPickup Spawn(PickupDefinition item, float y) => director.Spawn(item, null, At(y));
         int Bounces(RewardPickup pickup) => (int)count.GetValue(pickup);
         void Step(RewardPickup pickup) { if (pickup.IsActive) tick.Invoke(pickup, null); }
@@ -44,11 +51,11 @@ public static class VerifyPickupMotion
             {
                 Step(normal); Step(grace);
                 Check(Vector3.Distance(normal.transform.position, grace.transform.position) < .0001f && Bounces(normal) == Bounces(grace), "Grace changed shard trajectory");
-                if (late.IsActive && Bounces(late) == 2 && camera.WorldToViewportPoint(late.transform.position).y < .05f && !lateGrace)
+                if (late.IsActive && Bounces(late) == 2 && Depth(late) < .05f && !lateGrace)
                 {
                     late.PreserveForGrace(12); lateGrace = true;
-                    var y = late.transform.position.y; Step(late);
-                    Check(late.transform.position.y < y, "Late grace pushed shard upward");
+                    var y = Depth(late); Step(late);
+                    Check(Depth(late) < y, "Late grace pushed shard backward");
                 }
                 else Step(late);
             }
@@ -64,12 +71,12 @@ public static class VerifyPickupMotion
                 pickup.Eject(new Vector2(Mathf.Sin(i * 2.4f) * .8f, .6f + Mathf.Repeat(i * .37f, 1)));
                 pickup.PreserveForGrace(12);
                 for (int step = 0; step < 600 && pickup.IsActive; step++) Step(pickup);
-                Check(!pickup.IsActive && Bounces(pickup) == 2 && pickup.Remaining > 0 && camera.WorldToViewportPoint(pickup.transform.position).y < -.06f, "Boss gold failed two-bounce exit: " + i);
+                Check(!pickup.IsActive && Bounces(pickup) == 2 && pickup.Remaining > 0 && Depth(pickup) < -.06f, "Boss gold failed two-bounce exit: " + i);
             }
             var support = Spawn(Item("Assets/StarShift/Data/Rewards/Overdrive.asset"), .15f);
             support.PreserveForGrace(12);
             for (int i = 0; i < 300; i++) Step(support);
-            Check(support.IsActive && camera.WorldToViewportPoint(support.transform.position).y >= .089f, "Support grace retention regressed");
+            Check(support.IsActive && Depth(support) >= .089f, "Support grace retention regressed");
             support.Release();
             var live = Spawn(gold, .5f); live.PreserveForGrace(12);
             session.Pause(); var paused = live.transform.position;
@@ -77,7 +84,7 @@ public static class VerifyPickupMotion
             Check(session.IsPaused && live.transform.position == paused, "Pause moved gold");
             session.Resume(); gate.SetState(PlayerGameplayState.Transition);
             await Task.Delay(250);
-            Check(live.transform.position.y < paused.y, "Gold did not resume falling");
+            Check(Vector3.Dot(live.transform.position-paused, (Vector3)PlayDirectionSpace.Offset(Vector2.up,runner.Flow.Direction)) < 0, "Gold did not resume falling");
             gate.SetState(PlayerGameplayState.PostEntryInvincibility);
             Check(live.TryCollect() && !live.TryCollect(), "Gold collection was lost or duplicated");
             Check(director.ActivePickups == 0, "Pickup pool count leak");

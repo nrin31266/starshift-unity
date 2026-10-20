@@ -1,5 +1,67 @@
 # Unity baseline authoring
 
+## M6 Region B authoring và verification
+
+`ConfigureRegionB.Configure` author Mission05–08, enemy/boss prefabs, shared formation
+plans/flights/cameras và catalog L1–L8 qua Unity API. Chạy saved Gameplay scene/Edit Mode.
+`OrganizeAssetNames` bỏ temporary Feedback/M6 prefixes, đặt camera theo combat view,
+formation theo encounter và shared flight theo hướng entry; giữ GUID, không retune data.
+Sau dependency scan, migration cũng bỏ Region B camera assets không còn inbound references.
+`RegionAFormations` chỉnh sáu formation lớn và NormalDrops odds; không chạy lại để
+reset tuning user đã chỉnh. `RewardFloors` author quota theo key combat beats, độc lập Supply/Boss pair.
+`RefreshPresentation` là migration bổ sung shield-break
+cues và Raider placeholder scale, giữ prefab GUID. `RefreshHoming` ghi launch arc tuning
+vào existing Homing asset, không thay damage/cadence/heat. `CombatFeedback` áp human-feel
+pass (front guards, common attack windows, HP, boss escorts/rewards, bounds hint, compact
+Homing); full `Configure` cũng gọi pass này. Không chạy migration giữa một runtime probe.
+
+Runtime probes reuse `VerifyPacingRefinement.Rig`, không thêm runtime test MonoBehaviour.
+Chuẩn bị composite source ngoài Assets để Pipeline compile cùng existing rig:
+
+```sh
+python tools/unity/prepare_region_b_verification.py
+```
+
+Sau đó dùng MCP `run_script`, file `../.design/m6/Verification.cs`:
+
+- `VerifyRegionB.Inspect`: catalog/config/missing refs/saved Dev flag, Edit hoặc Play.
+- `BeginMechanics`: Sniper, staggered dual Sniper, Interceptor, Carrier cap/death và corridor/ExitDrain.
+- `BeginBoss`: entry/shield protection, ba attack families, module collapse, exposed core, death/reward/victory.
+- `BeginPlayer`: Right virtual mouse drag, ba branches, shared heat, Pause, death/respawn/held continuity.
+- `BeginPersistence`: Continue/Retry/Replay, legacy L4 markers → L5, completed-save Continue.
+- `BeginHandoff`: Vanguard death/reward → real journey → Mission05, pose/gesture/camera/save.
+- `BeginSupply`: Right held weapon → direct Core/support collection, vertical separation/left drift và no legacy BOX.
+- `BeginTravelRetry`: incoming committed checkpoint khi Retry giữa mission travel.
+- `BeginShardBalance`: HUD wallet qua mission/region, Retry deduplication, Continue,
+  New Game và ví Replay/DevTest độc lập; kiểm production save bytes không đổi.
+- `BeginTapInput`: click qua uGUI vào approach và cleanup synthetic/native input.
+- `BeginPresentation`: final proxy silhouettes và beam sweep direction ở hai aspects.
+- `BeginBossBalance`: ba weapon branches Lv3/Lv5, real damage và measured shield/core pacing.
+- `BeginObjectives`: mới chuyển Eliminate phải giữ required targets sau deadline cũ; kill rồi cleanup thành công.
+- `BeginClosureLayouts`: sáu changed layouts ở từng width; overlap, hull clipping và HUD clearance.
+- `BeginThreatProtection`: 7 threat encounters ×3 weapon branches Lv3; first attack trước death, còn frontline guard.
+- `BeginBossBarrage`: Vanguard/Warden ×16:9/20:9; safe-gap movement, actual danger damage, Pause/cancel, node-HP HUD.
+- `BeginPressure`: đo actual busy attack sources, rest gaps, projectile peaks và boss/Carrier escorts.
+- `BeginCoverAndIdle`: coherent idle, tank chặn Pulse trước Sniper, region HP và bounds.
+- `BeginVanguardTuning`: actual held Pulse L3 qua hai phase, escorts cap, staged death/gold và storage isolation.
+- `BeginGoldRain`: real Warden staged death → 36 gold → drift/grace → persisted victory.
+- `BeginHomingBalance`: chỉ Homing Lv3/Lv5 sau launch/target-distribution changes.
+- `BeginBoundaryHint`: Up/Right half-region, no permanent mask, delayed two-pixel contact cue, inward/release reset.
+- `BeginHomingEmpty`: Lv1–5 Up/Right, no-target symmetry, odd center axis và near-uniform gaps.
+- `BeginHomingPaths`: Up/Right, L1/L5 với 1/2/3 valid targets; real held volleys, đường cong,
+  balanced assignment + actual damage, Pause, dead/reused target và pool branch reset.
+- `BeginPickupDirections`: reuse `VerifyPickupMotion` cho Up/Right ×1600/2000; bounce,
+  grace, exit, pool reset, Pause/resume và collection once.
+- `BeginDevRoutes`: production DevFastStart routes và bytes isolation.
+- `BeginFormations(width)`: actual Game View 1600 hoặc 2000 ×900; report collider overlap và screenshots.
+- `BeginFullRegion`: một continuous protected-bot L5→L8 bằng held weapons, temp campaign storage, victory/reload.
+
+Các entry Begin trả ngay. Chờ `.design/m6/<probe>.json` terminal trước probe khác;
+`CurrentTask` trên assembly `VerifyRegionB` là live Task handle để phân biệt đang chạy
+với process đã dừng. Không chạy hai runtime probes đồng thời. Evidence/screenshots
+ở `.design/m6/`, không commit. Saved production Dev mode phải OFF; stop Play rồi
+inspect Console/refs trước delivery. Coverage/limits theo [dev owner](../../docs/systems/dev-debug.md).
+
 ## M4-A combat/reward testbed
 
 `ConfigureM4Testbed.Configure` là one-time authoring migration trên saved Gameplay
@@ -443,3 +505,10 @@ Kiểm tra death giữ projectiles, mouse/touch đang held nối lại drag/fire
 entrance pose, không replay delta bị khóa, protection và terminal cleanup.
 Evidence `.design/m5-respawn-continuity/result.json`. Nearby regression
 `VerifyPlayerDrag.Run` cần run đã skip intro và không còn terminal overlay.
+
+M6 closure cleanup: native script moves giữ GUID; `Attacks` dùng chung beam presentation,
+`Bosses` giữ phase/module/shield/barrage, `Presentation` giữ visual cues. Bỏ 11 seed
+formation/flight assets không còn inbound reference; full authoring dùng tên final
+formation để không tạo lại các seed đó. `Inspect` kiểm cả missing line materials.
+Probe giữ assembly reload lock trong try/finally để async evidence không bị bỏ dở
+bởi queued reload; không sửa runtime sources trong khi probe đang chạy.

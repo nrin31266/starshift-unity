@@ -34,6 +34,7 @@ MonoBehaviour:
     RewardOverride: {fileID: 11400000, guid: 4bef1defd37ed76e2a3bcb1144caff3f, type: 2}
     Elite: {fileID: 0}
     Required: 1
+    GrantsRewards: 1
     Formation: 1
     Anchor: {x: 0, y: 0}
     SlotStep: {x: 0.115, y: 0.075}
@@ -61,6 +62,7 @@ MonoBehaviour:
     RewardOverride: {fileID: 11400000, guid: 4bef1defd37ed76e2a3bcb1144caff3f, type: 2}
     Elite: {fileID: 0}
     Required: 1
+    GrantsRewards: 1
     Formation: 1
     Anchor: {x: 0.25, y: 0}
     SlotStep: {x: 0.115, y: 0.075}
@@ -77,13 +79,13 @@ MonoBehaviour:
     ExitAnchor: {x: 1.18, y: 0.3}
     ExitDuration: 3
   OptionalEvents: []
-  CameraOverride: {fileID: 11400000, guid: 46e3b0b39cf73da898f0192b6aaa089e, type: 2}
+  CameraOverride: {fileID: 11400000, guid: a94b2b300543f2007a58bb8734481676, type: 2}
   GuaranteedMajorCount: 0
   GuaranteeTable: {fileID: 0}
   ActiveShooterLimit: 1
-  ShotSpacing: 0.85
+  ShotSpacing: 0.65
   ShotsPerVolley: 2
-  VolleyPause: 2.2
+  VolleyPause: 3
   ClearPauseSeconds: 0.7
   HandoffTravelSeconds: 0.85
   HandoffDelay: 2

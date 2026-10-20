@@ -14,6 +14,7 @@ namespace StarShift.Persistence
         public bool Dirty { get; private set; }
         public string Diagnostic => store.Diagnostic;
         public SaveEnvelope Snapshot => Copy(data);
+        public int ShardBalance => data?.Profile.StellarShardBalance ?? 0;
         public CampaignProgress(JsonSaveStore store, Func<SaveEnvelope, bool> validate)
         {
             this.store = store; this.validate = validate;

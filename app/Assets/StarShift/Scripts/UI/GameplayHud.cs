@@ -110,12 +110,12 @@ namespace StarShift.UI
         {
             clearRemaining = session.IsClear ? clearDelay : 0;
             overlay.SetActive(session.IsPaused || (session.IsTerminal && !session.IsClear));
-            title.text = session.IsClear ? GameplayCopy.MissionClear : session.IsTerminal ? GameplayCopy.GameOver : GameplayCopy.Pause;
+            title.text = session.IsClear ? (session.IsCampaignVictory ? "CHIẾN THẮNG · REGION B" : GameplayCopy.MissionClear) : session.IsTerminal ? GameplayCopy.GameOver : GameplayCopy.Pause;
             resumeButton.gameObject.SetActive(session.IsPaused);
             restartButton.gameObject.SetActive(!session.IsClear);
             restartButton.interactable = session.CanRetry;
             settingsButton.gameObject.SetActive(session.IsPaused);
-            continueButton.gameObject.SetActive(session.IsClear);
+            continueButton.gameObject.SetActive(session.IsClear && !session.IsCampaignVictory);
             var flow = session.Flow;
             var cinematic = flow != null && flow.IsCinematic;
             var awaitingStart = flow != null && flow.IsAwaitingStart;
@@ -162,7 +162,8 @@ namespace StarShift.UI
                 weaponInventory.text = text + $"  +{others}";
             }
             if (rewards != null && previousScore != rewards.Score) { previousScore = rewards.Score; scoreLabel.text = previousScore.ToString(); }
-            if (rewards != null && previousShards != rewards.Shards) { previousShards = rewards.Shards; shardLabel.text = previousShards.ToString(); }
+            var shardBalance = session.Persistence != null ? session.Persistence.ShardBalance : rewards != null ? rewards.Shards : 0;
+            if (previousShards != shardBalance) { previousShards = shardBalance; shardLabel.text = previousShards.ToString(); }
             if (effectLabel != null)
             {
                 var second = Mathf.CeilToInt(effects.OverdriveRemaining);

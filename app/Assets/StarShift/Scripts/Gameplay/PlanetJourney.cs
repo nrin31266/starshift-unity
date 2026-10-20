@@ -24,6 +24,7 @@ namespace StarShift.Gameplay
         private int generation;
         private Vector3 departure;
         private Action completed;
+        private LevelDefinition destination;
         public PlanetJourneyPhase Phase { get; private set; }
         public bool IsCinematic => IsActive && Phase < PlanetJourneyPhase.Approach;
         public bool IsActive => Phase != PlanetJourneyPhase.None;
@@ -31,9 +32,9 @@ namespace StarShift.Gameplay
         public float HudOpacity => Phase == PlanetJourneyPhase.Brake ? Mathf.Clamp01(elapsed/.8f) : IsActive ? 0 : 1;
         public float TravelSeconds => glideSeconds+accelerationSeconds+turnSeconds+decelerationSeconds+revealSeconds;
         private void Awake(){flow=GetComponent<LevelFlow>();runner=GetComponent<EncounterRunner>();movement=player.GetComponent<RelativeDragMovement>();}
-        public void Begin(Action onCompleted)
+        public void Begin(LevelDefinition next, Action onCompleted)
         {
-            Cancel(); completed=onCompleted;generation=runner.Generation;departure=player.transform.position;
+            Cancel(); destination=next; completed=onCompleted;generation=runner.Generation;departure=player.transform.position;
             player.SetCinematicLock(true);player.SetState(PlayerGameplayState.Transition);player.GetComponent<InputSystemPointerInput>().CancelGesture();
             Enter(PlanetJourneyPhase.Glide);
         }
@@ -55,7 +56,7 @@ namespace StarShift.Gameplay
             if(phase==PlanetJourneyPhase.Accelerate)view.RequestView(flow.Level.Intro.TravelView,accelerationSeconds);
             if(phase==PlanetJourneyPhase.Decelerate)view.RequestView(flow.Level.Intro.ApproachView,decelerationSeconds);
             if(phase==PlanetJourneyPhase.Approach)view.RequestView(flow.Level.Intro.TravelView,.7f);
-            if(phase==PlanetJourneyPhase.Brake)view.RequestView(flow.Level.Camera.View,.8f);
+            if(phase==PlanetJourneyPhase.Brake)view.RequestView((destination.Encounters[0].CameraOverride != null ? destination.Encounters[0].CameraOverride : destination.Camera).View,.8f);
             flow.NotifyPresentationChanged();
             if(phase==PlanetJourneyPhase.AwaitingTap)flow.Announce("HÀNH TINH TIẾP THEO","Hành trình tiếp tục về phía trước.",0);
         }
@@ -80,7 +81,7 @@ namespace StarShift.Gameplay
             else presentation.Present(Phase==PlanetJourneyPhase.Approach?MissionIntroPhase.Approach:Phase==PlanetJourneyPhase.Travel?MissionIntroPhase.Travel:MissionIntroPhase.Brake,t,PlayDirection.Right);
             if(IsAwaitingTap||elapsed<Duration)return;
             if(Phase!=PlanetJourneyPhase.Brake){Enter(Phase+1);return;}
-            Phase=PlanetJourneyPhase.None;presentation.Hide();flow.FinishRegionTravel(true);
+            Phase=PlanetJourneyPhase.None;presentation.Hide();flow.FinishRegionTravel(true, destination);
             var callback=completed;completed=null;flow.NotifyPresentationChanged();callback?.Invoke();
         }
         public void Cancel(){Phase=PlanetJourneyPhase.None;completed=null;if(presentation!=null)presentation.Hide();}

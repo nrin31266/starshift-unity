@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2f6350926592ff089bf19c5c3a58927, type: 3}
+  m_Name: M8FortressGroup11RequiredHold
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Encounters.FlightSequence
+  Phases:
+  - Kind: 0
+    Path: 2
+    From: {x: 1.12, y: 1.25}
+    To: {x: 0.5, y: 0.73}
+    Curve: {x: 0.1, y: 0}
+    Duration: 2.6
+    CanShoot: 0
+    ClampToView: 0
+    HoldUntilResolved: 0
+    RepeatMotion: 0
+    MotionPeriod: 0
+    Smooth: 1
+    Cycles: 1
+  - Kind: 3
+    Path: 4
+    From: {x: 0.5, y: 0.73}
+    To: {x: 0.5, y: 0.73}
+    Curve: {x: 0.025, y: 0.008}
+    Duration: 18
+    CanShoot: 1
+    ClampToView: 1
+    HoldUntilResolved: 1
+    RepeatMotion: 1
+    MotionPeriod: 7
+    Smooth: 1
+    Cycles: 1

@@ -25,17 +25,26 @@ namespace StarShift.Dev
         [SerializeField] private bool unlockAllWeapons;
 
         private bool pendingBossPhaseB;
+        private bool pendingVictory;
         private void FixedUpdate()
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            if (!pendingBossPhaseB) return;
+            if (!pendingBossPhaseB && !pendingVictory) return;
             foreach (var enemy in StarShift.Enemies.EnemyHealth.Active)
-                if (enemy.CanReceiveDamage && enemy.GetComponent<StarShift.Enemies.BossPhaseRunner>() != null)
+            {
+                var boss = enemy.GetComponent<StarShift.Enemies.BossPhaseRunner>();
+                if (boss == null) continue;
+                if (boss.Shields != null && !boss.Shields.IsExposed)
                 {
-                    pendingBossPhaseB = false;
-                    enemy.ReceivePlayerHit(Mathf.CeilToInt(enemy.MaxHp * .51f), gameObject);
+                    foreach (var node in enemy.GetComponentsInChildren<StarShift.Enemies.EnemyHealth>())
+                        if (node != enemy && node.CanReceiveDamage) node.ReceivePlayerHit(node.CurrentHp, gameObject);
                     break;
                 }
+                if (!enemy.CanReceiveDamage) continue;
+                if (pendingVictory) { pendingVictory = pendingBossPhaseB = false; enemy.ReceivePlayerHit(enemy.CurrentHp, gameObject); }
+                else { pendingBossPhaseB = false; if (!boss.IsPhaseB && boss.Shields == null) enemy.ReceivePlayerHit(Mathf.CeilToInt(enemy.MaxHp * .51f), gameObject); }
+                break;
+            }
 #endif
         }
         public bool TryStart()
@@ -64,8 +73,9 @@ namespace StarShift.Dev
             player.GetComponent<PlayerPointerInput>().ResetDrag();
             if (startLevel != null) runner.Flow.LoadLevel(startLevel);
             var transition = startPoint == "TRANSITION";
+            pendingVictory = startPoint == "VICTORY";
             pendingBossPhaseB = startPoint == "BOSS_PHASE_B";
-            runner.StartRun(transition ? "BOSS" : startPoint, standalone, skipIntro, overrideDirection ? direction : (PlayDirection?)null, cameraOverride);
+            runner.StartRun(transition || pendingVictory ? "BOSS" : startPoint, pendingVictory ? false : standalone, skipIntro, overrideDirection ? direction : (PlayDirection?)null, cameraOverride);
             if (transition) { runner.StopRun(); GetComponent<RegionCampaignFlow>().QueueAdvance(); }
             if (deterministicRewards) GetComponent<StarShift.Rewards.RewardDirector>()?.SetTestSeed(rewardSeed);
             var loadout = player.GetComponent<WeaponLoadout>();

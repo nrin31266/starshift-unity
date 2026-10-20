@@ -749,9 +749,12 @@ Boss:
 
 **Nebula Warden**.
 
-Transition 2 sau boss.
+Current release M6 kết thúc tại L8: staged death/reward → Region B victory.
+Không load L9 hoặc chạy Transition 2 trong release này; thiết kế tiếp theo bên dưới là `[FUTURE]`.
 
 ## Transition Crimson → Titan
+
+`[FUTURE]` Không chạy trong current release M6.
 
 Sau L8 boss clear, khóa gameplay cho cinematic, đổi Right → Up,
 chuyển framing medium sang wide rồi trả control cho L9 khi handoff hoàn tất.
@@ -930,10 +933,11 @@ Không tạo fake wave để mọi level cùng schema start point.
 | L1 | Pulse L1; Plasma/Homing locked; lives 3; reserve 1 |
 | L2 | Pulse L2; Plasma/Homing locked; lives 3; reserve 1 |
 | L3–L4 | Pulse L2, Plasma L1, Homing L1; active Pulse; lives 3; reserve 1 |
-| L5–L8 | [TBD] từng level: unlocks, active weapon, branch levels, lives |
+| L5–L6 | Pulse L3, Plasma L2, Homing L2; active Pulse; lives 3; reserve 1 `[PROVISIONAL]` |
+| L7–L8 | Pulse L4, Plasma L2, Homing L2; active Pulse; lives 3; reserve 1 `[PROVISIONAL]` |
 | L9–L12 | [TBD] từng level: unlocks, active weapon, branch levels, lives |
 
-L1–L4 là draft `[PROVISIONAL]` trong `LevelDefinition.ReplayPreset`; không lấy late-game loadout. L5–L12 chưa có preset. Replay policy thuộc
+L1–L4 là draft `[PROVISIONAL]` trong `LevelDefinition.ReplayPreset`; không lấy late-game loadout. L5–L8 đã có provisional preset M6; L9–L12 chưa có preset. Replay policy thuộc
 [progression/economy](../gameplay/progression-economy.md).
 Enemy stats/behavior ở [enemies/bosses](enemies-bosses.md);
 weapon, core và supply/drop contract ở [weapons/items/drops](weapons-items-drops.md).
@@ -966,24 +970,32 @@ Gameplay chung. Fixture M4 giữ nguyên encounter/reward coverage riêng; khôn
 SYSTEM_* aliases hoặc guaranteed effect drops vào campaign. Định hướng L1–L4 ở trên
 là target; bảng dưới là authored runtime seed `[TUNABLE]` hiện tại.
 
-| Encounter | Composition / silhouette | Shared slot ownership | Entry beats |
-|---|---|---|---:|
-| M1 Foundation | 7 Scout, chevron nhỏ | trái 0–2, phải 3–5, mũi 6 | 1 |
-| M1 Formation | 12 Scout, double diamond | trái 0–4, phải 5–9, trục giữa 10–11 | 1 |
-| M2 Raider | 12 Raider, spearhead hai cánh | trái 0–4, phải 5–9, giữa 10–11 | 1 |
-| M2 Bomber | 2 Bomber + 8 Scout, heavy escort | Scout trái 0–3/phải 4–7; Bomber 8–9 | 1 |
-| M3 Sine | 12 Raider, hai snake chain đối xứng | trái 0–5, phải 6–11 | 1 |
-| M3 Pincer | 6 Scout + 6 Raider, X hai cánh | Scout trái 0–5, Raider phải 6–11 | 1 |
-| M3 Elite | 1 Elite Bomber + 10 Raider, halo guard | Elite 0; Raider trái 1–5/phải 6–10 | 1 |
+| Encounter | Composition / silhouette | Role placement |
+|---|---|---|
+| M1 Foundation | 7 Scout, chevron nhỏ | Giữ onboarding M5 |
+| M1 Formation | 18 Scout, hai diamond 9 slot | Hai diamond kín, tips/center đối xứng |
+| M2 Raider | 2 Bulwark + 1 Bomber + 2 Interceptor + 4 Raider + 8 Scout, spearhead | Guard trước, Bomber sau; Interceptor hai cánh |
+| M2 Bomber | 2 Bulwark + 2 Bomber + 2 Raider + 7 Scout, shield escort | Guard cùng lane phía trước Bomber; Raider hai sườn |
+| M3 Sine | 8 Raider + 8 Scout, mirrored ribbons | Mỗi ribbon xen kẽ hai archetype |
+| M3 Pincer | 1 Bomber + 8 Raider + 8 Scout, X | Heavy center; hai loại xen kẽ theo khoảng cách tới tâm |
+| M3 Elite | 2 Bulwark + 1 Elite Bomber + 2 Sniper + 2 Interceptor + 1 Raider + 6 Scout, crown | Guard trước Sniper; heavy center và strike hai sườn |
 
-Một beat có nhiều subgroup đồng thời, không phải reinforcement tự chiếm lại anchor.
-Entry arcs hội tụ trong 3.1 s, stagger .09 s/subgroup; settled anchor (.5,.62)
-`[TUNABLE]`. M1 Formation giữ combat 18 s; Raider/Sine/Pincer 20 s rồi exit 3.2 s;
-Timeline vẫn kết thúc sớm khi hết schedule/enemy, cap lần lượt 32/38/42/42 s.
-Foundation/Bomber/Elite dùng terminal hold và Eliminate. Sine dùng shared bounded
-motion envelope, giữ hình hai chain. Pincer trái/phải bắt đầu cùng lúc; Supply mở
-từ T3.5 khi còn ≤2 địch, fallback T16, không có reinforcement đứng đè lên X.
-Adaptive entry-beat support vẫn giữ cho fixture/content khác; không ép mỗi Đợt hai beats.
+Objective hiện tại xen kẽ clear bắt buộc với trận xuyên qua/sinh tồn:
+L1 **Eliminate → Timeline**; L2 **Eliminate → Survive → Eliminate**;
+L3 **Eliminate → Timeline → Eliminate**; L4 **Survive → Boss**.
+M2 Raider và M3 Sine đã chuyển sang Eliminate: mọi required group có terminal hold,
+không tự rút khi hết giờ. Giữ encounter IDs/checkpoint, không tạo wave mới.
+
+M6 giữ Foundation và mission structure của Region A.
+Các formation còn lại dùng shared `FormationPlan`, slots được gom theo archetype/side;
+subgroup sở hữu các dải liên tiếp không trùng. Entry arcs hội tụ trong 2.6 s,
+stagger .06 s/subgroup, settled anchor (.5,.61), timed combat 18 s và exit 2.8 s
+`[TUNABLE]`. Các combat/hold groups dùng shared sine idle curve (.025,.008),
+chu kỳ 7 s, clock encounter đồng bộ giữa các slot sau blend-in .6 s. Phase lifetime
+vẫn 18 s hoặc hold-until-resolved; không rút timed phase để tăng tốc idle.
+Không lắc từng unit ngẫu nhiên hoặc đổi pose writer khi đã vào đội hình.
+Không thêm reinforcement chiếm lại anchor. M3 Pincer vẫn có optional Supply theo
+pressure window M5, không tạo kill gate mới.
 
 Storm `[TUNABLE]`: M2 Survive 14 s, 30 normal + 2 resource targets (T2/T7);
 M4 Survive 16 s, 36 normal + 2 resource (T2/T8), optional Supply T4. Seed 522/544,
@@ -1042,7 +1054,8 @@ Hết Timeline/Survive thì dừng spawn/fire mới, sang ExitDrain: asteroid ti
 Sau 8 s chỉ ép retreat cho đối tượng chưa vào Exit, không release giữa viewport.
 Kill/reward còn hợp lệ trong ExitDrain; sau đó mới projectile grace và handoff.
 Reward giữ qua minor handoff; cuối Mission có grace tối đa 2.5 s nếu còn đồ, Boss
-12 s `[TUNABLE]`. Trong grace, Core/support giữ trong viewport tại floor y .09
+12 s cho Vanguard / 14 s cho Warden `[TUNABLE]`. Trong grace, Core/support giữ theo
+combat-space floor của [pickup owner](weapons-items-drops.md#pickup-và-effect-test-policy)
 và fade trước khi hết timer. Shard vẫn nảy hai lần rồi rơi khỏi màn theo
 [pickup motion](weapons-items-drops.md#pickup-và-effect-test-policy), không bị kéo
 ngược lên hoặc giữ đáy. Kết thúc sớm nếu hết đồ rồi mới Mission/Planet travel.
@@ -1058,6 +1071,70 @@ Encounter overrides ở bảng trên thay baseline uniform trước đó. Exact 
 Sau L4/reward resolution, major travel khóa input/fire: glide .9 s → accelerate/bank
 1.5 s → turn/palette blend 2 s → decelerate 1.5 s → Planet 2 reveal 1.3 s, tổng 7.2 s
 `[TUNABLE]`, rồi chờ tap không giới hạn. Tap bị consume; chạy lại approach signature
-3.3 s trước Right-ready skeleton. Yêu cầu gesture mới khi trả control; không có L5
-Encounter hoặc Mission 05 giả. Choreography thuộc [audio/VFX](../presentation/audio-vfx.md),
+3.3 s trước Mission05. Yêu cầu gesture mới khi trả control; M6 launch Mission05 thật sau approach, giữ pose/held gesture của approach và
+request framing đầu L5 ngay từ Brake. Choreography thuộc [audio/VFX](../presentation/audio-vfx.md),
 resume markers do [save owner](../systems/save-profile.md#m5-mission-và-region-boundaries-provisional) sở hữu.
+
+
+## M6 Region B authored content `[PROVISIONAL]`
+
+Current release author đúng L1–L8; Region C và Transition Crimson → Titan ở trên
+chỉ là future design, không có production assets/gameplay. Dùng cùng scene Gameplay,
+`Data/RegionB/Missions/Mission05–08.asset`, Right direction và existing ExitDrain.
+Counts/timing/framing dưới là `[TUNABLE]`, cần human feel pass sau Editor evidence.
+
+| Mission / Encounter | Mode | Composition | Camera | Shooter limit |
+|---|---|---|---:|---:|
+| L5 Arrowhead | Eliminate | 14 Scout/Raider, horizontal arrowhead | 6.6 | 2 |
+| L5 Ribbons | Timeline | 16 Scout/Raider, hai ribbon xen kẽ | 6.5 | 3 |
+| L5 Bomber Lanes | Eliminate | 2 Bomber + 13 Scout/Raider, hai heavy lanes | 6.6 | 3 |
+| L6 Sniper | Eliminate | 1 Sniper + 3 Bulwark + 2 Scout | 5.25 | 1 |
+| L6 Corridor | Survive 19 s | Moving gates + resource risk lane; Supply T9 | 5.5 | 1 |
+| L6 Lane Lock | Eliminate | Sniper + Bomber + 2 Bulwark + 2 escorts | 5.5 | 1 |
+| L7 Scissors | Timeline | 17 mixed Scout/Raider, X/checkerboard | 7.2 | 4 |
+| L7 Carrier Wings | Eliminate | Carrier + 2 Bulwark + 2 Interceptor + 3 Raider + 2 Scout; optional Supply T10 | 7.0 | 3 |
+| L7 Twin Towers | Timeline | 2 Sniper + 2 Bulwark + 4 escorts; staggered attacks | 6.5 | 1 |
+| L8 Fortress Convoy | Eliminate | Carrier + 2 Bomber + 3 Bulwark + 3 Interceptor + 2 Scout; Supply pressure T3/fallback T12 | 7.1 | 3 |
+| L8 Nebula Warden | Boss | Modular boss + bounded drones; enemy owner giữ mechanics | 9.2 | 4 gồm boss |
+
+Shared horizontal footprint nằm ở phải màn hình; entry → settle/read → attacks.
+Timed combat giữ hình 18 s rồi exit 2.8 s; Timeline cap 28–34 s, opt-in exhaustion
+không bỏ optional event còn pending. Main encounters dùng entry lead .5 s, clear rest
+.7 s chồng projectile grace .45 s/fade .25 s, handoff .85 s và reward grace 2.5 s.
+Warden có reward grace 14 s; camera 9.2, Vanguard camera 9.6. Movement region theo
+[player owner](../gameplay/player-combat.md#movement-bounds-và-camera-interaction), không để boss
+script clamp Player. Same-region mission travel giữ M5 semantics; A→B dùng journey
+hiện có và launch L5 sau approach. L8 không queue major travel.
+
+Corridor author năm gate T0/3.6/7.2/10.8/14.4; khe hở lần lượt thấp/giữa/cao/giữa/thấp.
+Mỗi gate chọn Large/Huge anchors trên sáu lane, bỏ obstacles gần opening để tạo khe
+rộng. Small/Medium secondary pieces trễ 1.3 s và transit 4.8 s, giữ cùng corridor edges.
+Tổng 24 normal + 1 resource. Anchor đi từ right sang left với continuous transit 6.1 s,
+entry 1.2 s trước khi được resolve theo exit, không clamp mid-path;
+resource T7.6 ở risk lane. Không dùng random diagonal storm của Region A.
+Size/HP ở enemy owner; Supply/reward ở item owner.
+
+Region B objective sequence: L5 **Eliminate → Timeline → Eliminate**;
+L6 **Eliminate → Survive → Eliminate**; L7 **Timeline → Eliminate → Timeline**;
+L8 **Eliminate → Boss**. M6 Sniper và M8 Fortress cần clear required targets; drone
+reinforcements vẫn optional, không phải chase hết minions hoặc đợi hết timer để qua màn.
+
+Attack concurrency tune theo encounter, không theo số enemy. Wide L7 cho phép 4
+sequence thường; close Sniper encounters giữ 1 nên dual telegraph không đồng thời.
+Mỗi sequence vẫn giữ charge/cooldown riêng và shared safety gate, không bắn bù sau
+Pause/death. Lượt đầu ưu tiên directed threat chưa từng ra đòn (Sniper/Interceptor), vẫn phải
+qua hold/charge và chung budget; sau đòn đầu trở về round-robin theo subgroup hai cánh;
+không thêm FireDirector. Hard cap 4 attack sources gồm boss và minions. Budget
+đếm attack starts: mỗi đợt tối đa min(4, limit+1) lần cấp quyền, spacing .65 s ở
+L1–L2 / .50 s sau đó. Chờ toàn bộ đợt kết thúc rồi nghỉ 3 s. Boss dùng 4 grants
+và rest 3.2 s, tính chính boss là một source, escorts dùng slot còn lại.
+Kill/disable một shooter không xóa rest hoặc mở lại grant đã dùng. Projectile còn
+trên màn vẫn bay/exit tự nhiên; không pop-clear đạn chỉ để tạo khoảng nghỉ.
+
+Closure formation intent `[PROVISIONAL]`: M2 đặt cặp Interceptor sau hai tank cùng
+lane; M3 là hai cột hỏa lực Sniper–Interceptor–tank với Elite Bomber trấn giữa.
+L6 Sniper dùng ba guard thành mũi khiên, sniper phía sau và scout ở hai cánh.
+L7 Carrier là hộ tống hai cột guard/lancer quanh tàu mẹ, cánh ngoài có screening.
+L8 Fortress dùng ba cột tank trước Interceptor, Carrier sau giữa, Bomber hai bên sau.
+Giữ các hình đã có mục đích như arrowhead, ribbons và scissors; không xếp lại chỉ
+để thay đổi. Physical guard có thể bị flank/splash; không cấp bất tử cho rear threats.

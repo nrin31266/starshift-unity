@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4179b97c92ab72e0bcc1e13a4938118, type: 3}
+  m_Name: Mission07
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Encounters.LevelDefinition
+  Id: L7
+  DisplayName: "NHI\u1EC6M V\u1EE4 07"
+  MissionNumber: 7
+  EnemyHealthMultiplier: 1.35
+  RegionEnemyHealthMultiplier: 1.3
+  RegionId: crimson-nebula
+  LocationName:
+  MissionBriefing: "\u01AFu ti\xEAn t\xE0u m\u1EB9 v\xE0 tr\xE1nh \u0111\u01B0\u1EDDng
+    lao \u0111\xE3 kh\xF3a."
+  Direction: 1
+  Camera: {fileID: 11400000, guid: 5899021cfb5084d80b7f659ba85b2e97, type: 2}
+  ReplayPreset:
+    Lives: 3
+    Missiles: 1
+    ActiveWeapon: 0
+    WeaponLevels: 040000000200000002000000
+  Intro:
+    Enabled: 0
+    ContinueDelaySeconds: 1.8
+    ArrivalTitle: "NHI\u1EC6M V\u1EE4 07"
+    MissionTitleSeconds: 2.1
+    MissionEntryLeadSeconds: 0.75
+    ApproachView:
+      orthographicSize: 8
+      playableViewport:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1
+        height: 1
+    TravelView:
+      orthographicSize: 9
+      playableViewport:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1
+        height: 1
+    ApproachSeconds: 0.7
+    TravelSeconds: 1.8
+    BrakeSeconds: 0.8
+  Encounters:
+  - {fileID: 11400000, guid: 004366d36a1dbfe6da15167c613970dc, type: 2}
+  - {fileID: 11400000, guid: 5c1df797e6ce70046a4a4c369562e777, type: 2}
+  - {fileID: 11400000, guid: 2d97dca3f6e2952d4b01dec86e01f654, type: 2}
+  AdditionalStarts:
+  - Id: CARRIER
+    Encounter: {fileID: 11400000, guid: 5c1df797e6ce70046a4a4c369562e777, type: 2}
+  - Id: DUAL_SNIPER
+    Encounter: {fileID: 11400000, guid: 2d97dca3f6e2952d4b01dec86e01f654, type: 2}

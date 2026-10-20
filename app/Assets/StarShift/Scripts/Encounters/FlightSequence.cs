@@ -19,6 +19,8 @@ namespace StarShift.Encounters
         public bool ClampToView;
         public bool HoldUntilResolved;
         public bool RepeatMotion;
+        [Min(0), Tooltip("0 dùng Duration; >0 lặp idle theo clock encounter, không đổi thời gian sống phase.")]
+        public float MotionPeriod;
         public bool Smooth = true;
         [Min(.01f)] public float Cycles = 1;
 
@@ -57,7 +59,7 @@ namespace StarShift.Encounters
             for (int i = 0; i < Phases.Length; i++)
             {
                 var p = Phases[i];
-                if (p == null || !ConfigValue.Positive(p.Duration) || !ConfigValue.Positive(p.Cycles) ||
+                if (p == null || !ConfigValue.Positive(p.Duration) || !ConfigValue.Positive(p.Cycles) || !ConfigValue.Nonnegative(p.MotionPeriod) ||
                     !ConfigValue.Finite(p.From) || !ConfigValue.Finite(p.To) || !ConfigValue.Finite(p.Curve) ||
                     !Enum.IsDefined(typeof(FlightPhaseKind), p.Kind) || !Enum.IsDefined(typeof(FlightPath), p.Path) ||
                     (p.HoldUntilResolved && (i != Phases.Length - 1 || (p.Kind != FlightPhaseKind.Hold && p.Kind != FlightPhaseKind.Combat)))) return false;
