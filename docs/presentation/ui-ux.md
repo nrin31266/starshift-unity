@@ -155,21 +155,11 @@ Level Clear ưu tiên compact overlay/panel để giữ pacing: một ít stats,
 và handoff sang level kế. Không bắt buộc scene riêng sau từng level;
 exact số stats hiển thị là [TUNABLE].
 
-Campaign Result có kết quả đầy đủ hơn. Bảng này sở hữu yêu cầu hiển thị;
-tracking definitions/score seeds ở [progression/economy](../gameplay/progression-economy.md).
-
-| Nhóm | Fields cần hiển thị |
-|---|---|
-| Performance | Final Score; Best Score; Total Time |
-| Combat | Enemies Destroyed; Elites Destroyed; Boss Clear Times |
-| Survival | Lives Lost; Longest No-Hit Streak |
-| Rewards | Stellar Shards Collected; Supply Drones Captured; Weapon Cores Collected |
-| Progress | Levels Completed |
-| Optional | New Record flags |
-
-Không hiển thị Accuracy theo [metrics owner](../gameplay/progression-economy.md).
-Grade S/A/B/C vẫn [TBD], không bắt buộc trước khi có scoring rubric đủ tốt;
-UI không tự thêm công thức grade.
+M7 current-release Victory hiển thị kết quả Mission08 (Score/Kills/Time và một ít
+reward/survival counters thật), không fabricate campaign aggregation. Full target
+campaign statistics như boss clear time, longest no-hit streak và ranking vẫn chưa
+được consumer này sử dụng; scope tracking thuộc
+[metrics owner](../gameplay/progression-economy.md#resultstatistics-tracking).
 
 ## Screen flow
 
@@ -184,7 +174,7 @@ Continue:         Main Menu → load CampaignSave → Gameplay → level/wave ch
 Normal progress:  Level intro → encounters → compact Level Clear → save → next level
 Region boundary:  Boss level clear → cinematic transition → next region level
 Game Over:        Gameplay → Game Over overlay → Retry Wave / Main Menu
-Victory:          Final Boss → Ending → Results scene → Main Menu
+Victory:          Nebula Warden → Victory overlay → Main Menu / Missions
 ```
 
 ## Safe area, aspect ratio và touch
@@ -327,3 +317,71 @@ Directed threat warning phân biệt tracking/locked bằng độ dày, độ s�
 line ngừng bám, không chỉ màu. Dash line chỉ tới aim snapshot; beam/sweep warning
 đúng hướng và diện tích tác động. Những chỉnh sửa này cải thiện luồng đang có,
 không thêm screen/settings/progression mới.
+
+
+## M7 functional shell `[PROVISIONAL]`
+
+Production boot ở cùng Gameplay scene và vào Menu trước mọi gameplay. Main Menu có
+sáu action trong contract; no save làm Continue disabled và giải thích cần New Game.
+Valid Active/region checkpoint cho Continue đúng semantic state; completed save mở
+Victory, không spawn Warden hoặc grant reward lại. Unreadable/unsupported save giữ
+nguyên bytes, tắt actions cần data và có modal thử đọc lại; backup recovery có notice
+rằng tiến độ gần nhất có thể thiếu. Có explicit recovery có confirmation cho Invalid; không overwrite unsupported version.
+Preserve/archive policy thuộc [save owner](../systems/save-profile.md#m7-profile-cosmetics-và-explicit-recovery-provisional).
+
+`GameShell` dùng explicit `ShellScreen`: Playing, Menu, Missions, Settings, Help,
+Credits, Pause, Results, Hangar. Confirmation/Error/Loading là modal trên screen hiện tại.
+`ShellView` giữ refs tới các authored panels trong `GameShellUI`; `ShellCopy` tập
+trung copy tách navigation. Các shape/font hiện là placeholder để thay skin sau.
+Menu có starfield nhẹ chạy unscaled; không chạy gameplay simulation phía sau menu.
+
+Mission Hub có hai hàng Region A/B, đúng tám cards từ RegionCampaignFlow catalog.
+Unlock/current lấy Campaign/Profile; record existence là cleared evidence. Card có
+text locked/unlocked/current/cleared và selected, best score/time khi có. Không tạo
+unlock database khác. Chọn card mở Replay với preset hiện có; replay result không
+có Next Mission, cho replay lại hoặc về Missions/Menu. Exit Replay rồi Continue vẫn
+đọc campaign gốc.
+
+Pause có Resume, Retry checkpoint, Settings, Main Menu. Retry từ Pause và abandon
+mission cần confirmation; cancel giữ Pause. New Game có campaign cần confirmation
+và giữ profile/settings. Harmless Back không hỏi. Settings có chung bốn controls,
+hiển thị saved values và nút Lưu và quay lại; Back bỏ draft và về đúng Menu/Pause.
+How to Play mô tả relative drag/hold, weapon/heat, lives/protection, supply và Pause.
+Credits chỉ nêu Unity và trạng thái release/placeholder đã biết.
+
+Result contexts phân biệt Game Over, Campaign clear, Replay clear và current-release
+Victory. Mọi result đọc frozen `RunRewards` cho Score/Kills/Time; thêm Shards collected,
+Cores và Lives Lost. Best lấy Profile records; New Best chỉ hiện sau transaction clear
+thành công. Clear save failure giữ kết quả, tắt Next và cho Thử lưu lại. Menu/Back
+không bỏ qua failed save. Game Over có semantic Retry và Menu; Victory có Menu và
+Missions, không có Next/L9. Completed Continue đọc Mission08 checkpoint stats.
+
+Clear Campaign giữ Result trước khi người chơi chọn Next; same-region incoming entry
+đã commit theo persistence boundary. Next dùng lại mission travel/region journey M6.
+Major region journey vẫn có establishing tap; screen overlay không thay choreography.
+
+Back/Escape: submenu → Menu, Settings → origin, confirmation → cancel, error → screen
+trước, gameplay → Pause, Pause → Resume, Result → Menu (Replay → Missions). Important
+panels đặt selected control cho keyboard. All modal backgrounds raycast và chặn
+underlying UI; navigation/transition cancel pointer qua existing adapter. Loading
+fade ngắn dùng unscaled time, giữ blocker qua release frame và chống double activation.
+Không thêm input/time ownership thứ hai.
+
+SafeAreaLayout được reuse; shell scaler theo height 1600×900, anchors responsive.
+16:9 và 2000×900 là functional QA targets; touch controls lớn, labels không bake
+vào sprites. Final art/font/pixel spec và thiết bị Android thật không thuộc M7.
+
+
+### Main Menu và Hangar
+
+Menu bỏ build/content-count labels và filler không có action. Left side là tàu đang
+trang bị với tên chassis, equipped state, wallet và dynamic current Region/Mission
+hoặc current-campaign completion. Preview và nút Đổi tàu đều mở Xưởng tàu.
+
+Hangar có ba tabs Chassis/Skin/Trail, preview đủ ba slot, trạng thái owned/equipped,
+giá thật từ catalog, wallet và action mua/trang bị. Preview món chưa sở hữu không
+đổi Profile; mua có confirmation nêu đúng tên/giá. Đã sở hữu đổi miễn phí; insufficient
+funds và equipped state được disable có label rõ. Save error có retry và giữ lựa chọn
+cũ; Back về Menu và cập nhật preview theo Profile đã commit. Cosmetics chỉ ngoại
+hình, scope/giá thuộc [economy owner](../gameplay/progression-economy.md#m7-cosmetic-hangar-provisional).
+`GameShellUI.prefab` là authored reskin surface; không tạo inventory framework.

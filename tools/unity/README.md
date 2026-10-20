@@ -512,3 +512,24 @@ formation/flight assets không còn inbound reference; full authoring dùng tên
 formation để không tạo lại các seed đó. `Inspect` kiểm cả missing line materials.
 Probe giữ assembly reload lock trong try/finally để async evidence không bị bỏ dở
 bởi queued reload; không sửa runtime sources trong khi probe đang chạy.
+
+
+## M7 shell, Results và Hangar
+
+Edit Mode: `ConfigureGameShell.Configure` là authoring/migration một lần trong saved
+Gameplay scene; scene/prefab/config thay đổi qua Unity MCP. `Inspect` kiểm entry,
+references, Dev OFF, tám missions và sáu cosmetic options. Shell UI được author trong
+`GameShellUI.prefab`; không chạy lại builders lịch sử để reset current tuning.
+
+Play Mode: dùng `VerifyGameShell.cs` trực tiếp qua Pipeline run_script. Mỗi Begin entry
+trả ngay; chờ ignored `.design/m7/<name>.json` về PASS/FAILED trước runtime probe kế.
+Entries: BeginCore, BeginStats, BeginInput, BeginFailures, BeginRecovery, BeginTeardown,
+BeginHangar(1600/2000), BeginLayouts(1600/2000), BeginTerminalLayouts(2000),
+BeginSceneRelaunch và BeginFlow. Core thuần storage, runtime probes dùng unique temp
+save và kiểm bytes production primary/backup/invalid không đổi. BeginFlow bấm UI thật,
+chỉ accelerate combat qua existing damage/clock hooks; không gán shell result state.
+
+Historical `VerifyPacingRefinement.Rig` tạm opt out explicit mission results rồi restore
+flag khi Dispose, để các transition probes M5/M6 tiếp tục kiểm choreography cũ. M7
+production không opt out; navigation proof dùng UiRig riêng không raw-start gameplay.
+Coverage/evidence và giới hạn thuộc [dev owner](../../docs/systems/dev-debug.md#m7-shell-results-và-hangar-verification-provisional).

@@ -1708,3 +1708,44 @@ không rò rỉ isolated encounter index hay mode). `BeginRegionSaveFailure` xá
 transaction-safe khi lưu đĩa thất bại trong major transition (in-memory rollback về L4/`RegionTransition`,
 pause session, không advance level hay vào Result, recovery mượt qua Resume hoặc Continue reload).
 Cả hai probe PASS, 0 console error/warning, production bytes nguyên vẹn.
+
+
+## M7 shell, Results và Hangar verification `[PROVISIONAL]`
+
+Ngày 2026-10-20, Unity 6000.5.9f1 Editor, production scene `02_Gameplay`, Dev OFF.
+Authoring/inspect qua Unity MCP/Pipeline; regression source ở
+[VerifyGameShell](../../tools/unity/VerifyGameShell.cs). Evidence JSON và native Game
+View PNG giữ cục bộ trong ignored `.design/m7/`; không đưa QA captures vào Assets.
+
+| Entry / evidence | Coverage |
+|---|---|
+| Core / core.json | NewGame/clear/settings rollback, best score/time guards, backup, invalid/unsupported preservation, explicit recovery/archive và cosmetic spend/equip transaction |
+| Teardown / teardown.json | Cleanup an toàn/idempotent khi Player/backdrop đã bị hủy; scene-relaunch kiểm object lifetime thật |
+| Stats / stats.json | Eligible death once, pooled reuse, escape/pressure/asteroid/shield-node exclusions, HUD authority, active/Pause time |
+| Input / input.json | Real multitouch second-finger Pause, canceled held intent, fresh Resume, Escape hierarchy và Pause checkpoint Retry |
+| Failures / failures.json | Region A→B failed destination transaction rồi Resume recovery, background pause, corrupt read retry, backup notice, failed NewGame return/retry, AudioSource volume consumers |
+| Recovery / recovery.json | Invalid save confirmation/cancel, archive original bytes, successful fresh Campaign; không overwrite unsupported save |
+| Hangar / hangar-1600.json, hangar-2000.json | Real UI preview, ba slots/sáu options, purchase/cancel/re-equip, wallet once, save rollback, reload/NewGame preservation, runtime chassis và Replay/Dev denial |
+| Layouts / layouts-1600.json, layouts-2000.json | Menu/Missions/Settings/Help/HUD/Pause/confirmation và clear save-error/retry tại native aspects |
+| Terminal / terminal-layouts-2000.json | Wide Boss HUD, GameOver/Retry, Victory, overwrite confirmation và Replay GameOver/Retry |
+| Scene relaunch / scene-relaunch.json | Hai lần recreate production scene; completed Continue không spawn/regrant và Region B Encounter checkpoint đúng |
+| Full flow / flow.json | Real Menu/NewGame/Pause/Settings/Result/Menu/storage reopen/Continue/Missions/Replay/result/exit/Continue/GameOver/Retry, sau đó L2–L8 qua Next/journey tap, tám records, Victory và completed Continue |
+
+BeginFlow dùng protected Player, time acceleration và existing EnemyHealth damage
+để rút ngắn combat; shell transitions vẫn đi qua nút/pointer thật. Đây là functional
+Editor evidence, không phải manual balance approval hoặc device FPS. Save của probe
+nằm trong unique temp directory; primary/.bak/.invalid production được so bytes trước
+và sau. Scene-relaunch recreate object/storage lifetime trong Editor, không claim
+Android process-kill behavior. VerifyPersistence.Core được chạy như nearby schema/
+JSON/high-water compatibility regression.
+
+Game View functional review gồm 1600×900 và 2000×900: ship-led Main Menu, ba Hangar
+tabs/purchase/error, Missions, Settings, Pause, GameOver, clear, Victory, HUD,
+confirmation/loading và invalid/recovered state. Bỏ build/filler menu copy, thu gọn
+trail để không chạm ship name, menu/hangar opaque để không hiện tàu world phía sau.
+Static checks: docs checker và diff whitespace; native inspector kiểm missing
+scripts/references, required UI refs, catalog defaults và production build entry.
+
+Không làm final art/font/pixel spec, Android build/certification, physical haptic/audio
+QA, controller feature hoặc FPS profiling. Current audio foundation chưa có final
+clips; kiểm volume routing không chứng minh final mix. Chỉ terminal PASS của probe mới là evidence hoàn thành.

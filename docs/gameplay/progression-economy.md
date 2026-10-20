@@ -20,8 +20,8 @@ chưa có bảng số cố định; pickup/drop contract ở
 
 ### Shop `[FUTURE]`
 
-Shop, hangar, cosmetic hoặc permanent progression có thể dùng Shard sau này.
-Hiện chưa có shop requirement và không triển khai các tính năng đó chỉ vì đã lưu currency.
+M7 có cosmetic Hangar theo yêu cầu product bên dưới. Inventory/store tổng quát,
+stat upgrades, loot boxes và permanent combat progression vẫn ngoài scope.
 
 ## Score `[LOCKED]`
 
@@ -58,7 +58,7 @@ không là kill. Scout dùng score seed ở bảng trên. Resource/supply score 
 bonus vẫn TBD; không tự gán clear/no-hit/boss bonus. Shard tăng khi pickup được collect,
 không tăng khi enemy chết/eject reward.
 
-RunStarted reset hai counter; death/handoff giữ chúng. Clear/Game Over freeze counters
+RunStarted reset các mission-local counters; death/handoff giữ chúng. Clear/Game Over freeze counters
 cho presentation hiện tại. Có runtime counts enemies destroyed, cores collected và
 supply opportunities collected (nhặt ít nhất một item; một source vẫn chỉ tính một) để verify loop; chưa là full Campaign Result tracking.
 HUD đọc giá trị thực theo [UI owner](../presentation/ui-ux.md#gameplay-hud).
@@ -96,7 +96,7 @@ L1. Exact preset từng level còn [TBD] tại
 ### Rewards
 
 Persistent Shard từ replay vẫn [TBD]. Đề xuất hiện tại là ghi best score/best time
-nhưng không cộng persistent Shard để tránh farm dễ nếu shop mở sau. Đây là đề xuất,
+nhưng không cộng persistent Shard để tránh farm dễ khi Shard có consumer. Đây là đề xuất,
 không phải locked policy; serializer hoặc UI không được tự quyết thay economy.
 
 ## New Game và Retry
@@ -181,3 +181,49 @@ mission tiếp theo, L8 commit current-campaign victory và không unlock L9. Đ
 release boundary, không phải implement toàn bộ 12-level target. Persistent marker
 và Continue behavior thuộc [save owner](../systems/save-profile.md#m6-campaign-continuation-và-current-release-end-provisional).
 Replay vẫn isolated, không ghi Profile/Campaign hoặc chain mission.
+
+
+## M7 authoritative results `[PROVISIONAL]`
+
+`RunRewards` vẫn là authority duy nhất của Score, EnemiesDestroyed và PlaySeconds;
+HUD/Result không tính lại score. EncounterRunner guarded death event chống callback
+trùng và pooled-generation reuse; RewardDirector dùng cùng event để award config score.
+Kill count chỉ tăng cho enemy body (kể cả boss), không tăng cho asteroid/resource/supply,
+shield nodes hoặc pressure groups với GrantsRewards=false. Score của destructible
+object vẫn theo existing definition, không tự thêm bonus.
+
+Mission-local stats reset ở fresh mission/replay và restore từ checkpoint khi Retry/
+Continue. Ordinary death/encounter handoff giữ counters; Pause/terminal/loading không
+cộng mission gameplay time. Clear record lấy chính score/timer đó; failed run không
+update record. Best score và minimum positive time giữ độc lập; New Best UI chỉ sau
+successful persistence transaction. Full campaign aggregation chưa triển khai.
+M7 Victory dùng result Mission08 của current A+B release, không consumer các metrics
+boss-clear/no-hit/elite aggregate của target campaign result còn mở ở trên.
+
+Replay giữ runtime results và semantic Retry; gameplay không ghi records/wallet/unlocks
+hoặc advance Campaign. Explicit Settings action là user preference exception thuộc
+[save owner](../systems/save-profile.md#settings), không đổi reward/record policy.
+
+
+## M7 cosmetic Hangar `[PROVISIONAL]`
+
+Stellar Shard là currency duy nhất. Frontend cho mua và trang bị Chassis, Skin,
+Engine Trail; không có damage/HP/speed/weapon bonus, random box hoặc upgrade tree.
+Ownership và equipped selection thuộc Profile, giữ qua New Game và relaunch.
+Mua thành công trừ Shard, thêm ownership và trang bị trong cùng transaction. Món
+đã sở hữu/default được đổi miễn phí; không trả tiền lần hai. Insufficient funds
+không đổi state; failed save rollback wallet/ownership/equip và giữ appearance cũ.
+Preview không ghi Profile. Replay/DevTest không có write permission cho cosmetics.
+
+Catalog `Data/Cosmetics/ShipCosmetics.asset` là config authority; ba default IDs miễn
+phí được resolve cả khi save M6 chưa có cosmetic fields. Seed pricing `[TUNABLE]`:
+
+| Slot | Default | Lựa chọn mở khóa | Giá Shard |
+|---|---|---|---:|
+| Chassis | chassis-arrow / Mũi Tên | chassis-swept / Cánh Quét | 12 |
+| Skin | skin-cyan / Lam Băng | skin-amber / Hổ Phách | 6 |
+| Trail | trail-none / Động Cơ Tiêu Chuẩn | trail-ion / Vệt Ion | 8 |
+
+Đây là placeholder catalog để đóng functional UI, không khóa art family hoặc giá
+final. Chassis reuse sprite tạm hiện có, Skin đổi tint, Trail là presentation.
+Không đổi reward drops, score, checkpoint high-water hoặc combat balance.

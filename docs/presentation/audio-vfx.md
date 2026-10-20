@@ -237,7 +237,8 @@ không cần adaptive-music framework phức tạp.
 
 ## Haptic
 
-Vibration setting tồn tại; exact use [TBD]. Gợi ý chưa khóa: player death,
+M7 `[PROVISIONAL]`: VibrationEnabled đi qua SettingsFeedback, gọi Android haptic ở
+reserve missile detonation; không rung trong Editor. Exact final use vẫn [TBD]. Gợi ý chưa khóa: player death,
 boss explosion, shield break nhẹ. Không rung mỗi bullet hit.
 SFX synth workflow và BGM licensing/import ở [asset pipeline](../production/asset-pipeline.md).
 
@@ -306,3 +307,12 @@ shield flicker/collapse và recoil. Khi expose, core phase cue khác protected n
 không có shield regeneration. Các duration này là placeholder `[TUNABLE]`, chưa có
 final SFX, particle pack hoặc music. Collapse/vulnerability/attack timing do
 [enemy owner](../content/enemies-bosses.md#m6-region-b-runtime-mechanics-provisional) quyết.
+
+
+## M7 settings audio foundation `[PROVISIONAL]`
+
+SettingsFeedback giữ hai AudioSource Music/SFX trong gameplay scene. Saved volumes
+được apply khi boot và khi explicit Settings save thành công; playback entry points
+PlayMusic/PlaySfx dùng chính channels này. Chưa có final music/SFX clips hoặc adaptive
+mixer content; không claim nghe được volume change khi chưa có clip. ScreenShake toggle
+đọc ở reserve impact như contract trên; không tạo shake owner thứ hai.

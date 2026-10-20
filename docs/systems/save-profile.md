@@ -18,8 +18,7 @@ quyết damage, weapon penalty hoặc economy formula. Reward/record policy thu�
 | Dev overrides | Test state; không tự ghi production CampaignSave/Profile |
 
 New Game chỉ thay campaign; giữ Profile/Shard/records và Settings. UI confirmation
-khi overwrite campaign thuộc [UI owner](../presentation/ui-ux.md). M4-B chỉ có
-explicit backend action/dev harness, chưa có Main Menu hay confirmation UI mới.
+khi overwrite campaign thuộc [UI owner](../presentation/ui-ux.md). M7 có Main Menu và confirmation theo UI owner.
 
 ## M4-B implementation `[PROVISIONAL]`
 
@@ -63,7 +62,7 @@ hoặc mid-wave supply/drop objects. Definition và schedule được chạy l�
   ở [reward owner](../gameplay/progression-economy.md#m4-b-reward-và-record-policy-provisional).
   Reset khi capture Encounter mới; không rollback khi Retry/Continue.
 
-Stats hiện chỉ phục vụ M4 runtime owners; chưa là full Campaign Result schema; M6 current-release completion có marker riêng bên dưới.
+M7 Results đọc chính stats này; current-release Victory dùng Mission08 checkpoint stats, không thêm campaign aggregate schema.
 Playable seconds đếm fixed gameplay time khi run active và không cinematic/terminal;
 Pause không có physics ticks. Mission title overlay và handoff playable trong active run được tính; between-run travel
 không tự cộng Mission-local timer. Retry/
@@ -97,7 +96,7 @@ Không reload scene để Retry. Capture checkpoint mới bỏ qua nếu lives �
 
 [PROVISIONAL] Current implementation giữ `StellarShardBalance`, `HighScore`,
 `UnlockedMissions`, `Records` (MissionId, BestScore, BestTimeSeconds). Records chỉ có
-consumer Mission Clear; không thêm aggregateStats rỗng. Profile độc lập campaign;
+consumer Mission Clear; không thêm aggregateStats rỗng. M7 thêm optional OwnedCosmetics/EquippedCosmetics như section bên dưới. Profile độc lập campaign;
 Score không là currency. Weapon unlock/level thuộc campaign loadout, không duplicate
 vào Profile. New Game giữ unlocks/records/balance; L1 entry được unlock nếu chưa có.
 
@@ -110,12 +109,8 @@ cuối cùng và future records thuộc economy owner, không tự lock trong se
 
 [PROVISIONAL] Scalar musicVolume, sfxVolume, vibrationEnabled, screenShakeEnabled
 nằm trong envelope version 2; defaults là volume 1, vibration/shake true. Volume
-phải finite và thuộc [0,1]; invalid setting bị reject, giữ state trước. Không có
-Settings menu/mixer consumer mới; Screen Shake toggle đã được reserve-missile
-presentation đọc khi activation. Persist preferences không chứng minh toàn bộ audio/shake consumers
-đã được apply; future UI theo [UI owner](../presentation/ui-ux.md#settings).
-New Game không reset Settings. Backend `CampaignProgress.SetSettings` độc lập
-campaign data; gameplay wrapper chỉ cho explicit Campaign session write.
+phải finite và thuộc [0,1]; invalid setting bị reject, giữ state trước. M7 có shared Settings menu. Screen Shake được reserve-missile presentation đọc khi activation; Vibration qua SettingsFeedback gọi Android haptic tại cùng impact. Music/SFX áp volume lên hai AudioSource channels, chưa có final audio content. UI theo [UI owner](../presentation/ui-ux.md#settings).
+New Game không reset Settings. Backend `CampaignProgress.SetSettings` độc lập campaign data. M7 cho explicit user Settings action từ Menu/Pause, kể cả Replay; chỉ preferences thay đổi, không grant quyền ghi gameplay vào Campaign/Profile.
 
 ## New Game và Continue
 
@@ -128,9 +123,7 @@ Mission intro kể cả Encounter 1. No save → false; explicit New Game tạo 
 MissionCleared → false, giữ cleared marker/records; không chạy lại Encounter cuối
 hay tạo L2. Main Menu/next-content routing chưa thuộc M4-B.
 
-Editor Play mặc định DevTest; không auto New Game/Continue production. Non-Editor
-boot thử Continue, chỉ New Game khi Missing; invalid/unsupported dừng run và expose
-LoadStatus/Diagnostic. Build có DevFastStart bật thì dùng isolated DevTest path.
+Production/Edit Play khi DevFastStart OFF đều boot Menu, không auto NewGame/Continue. Shell đọc LoadStatus/Diagnostic và chỉ explicit user action mới launch campaign. DevFastStart được bật chủ động vẫn dùng isolated DevTest path.
 `Continue` hỗ trợ recreate service và recreate Gameplay scene; không yêu cầu giữ
 runtime objects sống qua quit. Flush thất bại giữ dirty data để caller có thể retry.
 
@@ -139,14 +132,14 @@ runtime objects sống qua quit. Flush thất bại giữ dirty data để calle
 [LOCKED] Replay không commit loadout, score hoặc checkpoint trở lại CampaignSave.
 Dev overrides không silent write production CampaignSave/Profile.
 
-[PROVISIONAL] `SessionMode`: Campaign / Replay / DevTest. CampaignLifecycle là
+[PROVISIONAL] `SessionMode`: Campaign / Replay / DevTest / Frontend (runtime-only, M7). CampaignLifecycle là
 write-permission authority. Explicit NewGame/Continue mới cấp Campaign mode;
 raw `EncounterRunner.StartRun` thu hồi quyền về DevTest trước reset/reward events.
 DevFastStart và old verifier paths được bảo vệ ở cùng boundary.
 
 BeginReplay chỉ nhận Mission đã unlock, dùng fresh entry preset (L1 hiện Pulse L1,
 lives 3); final presets [TBD] thuộc [level owner](../content/levels-encounters.md#mission-replay-presets).
-M4-B Replay hoàn toàn không writeback Profile/Settings/Campaign theo brief; final
+M7 Replay gameplay không writeback Profile/Campaign; explicit Settings action được phép chỉ thay preferences như section Settings. Final
 replay Shard/record policy vẫn [TBD] tại economy owner. Không duplicate gameplay.
 Exit dọn run/transient/clock; Continue sau đó đọc original campaign checkpoint.
 
@@ -263,3 +256,47 @@ Retry/Continue reset module HP, shield network, pending attacks/strikes, spawned
 beam visuals/queries và reward world transient qua run/pooled lifecycle; không serialize
 boss phase, module state, drones hoặc mid-wave objects. Replay/DevFastStart vẫn thu
 hồi write permission trước start; M6 probes dùng test storage riêng và so production bytes.
+
+
+## M7 frontend transactions `[PROVISIONAL]`
+
+Không đổi schema 2 hoặc JSON store. RunRewards/checkpoint stats và MissionRecord shape
+đã đủ cho Results/Hub; không thêm save DTO khác. NewGame và SetSettings snapshot data
+trước mutation, write failure restore cả state lẫn dirty flag. Không chỉ rollback UI.
+
+Mission clear dùng `CampaignProgress.TryCommitClear`: record + resolved checkpoint/status
+hoặc incoming same-region entry/unlock trong cùng transaction. Failure rollback mutation,
+CampaignLifecycle giữ HasPendingClear và frozen runtime stats để thử lại; Result không
+claim record/Next thành công. Flush retry clear có tính idempotent. Các shard đã credit
+ở boundary trước vẫn giữ theo high-water policy; không regrant clear reward.
+
+Region journey vẫn dùng transaction M6. Failed destination commit vào Pause; Resume
+thử lại save, không advance khi chưa commit. Exit về shell flush trước; nếu fail,
+modal giữ đường retry và không âm thầm abandon dirty state. Invalid/unsupported dữ liệu
+không partial-load/reset Profile; UI có retry read, preserve bytes và backup diagnostics.
+
+
+## M7 Profile cosmetics và explicit recovery `[PROVISIONAL]`
+
+Envelope vẫn schema 2. PlayerProfile có additive optional `OwnedCosmetics` (unique
+nonempty IDs) và `EquippedCosmetics` (ba slot Chassis/Skin/Trail). Missing/null/empty
+fields từ save M6 dùng catalog defaults, không reset wallet/records. Khi explicit
+mua/trang bị lần đầu, defaults được materialize cùng transaction. Unknown IDs được
+giữ nhưng presentation fallback về default nếu ID/slot/ownership không hợp lệ;
+không biến unknown cosmetic thành gameplay stats hoặc currency.
+
+`SessionMode.Frontend` chỉ là runtime permission của shell sau khi run đã exit.
+CampaignLifecycle chỉ cấp EquipCosmetic trong Frontend, runner inactive, qua catalog
+option/price. Raw runner start thu hồi về DevTest; BeginReplay thu hồi về Replay.
+CampaignProgress trừ wallet và cập nhật ownership/equip trong cùng JSON transaction,
+rollback toàn bộ khi write fail. UI không giữ currency store thứ hai.
+
+Unrecoverable Invalid data có action Tạo chiến dịch mới với explicit confirmation.
+Continue vẫn không partial-load. Chỉ recovery action mới salvage Profile và Settings
+còn validate được; roots không đọc/validate được dùng defaults và copy giải thích
+rõ điều này trước khi confirm. Primary lỗi được store giữ nguyên bytes trong `.invalid`
+trước successful replacement; invalid backup vẫn được giữ nếu primary missing.
+Recovery write fail giữ data invalid/unavailable và không claim đã tạo campaign.
+Unsupported version không được reset/overwrite bằng recovery; I/O failure có retry.
+
+M7 đọc save M6, không đảm bảo client M6 cũ giữ các additive cosmetic fields khi ghi lại.
