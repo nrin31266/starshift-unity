@@ -337,3 +337,20 @@ palette/material thuộc [art bible](art-direction.md#m8-vertical-art-slice-lock
 
 M8 chỉ có một burst quality anchor; heavy/boss staged explosion/audio, hit particles,
 engine sheets và special VFX chưa final. Không xem common sheet là full VFX pack.
+
+## M8 production motion `[PROVISIONAL]`
+
+Engine child dùng bốn native frames, scaled-time loop; visibility theo hull để không
+sót flame khi hull bị ẩn. Pickup có bốn shimmer frames, 0.14 s/frame; clock reset mỗi
+Launch trong pool và Pause giữ frame. Common explosion giữ baseline 8 frames phía trên.
+
+Muzzle đọc ShotsFired; hit sparks/smoke đọc enemy damage state; collect/upgrade cue
+đọc PlayerPickupReceiver.Collected; death/entry cue đọc PlayerGameplayGate. Các observer
+không đổi gameplay timing hoặc ghi save. Carrier bay mở/đóng 0.8 s sau SpawnCount thật,
+reset khi reuse; không dùng door animation làm điều kiện spawn. Boss core loop độc lập
+hull repaint, node collapse và death beats vẫn theo các owner hiện có.
+
+Shared frame sheets và procedural trails/rings cùng tồn tại; không ép movement thành
+spritesheet. Buff-expiry/boost sheets đã author nhưng chưa bind riêng; existing timer,
+star travel và warp choreography tiếp tục hoạt động. Chi tiết nguồn/import ở
+[production checkpoint](../production/asset-pipeline.md#m8-l1l8-production-checkpoint).

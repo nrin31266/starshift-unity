@@ -662,3 +662,53 @@ Score carry verification thuộc `VerifyCampaignScore.Core/Begin`; background pr
 `VerifyM8Background.Run` kiểm intro parallax, fixed extents và navy rendered corners.
 Dùng test storage riêng; restore Menu/input/damage/storage và assert production
 primary/backup/invalid bytes không đổi. Không broad regression, Android hoặc build.
+
+## M8 L1–L8 production checkpoint
+
+Production ngày 2026-10-21 dùng **9 Pixen generations**, từ 34 xuống 25/40; không Pro,
+không paid credit và không thêm animation jobs. Các motion ngắn được author bằng
+Aseprite. [Production jobs](../../tools/assets/m8/sources/production-jobs.json) giữ
+request/seed/job/asset IDs và SHA-256 originals; source manifest cũ trỏ tới archive này.
+Đây là text-guided generation theo approved anchors, không claim image conditioning.
+
+109 cleaned source/export pairs, gồm baseline được reuse; importer audit có 131 native
+textures sau khi bỏ module draft không dùng. [Production manifest](../../tools/assets/m8/production-manifest.json)
+là record lifecycle/binding hiện tại; asset IMPORTED có thể còn playback/review debt.
+Không đánh dấu toàn roster DONE hoặc fabricated owner acceptance.
+
+Reproduce trên máy đã READY:
+
+```sh
+aseprite --batch \
+  --script-param root="$PWD/tools/assets/m8" \
+  --script-param out="$PWD/app/Assets/StarShift/Art/M8" \
+  --script tools/assets/m8/production.lua
+python3 tools/assets/m8/validate_production.py
+```
+
+Script trên ghi đè production exports/cleaned sources; không rerun trên artist edits
+về sau. Export source đã chỉnh riêng. Chờ Aseprite xong trước AssetDatabase refresh
+hoặc recompile; refresh chồng export từng gây SourceAssetDB modification-time warnings.
+Final synchronous import/read-back và runtime review dùng output đã ổn định.
+
+Unity Edit Mode: `ConfigureM8Production.Import`, rồi các entry `Fleet`, `BossesWorld`,
+`CombatRewards`, `FrontendEnvironment` trong
+[production authoring script](../../tools/unity/ConfigureM8Production.cs).
+Chỉ chạy entry cần author; giữ GUID/name-file IDs, dùng Sprite Editor capability checks.
+Không rerun migration slice ConfigureM8Art.Configure để reset tuning.
+
+[Production verifier](../../tools/unity/VerifyM8Production.cs) `Begin(1600)` dùng fresh
+Play Mode/Menu, isolated save/input, actual formation/drag/fire, pickup/pool, frame/Pause,
+damage, Carrier launch và Warden node/death checks. Không chạy khi owner đang chơi.
+[Layout verifier](../../tools/unity/VerifyM8ProductionLayout.cs) `Run(width)` kiểm các
+checkpoint 1600 hoặc 2000, effect/reserve và boss layouts; `Edit` kiểm importer/pivot
+và critical enemy prefab proxy references. Screenshot capture đợi file mới được ghi
+trước khi đổi state. Result screenshot của production verifier là presentation fixture,
+không thay cho kiểm tra mọi terminal/save-failure flow.
+
+Evidence local `.design/m8/`: `production-runtime-1600.json`,
+`production-layout-1600.json`, `production-layout-2000.json`, `production-pixel-validation.json`, production contract
+snapshots và `screenshots/production-*`. Game View smoke/save-byte guards và score-core
+regression đã pass; collider/balance snapshot khớp baseline. Final primary recapture đã pass sau khi owner về Menu; các QA passes bảo vệ bytes
+của save đang có tại đầu mỗi pass, không rollback tiến trình owner chơi giữa các pass.
+Không Android/build/release hoặc full historical suite.

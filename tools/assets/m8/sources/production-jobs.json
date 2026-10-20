@@ -171,5 +171,7 @@
       "source": "asteroid-anchor-raw.png",
       "sha256": "c7744cfb87b193f1ebd3c2603ecb65f8083484f25dee28518a3a835374019463"
     }
-  ]
+  ],
+  "reference_method": "Text descriptions, palette, lighting and material guidance from approved anchors; Pixen requests were text-only.",
+  "cleanup": "production.lua: palette/binary-alpha cleanup; violet Interceptor accent; amber Supply Drone accent; derived sources kept in cleaned/."
 }

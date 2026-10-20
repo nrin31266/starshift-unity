@@ -46,6 +46,10 @@ Damaged
 Critical
 ```
 
+M8 production dùng ngưỡng visual Critical tại `HP / max HP <= 25%` `[TUNABLE]`
+cho Bomber, Bulwark, Carrier, Vanguard và Warden core. Đây chỉ là
+`EnemyDamagePresentation`; không đổi HP, damage, phase hoặc death authority.
+
 Có thể dùng alternate sprite/frame, smoke, sparks và cracked emissive để biểu diễn
 state; exact presentation ở [audio/VFX](../presentation/audio-vfx.md).
 

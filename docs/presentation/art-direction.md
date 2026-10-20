@@ -47,7 +47,8 @@ hiển thị nhỏ trên mobile.
 
 ### Enemy
 
-Enemy dùng dark metal, crimson/red emissive và ngôn ngữ mechanical/military/alien-tech.
+Enemy dùng dark metal, restrained role accents và ngôn ngữ mechanical/military/alien-tech.
+Crimson/red là baseline chung; các ngoại lệ slate/bronze/violet của M8 production ở bên dưới.
 Silhouette phải phân biệt vai trò; không chỉ recolor cùng hình cho toàn roster.
 
 ### Boss
@@ -71,7 +72,7 @@ không gian. Giữ contrast cho projectile; background không tranh cùng mức 
 | Nhóm | Màu định hướng |
 |---|---|
 | Player/friendly base | ivory/slate hull, cyan / electric-blue identity |
-| Enemy normal | dark gunmetal + crimson / red emissive |
+| Enemy normal | dark gunmetal; crimson baseline, restrained role accents theo production family |
 | Enemy special / dangerous telegraph | magenta |
 | Reward / currency | amber / gold |
 | Shield / defensive | teal |
@@ -258,3 +259,36 @@ không tốn thêm generation. Chỉ 5 Pixen outputs; không tạo dozens of var
 và Plasma/Missile contrast in final-art mix, remaining UI screens, regional background
 packs, full audio, device readability/performance. M8 slice không tự duyệt các phần
 này và không mở bulk batch tự động. Không Android/build/release trong pass này.
+
+## M8 L1–L8 production pass `[PROVISIONAL]`
+
+Production ngày 2026-10-21 mở rộng slice theo brief của owner; không mở Region C.
+Giữ medium-detail pixel art, shared palette, light upper-left, Point filtering và
+56.25 world PPU. Crimson vẫn là hostile accent chung; bronze/slate của Bulwark,
+violet của Sniper/Carrier/Warden và violet sensor của Interceptor phân biệt role.
+Friendly ivory/cyan và reward amber giữ semantic priority; không bắt mọi enemy
+recolor đỏ. Ship guns, rear engines và carrier bays theo hướng di chuyển/bắn thật.
+
+Native canvases mới: Swept 64×80; Bulwark 112×96; Sniper 80×112; Interceptor 64×80;
+Carrier 160×128; Supply Drone 112×80; Warden Drone 48×48. Boss central hull 256×192,
+wing 256×112, mount/module 96×96 và truss 192×48; đây là các mảnh ghép ở mount cũ,
+không kéo giãn một hull để phủ boss. Collider-bearing wing/node giữ Transform cũ,
+art nằm ở child bù scale. Asteroid dùng 48/64/96/128 canvases theo size đã có,
+chỉ bù scale visual; không đổi root scale, collider hoặc HP.
+
+Pickup family dùng khung cargo 32×40 với symbol riêng cho từng branch/effect;
+Shard vẫn là amber crystal. HUD icons 24×24, giữ chữ native và shared nine-slice
+panel/button. Menu/Hangar ship có idle drift nhẹ; navigation và các state M7 giữ nguyên.
+Đây là coverage production, không coi mọi overlay/cosmetic state đã qua visual audit.
+
+Astra/Crimson far patches giữ canvas 768×336, PPU 21 và fixed world scale. Nebula
+là cụm kín nằm trong patch, mép trả về navy; bỏ planet vẽ sẵn để không trùng với
+planet reveal 256×256 riêng. Background đọc region hiện tại cả khi Continue/dev jump;
+journey vẫn sở hữu blend/choreography. Navy camera fill tiếp tục lấp ngoài artwork,
+không scale background theo camera và không triệt tiêu cảm giác zoom.
+
+[Production manifest](../../tools/assets/m8/production-manifest.json) ghi source,
+output, binding và lifecycle từng asset. Source/import readiness không tự đồng nghĩa
+runtime verified. Remaining polish: selective amber skin mask; riêng buff-expiry/warp
+sheet playback; asteroid damage repaint; audit các overlay/result variants ít gặp.
+Không chốt device readability/FPS hoặc full audio trong pass này.
