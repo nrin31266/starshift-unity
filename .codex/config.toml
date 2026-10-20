@@ -1,2 +1,18 @@
 [plugins."ponytail@ponytail"]
 enabled = true
+
+[mcp_servers.pixellab]
+url = "https://api.pixellab.ai/mcp"
+http_headers_helper = """python3 -c 'import json,pathlib; print(json.dumps({"Authorization":"Bearer "+(pathlib.Path.home()/".config/starshift/pixellab-token").read_text().strip()}))'"""
+startup_timeout_sec = 30
+tool_timeout_sec = 180
+enabled_tools = [
+  "create_image_pro_flash", "create_image_pixflux", "create_image_pixen", "create_image_pro", "get_image", "list_images",
+  "edit_image", "edit_image_pixen", "edit_image_pro_flash", "inpaint_image", "inpaint_image_pro_flash",
+  "create_1_direction_object", "create_8_direction_object", "create_object_pro_flash", "get_object", "list_objects",
+  "select_object_frames", "animate_object", "create_object_state", "animate_image", "animate_image_pixminimax",
+  "create_ui_asset", "get_ui_asset", "list_ui_assets", "create_normal_map",
+  "image_to_pixelart", "image_to_pixelart_pro_flash", "unzoom_image", "correct_pixelart", "reduce_colors",
+  "pixelart_workbench", "vfx_workbench", "save_to_asset", "get_pro_flash_capabilities",
+  "get_upload_url", "get_balance", "list_jobs", "wait_for_jobs", "cancel_job", "search_help", "search_knowledge",
+]

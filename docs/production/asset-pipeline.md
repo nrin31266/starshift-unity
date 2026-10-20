@@ -59,6 +59,95 @@ pivot consistency, repaint/correction, resize và edge cleanup.
 Source đạt yêu cầu đi thẳng tới normalize; source chưa đạt có thể qua PixelLab cleanup
 rồi normalize, review và import. Không bắt mọi asset qua PixelLab.
 
+### Tool routing cho StarShift
+
+Project MCP config nằm ở `../../.codex/config.toml`; chỉ bổ sung PixelLab cho
+checkout này. ImageGen/Figma/Canva và Unity/Comfy MCP hiện có được tái sử dụng,
+không tạo server trùng hoặc đổi cấu hình global. Tài khoản connector vẫn thuộc
+tài khoản Codex, không được cô lập bởi project config; chỉ dùng cho task đang yêu cầu.
+
+| Nhu cầu | Tool/workflow |
+|---|---|
+| Concept, ship/enemy/boss, background raster | ImageGen, dùng approved anchors; sprite yêu cầu transparent background |
+| Pixel art hoặc sửa vùng ảnh | PixelLab image/edit/inpaint, output vẫn phải đạt art direction |
+| Object states và sprite animation | PixelLab object/state/animate hoặc animate image |
+| HUD/layout và vector source | Figma; Canva cho moodboard/presentation khi task cần |
+| Ghép/kiểm tra spritesheet PNG | [Offline tools](../../tools/assets/README.md) |
+| Import, slicing, pivot và gameplay-scale review | Unity MCP; reuse skill `sprite-editor` và grid-slicing snippet |
+| Workflow ảnh với node API | [Comfy seed](../../tools/assets/workflows/comfy-nano-banana.json), cần runtime/auth/validation |
+
+PixelLab dùng HTTP MCP với `http_headers_helper` theo
+[Codex MCP configuration](https://developers.openai.com/codex/mcp/).
+Helper đọc `~/.config/starshift/pixellab-token` (quyền `0600`), secret nằm ngoài Git.
+Máy khác cần tự provision token. Khi đổi token, thay nội dung file và giữ permission.
+Reload/restart Codex sau khi đổi cấu hình; lưu file không chứng minh phiên hiện tại
+đã nạp tool mới. Không đưa secret vào prompt, workflow hoặc source archive.
+
+Allowlist bật image/object/state/animation/UI/VFX, correction, upload/status/balance/help;
+không bật map/tileset, humanoid pipeline hoặc delete. Tra
+[PixelLab tools](https://api.pixellab.ai/mcp/docs) và schema live trước khi gọi;
+không giả định các model có cùng tham số. Kiểm tra balance trước batch;
+cấu hình kết nối không đồng nghĩa duyệt chi phí generation.
+Không đổi target art thành pixel art chỉ vì tool hỗ trợ pixel art.
+
+### Recipe sprite và spritesheet
+
+1. Đọc approved anchors, chọn asset/state cụ thể rồi generate/edit bằng ImageGen
+   hoặc PixelLab. Với tàu/prop dùng object pipeline, không dùng humanoid skeleton.
+2. PixelLab trả job ID: lưu ID, poll bằng get/status tương ứng, xử lý review
+   candidate nếu cần, tải output và lưu provenance. Sprite source có sẵn dùng
+   animate image theo schema live; object PixelLab dùng animate object.
+3. Review frame riêng: cùng canvas/orientation/scale/lighting, tâm không drift,
+   alpha sạch. Không trim/auto-center từng frame làm thay đổi chuyển động.
+4. Ghép theo thứ tự frame tường minh bằng offline tool; check grid/alpha/count.
+   Tool không đánh giá chất lượng animation, pivot hoặc style bằng nội dung ảnh.
+5. Trong Unity Edit Mode, xác nhận đúng project `app/` và Editor sẵn sàng; import
+   vào runtime folder phù hợp, giữ GUID. Dùng Sprite Mode Multiple và Sprite Editor
+   data provider với capability checks theo skill `sprite-editor`. Slice đúng số
+   frame, bỏ ô dư cuối; thứ tự từ trên trái theo hàng. Không sửa `.meta` bằng tay;
+   không tự chốt PPU/filter/compression còn TBD.
+6. Preview clip/state ở gameplay scale, kiểm tra Console và Android gate theo
+   canonical workflow. Chưa chạy thì ghi rõ chưa verified; không tự thay production art.
+
+### Recipe Comfy workflow
+
+JSON được emit bởi Comfy MCP là seed API-format, không phải bằng chứng graph chạy
+được. Prompt mẫu chưa style-approved; seed text-to-image không có reference-image
+node, nên cần graph/schema hỗ trợ image input khi task phải bám ảnh tham chiếu.
+
+`server_info` → xác nhận runtime/target → `auth_status` cho graph API → inspect
+`list_workflow_slots`/`list_workflow_notes` → chỉnh `set_workflow_slot` →
+`validate_workflow`. Chỉ chạy khi dependencies đủ và chi phí đã được duyệt.
+`run_workflow(wait=False)` → poll `job` → `fetch_outputs` → normalize/review.
+Nếu không có local runtime, `partner_generate` là đường hosted riêng; không submit
+JSON vào server chưa cài/chưa chạy và không coi `auth_login` là cài ComfyUI.
+
+Đường hosted không yêu cầu ComfyUI local: `auth_status` → `list_partner_models`
+→ `partner_model_schema` → xác nhận chi phí cho generation cụ thể →
+`partner_generate` → normalize/review. Schema `nano-banana` đã kiểm tra hỗ trợ
+`prompt` bắt buộc và `image` là array optional (local paths, URLs hoặc data URIs)
+để đưa approved anchors vào request. Kiểm tra lại schema trước khi dùng; không
+truyền tham số `image` của hosted API thẳng vào graph JSON vì hai schema khác nhau.
+
+### Connection evidence ngày 2026-10-20
+
+- PixelLab: MCP initialize/list tools thành công, trả 103 tools; allowlist khớp
+  schema live. Sau reload đã gọi native tool `get_balance` thành công, còn 40
+  generations trial tại thời điểm kiểm tra. Chưa chạy generation hoặc xác minh output.
+- ImageGen: có tool trong phiên; chưa chạy generation ở task cấu hình này.
+- Unity MCP: thấy một Editor chạy đúng project StarShift `app/`; chưa import art mới.
+- Figma: một kết nối whoami thành công, RIN cần reauthenticate; chưa xác minh quyền
+  edit file đích. Canva: một kết nối search thành công, Primary cần reauthenticate;
+  search không xác nhận có design StarShift hoặc quyền edit design đích.
+- Comfy MCP: OAuth đã đăng nhập, token chưa hết hạn; partner catalog/schema gọi được.
+  Hosted `nano-banana` hỗ trợ prompt và reference images. ComfyUI local chưa chạy,
+  đường dẫn được báo không tồn tại trên đĩa; GPU 4 GiB VRAM, chưa cài/runtime-test
+  local diffusion. Chưa xác minh billing balance hoặc chạy hosted generation/graph JSON.
+- Offline PNG tool: Python/Pillow hiện có; synthetic pack/check tests pass.
+
+Đây là snapshot; kiểm tra lại readiness/auth trước generation. Không cần cài thêm
+desktop art editor để chạy recipe PNG.
+
 ## Sprite sheet contract
 
 Khi cần sprite animation theo [animation strategy](../presentation/audio-vfx.md#animation-philosophy),

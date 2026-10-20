@@ -80,6 +80,9 @@ Không tự cài skill chỉ để đáp ứng một thay đổi không cần sk
 
 ## Verification
 
+- Art tools, sprite/spritesheet và Comfy workflow: đọc
+  [asset pipeline](docs/production/asset-pipeline.md#tool-routing-cho-starshift);
+  dùng project PixelLab MCP config, không lưu token vào Git.
 - Compile/test phù hợp khi environment cho phép; inspect Unity Console khi cần.
 - Kiểm tra canonical docs và regression liên quan khi đổi contract.
 - Feature late-game phải có đường test nhanh qua DevConfig.

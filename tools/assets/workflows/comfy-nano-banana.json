@@ -1,0 +1,43 @@
+{
+  "1": {
+    "class_type": "GeminiImageNode",
+    "_meta": {
+      "title": "GeminiImageNode (nano-banana)",
+      "comfy_mcp": {
+        "spends_credits": true,
+        "partner_model": "nano-banana",
+        "billing_nodes": [
+          "1"
+        ],
+        "billing_class_types": [
+          "GeminiImageNode"
+        ],
+        "emitted_by": "comfy-mcp",
+        "warning": "Running this workflow BILLS Comfy credits \u2014 the partner node calls a hosted API. It is not a local graph. run_workflow refuses it unless confirm_spend=True is passed explicitly.",
+        "requires": "run_workflow(confirm_spend=True)"
+      }
+    },
+    "inputs": {
+      "model": "gemini-2.5-flash-image",
+      "seed": 42,
+      "aspect_ratio": "auto",
+      "response_modalities": "IMAGE+TEXT",
+      "system_prompt": "You are an expert image-generation engine. You must ALWAYS produce an image.\nInterpret all user input\u2014regardless of format, intent, or abstraction\u2014as literal visual directives for image composition.\nIf a prompt is conversational or lacks specific visual details, you must creatively invent a concrete visual scenario that depicts the concept.\nPrioritize generating the visual representation above any text, formatting, or conversational requests.",
+      "prompt": "Stylized angular hard-surface sci-fi spaceship, cyan accents, isolated silhouette, consistent top-down view. Follow the approved StarShift reference anchor."
+    }
+  },
+  "2": {
+    "class_type": "SaveImageAdvanced",
+    "_meta": {
+      "title": "save generated image"
+    },
+    "inputs": {
+      "images": [
+        "1",
+        0
+      ],
+      "filename_prefix": "generate",
+      "format": "png"
+    }
+  }
+}
