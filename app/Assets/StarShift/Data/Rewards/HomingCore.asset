@@ -15,7 +15,7 @@ MonoBehaviour:
   Kind: 1
   Branch: 2
   ShortCode: T3+
-  Color: {r: 1, g: 0.5, b: 0.16, a: 1}
+  Color: {r: 1, g: 1, b: 1, a: 1}
   Sprite: {fileID: 21300000, guid: d0e68b0c914a38d5b9f72a35c4386ba7, type: 3}
   AnimationFrames:
   - {fileID: 449963769, guid: c258a29877cc5c3bd879192886b866d1, type: 3}

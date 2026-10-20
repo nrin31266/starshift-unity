@@ -184,6 +184,15 @@ public static class ConfigureM8Art
         }
         return Newtonsoft.Json.JsonConvert.SerializeObject(rows, Newtonsoft.Json.Formatting.Indented);
     }
+    public static object VerifyContracts()
+    {
+        var after = Contracts();
+        var before = System.IO.File.ReadAllText("../.design/m8-rebuild/contracts-before.json");
+        if (!Newtonsoft.Json.Linq.JToken.DeepEquals(Newtonsoft.Json.Linq.JToken.Parse(before), Newtonsoft.Json.Linq.JToken.Parse(after)))
+            throw new System.Exception("Gameplay/collider contract changed");
+        System.IO.File.WriteAllText("../.design/m8-rebuild/contracts-after.json", after);
+        return "PASS: gameplay definitions and collider contracts unchanged";
+    }
     public static object Configure()
     {
         if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Edit Mode required");

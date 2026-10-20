@@ -50,6 +50,14 @@ namespace StarShift.Enemies
             flashRemaining = 0;
         }
 
+        public void ConfigureSprites(Sprite intact, Sprite damaged, Sprite critical)
+        {
+            intactSprite = intact;
+            damagedSprite = damaged;
+            criticalSprite = critical;
+            Refresh();
+        }
+
         private void OnDamaged()
         {
             flashRemaining = flashDuration;

@@ -15,7 +15,7 @@ MonoBehaviour:
   Kind: 4
   Branch: 0
   ShortCode: DR
-  Color: {r: 0.3, g: 0.9, b: 1, a: 1}
+  Color: {r: 1, g: 1, b: 1, a: 1}
   Sprite: {fileID: 21300000, guid: 0064cd919baa8a5e6994c4d7c5e1bc77, type: 3}
   AnimationFrames:
   - {fileID: -974987810, guid: cce2a11c5ef47f6499b442ab6b560a90, type: 3}

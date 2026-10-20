@@ -19,6 +19,7 @@ namespace StarShift.Player
         public Color Tint = Color.white;
         public Vector2[] EngineSockets = Array.Empty<Vector2>();
         public Vector2 MuzzleSocket;
+        public Vector2 MovementTrailSocket;
         public float PlumeScale = .6f;
         public Sprite[] AnimationFrames = Array.Empty<Sprite>();
         public float TrailSeconds = .16f;

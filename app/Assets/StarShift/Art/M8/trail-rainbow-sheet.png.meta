@@ -150,8 +150,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 526ab6242f0af4089bcc280100a66256
-      internalID: 421210358
+      spriteID: 92dc5b24d7c0f47dfa1b41ae287a7467
+      internalID: -1871182279
       vertices: []
       indices: 
       edges: []
@@ -172,8 +172,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f02b36a7185c6d7868233318a0e3317d
-      internalID: -954407258
+      spriteID: 6e0f77a913b24f539ab742a7858b4113
+      internalID: 1770011562
       vertices: []
       indices: 
       edges: []
@@ -194,8 +194,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d2d1780b17c3c418c9f85f996411857d
-      internalID: 1142920882
+      spriteID: c5e81c4165288f0839c5c59d859ee1d4
+      internalID: -1677953675
       vertices: []
       indices: 
       edges: []
@@ -216,8 +216,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5f01ebf57c001ffba85f94a84671c8d9
-      internalID: 2060659904
+      spriteID: 9cd35b55b1feb111fa79e9a2d8fe0709
+      internalID: 895109416
       vertices: []
       indices: 
       edges: []
@@ -226,7 +226,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 1d0e4d0f131f13c5eb4c85d80a211842
+    spriteID: 0923595470b6a7880bceed0de8c44137
     internalID: 0
     vertices: []
     indices: 
@@ -236,10 +236,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      trail-rainbow_00: 421210358
-      trail-rainbow_01: -954407258
-      trail-rainbow_02: 1142920882
-      trail-rainbow_03: 2060659904
+      trail-rainbow_00: -1871182279
+      trail-rainbow_01: 1770011562
+      trail-rainbow_02: -1677953675
+      trail-rainbow_03: 895109416
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

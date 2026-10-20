@@ -12,6 +12,7 @@ namespace StarShift.UI
         private CosmeticCatalog catalog;
         private CosmeticOption chassis, trail;
         private float age;
+        private Vector2 restPosition;
         public void Apply(CosmeticCatalog source, CosmeticOption ship, CosmeticOption skin, CosmeticOption exhaust)
         {
             catalog = source; chassis = ship; trail = exhaust;
@@ -29,19 +30,29 @@ namespace StarShift.UI
             if (Ribbons != null)
             {
                 for (int i = 0; i < Ribbons.Length; i++)
-                    if (Ribbons[i] != null) Ribbons[i].gameObject.SetActive(false);
+                    if (Ribbons[i] != null)
+                    {
+                        Ribbons[i].gameObject.SetActive(i == 0);
+                        Ribbons[i].rectTransform.anchoredPosition = ship.MovementTrailSocket * (56.25f * fit) + Vector2.down * (10 * fit);
+                        Ribbons[i].rectTransform.sizeDelta = new Vector2(5, 20) * fit;
+                        Ribbons[i].color = new Color(1, 1, 1, .35f);
+                    }
             }
         }
-        private void OnEnable() => age = 0;
+        private void OnEnable() { age = 0; restPosition = Hull.rectTransform.anchoredPosition; }
+        private void OnDisable() { Hull.rectTransform.anchoredPosition = restPosition; Hull.rectTransform.localRotation = Quaternion.identity; }
         private void LateUpdate()
         {
             if (chassis == null) return;
             age += Time.unscaledDeltaTime;
             for (int i = 0; i < Engines.Length; i++)
             {
-                // 2 tia lửa phản lực của tàu cố định, không đổi khi đổi vệt động cơ
+                // Plume giữ nguyên theo chassis khi đổi cosmetic trail.
                 if (catalog.EngineFrames.Length > 0) Engines[i].sprite = catalog.EngineFrames[(int)(age / .075f + i) % catalog.EngineFrames.Length];
             }
+            if (Ribbons != null && Ribbons.Length > 0 && Ribbons[0] != null && trail.AnimationFrames.Length > 0)
+                Ribbons[0].sprite = trail.AnimationFrames[(int)(age / .1f) % trail.AnimationFrames.Length];
+            Hull.rectTransform.anchoredPosition = restPosition + new Vector2(Mathf.Sin(age * .9f) * 2, Mathf.Sin(age * 1.2f) * 2);
             Hull.rectTransform.localRotation = Quaternion.Euler(0, 0, Mathf.Sin(age * 1.1f) * 1.4f);
         }
     }

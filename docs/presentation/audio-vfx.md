@@ -154,14 +154,15 @@ Exact timing chưa có seed giữ [TBD]; khi tune sẽ cập nhật tại owner 
 Player entrance dùng transform/ease + engine trail + engine ramp; firing cue riêng
 cho Pulse/Plasma/Missile, muzzle/shot rõ nhưng không phủ vùng né.
 Player death dùng staged explosion, player-death SFX và medium shake;
-respawn entry có cue riêng, blink alpha/ring teal cho invincibility, tránh nhầm hit flash.
+respawn entry có cue riêng, vòng teal nhấp nháy cho invincibility, hull giữ hiển thị ổn định, tránh nhầm hit flash.
 Hit/death/protection resolve bởi [player combat](../gameplay/player-combat.md),
 không chờ particle để quyết có nhận damage.
 
 ### Player damage lifecycle placeholder
 
-VS-018–020 dùng Hull trắng trong Dying, entrance ease và teal blink khi post-entry
-invincible; Game Over hide Hull. Blink cycle 0.2 s, visible 60% `[TUNABLE]`, dùng
+M8 rebuild: Hull flash ngắn trong Dying rồi ẩn, explosion/debris độc lập; entrance
+ease giữ cũ. Post-entry/shield-break invincibility chỉ nhấp nháy vòng bảo vệ teal,
+không blink/tint hull. Ring cycle 0.3 s, visible 2/3 `[TUNABLE]`, dùng
 scaled time nên pause giữ cue hiện tại. Disable presentation/root restore authored
 tint/enabled state. Đây là placeholder, chưa có explosion particles, audio, final
 VFX hoặc shield-item system. Gameplay phase/timing thuộc

@@ -36,7 +36,7 @@ namespace StarShift.Enemies
         private void Show(EnemyHealth enemy, RewardDropTable table, Vector3 position)
         {
             bool supply = !enemy.Definition.BodyDamagesPlayer && table != null && table.Source == RewardSource.MajorCrate;
-            if (!supply && enemy.GetComponent<AsteroidVisualMotion>() == null && (frames == null || frames.Length == 0)) return;
+            if (!supply && enemy.GetComponent<AsteroidVisualMotion>() == null) return;
             var visual = pool.Get();
             visual.transform.position = position;
             // Supply Drone nổ tung để lộ hộp quà; asteroid dùng burst đá chung.

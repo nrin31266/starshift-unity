@@ -39,7 +39,48 @@ public static class VerifyM8Final
         Directory.CreateDirectory(Evidence);File.WriteAllText(Evidence+"player.json","{\"status\":\"RUNNING\"}");
         _=PlayerRun();return "Player checks started";
     }
-    static async Task PlayerRun(bool ui = false)
+    public static object Survival()
+    {
+        Check(Application.isPlaying&&!Runner.HasActiveRun,"Idle Play Mode required");
+        Directory.CreateDirectory(Evidence);File.WriteAllText(Evidence+"player.json","{\"status\":\"RUNNING\"}");
+        _=PlayerRun(false,true);return "Survival and protection checks started";
+    }
+    static async Task SurvivalGameplay()
+    {
+        var player=GameObject.Find("Player");
+        var gate=player.GetComponent<PlayerGameplayGate>();
+        var damage=player.GetComponent<PlayerDamageLifecycle>();
+        var lives=player.GetComponent<PlayerLives>();
+        damage.enabled=true;
+        player.GetComponent<PlayerTemporaryEffects>().Clear();
+        gate.SetState(PlayerGameplayState.Active);
+        player.GetComponent<RelativeDragMovement>().SetCinematicPosition(Camera.main.ViewportToWorldPoint(new Vector3(.5f,.3f,-Camera.main.transform.position.z)));
+        int before=lives.CurrentLives;
+        Check(damage.TryReceiveHit(null),"Real lost-life trigger failed");
+        Check(lives.CurrentLives==before-1,"Life was not deducted exactly once");
+        await Task.Delay(130);
+        var hull=player.transform.Find("Visual/HullPlaceholder").GetComponent<SpriteRenderer>();
+        Check(!hull.enabled,"Hull remains visible during destruction");
+        Check(player.transform.Find("DeathExplosion").GetComponent<SpriteRenderer>().enabled,"Death explosion hidden with hull");
+        Check(Enumerable.Range(0,4).All(i=>player.transform.Find("DeathFragment"+i).GetComponent<SpriteRenderer>().enabled),"Independent fragments missing");
+        await Capture("rebuild-player-lost-life");
+        await Until(()=>gate.State==PlayerGameplayState.PostEntryInvincibility,5000,"Respawn did not reach protection");
+        var cue=(SpriteRenderer)new SerializedObject(player.GetComponent<PlayerCombatPresentation>()).FindProperty("survival").objectReferenceValue;
+        bool on=false,off=false;
+        for(int i=0;i<12;i++)
+        {
+            await Task.Delay(40);
+            Check(hull.enabled,"Protected hull blinked");
+            on|=cue.enabled;off|=!cue.enabled;
+        }
+        Check(on&&off,"Protection ring did not blink");
+        await Capture("rebuild-protection-ring");
+        var trail=player.GetComponentsInChildren<TrailRenderer>(true).Single(t=>t.name=="MovementTrail");
+        await Task.Delay(60);
+        Check(!trail.emitting,"Stationary ship emits movement trail");
+        Check(trail.startWidth<=.1f&&trail.time<=.16f,"Movement trail is oversized");
+    }
+    static async Task PlayerRun(bool ui = false, bool survival = false)
     {
         var original=Save.SavePath;var hashes=new Dictionary<string,byte[]>();
         foreach(var suffix in new[]{"",".bak",".invalid"})hashes[suffix]=File.Exists(original+suffix)?File.ReadAllBytes(original+suffix):null;
@@ -61,8 +102,9 @@ public static class VerifyM8Final
             Directory.CreateDirectory(Path.GetDirectoryName(temp));File.WriteAllText(temp,JsonUtility.ToJson(fixture,true));
             Save.UseTestStorage(temp);Shell.Boot();
             await Capture("menu-player");
-            var preview=View.MenuShip.GetComponent<ShipPreview>();var first=preview.Engines[0].sprite;
-            await Task.Delay(95);Check(preview.Engines[0].sprite!=first,"Menu engine did not animate");
+            var preview=View.MenuShip.GetComponent<ShipPreview>();
+            Check(preview.Engines.Length==2,"Expected one plume for each of two corrected nozzles");
+            Check(player.GetComponentsInChildren<SpriteRenderer>(true).Count(r=>r.name.StartsWith("M8Engine"))==2,"Duplicate gameplay plume renderers");
             View.Store.onClick.Invoke();await Task.Delay(100);View.CosmeticTabs[2].onClick.Invoke();View.CosmeticCards[2].onClick.Invoke();
             await Capture("store-rainbow");
             View.CosmeticAction.onClick.Invoke();if(View.Confirmation.activeSelf)View.Confirm.onClick.Invoke();await Task.Delay(100);
@@ -80,7 +122,8 @@ public static class VerifyM8Final
             await Capture("approach-raptor");Session.BeginMission();
             await Until(()=>Runner.Stage==EncounterStage.Running,15000,"Real combat");
             damage.enabled=false;player.GetComponent<PlayerGameplayGate>().SetState(PlayerGameplayState.Active);
-            if (ui) await UiGameplay();
+            if (survival) await SurvivalGameplay();
+            else if (ui) await UiGameplay();
             else foreach(var chassis in new[]{"chassis-arrow","chassis-swept"})
             foreach(var trail in new[]{"trail-none","trail-ion","trail-rainbow"})
             {
@@ -94,7 +137,7 @@ public static class VerifyM8Final
                 await Capture(chassis+"-"+trail);
                 InputSystem.QueueStateEvent(mouse,new MouseState{position=point+new Vector2(80,15)});
             }
-            result=new{status="PASS",chassis=2,trails=3,actualStorePurchaseAndReload=true,price=8,menuEngineAnimated=true,realGameplay=true,saveGuard=true};
+            result=new{status="PASS",chassis=2,trails=3,actualStorePurchaseAndReload=true,price=8,singlePlumePerNozzle=true,realGameplay=true,survivalAndRing=survival,saveGuard=true};
         }
         catch(Exception e){result=new{status="FAILED",error=e.ToString()};}
         finally
@@ -104,6 +147,7 @@ public static class VerifyM8Final
                 if(mouse!=null&&mouse.added)InputSystem.RemoveDevice(mouse);
                 foreach(var d in disabled)if(d.added)InputSystem.EnableDevice(d);if(oldMouse!=null&&oldMouse.added)oldMouse.MakeCurrent();
                 InputSystem.settings.backgroundBehavior=behavior;InputSystem.settings.editorInputBehaviorInPlayMode=editorInput;
+                if(View.Confirmation.activeSelf) View.Cancel.onClick.Invoke();
                 damage.enabled=wasEnabled;Runner.StopRun();Save.ExitIsolated();Save.UseTestStorage(original);Shell.Boot();
                 foreach(var pair in hashes){var after=File.Exists(original+pair.Key)?File.ReadAllBytes(original+pair.Key):null;Check(pair.Value==null?after==null:after!=null&&after.SequenceEqual(pair.Value),"Production save changed: "+pair.Key);}
             }
@@ -127,7 +171,8 @@ public static class VerifyM8Final
     static async Task UiGameplay()
     {
         var font=AssetDatabase.LoadAssetAtPath<Font>("Assets/StarShift/UI/Fonts/VT323-Regular.ttf");
-        Check(Resources.FindObjectsOfTypeAll<UnityEngine.UI.Text>().Where(t=>t.gameObject.scene.IsValid()).All(t=>t.font==font),"UI font mismatch");
+        var allowed=new[]{"VT323-Regular.ttf","ChakraPetch-Medium.ttf","ChakraPetch-SemiBold.ttf"};
+        Check(Resources.FindObjectsOfTypeAll<UnityEngine.UI.Text>().Where(t=>t.gameObject.scene.IsValid()).All(t=>t.font!=null&&allowed.Contains(Path.GetFileName(AssetDatabase.GetAssetPath(t.font)))),"UI font mismatch");
         Check("ĂÂĐÊÔƠƯăâđêôơưạảãấầẩẫậắằẳẵặếềểễệốồổỗộớờởỡợứừửữựỳỵỷỹ".All(font.HasCharacter),"Vietnamese font coverage");
         var camera=Camera.main;
         camera.GetComponent<GameplayViewController>().RequestView(new GameplayViewSettings(9.6f,new Rect(0,0,1,1)),0);
@@ -136,11 +181,21 @@ public static class VerifyM8Final
         var pickups=new List<RewardPickup>();int n=0;
         foreach(var item in defs)
         {
-            var point=camera.ViewportToWorldPoint(new Vector3(.2f+(n%4)*.18f,.45f+(n/4)*.18f,-camera.transform.position.z));
+            if (pickups.Count == 4)
+            {
+                await Capture("hud-pickups-first-four");
+                foreach (var previous in pickups) previous.Release();
+                pickups.Clear();
+            }
+            var point=camera.ViewportToWorldPoint(new Vector3(.2f+(n%4)*.18f,.55f,-camera.transform.position.z));
             var pickup=Runner.GetComponent<RewardDirector>().Spawn(item,null,point);pickups.Add(pickup);
+            Check(pickup!=null,"Pickup spawn rejected: "+item.name);
             var visual=pickup.GetComponentInChildren<SpriteRenderer>();
             Check(visual.bounds.size.y*Screen.height/(camera.orthographicSize*2)>=48,"Pickup too small: "+item.name);n++;
         }
+        var firstFrames=pickups.Select(p=>p.GetComponentInChildren<SpriteRenderer>().sprite).ToArray();
+        await Task.Delay(250);
+        Check(pickups.Where((p,i)=>p.GetComponentInChildren<SpriteRenderer>().sprite!=firstFrames[i]).Count()==pickups.Count,"Pickup glint playback failed");
         foreach(var kind in new[]{PickupKind.Shield,PickupKind.Overdrive,PickupKind.SupportDrone})GameObject.Find("Player").GetComponent<PlayerPickupReceiver>().TryCollect(defs.First(d=>d.Kind==kind));
         await Capture("hud-pickups-1600");
         Session.Pause();await Capture("pause-final");var pausedFrame=pickups[0].GetComponentInChildren<SpriteRenderer>().sprite;await Task.Delay(180);

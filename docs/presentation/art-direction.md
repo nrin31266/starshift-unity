@@ -12,6 +12,11 @@ Visual target là **stylized hard-surface sci-fi arcade**. Silhouette và contra
 phải đọc được ở scale mobile; mechanical detail chỉ thêm khi không làm mất hình khối.
 Không cần photorealism để thể hiện mass hoặc vật liệu.
 
+Owner clarification 2026-10-21: icon, pickup và VFX ưu tiên màu sáng bóng,
+khối đủ dày, vuông bo tròn; dùng mặt sáng/cạnh tối để đọc thể tích, tránh hình dẹp.
+Pickup là lọ/capsule có icon rõ bên trong và glint nhẹ. Áp dụng cho các nhóm này,
+không đổi silhouette của cặp tàu A đã được chọn.
+
 ### Không được trông như
 
 - cute;
@@ -168,9 +173,9 @@ gray/red đơn điệu. Ramp/accent/glow của từng family nằm trong
 | Vanguard | steel-tím riêng | crimson + reactor vàng | modules 96×96 |
 | Warden | indigo riêng | teal energy | modules 96×96 |
 
-Mọi flying archetype có propulsion và muzzle đúng hướng bay/bắn: engine plume
-sau đuôi, muzzle ở đầu vũ khí; Carrier bay mở theo launch thật. Không vẽ exhaust
-lệch trục hoặc muzzle ở thân.
+Enemy có engine/nozzle và muzzle hợp lý theo cấu trúc tàu; không bắt gắn plume
+phía sau (owner clarification rebuild). Carrier bay mở theo launch thật. Player
+giữ hai plume cố định theo chassis, tách khỏi một vệt di chuyển nhỏ theo lịch sử vị trí.
 
 ### Damage và destruction
 
@@ -353,8 +358,9 @@ Asteroid damage repaint đã hoàn tất trong Batch 3; xem
 
 Player chassis giữ ID/ownership/giá nhưng thay thiết kế và display name thành
 Mũi Giáo (default) và Ưng Kích (broad swept armor). Mỗi chassis có engine/muzzle
-sockets riêng; plume và short ribbon dùng cùng frame family trong gameplay,
-approach và UI preview/card. Amber là repaint vùng giáp, không tint toàn hull.
+sockets riêng; plume thuộc chassis, movement trail là cosmetic riêng. Vệt nhỏ,
+chỉ phát khi player di chuyển, không tạo thêm lửa ở engine socket. Gameplay,
+approach và UI preview/card dùng cùng selected hull/skin và plume family. Amber là repaint vùng giáp, không tint toàn hull.
 Default propulsion luôn hiện; Ion giữ 8 Shards, Rainbow mới 8 Shards qua catalog
 hiện có. Banking chỉ đổi visual child. Source và evidence status ở
 [production manifest](../../tools/assets/m8/production-manifest.json).
@@ -363,4 +369,3 @@ Batch 3 hoàn thiện fleet/combat visual: 7 armor family + Supply Drone crate +
 2 boss palette riêng, damage/destruction thật, projectile family riêng và
 PREPARE → LOCK → ATTACK → RECOVERY cho Sniper/Interceptor/boss skill. Contract
 chi tiết ở [M8 fleet family](#m8-fleet-family-và-damage-state-provisional).
-

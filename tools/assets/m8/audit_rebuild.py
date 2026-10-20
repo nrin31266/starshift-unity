@@ -28,7 +28,7 @@ def classify(stem, exists, referenced):
 
 def inventory():
     tracked = subprocess.check_output(['git', 'ls-files', str(ART)], cwd=ROOT, text=True).splitlines()
-    paths = {p for p in tracked if p.endswith('.png')}
+    paths = {p[:-5] if p.endswith('.png.meta') else p for p in tracked if p.endswith(('.png', '.png.meta'))}
     paths.update(str(p.relative_to(ROOT)) for p in (ROOT / ART).rglob('*.png'))
     refs = collections.defaultdict(list)
     for path in (ROOT / 'app/Assets/StarShift').rglob('*'):

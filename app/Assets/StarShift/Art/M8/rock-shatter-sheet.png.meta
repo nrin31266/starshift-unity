@@ -1,0 +1,455 @@
+fileFormatVersion: 2
+guid: 1fa8880f4ec9f902485345e96ebab983
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -224064391590010988
+    second: rock-shatter-sheet_0
+  - first:
+      213: 6177115804059867109
+    second: rock-shatter-sheet_1
+  - first:
+      213: -8135071907035919761
+    second: rock-shatter-sheet_2
+  - first:
+      213: 2584067140718512085
+    second: rock-shatter-sheet_3
+  - first:
+      213: 408830752629398460
+    second: rock-shatter-sheet_4
+  - first:
+      213: -7689151544387823306
+    second: rock-shatter-sheet_5
+  - first:
+      213: 486467782504194330
+    second: rock-shatter-sheet_6
+  - first:
+      213: -4470690243243924537
+    second: rock-shatter-sheet_7
+  - first:
+      213: -4039932927659754977
+    second: rock-shatter-sheet_8
+  - first:
+      213: 8261137798755359418
+    second: rock-shatter-sheet_9
+  - first:
+      213: 9209076389180541342
+    second: rock-shatter-sheet_10
+  - first:
+      213: -6497934854617489506
+    second: rock-shatter-sheet_11
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 9
+  spritePivot: {x: 0.40425533, y: 0.7209302}
+  spritePixelsToUnits: 56.25
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: rock-shatter_00
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 86
+        width: 47
+        height: 43
+      alignment: 9
+      pivot: {x: 0.40425533, y: 0.7209302}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c690de7bb380f51e09279b076577968d
+      internalID: 1568809177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rock-shatter_01
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 86
+        width: 47
+        height: 43
+      alignment: 9
+      pivot: {x: 0.40425533, y: 0.7209302}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e53a017075d671e17b3b385a693b3c63
+      internalID: 1953132020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rock-shatter_02
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 86
+        width: 47
+        height: 43
+      alignment: 9
+      pivot: {x: 0.40425533, y: 0.7209302}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 34ceb44b842539116854539a57c01428
+      internalID: 894538836
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rock-shatter_03
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 86
+        width: 47
+        height: 43
+      alignment: 9
+      pivot: {x: 0.40425533, y: 0.7209302}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a81c38960efd902e29da111e1e739bb6
+      internalID: 1230566697
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rock-shatter_04
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 43
+        width: 47
+        height: 43
+      alignment: 9
+      pivot: {x: 0.40425533, y: 0.7209302}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d84214c1a3e0b10b69c5e0cd94e7aae7
+      internalID: -1854236892
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rock-shatter_05
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 43
+        width: 47
+        height: 43
+      alignment: 9
+      pivot: {x: 0.40425533, y: 0.7209302}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d585adb62c1e8d30383e89daf889de08
+      internalID: 1323503619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rock-shatter_06
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 43
+        width: 47
+        height: 43
+      alignment: 9
+      pivot: {x: 0.40425533, y: 0.7209302}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f702c4935600e5df6b666b79fedb37b7
+      internalID: -40129049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rock-shatter_07
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 43
+        width: 47
+        height: 43
+      alignment: 9
+      pivot: {x: 0.40425533, y: 0.7209302}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 62524632704543e21a2059a091a5fece
+      internalID: 2006534781
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rock-shatter_08
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 47
+        height: 43
+      alignment: 9
+      pivot: {x: 0.40425533, y: 0.7209302}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7bf10aee80af8b264ba7c90ccafc5365
+      internalID: -1478762341
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rock-shatter_09
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 0
+        width: 47
+        height: 43
+      alignment: 9
+      pivot: {x: 0.40425533, y: 0.7209302}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a7f3688b8dafb4d1f9e652e385e8596c
+      internalID: 1292850561
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rock-shatter_10
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 0
+        width: 47
+        height: 43
+      alignment: 9
+      pivot: {x: 0.40425533, y: 0.7209302}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f14016f411aaebd0fac6af816a6c7727
+      internalID: 381447959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rock-shatter_11
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 0
+        width: 47
+        height: 43
+      alignment: 9
+      pivot: {x: 0.40425533, y: 0.7209302}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b057175369fb76dc18d233607199dbac
+      internalID: 1816971235
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: ae9f3d80da210225a90bd9e2f8e1d655
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      rock-shatter_00: 1568809177
+      rock-shatter_01: 1953132020
+      rock-shatter_02: 894538836
+      rock-shatter_03: 1230566697
+      rock-shatter_04: -1854236892
+      rock-shatter_05: 1323503619
+      rock-shatter_06: -40129049
+      rock-shatter_07: 2006534781
+      rock-shatter_08: -1478762341
+      rock-shatter_09: 1292850561
+      rock-shatter_10: 381447959
+      rock-shatter_11: 1816971235
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,40 @@
+{
+  "starting_generations": 40,
+  "jobs": [
+    {
+      "id": "player",
+      "job_id": "2dc8aca4-ed21-4025-b671-b08767b190fc",
+      "model": "pixen",
+      "charged": 1,
+      "raw": "raw/player.png"
+    },
+    {
+      "id": "player-swept",
+      "job_id": "9a919ca7-996a-42e4-88d9-286e702ff246",
+      "model": "pixen",
+      "charged": 1,
+      "raw": "raw/player-swept.png"
+    },
+    {
+      "id": "scout",
+      "job_id": "e591e756-4c6e-42c9-948d-da9fe497f992",
+      "model": "pixen",
+      "charged": 1,
+      "decision": "REJECTED: diagonal pose and baked flame"
+    },
+    {
+      "id": "raider",
+      "job_id": "6eab1c5c-20e9-4eae-a9f3-9a3354193702",
+      "model": "pixen",
+      "charged": 1,
+      "raw": "raw/raider.png"
+    },
+    {
+      "id": "heavy",
+      "job_id": "1d63dcf7-9a8f-47b6-bfdd-2a510dc51711",
+      "model": "pixen",
+      "charged": 1,
+      "decision": "REJECTED: isometric vehicle, unsuitable for overhead flight"
+    }
+  ]
+}

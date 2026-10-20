@@ -11,7 +11,8 @@ namespace StarShift.Player
         private PlayerGameplayGate gate;
         private Color normalTint;
         private bool normalEnabled;
-        private float blinkTime;
+        private float deathTime;
+        private bool wasDying;
         private void Awake()
         {
             gate = GetComponent<PlayerGameplayGate>();
@@ -22,19 +23,19 @@ namespace StarShift.Player
 
         private void LateUpdate()
         {
-            blinkTime += Time.deltaTime;
             var dying = gate.State == PlayerGameplayState.Dying;
-            var protectedEntry = gate.State == PlayerGameplayState.PostEntryInvincibility;
-            hull.color = dying ? Color.white : protectedEntry ? new Color(.15f, 1, .85f, normalTint.a) : normalTint;
+            deathTime = dying ? (wasDying ? deathTime + Time.deltaTime : 0) : 0;
+            wasDying = dying;
+            hull.color = dying ? Color.white : normalTint;
             hull.enabled = normalEnabled && gate.State != PlayerGameplayState.GameOver &&
-                (!protectedEntry || Mathf.Repeat(blinkTime, .2f) < .12f);
+                (!dying || deathTime < .06f);
         }
         public void SetHullTint(Color tint) { normalTint = tint; hull.color = tint; }
 
         private void OnDisable()
         {
             if (hull != null) { hull.color = normalTint; hull.enabled = normalEnabled; }
-            blinkTime = 0;
+            deathTime = 0; wasDying = false;
         }
     }
 }

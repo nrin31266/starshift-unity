@@ -257,13 +257,6 @@ public static class ConfigureM8FleetCombat
             Array(feedback, "pulseMuzzleFrames", Frames("muzzle-pulse"));
             Array(feedback, "plasmaMuzzleFrames", Frames("muzzle-plasma"));
             Array(feedback, "missileMuzzleFrames", Frames("muzzle-missile"));
-            if (muzzle != null)
-            {
-                var debris = Visual(muzzle.parent.gameObject, "M8Debris", "debris-hull", Vector3.zero, 11, 1.2f);
-                debris.enabled = false;
-                Set(feedback, "debris", debris);
-                Array(feedback, "debrisFrames", Frames("debris-hull"));
-            }
         });
         // Boss staged destruction: module blast + fragment.
         foreach (var pair in new[] { new[] { "VanguardFrigate", "vanguard" }, new[] { "NebulaWarden", "warden" } })

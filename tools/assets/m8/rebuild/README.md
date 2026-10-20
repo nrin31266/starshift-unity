@@ -1,0 +1,35 @@
+# Presentation rebuild sources
+
+Current production status and remaining work belong to
+[asset pipeline](../../../../docs/production/asset-pipeline.md#m8-clean-rebuild--2026-10-21).
+This directory contains editable Aseprite sources and the scripts that export them.
+
+`approved/` retains the selected player pair A. `player.lua` repaints only the two
+stacked nozzle regions; it preserves plume and the remaining hull/skin pixels.
+The unused PixelLab player pair B in `raw/` is reference only. `jobs.json` records
+the five charged generations, including rejected outputs; inferred remainder is 35.
+
+Run Aseprite from the repository root, providing absolute source/output paths:
+
+```sh
+aseprite --batch --script-param root=/absolute/repo/tools/assets/m8/rebuild \
+  --script-param out=/absolute/repo/.design/m8-rebuild/staging \
+  --script tools/assets/m8/rebuild/player.lua
+```
+
+Use the same command for `fleet.lua`, `ui.lua`, `pickups.lua`, `modules.lua`,
+`environment.lua`, then `effects.lua`. Order matters: capsules read UI icons and
+cargo VFX reads the crate export. Exports are staging files; review them before import.
+Keep existing Unity metadata alongside any recreated bound PNG before refreshing.
+
+Native import/slicing uses `ConfigureM8Production.Import(ids, frameCount)` with four
+frames, except explosion (eight) and rock shatter (twelve). Rock uses its workbench
+anchor. `ConfigureM8Final.Player` binds the selected hulls and exactly two plumes;
+`RebuildM8Presentation` binds the movement trail, death fragments, capsules and rock
+bursts. Do not rerun old whole-project configuration passes over this wiring.
+
+`python3 tools/assets/m8/rebuild/self_check.py` checks the approved hull boundary,
+pickup identities, glint uniqueness and exact first-frame exports. Native checks:
+`VerifyM8Final.Ui`, `VerifyM8Final.Survival`, `VerifyM8ProductionLayout.Edit/Run`
+and `ConfigureM8Art.VerifyContracts`. Runtime checks require idle Menu and use
+separate save storage. Evidence is local under `.design/m8/`; it is not shipped art.

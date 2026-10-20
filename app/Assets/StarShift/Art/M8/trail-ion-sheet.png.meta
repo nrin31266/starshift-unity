@@ -150,8 +150,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8bcb64a6bb8a965a0b793de2c6e1ea2d
-      internalID: -1037675609
+      spriteID: 98e6679938d84291b878a052c088e763
+      internalID: 382445309
       vertices: []
       indices: 
       edges: []
@@ -172,8 +172,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: dfbd25d8c9696956987ee47d2fed1b57
-      internalID: 1844354970
+      spriteID: c6aa65c10f47321208d906058e14c929
+      internalID: -638593788
       vertices: []
       indices: 
       edges: []
@@ -194,8 +194,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a8e672e64a734dfb8b9f20f14a2ffb4e
-      internalID: -1411636614
+      spriteID: d1c903b3f7bee81039ef255509661b52
+      internalID: 162885289
       vertices: []
       indices: 
       edges: []
@@ -216,8 +216,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 78389b1b30beecfabba0b07aca6ea3cb
-      internalID: 291502539
+      spriteID: f46ceda98731d7ce28ccb1e27faa0308
+      internalID: -61503506
       vertices: []
       indices: 
       edges: []
@@ -226,7 +226,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: f5d65aa0e38ac2d2290c87345f0d704c
+    spriteID: 3c35b4d990c86bea0a4c2f3cdbeb7474
     internalID: 0
     vertices: []
     indices: 
@@ -236,10 +236,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      trail-ion_00: -1037675609
-      trail-ion_01: 1844354970
-      trail-ion_02: -1411636614
-      trail-ion_03: 291502539
+      trail-ion_00: 382445309
+      trail-ion_01: -638593788
+      trail-ion_02: 162885289
+      trail-ion_03: -61503506
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

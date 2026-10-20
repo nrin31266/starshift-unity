@@ -1,0 +1,339 @@
+{
+ "frames": [
+  {
+   "filename": "starshift-rock-shatter-rebuild 0.png",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 47,
+    "h": 43
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 47,
+    "h": 43
+   },
+   "sourceSize": {
+    "w": 47,
+    "h": 43
+   },
+   "pivot": {
+    "x": 0.40425531914893614,
+    "y": 0.27906976744186046
+   },
+   "duration": 71
+  },
+  {
+   "filename": "starshift-rock-shatter-rebuild 1.png",
+   "frame": {
+    "x": 47,
+    "y": 0,
+    "w": 47,
+    "h": 43
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 47,
+    "h": 43
+   },
+   "sourceSize": {
+    "w": 47,
+    "h": 43
+   },
+   "pivot": {
+    "x": 0.40425531914893614,
+    "y": 0.27906976744186046
+   },
+   "duration": 71
+  },
+  {
+   "filename": "starshift-rock-shatter-rebuild 2.png",
+   "frame": {
+    "x": 94,
+    "y": 0,
+    "w": 47,
+    "h": 43
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 47,
+    "h": 43
+   },
+   "sourceSize": {
+    "w": 47,
+    "h": 43
+   },
+   "pivot": {
+    "x": 0.40425531914893614,
+    "y": 0.27906976744186046
+   },
+   "duration": 71
+  },
+  {
+   "filename": "starshift-rock-shatter-rebuild 3.png",
+   "frame": {
+    "x": 141,
+    "y": 0,
+    "w": 47,
+    "h": 43
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 47,
+    "h": 43
+   },
+   "sourceSize": {
+    "w": 47,
+    "h": 43
+   },
+   "pivot": {
+    "x": 0.40425531914893614,
+    "y": 0.27906976744186046
+   },
+   "duration": 71
+  },
+  {
+   "filename": "starshift-rock-shatter-rebuild 4.png",
+   "frame": {
+    "x": 0,
+    "y": 43,
+    "w": 47,
+    "h": 43
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 47,
+    "h": 43
+   },
+   "sourceSize": {
+    "w": 47,
+    "h": 43
+   },
+   "pivot": {
+    "x": 0.40425531914893614,
+    "y": 0.27906976744186046
+   },
+   "duration": 71
+  },
+  {
+   "filename": "starshift-rock-shatter-rebuild 5.png",
+   "frame": {
+    "x": 47,
+    "y": 43,
+    "w": 47,
+    "h": 43
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 47,
+    "h": 43
+   },
+   "sourceSize": {
+    "w": 47,
+    "h": 43
+   },
+   "pivot": {
+    "x": 0.40425531914893614,
+    "y": 0.27906976744186046
+   },
+   "duration": 71
+  },
+  {
+   "filename": "starshift-rock-shatter-rebuild 6.png",
+   "frame": {
+    "x": 94,
+    "y": 43,
+    "w": 47,
+    "h": 43
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 47,
+    "h": 43
+   },
+   "sourceSize": {
+    "w": 47,
+    "h": 43
+   },
+   "pivot": {
+    "x": 0.40425531914893614,
+    "y": 0.27906976744186046
+   },
+   "duration": 71
+  },
+  {
+   "filename": "starshift-rock-shatter-rebuild 7.png",
+   "frame": {
+    "x": 141,
+    "y": 43,
+    "w": 47,
+    "h": 43
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 47,
+    "h": 43
+   },
+   "sourceSize": {
+    "w": 47,
+    "h": 43
+   },
+   "pivot": {
+    "x": 0.40425531914893614,
+    "y": 0.27906976744186046
+   },
+   "duration": 71
+  },
+  {
+   "filename": "starshift-rock-shatter-rebuild 8.png",
+   "frame": {
+    "x": 0,
+    "y": 86,
+    "w": 47,
+    "h": 43
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 47,
+    "h": 43
+   },
+   "sourceSize": {
+    "w": 47,
+    "h": 43
+   },
+   "pivot": {
+    "x": 0.40425531914893614,
+    "y": 0.27906976744186046
+   },
+   "duration": 71
+  },
+  {
+   "filename": "starshift-rock-shatter-rebuild 9.png",
+   "frame": {
+    "x": 47,
+    "y": 86,
+    "w": 47,
+    "h": 43
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 47,
+    "h": 43
+   },
+   "sourceSize": {
+    "w": 47,
+    "h": 43
+   },
+   "pivot": {
+    "x": 0.40425531914893614,
+    "y": 0.27906976744186046
+   },
+   "duration": 71
+  },
+  {
+   "filename": "starshift-rock-shatter-rebuild 10.png",
+   "frame": {
+    "x": 94,
+    "y": 86,
+    "w": 47,
+    "h": 43
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 47,
+    "h": 43
+   },
+   "sourceSize": {
+    "w": 47,
+    "h": 43
+   },
+   "pivot": {
+    "x": 0.40425531914893614,
+    "y": 0.27906976744186046
+   },
+   "duration": 71
+  },
+  {
+   "filename": "starshift-rock-shatter-rebuild 11.png",
+   "frame": {
+    "x": 141,
+    "y": 86,
+    "w": 47,
+    "h": 43
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 47,
+    "h": 43
+   },
+   "sourceSize": {
+    "w": 47,
+    "h": 43
+   },
+   "pivot": {
+    "x": 0.40425531914893614,
+    "y": 0.27906976744186046
+   },
+   "duration": 71
+  }
+ ],
+ "meta": {
+  "app": "PixelLab VFX Creator",
+  "image": "starshift-rock-shatter-rebuild.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 188,
+   "h": 129
+  },
+  "scale": "1",
+  "anchor": {
+   "kind": "origin",
+   "x": 19,
+   "y": 12
+  },
+  "frameTags": [
+   {
+    "name": "starshift-rock-shatter-rebuild",
+    "from": 0,
+    "to": 11,
+    "direction": "forward"
+   }
+  ]
+ }
+}

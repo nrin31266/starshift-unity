@@ -21,11 +21,13 @@ namespace StarShift.Enemies
         [SerializeField, Min(.02f)] private float frameSeconds = .07f;
         private AttackPhase phase;
         private float age;
+        private EnemyHealth health;
 
         private void Awake()
         {
             if (module == null) module = GetComponentInParent<BossAttackModule>();
             if (barrage == null) barrage = GetComponentInParent<BossBarrage>();
+            health = GetComponentInParent<EnemyHealth>();
         }
 
         private void OnEnable()
@@ -44,17 +46,27 @@ namespace StarShift.Enemies
             if (cue != null) cue.enabled = false;
         }
 
-        private void OnPhase(AttackPhase next) { phase = next; age = 0; }
+        private void OnPhase(AttackPhase next)
+        {
+            if (next == AttackPhase.Idle && phase == AttackPhase.Recovery) return;
+            // Tail chỉ thuộc presentation, không giữ module bận hoặc kéo dài damage window.
+            phase = next == AttackPhase.Idle && phase == AttackPhase.Attack ? AttackPhase.Recovery : next;
+            age = 0;
+        }
 
         private void LateUpdate()
         {
-            if (cue == null) return;
-            var frames = phase == AttackPhase.Attack ? attackFrames : phase == AttackPhase.Lock ? lockFrames : phase == AttackPhase.Prepare ? prepareFrames : null;
+            if (cue == null || Time.timeScale <= 0) return;
+            if (health != null && !health.IsAlive) phase = AttackPhase.Idle;
+            if (phase == AttackPhase.Recovery && age >= frameSeconds * attackFrames.Length) phase = AttackPhase.Idle;
+            var frames = phase == AttackPhase.Attack || phase == AttackPhase.Recovery ? attackFrames : phase == AttackPhase.Lock ? lockFrames : phase == AttackPhase.Prepare ? prepareFrames : null;
             cue.enabled = frames != null && frames.Length > 0;
             if (!cue.enabled) return;
             age += Time.deltaTime;
             cue.sprite = frames[Mathf.Min(frames.Length - 1, (int)(age / frameSeconds))];
-            cue.color = phase == AttackPhase.Attack ? attackTint : phase == AttackPhase.Lock ? lockTint : prepareTint;
+            var tint = phase == AttackPhase.Attack || phase == AttackPhase.Recovery ? attackTint : phase == AttackPhase.Lock ? lockTint : prepareTint;
+            if (phase == AttackPhase.Recovery) tint.a *= Mathf.Clamp01(1 - age / (frameSeconds * frames.Length));
+            cue.color = tint;
             // Scale nhẹ theo phase: LOCK lớn hơn PREPARE để đọc mức nguy hiểm.
             float scale = phase == AttackPhase.Attack ? 1.15f : phase == AttackPhase.Lock ? 1f : .8f;
             cue.transform.localScale = Vector3.one * scale;

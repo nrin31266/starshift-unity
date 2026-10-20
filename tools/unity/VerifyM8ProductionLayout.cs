@@ -19,6 +19,31 @@ public static class VerifyM8ProductionLayout
     static void Check(bool value,string message){if(!value)throw new InvalidOperationException(message);}
     static async Task Until(Func<bool> condition,int ms,string message){var end=Time.realtimeSinceStartup+ms/1000f;while(!condition()&&Time.realtimeSinceStartup<end)await Task.Delay(30);Check(condition(),message);}
     static async Task Capture(string id,int settle=200){if(settle>0)await Task.Delay(settle);var path=Path.GetFullPath("../.design/m8/screenshots/production-"+id+"-"+targetWidth+".png");if(File.Exists(path))File.Delete(path);ScreenCapture.CaptureScreenshot(path);await Until(()=>File.Exists(path),4000,"screenshot "+id);await Task.Delay(40);}
+    static async Task CheckRecovery(EnemyHealth boss)
+    {
+        var driver = boss.GetComponent<BossPhaseRunner>();
+        driver.enabled = false;
+        var module = boss.GetComponentsInChildren<BossAttackModule>().First();
+        var presentation = module.GetComponent<BossSkillPhasePresentation>();
+        var cue = (SpriteRenderer)new SerializedObject(presentation).FindProperty("cue").objectReferenceValue;
+        var phases = new System.Collections.Generic.HashSet<AttackPhase>();
+        Action<AttackPhase> observe = phase => phases.Add(phase);
+        module.PhaseChanged += observe;
+        try
+        {
+            Check(module.BeginAttack(), "Real boss attack rejected");
+            await Until(() => phases.Contains(AttackPhase.Recovery), 5000, "Boss recovery event missing");
+            await Task.Delay(30);
+            Check(cue.enabled && cue.color.a > 0, "Recovery cue disappeared in same tick");
+            var color = cue.color; var sprite = cue.sprite;
+            var scale = Time.timeScale; Time.timeScale = 0;
+            try { await Task.Delay(100); Check(cue.color == color && cue.sprite == sprite, "Recovery ignores Pause"); }
+            finally { Time.timeScale = scale; }
+            await Until(() => !cue.enabled, 1000, "Recovery tail did not end");
+            Check(phases.Contains(AttackPhase.Prepare) && phases.Contains(AttackPhase.Lock) && phases.Contains(AttackPhase.Attack), "Boss phases skipped");
+        }
+        finally { module.PhaseChanged -= observe; driver.enabled = true; }
+    }
     public static object Edit()
     {
         Check(!EditorApplication.isPlayingOrWillChangePlaymode,"Edit Mode required");int textures=0;
@@ -28,9 +53,9 @@ public static class VerifyM8ProductionLayout
             Check(importer.filterMode==FilterMode.Point&&!importer.mipmapEnabled&&importer.textureCompression==TextureImporterCompression.Uncompressed&&importer.npotScale==TextureImporterNPOTScale.None,"Importer mismatch "+path);
             if(path.EndsWith("-sheet.png"))
             {
-                var frames=AssetDatabase.LoadAllAssetsAtPath(path).OfType<Sprite>().OrderBy(f=>f.name,StringComparer.Ordinal).ToArray();int count=path.EndsWith("explosion-sheet.png")?8:4;
+                var frames=AssetDatabase.LoadAllAssetsAtPath(path).OfType<Sprite>().OrderBy(f=>f.name,StringComparer.Ordinal).ToArray();int count=path.EndsWith("explosion-sheet.png")?8:path.EndsWith("rock-shatter-sheet.png")?12:4;
                 Check(frames.Length==count,"Frame count "+path);
-                foreach(var frame in frames)Check(frame.pivot==frame.rect.size*.5f,"Pivot "+frame.name);
+                foreach(var frame in frames)Check((frame.pivot-(path.EndsWith("rock-shatter-sheet.png")?new Vector2(19,31):frame.rect.size*.5f)).sqrMagnitude<.001f,"Pivot "+frame.name);
             }
             textures++;
         }
@@ -81,6 +106,7 @@ public static class VerifyM8ProductionLayout
                 runner.StartRun("BOSS",true,true,null,null);player.GetComponent<PlayerGameplayGate>().SetState(PlayerGameplayState.Active);UnityEngine.Object.FindAnyObjectByType<EnemyFireGate>().ResumeAfter(0);
                 await Until(()=>EnemyHealth.Active.Any(e=>e.IsAlive&&e.GetComponent<BossPhaseRunner>()!=null&&e.GetComponent<EntryHoldFlight>().IsHolding),15000,"boss entry "+mission);player.GetComponent<PlayerRespawnEntrance>().Cancel();player.GetComponent<RelativeDragMovement>().ResetForCheckpoint(runner.Flow.Direction);await Capture(mission=="L4"?"vanguard":"warden");
                 var boss=EnemyHealth.Active.First(e=>e.IsAlive&&e.GetComponent<BossPhaseRunner>()!=null);
+                if(mission=="L4") await CheckRecovery(boss);
                 var shield=boss.GetComponent<BossShieldNetwork>();
                 if(shield!=null){foreach(var node in boss.GetComponentsInChildren<EnemyHealth>().Where(e=>e!=boss).ToArray())node.ReceivePlayerHit(node.CurrentHp,player);await Until(()=>shield.IsExposed,4000,"shield expose");}
                 boss.ReceivePlayerHit(boss.CurrentHp-Mathf.Max(1,Mathf.FloorToInt(boss.MaxHp*.2f)),player);await Task.Delay(160);

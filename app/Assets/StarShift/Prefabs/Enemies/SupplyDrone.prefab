@@ -318,10 +318,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EnemyFirePresentation
   core: {fileID: 3117799779576058102}
   chargeFrames:
-  - {fileID: -1297136150, guid: dc8586631ea1e76fab1768c408ba1207, type: 3}
-  - {fileID: 1886834818, guid: dc8586631ea1e76fab1768c408ba1207, type: 3}
-  - {fileID: -1388459218, guid: dc8586631ea1e76fab1768c408ba1207, type: 3}
-  - {fileID: -837760161, guid: dc8586631ea1e76fab1768c408ba1207, type: 3}
+  - {fileID: 824800693, guid: dc8586631ea1e76fab1768c408ba1207, type: 3}
+  - {fileID: -1795178861, guid: dc8586631ea1e76fab1768c408ba1207, type: 3}
+  - {fileID: -549097171, guid: dc8586631ea1e76fab1768c408ba1207, type: 3}
+  - {fileID: -580461162, guid: dc8586631ea1e76fab1768c408ba1207, type: 3}
   chargedTint: {r: 1, g: 0.2, b: 0.8, a: 1}
   chargeCue: {fileID: 3893107885609880092}
   specialDanger: 0
@@ -503,7 +503,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.4977778, y: 0.4977778}
+  m_Size: {x: 0.46222222, y: 0.46222222}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

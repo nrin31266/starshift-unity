@@ -40,7 +40,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -51,10 +51,10 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 56.25
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -78,7 +78,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -129,45 +129,89 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: charge-hostile-lemon-sheet_0
+      name: charge-hostile-lemon_00
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 68
+        width: 24
         height: 24
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 7ecb865b2fea34670800000000000000
-      internalID: 8521847277363969255
+      spriteID: 8d3e998e882c4b19cb2b29fbdb97acc1
+      internalID: 1777863969
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: charge-hostile-lemon-sheet_1
+      name: charge-hostile-lemon_01
       rect:
         serializedVersion: 2
-        x: 78
-        y: 6
-        width: 12
-        height: 12
+        x: 24
+        y: 0
+        width: 24
+        height: 24
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 5b25eeaadc70529e0800000000000000
-      internalID: -1646901508816612683
+      spriteID: fdeda6b38bbfdfc098ba4d62fb93c996
+      internalID: 1458155921
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: charge-hostile-lemon_02
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 0
+        width: 24
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 57e8d640b759ea7e4a4e3a46ec87a7ce
+      internalID: 1445228320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: charge-hostile-lemon_03
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 0
+        width: 24
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 21d5c0485a50a9716b1436c6cf8f0e35
+      internalID: 1001933005
       vertices: []
       indices: 
       edges: []
@@ -176,7 +220,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 8369bc16288992c77b5c88d59ffb3c82
     internalID: 0
     vertices: []
     indices: 
@@ -186,8 +230,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      charge-hostile-lemon-sheet_0: 8521847277363969255
-      charge-hostile-lemon-sheet_1: -1646901508816612683
+      charge-hostile-lemon_00: 1777863969
+      charge-hostile-lemon_01: 1458155921
+      charge-hostile-lemon_02: 1445228320
+      charge-hostile-lemon_03: 1001933005
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

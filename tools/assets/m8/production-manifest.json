@@ -1,437 +1,479 @@
 {
-  "phase": "CLEAN REBUILD",
-  "review_policy": "No previous verification status carries over. KEEP means candidate pending real Unity review.",
+  "phase": "REBUILD IN PROGRESS",
+  "runtime_verified": false,
+  "baseline_commit": "4219c667",
   "quota": {
     "starting_fast_generations": 40,
-    "generation_target": [
-      12,
-      18
-    ],
-    "hard_ceiling_before_reassessment": 20
+    "charged_generations": 5,
+    "inferred_remaining": 35,
+    "pro_used": false,
+    "ledger": "tools/assets/m8/rebuild/jobs.json"
   },
-  "runtime_verified": false,
+  "checks": {
+    "player_survival_ring_and_save_guard": "PASS",
+    "capsules_ui_pause_1600_and_2000": "PASS",
+    "layout_1600_and_2000": "PASS",
+    "boss_recovery_and_pause_2000": "PASS",
+    "native_root_textures": 247,
+    "enemy_prefabs_checked": 13,
+    "gameplay_collider_contracts": "UNCHANGED",
+    "missing_required_png": 0,
+    "android_device": "NOT CHECKED"
+  },
+  "remaining": [
+    "Remaining fleet/damage/motion and retained VFX review",
+    "Results/Victory/error presentation review",
+    "Final GUID-preserving art organization and tooling cleanup"
+  ],
   "assets": [
     {
       "id": "shard-shimmer",
       "output": "app/Assets/StarShift/Art/M8/Smoke/shard-shimmer.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "5c4f7b8ed4beaf534943ea281360bb0b",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Art/M8/Smoke/shard-shimmer.anim"
       ],
       "sha256": "f0f0269272f2b8ca8cca960747bc19d7bed03ecf051b1fc709c4fd5f969d2ecd",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
-      "id": "asteroid-anchor",
-      "output": "app/Assets/StarShift/Art/M8/asteroid-anchor.png",
-      "exists": false,
-      "classification": "DELETE",
-      "guid": "9b797b714fd739a4c83204e68c23eb5c",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
-      "serialized_references": [],
-      "sha256": null,
-      "runtime_verified": false
+      "id": "asteroid-huge-critical",
+      "output": "app/Assets/StarShift/Art/M8/asteroid-huge-critical.png",
+      "exists": true,
+      "guid": "0b9d46714148dbca6be290d466b1c0eb",
+      "metadata_exists": true,
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/ResourceAsteroid.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/StormAsteroid.prefab"
+      ],
+      "sha256": "54d8b031c30a59a9c439e99837d30815d6cc76c191b9233be691cee3ec439650",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/asteroid-huge-critical.aseprite"
+    },
+    {
+      "id": "asteroid-huge-damaged",
+      "output": "app/Assets/StarShift/Art/M8/asteroid-huge-damaged.png",
+      "exists": true,
+      "guid": "e4cf49f8c84594fcd8fa13bc66a48351",
+      "metadata_exists": true,
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/ResourceAsteroid.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/StormAsteroid.prefab"
+      ],
+      "sha256": "4476fd1016d34dcb0722e1ac69a0a94bf7612feabc5819790b31fb1b6db5aa0b",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/asteroid-huge-damaged.aseprite"
     },
     {
       "id": "asteroid-huge",
       "output": "app/Assets/StarShift/Art/M8/asteroid-huge.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "99f7f1e6373d2bfba8fd580d06f9994e",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/ResourceAsteroid.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/StormAsteroid.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "44d3d04111575675af4eda4e01d96d58dd3f2a5abc494fb5b4b74ed2ac0c0916",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/asteroid-huge.aseprite"
+    },
+    {
+      "id": "asteroid-large-critical",
+      "output": "app/Assets/StarShift/Art/M8/asteroid-large-critical.png",
+      "exists": true,
+      "guid": "302b66d371c6e08bc97f30ef049ffb92",
+      "metadata_exists": true,
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/ResourceAsteroid.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/StormAsteroid.prefab"
+      ],
+      "sha256": "1b9fde4d2520a88ee9c5d1ceedb75bd5e6a9716db1e7b48e74fb4c25dca0ec18",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/asteroid-large-critical.aseprite"
+    },
+    {
+      "id": "asteroid-large-damaged",
+      "output": "app/Assets/StarShift/Art/M8/asteroid-large-damaged.png",
+      "exists": true,
+      "guid": "ed0a141253e14eae2abaabb0c26291dd",
+      "metadata_exists": true,
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/ResourceAsteroid.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/StormAsteroid.prefab"
+      ],
+      "sha256": "3364bc11d63d5eb25999d03ddb725e9c6e90a627fd9de1825ad27b921d619507",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/asteroid-large-damaged.aseprite"
     },
     {
       "id": "asteroid-large",
       "output": "app/Assets/StarShift/Art/M8/asteroid-large.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "dd7dfe178dbbfe850844a66a2bda02e8",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/ResourceAsteroid.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/StormAsteroid.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "a625709bfd1ec394ee3e1b37cf2c6bffb2268d06c718e8f47d9a13b87ecec141",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/asteroid-large.aseprite"
+    },
+    {
+      "id": "asteroid-medium-critical",
+      "output": "app/Assets/StarShift/Art/M8/asteroid-medium-critical.png",
+      "exists": true,
+      "guid": "10a2271fca79dab308ec695e85cbaa1f",
+      "metadata_exists": true,
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/ResourceAsteroid.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/StormAsteroid.prefab"
+      ],
+      "sha256": "594db78a09fb0d05be2dc5a2afe97e30a744d35977f5cbb27dc271576337157f",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/asteroid-medium-critical.aseprite"
+    },
+    {
+      "id": "asteroid-medium-damaged",
+      "output": "app/Assets/StarShift/Art/M8/asteroid-medium-damaged.png",
+      "exists": true,
+      "guid": "e42a8e198275fa6c3b36e15943542f13",
+      "metadata_exists": true,
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/ResourceAsteroid.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/StormAsteroid.prefab"
+      ],
+      "sha256": "0213018c334b166f8e8c81b4e593459fd579eff4ed7b6c09778b98a10b48c2f7",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/asteroid-medium-damaged.aseprite"
     },
     {
       "id": "asteroid-medium",
       "output": "app/Assets/StarShift/Art/M8/asteroid-medium.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "492de7188188a64a19690d054cce61bd",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/ResourceAsteroid.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/StormAsteroid.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "27b1573811a1bdf9c4054824f56b30e4bda9933c59a1f84f22d8d52bc4ff044f",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/asteroid-medium.aseprite"
+    },
+    {
+      "id": "asteroid-small-critical",
+      "output": "app/Assets/StarShift/Art/M8/asteroid-small-critical.png",
+      "exists": true,
+      "guid": "69b6cd5e216767954b5831f374cbb6c9",
+      "metadata_exists": true,
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/ResourceAsteroid.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/StormAsteroid.prefab"
+      ],
+      "sha256": "7b7e0f7d020a8b31cc1528af89bcb05f341c82a129ad63aa3f974ed3662f7a4c",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/asteroid-small-critical.aseprite"
+    },
+    {
+      "id": "asteroid-small-damaged",
+      "output": "app/Assets/StarShift/Art/M8/asteroid-small-damaged.png",
+      "exists": true,
+      "guid": "784fdea9e27c1c077a4da53dfc3c2121",
+      "metadata_exists": true,
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/ResourceAsteroid.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/StormAsteroid.prefab"
+      ],
+      "sha256": "ca379b951f01f0fc69a1f442578c4ec3ed75e92fccafa5b283c9d9f444e454fb",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/asteroid-small-damaged.aseprite"
     },
     {
       "id": "asteroid-small",
       "output": "app/Assets/StarShift/Art/M8/asteroid-small.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "04f6b8ca188115c548f67e88052cbf4e",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/ResourceAsteroid.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/StormAsteroid.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "cd782d6473cab860e49fabcfd88e91cc5c35cd4a6e6aba2e3ba8de7ad8ff293b",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/asteroid-small.aseprite"
     },
     {
       "id": "astra-planet",
       "output": "app/Assets/StarShift/Art/M8/astra-planet.png",
       "exists": true,
-      "classification": "KEEP",
       "guid": "0e04df31e07ccb7c2bd02947278a14e4",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
       "sha256": "a7d2354153514487765bdf5731cd0563a84c1e82b1dcd8a2a9062679d33e162c",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "attack-telegraphs-sheet",
       "output": "app/Assets/StarShift/Art/M8/attack-telegraphs-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "a1b1247bb4e37e698bc4ef27de87fb13",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
       ],
       "sha256": "238ffc118e009667060cabe6854ce8d69c5185b7e68295a0686a8cab46a77880",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "attack-telegraphs",
       "output": "app/Assets/StarShift/Art/M8/attack-telegraphs.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "b0f228696fe483935ac5129bc7323937",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
       ],
       "sha256": "0d1c7fdbf101cdf747e69386636d0ca2c710dccec2089521fd73d5eef1119a08",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "background",
       "output": "app/Assets/StarShift/Art/M8/background.png",
       "exists": true,
-      "classification": "KEEP",
       "guid": "b9d1febfb8019c37796b148b9d87178c",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/UI/GameShellUI.prefab",
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
-      "sha256": "d3979c546e0fc6dba6e417b81f8f62412959f42e0190e84f0d9f5138cab51813",
-      "runtime_verified": false
-    },
-    {
-      "id": "boost-warp-sheet",
-      "output": "app/Assets/StarShift/Art/M8/boost-warp-sheet.png",
-      "exists": true,
-      "classification": "DELETE",
-      "guid": "270aee4f7ef0a5f0d9ebd2cb7e2ef465",
-      "metadata_exists": true,
-      "metadata_origin": "filesystem",
-      "serialized_references": [],
-      "sha256": "4e1d880db1efb23a440cfe2ff086477a10ce85f805d270b8172e9e83fc8f38a4",
-      "runtime_verified": false
-    },
-    {
-      "id": "boost-warp",
-      "output": "app/Assets/StarShift/Art/M8/boost-warp.png",
-      "exists": true,
-      "classification": "DELETE",
-      "guid": "c653327d85d39d80881b3d9dfc822a0f",
-      "metadata_exists": true,
-      "metadata_origin": "filesystem",
-      "serialized_references": [],
-      "sha256": "283cf741844f5a6f5e0b89a97e07535ef974975779df7ef26af2f595cf4e91b5",
-      "runtime_verified": false
+      "sha256": "8aaca8a5b377a83d5b9e381f5318d94d6a2995610ab9c06933d2ca352dd644e8",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/background.aseprite"
     },
     {
       "id": "boss-blast-sheet",
       "output": "app/Assets/StarShift/Art/M8/boss-blast-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "9a9382dc8a9f7ebdc9089f6ceea492db",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
       ],
-      "sha256": "412e9945146bd914c4063a6d9d100d90d4d5c9380ad597d905c27c2ade0983f6",
-      "runtime_verified": false
+      "sha256": "ed7d130f9da424f332c50aa9db299a7a1969c15000f441dba910e7660b85e52f",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/boss-blast.aseprite"
     },
     {
       "id": "boss-blast",
       "output": "app/Assets/StarShift/Art/M8/boss-blast.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "399c0413aac5e85d7addf7fdc1286f82",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
       ],
-      "sha256": "984927e86d2e10413ad2557f23285d807fadf633d35b2100721f2e9af1ea132f",
-      "runtime_verified": false
+      "sha256": "acc5bda13a4b7fcdab0e213320417fb1e8c85244a4ebbeea08faad00cf7b9a96",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/boss-blast.aseprite"
     },
     {
       "id": "boss-curtain",
       "output": "app/Assets/StarShift/Art/M8/boss-curtain.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "2ebe4ee3b92261ff0819f0bbeb23a0a5",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Projectiles/VanguardCurtainProjectile.prefab"
       ],
       "sha256": "0b826695f8b2cee2b066a08439739a9ba52e4b601106562b4b809c38042a8d2c",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "boss-module",
       "output": "app/Assets/StarShift/Art/M8/boss-module.png",
       "exists": true,
-      "classification": "KEEP AS REFERENCE",
       "guid": "cbbf28ad5f66d48ba9392a6d00528dbe",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
-      "serialized_references": [
-        "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
-      ],
+      "serialized_references": [],
       "sha256": "19ce5d03f7d8b5bf77fff73c934762b6ff3e1f4df1be3d877cd52b4a6eda0022",
-      "runtime_verified": false
-    },
-    {
-      "id": "buff-activate-expire-sheet",
-      "output": "app/Assets/StarShift/Art/M8/buff-activate-expire-sheet.png",
-      "exists": false,
-      "classification": "DELETE",
-      "guid": "6e978a342f984ed0f9c96aac7b8d231c",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
-      "serialized_references": [],
-      "sha256": null,
-      "runtime_verified": false
-    },
-    {
-      "id": "buff-activate-expire",
-      "output": "app/Assets/StarShift/Art/M8/buff-activate-expire.png",
-      "exists": false,
-      "classification": "DELETE",
-      "guid": "e3ee551cff447d8ee9f7b66140aebc14",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
-      "serialized_references": [],
-      "sha256": null,
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "bulwark-critical",
       "output": "app/Assets/StarShift/Art/M8/bulwark-critical.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "d18d18f2ea1932d7b928df03a45d87e2",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "df3854553f018930874c078bb2bc054197738eb0ad2c2a12ffe3b92480d21856",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/bulwark-critical.aseprite"
     },
     {
       "id": "bulwark-damaged",
       "output": "app/Assets/StarShift/Art/M8/bulwark-damaged.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "8a1a81f040fe7de6f9152e2bc8018da5",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "ddd535b4be9336099f55258aae9e839c84c1e202dbafee535ff44118f145761c",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/bulwark-damaged.aseprite"
     },
     {
       "id": "bulwark",
       "output": "app/Assets/StarShift/Art/M8/bulwark.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "e9fe700955d99714c8653b1e606657b7",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "39e40d0f2c633b0e45ec1761480762a320e8c060965d84cedbc64ecc4ac46006",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/bulwark.aseprite"
     },
     {
       "id": "carrier-bay-loop-sheet",
       "output": "app/Assets/StarShift/Art/M8/carrier-bay-loop-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "406c238945c93997e9a0c75c319bdb59",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Carrier.prefab"
       ],
       "sha256": "09ecb3deb4e6e893c1e23b1c1c02ac4fe80244c5e84ec6d6bdb6f68805343f09",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "carrier-bay-loop",
       "output": "app/Assets/StarShift/Art/M8/carrier-bay-loop.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "64f41bb9851152e78bcc82b5fa395232",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Carrier.prefab"
       ],
       "sha256": "a77ad3c885cb8299075aaee33b88df7144a4be850c98c6eb67717d07b39bba20",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "carrier-critical",
       "output": "app/Assets/StarShift/Art/M8/carrier-critical.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "9ed01a4dd11bfb9509981c228de9452f",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Carrier.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "7a1db584015481c0e8491a5eee1017e33796f03d939f6fb6b513b581a8500e64",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/carrier-critical.aseprite"
     },
     {
       "id": "carrier-damaged",
       "output": "app/Assets/StarShift/Art/M8/carrier-damaged.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "e3b064e22b065da81b7f474a93f1082f",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Carrier.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "0c4f1e1d8f368b392ca0ee3c752fae5b1da346df3b639e8e8605feea0e8ba2e2",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/carrier-damaged.aseprite"
     },
     {
       "id": "carrier",
       "output": "app/Assets/StarShift/Art/M8/carrier.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "ca5e18cee78d07dce937ebec7a4c53c3",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Carrier.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "b945efa8ad852ebb81f46266a5e248fcb5acd65fefba0e96b5633baa9974e93e",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/carrier.aseprite"
     },
     {
       "id": "charge-beam-sheet",
       "output": "app/Assets/StarShift/Art/M8/charge-beam-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "2234894dc2522ab6a9bbb7a0b2043825",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Interceptor.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Sniper.prefab"
       ],
       "sha256": "d7946be7ad1f4cb1a8fa56350238c7f4ddea0dcea4518754ac07b11f03d2a080",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "charge-beam",
       "output": "app/Assets/StarShift/Art/M8/charge-beam.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "a08941441ee55ee3c879799ed801d51a",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Interceptor.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Sniper.prefab"
       ],
       "sha256": "31871e17e1b64732c1c07d88153df78a5bff84f87e42cd323e98f45f7bd064d3",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "charge-hostile-lemon-sheet",
       "output": "app/Assets/StarShift/Art/M8/charge-hostile-lemon-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "2f0a3cfc39d56688bb3ee1c45aba3a08",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
       "sha256": "59e9961385234850ad6b3772d5641f32231b9cc11feb8881d93c3d1714bf13f5",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "charge-hostile-lemon",
       "output": "app/Assets/StarShift/Art/M8/charge-hostile-lemon.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "37f45b2537a0588e3af2d3352a85e5ec",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
       "sha256": "00234f05656b2ab230203ab46c23052712df5b8d0ef100bd60300c152c5e6c7a",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "charge-hostile-sheet",
       "output": "app/Assets/StarShift/Art/M8/charge-hostile-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "dc8586631ea1e76fab1768c408ba1207",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab",
@@ -441,16 +483,15 @@
         "app/Assets/StarShift/Prefabs/Enemies/SupplyDrone.prefab"
       ],
       "sha256": "a8450de0a4794f3a919ce74fb5b6e1d6ab1d84a5053309ff06c608bdc3ce11b2",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "charge-hostile",
       "output": "app/Assets/StarShift/Art/M8/charge-hostile.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "97b3bf4051084520488222d7b81f2200",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab",
@@ -460,232 +501,213 @@
         "app/Assets/StarShift/Prefabs/Enemies/SupplyDrone.prefab"
       ],
       "sha256": "368a8a1027a3fa15d7122799966326df42cc4a5451bdee2b7cac28c2f8203780",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "charge-missile-sheet",
       "output": "app/Assets/StarShift/Art/M8/charge-missile-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "46819614ef45f6558a281100fd321894",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
       "sha256": "8c770703ad1a9c348ebe1b62e804adcc09001f77aaec064571bd18a1e93ed98d",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "charge-missile",
       "output": "app/Assets/StarShift/Art/M8/charge-missile.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "3b8b2204decd5cf6fb31943e29b4693a",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
       "sha256": "09491847f09c61cf765df158779ca430b4161048d4a0756c5aaf2c9e77dd8c50",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "charge-plasma-sheet",
       "output": "app/Assets/StarShift/Art/M8/charge-plasma-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "3789426fee01747b29b3a3c1cd921ed0",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
       "sha256": "09fb455c1e422f98196b00a003c345dae38084d83b688044a0721a55e9b8be6f",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "charge-plasma",
       "output": "app/Assets/StarShift/Art/M8/charge-plasma.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "31fc4dfd7647b905d8734bd9e624f199",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
       "sha256": "9581275b83fd5ad7cf3c85b6e4d2ef6b3d57da45289fa5465721f45f020978ad",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "charge-pulse-sheet",
       "output": "app/Assets/StarShift/Art/M8/charge-pulse-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "90aaac0eb32c97b668a9f47537ea0243",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
       "sha256": "3523a5295b0f28c1a5364e80a593b78e17d8f4a56ed21b5d23feeedc878ae25b",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "charge-pulse",
       "output": "app/Assets/StarShift/Art/M8/charge-pulse.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "c10df018c12b2c428a5807f0341e21e3",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
       "sha256": "3d63bfa6993064f157ff8aa12f221cdf36ef5f5be62c176c16d789b27f3061c9",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "crimson-background",
       "output": "app/Assets/StarShift/Art/M8/crimson-background.png",
       "exists": true,
-      "classification": "KEEP",
       "guid": "80aea7fd1ba62849cb9dd99a4502f1b3",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
-      "sha256": "344488a81d9e6e6f7c86245a8667228c085592eabd6294f2491ced4eff7014a6",
-      "runtime_verified": false
+      "sha256": "7c687c1966a9a164caa2eef5a022443b7823d8f23244852505fda015412864d9",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/crimson-background.aseprite"
     },
     {
       "id": "crimson-planet",
       "output": "app/Assets/StarShift/Art/M8/crimson-planet.png",
       "exists": true,
-      "classification": "KEEP",
       "guid": "597ad3331a49d64b9afee73f29c61a13",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
       "sha256": "c46554cffc6a7d51252441f30439c596bce55a3957dc7b4030d02fcd69613a79",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "death-respawn-sheet",
       "output": "app/Assets/StarShift/Art/M8/death-respawn-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "c346e7feeed2e673d8b8d633e84b2990",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Player/Player.prefab"
       ],
       "sha256": "d3739a42161f71a2fa2bc6fe5e53a54d55487f2895774499c6af06b0cccaf4e6",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "death-respawn",
       "output": "app/Assets/StarShift/Art/M8/death-respawn.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "40e61d51d0036935198e8fc04cb12509",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Player/Player.prefab"
       ],
       "sha256": "75ea33b0f68cfe13f7b324f34933bdc3ae100250caa96673a9d3055a3af9e9a8",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "debris-heavy-sheet",
       "output": "app/Assets/StarShift/Art/M8/debris-heavy-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "6c44ea7eaa71829948114dc9ae5bc581",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
       ],
       "sha256": "c45e54eb4d1b9438481ced141569560423e0c1c65366fe4e9903dc182bb87a5d",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "debris-heavy",
       "output": "app/Assets/StarShift/Art/M8/debris-heavy.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "35a414d86198d0452aeed6860a5f3659",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
       ],
       "sha256": "514717ac3559a5eb439257ceccfed7bd4a7eadc17fd6f218b3c073b57447dd67",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "debris-hull-sheet",
       "output": "app/Assets/StarShift/Art/M8/debris-hull-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "d8627f21cf85a8a21bbb59d261581d7a",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
-      "serialized_references": [
-        "app/Assets/StarShift/Prefabs/Player/Player.prefab"
-      ],
+      "serialized_references": [],
       "sha256": "2c14cce80bd0deceb25b2d831bd80f0f21b803af4ff96985139430505f23cd4a",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "debris-hull",
       "output": "app/Assets/StarShift/Art/M8/debris-hull.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "f2c19bc0cf8ec847faf9644f40d449fd",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Player/Player.prefab"
       ],
       "sha256": "7a9c46279a5c5e4760d216ed1ada5cc6e73e23a4b74046b0b751de4165693819",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "elite-accent",
       "output": "app/Assets/StarShift/Art/M8/elite-accent.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "486ed6e0c19a99ceebc6ae72cffd6672",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Raider.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/StormAsteroid.prefab"
       ],
       "sha256": "ea2a62cbbc413794fe76900f3d5de3da4fa11e9aaa3629051cba703d6d6dfbb6",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "enemy-bolt",
       "output": "app/Assets/StarShift/Art/M8/enemy-bolt.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "90f95b35aded169968dd4f3cca1bf957",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Projectiles/EnemySingleProjectile.prefab"
       ],
       "sha256": "b2f83ef1ccb2a063e828960b039e2fc689586b683351fccf37c4024e5786b6d9",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "enemy-telegraph",
       "output": "app/Assets/StarShift/Art/M8/enemy-telegraph.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "cdc7a462e2cc3e5fb89a9173d4a73cd1",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab",
@@ -698,242 +720,209 @@
         "app/Assets/StarShift/Prefabs/Enemies/WardenDrone.prefab"
       ],
       "sha256": "ae020cb236ae394ed774c936c78adcc5fcfb61e88e124970bcf85d9b6d031753",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "engine-loop-sheet",
       "output": "app/Assets/StarShift/Art/M8/engine-loop-sheet.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "2544e564cc4dea76b99c75312fd6fd20",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
-        "app/Assets/StarShift/Data/Cosmetics/ShipCosmetics.asset",
-        "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Carrier.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Interceptor.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Raider.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Scout.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Sniper.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
+        "app/Assets/StarShift/Data/Cosmetics/ShipCosmetics.asset"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "50a529c5d925f5d4e5897c3d763b2fd32b8c421c236c59016a4fc94465a1f348",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/engine-loop.aseprite"
     },
     {
       "id": "engine-loop",
       "output": "app/Assets/StarShift/Art/M8/engine-loop.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "f25c716b59f6e07aeb77eba066b37f3f",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
-        "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Carrier.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Interceptor.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Raider.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Scout.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Sniper.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab",
         "app/Assets/StarShift/Prefabs/Player/Player.prefab",
         "app/Assets/StarShift/Prefabs/UI/GameShellUI.prefab",
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "869d8184cfa61a35dff78be7dd1e0b11e1ac8c8c2bc8eac3f72190aab2889139",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/engine-loop.aseprite"
     },
     {
       "id": "explosion-sheet",
       "output": "app/Assets/StarShift/Art/M8/explosion-sheet.png",
       "exists": true,
-      "classification": "KEEP",
       "guid": "0dd80c5515edd7b198a1a9308bdb9a98",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
       "sha256": "695e55e66a7c3f966d208cdeeb3083d6cd3a366ad57b5023e00d7c15ebb90438",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "extra-life-sheet",
       "output": "app/Assets/StarShift/Art/M8/extra-life-sheet.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "a86a1cbf0ac076f25b98996db44bffc9",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Data/Rewards/ExtraLife.asset"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "942421e3aaa870e0e8fc57b645865c240bfa55f123593dba10f1a90ecc355ad1",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/extra-life.aseprite"
     },
     {
       "id": "extra-life",
       "output": "app/Assets/StarShift/Art/M8/extra-life.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "8a4acfa6b57a9ed72bf55276172e9160",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Data/Rewards/ExtraLife.asset"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "9b41b487cf6245d4c7a55e1eca2e1dd74a983176fde5ae4c88a7db03784da8b0",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/extra-life.aseprite"
     },
     {
       "id": "heavy-critical",
       "output": "app/Assets/StarShift/Art/M8/heavy-critical.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "effdf4983f26ca9bbb66d34f7a81efd3",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "95529b8359def084728d1649f6a460765a48b27fa5e33f8b39137044cca93266",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/heavy-critical.aseprite"
     },
     {
       "id": "heavy-damaged",
       "output": "app/Assets/StarShift/Art/M8/heavy-damaged.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "9c089bac798d8d019886bcf07727d32c",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "fd188bab8d1fe5810ecee75e5fd40eee58747d87528e61f72b304ee56ed93678",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/heavy-damaged.aseprite"
     },
     {
       "id": "heavy",
       "output": "app/Assets/StarShift/Art/M8/heavy.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "5b94a18642a737380beccd97452cbcf7",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "670ad3a2503b33be4555bdbc9d279c28cba9f2a188ffbe0e5bfdb5eb9bb80c74",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/heavy.aseprite"
     },
     {
       "id": "hit-beam-sheet",
       "output": "app/Assets/StarShift/Art/M8/hit-beam-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "da95261cfc14100f2a5c5db722b2462d",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "5c5859f2bb856798d34caa2416065936fe886c179853e04dc159055ed5a240c1",
-      "runtime_verified": false
+      "sha256": "201d9ebd9c607b506137d93eaeb13fcf33d9cc45baa285d64aa75e30f0abcc41",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/hit-beam.aseprite"
     },
     {
       "id": "hit-beam",
       "output": "app/Assets/StarShift/Art/M8/hit-beam.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "2ffa81107299debfda9a2ce2caaac0dd",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "94815a3afd81dc35460d257427a00090d3a6318003a22c4aaacd6c95b31434eb",
-      "runtime_verified": false
+      "sha256": "0c85e10be8c26ee0e1db2bfe2309b98bf628b2384450ce42c1b26567b17f2444",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/hit-beam.aseprite"
     },
     {
       "id": "hit-missile-sheet",
       "output": "app/Assets/StarShift/Art/M8/hit-missile-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "0c9efa9137f6c1e8c963ea5bfc3bf4d0",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "a9da7e580d2f8a8477cd922213a443c3710c8fa5c65a00f7c2b79ad86632e016",
-      "runtime_verified": false
+      "sha256": "ed7d130f9da424f332c50aa9db299a7a1969c15000f441dba910e7660b85e52f",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/hit-missile.aseprite"
     },
     {
       "id": "hit-missile",
       "output": "app/Assets/StarShift/Art/M8/hit-missile.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "f4ab8cb62b722c600afe812c7ede9b2b",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "341b6bbcb9476294bbc260cbadd94476e3bbc1c1d37d2673b80a0732b865581b",
-      "runtime_verified": false
+      "sha256": "acc5bda13a4b7fcdab0e213320417fb1e8c85244a4ebbeea08faad00cf7b9a96",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/hit-missile.aseprite"
     },
     {
       "id": "hit-plasma-sheet",
       "output": "app/Assets/StarShift/Art/M8/hit-plasma-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "d332d8c99a8756b8a83e50e8871fea3f",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "6f4d0de21393e883d0eaf6264fd89808daea78c9e66abc69a284406512052351",
-      "runtime_verified": false
+      "sha256": "05a1ac462201c2f5f4f452f155210283398a0d28bef569d76d967fff4f724bbb",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/hit-plasma.aseprite"
     },
     {
       "id": "hit-plasma",
       "output": "app/Assets/StarShift/Art/M8/hit-plasma.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "bf0bfc60bb02fc6ab9e97770cfa86d38",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "d4a16ef1e9778ebe14d489a61fe1cc38d952ef19ea8fa1063e881790bdd376df",
-      "runtime_verified": false
+      "sha256": "51eacba35bb313c49931b1e653026983fb5d2814c357f351af675a26acbaa517",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/hit-plasma.aseprite"
     },
     {
       "id": "hit-pulse-sheet",
       "output": "app/Assets/StarShift/Art/M8/hit-pulse-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "51ab5e8fa4790f729a05ecc96a8a87ba",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "103b6f54ffdb5ae4b9194fb477726652cfe6f8dc26c82f733ad72d402ff06a45",
-      "runtime_verified": false
+      "sha256": "87182fbdebe9ed757baea90786d0a454826f6eed373d72516a7a4ea97c6515e2",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/hit-pulse.aseprite"
     },
     {
       "id": "hit-pulse",
       "output": "app/Assets/StarShift/Art/M8/hit-pulse.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "eca989e7098117ddf8054d33bc3f78d5",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "48d863c45583707134a59e84dcb88cc6c0cb4d4d6470b5664eba450e5b1a8d7a",
-      "runtime_verified": false
+      "sha256": "9c153661639d51be16bae65ad90aaeaea8f1636b5cfb2a08a6a32b0abcab8af3",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/hit-pulse.aseprite"
     },
     {
       "id": "hit-sparks-sheet",
       "output": "app/Assets/StarShift/Art/M8/hit-sparks-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "13d1484c6597e4216b0d196495cb61f6",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab",
@@ -947,16 +936,15 @@
         "app/Assets/StarShift/Prefabs/Enemies/WardenDrone.prefab"
       ],
       "sha256": "6b01d721026c02d6f0cbb63649517eb419b0760118a9016baf39f83c8b3c0441",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "hit-sparks",
       "output": "app/Assets/StarShift/Art/M8/hit-sparks.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "f194f9b83f51a7aeaa872a2239cfc88f",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab",
@@ -970,56 +958,121 @@
         "app/Assets/StarShift/Prefabs/Enemies/WardenDrone.prefab"
       ],
       "sha256": "892348d55d9d92509251fecedc66b948f94da3316d923f0e7a70a94eedaf6cd4",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "homing-core-sheet",
       "output": "app/Assets/StarShift/Art/M8/homing-core-sheet.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "c258a29877cc5c3bd879192886b866d1",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Data/Rewards/HomingCore.asset"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "22a3f83579c6b1766c5683617e28b91019d33fc395d60fcb15a525430c727b13",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/homing-core.aseprite"
     },
     {
       "id": "homing-core",
       "output": "app/Assets/StarShift/Art/M8/homing-core.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "d0e68b0c914a38d5b9f72a35c4386ba7",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Data/Rewards/HomingCore.asset"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "dbb85acd1303f910da5f011e14b489e44fbc527609925c5cb332d7816d43ff26",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/homing-core.aseprite"
     },
     {
-      "id": "hud-ship",
-      "output": "app/Assets/StarShift/Art/M8/hud-ship.png",
-      "exists": false,
-      "classification": "DELETE",
-      "guid": "1c52d2a805dad2d1e99525879a598c0f",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "id": "hostile-coral-sheet",
+      "output": "app/Assets/StarShift/Art/M8/hostile-coral-sheet.png",
+      "exists": true,
+      "guid": "f5c5377e9bd6392bc8302532645b9214",
+      "metadata_exists": true,
       "serialized_references": [],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "d57be557a90169c52897475c2606024981473302cc95d963881a4648c6eb50e1",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/hostile-coral.aseprite"
+    },
+    {
+      "id": "hostile-coral",
+      "output": "app/Assets/StarShift/Art/M8/hostile-coral.png",
+      "exists": true,
+      "guid": "89885cc3c14d215119df9e6af8fe66aa",
+      "metadata_exists": true,
+      "serialized_references": [
+        "app/Assets/StarShift/Data/Enemies/ScoutSingleFire.asset",
+        "app/Assets/StarShift/Data/RegionA/Boss/VanguardCannon.asset",
+        "app/Assets/StarShift/Data/RegionA/Boss/VanguardCurtainProjectile.asset",
+        "app/Assets/StarShift/Data/RegionA/Boss/VanguardMissiles.asset",
+        "app/Assets/StarShift/Data/RegionA/Boss/VanguardSweep.asset",
+        "app/Assets/StarShift/Data/RegionA/Weapons/RaiderFire.asset",
+        "app/Assets/StarShift/Data/RegionB/Weapons/CarrierSingle.asset",
+        "app/Assets/StarShift/Data/RegionB/Weapons/DroneSingle.asset",
+        "app/Assets/StarShift/Data/RegionB/Weapons/WardenDroneCharge.asset"
+      ],
+      "sha256": "1887000067e883f173296a1a473b1fc9912d8505dc272fcec65f561cb7255444",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/hostile-coral.aseprite"
+    },
+    {
+      "id": "hostile-lemon-sheet",
+      "output": "app/Assets/StarShift/Art/M8/hostile-lemon-sheet.png",
+      "exists": true,
+      "guid": "31337fab562a6c939b5da20d4a24dad4",
+      "metadata_exists": true,
+      "serialized_references": [],
+      "sha256": "a770d3d0bdbb54cd718b66dd7ca2952e2bb9843e36161058c08d462e99cc6022",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/hostile-lemon.aseprite"
+    },
+    {
+      "id": "hostile-lemon",
+      "output": "app/Assets/StarShift/Art/M8/hostile-lemon.png",
+      "exists": true,
+      "guid": "9af81ce4e99d81249bb4914cc398683e",
+      "metadata_exists": true,
+      "serialized_references": [
+        "app/Assets/StarShift/Data/RegionA/Weapons/BomberSpread.asset"
+      ],
+      "sha256": "1619d993452059953cfe207c9d9fd2b59b56a2b651392b946c560bc9ab14edfb",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/hostile-lemon.aseprite"
+    },
+    {
+      "id": "hostile-special-sheet",
+      "output": "app/Assets/StarShift/Art/M8/hostile-special-sheet.png",
+      "exists": true,
+      "guid": "22ee871aab7082525a2c46b2cd16c7cf",
+      "metadata_exists": true,
+      "serialized_references": [],
+      "sha256": "7f1570d92b04ba3565fc1cfceef47561a2dd6fc2fc93a209b4ef3cae66fdfedb",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/hostile-special.aseprite"
+    },
+    {
+      "id": "hostile-special",
+      "output": "app/Assets/StarShift/Art/M8/hostile-special.png",
+      "exists": true,
+      "guid": "f89831a90a8536ff38edd12fd53307de",
+      "metadata_exists": true,
+      "serialized_references": [
+        "app/Assets/StarShift/Data/RegionB/Weapons/WardenPlasma.asset"
+      ],
+      "sha256": "b086e6abc80f25f2d42caa233aeffa1053608f9ce1a49c2dc3bb44acfe770013",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/hostile-special.aseprite"
     },
     {
       "id": "impact-hull-sheet",
       "output": "app/Assets/StarShift/Art/M8/impact-hull-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "dba680b182aa0d80ab7fba8c60f7a25b",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab",
@@ -1032,17 +1085,16 @@
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/WardenDrone.prefab"
       ],
-      "sha256": "0692581df48f59019de373af8e91bbaf0628831a2e71d0b163817923e4775595",
-      "runtime_verified": false
+      "sha256": "87182fbdebe9ed757baea90786d0a454826f6eed373d72516a7a4ea97c6515e2",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/impact-hull.aseprite"
     },
     {
       "id": "impact-hull",
       "output": "app/Assets/StarShift/Art/M8/impact-hull.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "c96bf2debf0c32062abf4a7ff1870911",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab",
@@ -1055,17 +1107,16 @@
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/WardenDrone.prefab"
       ],
-      "sha256": "02df72f3611a0929b5d86ec611a803fb3f10d1f1af32a4eb7c4d9d3d567f9bea",
-      "runtime_verified": false
+      "sha256": "9c153661639d51be16bae65ad90aaeaea8f1636b5cfb2a08a6a32b0abcab8af3",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/impact-hull.aseprite"
     },
     {
       "id": "impact-module-sheet",
       "output": "app/Assets/StarShift/Art/M8/impact-module-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "7e7bb91873b91cff686186f24f3caadb",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab",
@@ -1078,29 +1129,27 @@
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/WardenDrone.prefab"
       ],
-      "sha256": "52b4ab03bfb61d62c9ff543d9099bad478ae94afe2744082826fabb4eb9f2e22",
-      "runtime_verified": false
+      "sha256": "682df6ad07e56114254ac7497e14d2a623a7d0750f90c9d76a71a8b0b17f908e",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/impact-module.aseprite"
     },
     {
       "id": "impact-module",
       "output": "app/Assets/StarShift/Art/M8/impact-module.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "92f72d1e708593210a0aa8d76c974d69",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "60f600d771c1cb01b04f3fc7f7ef93f82469ff3e08f80536962ead9a4a87766a",
-      "runtime_verified": false
+      "sha256": "52f6d910a1a85bccd5482efb7d817a6bc8e666571664659be9312f13a0b506de",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/impact-module.aseprite"
     },
     {
       "id": "impact-shield-sheet",
       "output": "app/Assets/StarShift/Art/M8/impact-shield-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "2077d84e4f2fcac31a8d9041f2986212",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab",
@@ -1113,617 +1162,804 @@
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/WardenDrone.prefab"
       ],
-      "sha256": "1e1bc785661bbf97193b6ba1cf461a17af5cd7353fbf4dc87a53f3d6307e49ba",
-      "runtime_verified": false
+      "sha256": "03e918f4208c51d4521e8713ae46990e711feb65bcbed2607e9e6fd6a6048af5",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/impact-shield.aseprite"
     },
     {
       "id": "impact-shield",
       "output": "app/Assets/StarShift/Art/M8/impact-shield.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "e6fdc9eab13acf5f595ae6fa66e241ab",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "1b6eacd673111d1b8e93d7cc06d5592916547a5f2dff91cadd282a2102ee0101",
-      "runtime_verified": false
+      "sha256": "43a6fd3d2a3f6fb3475b6ccf229f20ef041e9b8c66eed5aa7f8383a7b2719207",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/impact-shield.aseprite"
     },
     {
       "id": "interceptor-critical",
       "output": "app/Assets/StarShift/Art/M8/interceptor-critical.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "1124d797b428e99348c70897bdc32e7b",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Interceptor.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "4e20bb07ee2c88aef04fa4f26b6f3210fbeb29d8ca4104e0e4810213ee04ea2b",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/interceptor-critical.aseprite"
     },
     {
       "id": "interceptor-damaged",
       "output": "app/Assets/StarShift/Art/M8/interceptor-damaged.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "cfd8c142eefdd59ed9cf5439a8e07e53",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Interceptor.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "6d95ee11d1f980b79642d4b71433021349fca589ec1a2d4b3f277d2079b558d2",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/interceptor-damaged.aseprite"
     },
     {
       "id": "interceptor",
       "output": "app/Assets/StarShift/Art/M8/interceptor.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "7a61455fc4501f2fb9caeee42d860734",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Interceptor.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "bf719798ae76bb60cff1ba102c2cd7acf4f75233ca44dc476ec760bcedfd482c",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/interceptor.aseprite"
     },
     {
       "id": "legacy-crate",
       "output": "app/Assets/StarShift/Art/M8/legacy-crate.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "53fa4c614c3156c67a2e6d7573620279",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Rewards/RewardPickup.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "848051f51f78ef2e635502d9f5bf3c51babef52e3bdda55ed4751ff38d6eb805",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/legacy-crate.aseprite"
     },
     {
       "id": "missile-ammo-sheet",
       "output": "app/Assets/StarShift/Art/M8/missile-ammo-sheet.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "1ee8ea4a3825110ecb55030031ad7b69",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Data/Rewards/MissileAmmo.asset"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "08dfdd3999c89c9de099345581786106f0fe7785e12617c3328b5298a6b6f791",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/missile-ammo.aseprite"
     },
     {
       "id": "missile-ammo",
       "output": "app/Assets/StarShift/Art/M8/missile-ammo.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "2a79eb64cb0515c2fbd7e4ea7ad41068",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Data/Rewards/MissileAmmo.asset"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "ef4ff9da245ed44f799bb0fd53c517919ae0954e57b3fa6ff4b0df4f52127b5a",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/missile-ammo.aseprite"
     },
     {
       "id": "missile-splash-sheet",
       "output": "app/Assets/StarShift/Art/M8/missile-splash-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "249d0b438dbb2c29abb88bf4f1b9853c",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
       ],
-      "sha256": "eadc0adaed69a9fbc921e98d0a6c1a1563e507964e84a902d6a8b047ba0f998c",
-      "runtime_verified": false
+      "sha256": "ed7d130f9da424f332c50aa9db299a7a1969c15000f441dba910e7660b85e52f",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/missile-splash.aseprite"
     },
     {
       "id": "missile-splash",
       "output": "app/Assets/StarShift/Art/M8/missile-splash.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "ff030917e695b06fe8df16d7e1116ea7",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab",
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
-      "sha256": "df45bc9db1609754f11a0020542efe5f62ddf804a515b3b5e162142b59c24d64",
-      "runtime_verified": false
+      "sha256": "acc5bda13a4b7fcdab0e213320417fb1e8c85244a4ebbeea08faad00cf7b9a96",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/missile-splash.aseprite"
     },
     {
       "id": "module-collapse-sheet",
       "output": "app/Assets/StarShift/Art/M8/module-collapse-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "0caddcf1f9eb108bd9ad6b9951d4cc50",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
       "sha256": "bd569637afe5bcea7b2eaf3e1fc945c37d993c849510a2eb037c630c7daaa5f1",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "module-collapse",
       "output": "app/Assets/StarShift/Art/M8/module-collapse.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "6bc86a47bf136e1c8af7daeed832e698",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
       "sha256": "c12cdd7379bc6021620dd06aabbabdbf043a956eb2ca3a96b5d7bff7d5e1985d",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
+    },
+    {
+      "id": "muzzle-beam-sheet",
+      "output": "app/Assets/StarShift/Art/M8/muzzle-beam-sheet.png",
+      "exists": true,
+      "guid": "d80892be0136a6e089b49921d887f1e7",
+      "metadata_exists": true,
+      "serialized_references": [],
+      "sha256": "4624ca00d922b21fd96dc70ae4749696fac38e9a020d07ed503e1260a4b421a6",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/muzzle-beam.aseprite"
+    },
+    {
+      "id": "muzzle-beam",
+      "output": "app/Assets/StarShift/Art/M8/muzzle-beam.png",
+      "exists": true,
+      "guid": "b22b599dae83ab48ea061ac57a0aff9d",
+      "metadata_exists": true,
+      "serialized_references": [],
+      "sha256": "547a8dcb24f5e981bcd1b6b9b8747b91d479a84af040564c4829837510663fdc",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/muzzle-beam.aseprite"
     },
     {
       "id": "muzzle-flash-sheet",
       "output": "app/Assets/StarShift/Art/M8/muzzle-flash-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "571c10a82793d662cbf3094519ab4be1",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Player/Player.prefab"
       ],
       "sha256": "a6aa7b59e119457fb275849835ad226ffe379f8b0abbee3d1648d5bdb2292faf",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "muzzle-flash",
       "output": "app/Assets/StarShift/Art/M8/muzzle-flash.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "b5ada3a97c6c3d5de9c696000fe32bbb",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Player/Player.prefab"
       ],
       "sha256": "d76fea80e417d950972f350214e86a44d695c9fec57d1ae05ff697068461ddbd",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
+    },
+    {
+      "id": "muzzle-missile-sheet",
+      "output": "app/Assets/StarShift/Art/M8/muzzle-missile-sheet.png",
+      "exists": true,
+      "guid": "9555f8daa6557a8f08ef45fa5198a8b8",
+      "metadata_exists": true,
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Player/Player.prefab"
+      ],
+      "sha256": "fccb485d3add3eb787ff3c29c0c4c2cbae14316e2ff9b8120bbc742144ec18d3",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/muzzle-missile.aseprite"
+    },
+    {
+      "id": "muzzle-missile",
+      "output": "app/Assets/StarShift/Art/M8/muzzle-missile.png",
+      "exists": true,
+      "guid": "0a0287c504226be98ad6c169f5c91094",
+      "metadata_exists": true,
+      "serialized_references": [],
+      "sha256": "18e7e675ee4886a09f2549fa0d4a66442fde1d1079bf736ec762bafdfd19b287",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/muzzle-missile.aseprite"
     },
     {
       "id": "muzzle-plasma-sheet",
       "output": "app/Assets/StarShift/Art/M8/muzzle-plasma-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "ff8c1e4d1045a6bf9a71e6e8f1188cbc",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Player/Player.prefab"
       ],
-      "sha256": "4f4a20526b00a91cf83fbdc67f2b1d2fe5218424a4668d3e480770e316ac78ed",
-      "runtime_verified": false
+      "sha256": "6842b1aa550d1e798999770565dbf210311b48470abf6859e14acae76a1608c9",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/muzzle-plasma.aseprite"
     },
     {
       "id": "muzzle-plasma",
       "output": "app/Assets/StarShift/Art/M8/muzzle-plasma.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "9ae04b112ca97d8bea308f647d2b7b9c",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "6f5d72dbcdb9c1f1e5afafe210cad2cc82f14c3a6f563570ad588175dfb4d0cc",
-      "runtime_verified": false
+      "sha256": "ec5e75cf4e7c5fe7cf8e56cb26791cc493f8d88c81883302d2f330b51b6fa0bf",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/muzzle-plasma.aseprite"
+    },
+    {
+      "id": "muzzle-pulse-sheet",
+      "output": "app/Assets/StarShift/Art/M8/muzzle-pulse-sheet.png",
+      "exists": true,
+      "guid": "e0c27c87e58a2cc7b9737aaf25302fe8",
+      "metadata_exists": true,
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Player/Player.prefab"
+      ],
+      "sha256": "d152f6e2cede1d832b05b351e65701ab6412fe2a1952f4b3ad58f44b0a3cd73c",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/muzzle-pulse.aseprite"
+    },
+    {
+      "id": "muzzle-pulse",
+      "output": "app/Assets/StarShift/Art/M8/muzzle-pulse.png",
+      "exists": true,
+      "guid": "ed9e41fca382df6a19ac72564bdb1db7",
+      "metadata_exists": true,
+      "serialized_references": [],
+      "sha256": "6298e8c394a2a22d41ea13facfb942cb056b6798d0747c2bc16495ffe69662f8",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/muzzle-pulse.aseprite"
     },
     {
       "id": "overdrive-sheet",
       "output": "app/Assets/StarShift/Art/M8/overdrive-sheet.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "fd3c617f406c8bcb19648f7f0e3a79dd",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Data/Rewards/Overdrive.asset"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "f3b4a2ff6208f2e6eecd73c410cc3c030b41bf75687923aa15f3e637f2abebf8",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/overdrive.aseprite"
     },
     {
       "id": "overdrive",
       "output": "app/Assets/StarShift/Art/M8/overdrive.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "6bb8edc9fc6fc26e59ee3d3dcafdb33b",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Data/Rewards/Overdrive.asset"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "c7206206e8eb1291ab166f8454dc184ff5b083eed05953daf7092ee808fa303e",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/overdrive.aseprite"
     },
     {
       "id": "parallax-debris",
       "output": "app/Assets/StarShift/Art/M8/parallax-debris.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "64170dbdd7e7bca57b49026102feb8b7",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "dcc73d54910da2cd100bcef01af583ee1b4c2c90dde62082b9540d9d44f314c4",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/parallax-debris.aseprite"
     },
     {
       "id": "pickup-collect-upgrade-sheet",
       "output": "app/Assets/StarShift/Art/M8/pickup-collect-upgrade-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "65bf9832cc150b2218ef5203a85e3f41",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Player/Player.prefab"
       ],
       "sha256": "35fcde60e0a168a33b5aca6c50346fc7644a8a96262c4746622e9b421e5794c3",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "pickup-collect-upgrade",
       "output": "app/Assets/StarShift/Art/M8/pickup-collect-upgrade.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "90ffcc87deff258d095ca97cc97becc4",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Player/Player.prefab"
       ],
       "sha256": "ae6466f4376a4356ac598255d114eb07bec3699ed06c096ca4ee83c35a602615",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "plasma-core-sheet",
       "output": "app/Assets/StarShift/Art/M8/plasma-core-sheet.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "bbd35e35dbd070c18abf6ad075fdde43",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Data/Rewards/PlasmaCore.asset"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "00f8f00bae0d7e6e48ee4403794c3fb280958ab7cc84124968890026f8735dcc",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/plasma-core.aseprite"
     },
     {
       "id": "plasma-core",
       "output": "app/Assets/StarShift/Art/M8/plasma-core.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "4943f9e4f12b1da669b749054f109da0",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Data/Rewards/PlasmaCore.asset"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "be69306bcaa7d6bdfa273e1da14367fdd852d23c379e8b0f180a4bbb9f9ce527",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/plasma-core.aseprite"
+    },
+    {
+      "id": "plasma-orb-sheet",
+      "output": "app/Assets/StarShift/Art/M8/plasma-orb-sheet.png",
+      "exists": true,
+      "guid": "901f3e317b7b01c56af8a3708eea0f1f",
+      "metadata_exists": true,
+      "serialized_references": [],
+      "sha256": "18b4b1e8fbfac1b3e58f82079af0cd052099342380a9bef4082e2a797312e47f",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/plasma-orb.aseprite"
+    },
+    {
+      "id": "plasma-orb",
+      "output": "app/Assets/StarShift/Art/M8/plasma-orb.png",
+      "exists": true,
+      "guid": "662679dfc6fd3e429a32777f10454838",
+      "metadata_exists": true,
+      "serialized_references": [
+        "app/Assets/StarShift/Data/Weapons/PlasmaSpread.asset"
+      ],
+      "sha256": "dd8939e087c48b9bb7f2447ee94d54adb57e99cbf2ffa67a838dbb7d77828a3c",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/plasma-orb.aseprite"
     },
     {
       "id": "player-amber",
       "output": "app/Assets/StarShift/Art/M8/player-amber.png",
       "exists": true,
-      "classification": "KEEP AS REFERENCE",
       "guid": "1845bb1573f1dbb4f82515005bbefd90",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Data/Cosmetics/ShipCosmetics.asset"
       ],
-      "sha256": "9990325a214090b6a71caa550c8d07c82988bada8eaf7e84f2dfeadf101c1357",
-      "runtime_verified": false
+      "sha256": "0d7d0224ff04e791d2fffd5b4cbcacbe754bc5b6ef8daddfa69cc9bf633ea2bc",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/player-amber.aseprite"
+    },
+    {
+      "id": "player-fragment-0",
+      "output": "app/Assets/StarShift/Art/M8/player-fragment-0.png",
+      "exists": true,
+      "guid": "3403bcf3c2818ae92a8f637e19de97f2",
+      "metadata_exists": true,
+      "serialized_references": [
+        "app/Assets/StarShift/Scenes/02_Gameplay.unity"
+      ],
+      "sha256": "0394358dbb7233f6218be61a399e17708b0db5b7229dc6fcc931edd03f20b980",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/player-fragment-0.aseprite"
+    },
+    {
+      "id": "player-fragment-1",
+      "output": "app/Assets/StarShift/Art/M8/player-fragment-1.png",
+      "exists": true,
+      "guid": "51986594b6191e79d9a9047c182f5b72",
+      "metadata_exists": true,
+      "serialized_references": [
+        "app/Assets/StarShift/Scenes/02_Gameplay.unity"
+      ],
+      "sha256": "ff15e153567f13293bfcddb40b458277b37227869b2b0085593dc4bbd8726b2d",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/player-fragment-1.aseprite"
+    },
+    {
+      "id": "player-fragment-2",
+      "output": "app/Assets/StarShift/Art/M8/player-fragment-2.png",
+      "exists": true,
+      "guid": "349c65adba177a140bf90f28554595a0",
+      "metadata_exists": true,
+      "serialized_references": [
+        "app/Assets/StarShift/Scenes/02_Gameplay.unity"
+      ],
+      "sha256": "7f3e6a032cbb888f0c24182a9a84a67b14cafe68bb503402b2d9ae8f473f5473",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/player-fragment-2.aseprite"
+    },
+    {
+      "id": "player-fragment-3",
+      "output": "app/Assets/StarShift/Art/M8/player-fragment-3.png",
+      "exists": true,
+      "guid": "c8899266bc7997c1ba0847a1cc48f4ad",
+      "metadata_exists": true,
+      "serialized_references": [
+        "app/Assets/StarShift/Scenes/02_Gameplay.unity"
+      ],
+      "sha256": "1c5284c914fcc0e03732ce589020ed4a2f8ac621b4ebc6f644f6756c68fea402",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/player-fragment-3.aseprite"
+    },
+    {
+      "id": "player-homing-sheet",
+      "output": "app/Assets/StarShift/Art/M8/player-homing-sheet.png",
+      "exists": true,
+      "guid": "e7d8178bb5ae2df8ba280d338d2db5ef",
+      "metadata_exists": true,
+      "serialized_references": [],
+      "sha256": "702f8dbbb12d01a2f5f467af59f6f0942b94650576fe34cc1db8dedeb89e950e",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/player-homing.aseprite"
     },
     {
       "id": "player-homing",
       "output": "app/Assets/StarShift/Art/M8/player-homing.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "fafa55db053b3fa53993a49af6b5e5b6",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Data/Weapons/HomingMissile.asset"
       ],
-      "sha256": null,
-      "runtime_verified": false
-    },
-    {
-      "id": "player-plasma",
-      "output": "app/Assets/StarShift/Art/M8/player-plasma.png",
-      "exists": false,
-      "classification": "DELETE",
-      "guid": "c79a66b737cf8ccb898c2b442866eadd",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
-      "serialized_references": [],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "1e525a5ccb01e45f6d634cfd15fd263b51fdc4ba458c2f84dcf4bfd84ccff2a9",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/player-homing.aseprite"
     },
     {
       "id": "player-pulse",
       "output": "app/Assets/StarShift/Art/M8/player-pulse.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "c55a823144dcf136094f969890d58bd3",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Projectiles/PlayerPulseProjectile.prefab"
       ],
       "sha256": "ff06f840467197f2718ce36ee3f1370c629991af501a60a320c2e25e1eae8a22",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "player-swept-amber",
       "output": "app/Assets/StarShift/Art/M8/player-swept-amber.png",
       "exists": true,
-      "classification": "KEEP AS REFERENCE",
       "guid": "359ab428a8a5ca12a91b3eba095679d5",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Data/Cosmetics/ShipCosmetics.asset"
       ],
-      "sha256": "187e9ae5fd3e8770e968bd37cdc4ce2e674f6dd4de447bd83cc33a9445a9049a",
-      "runtime_verified": false
+      "sha256": "14bd2814c33b6573dd45168ac648122f0a4153fc1cfea1cdef334d09be7126f3",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/player-swept-amber.aseprite"
     },
     {
       "id": "player-swept",
       "output": "app/Assets/StarShift/Art/M8/player-swept.png",
       "exists": true,
-      "classification": "KEEP AS REFERENCE",
       "guid": "2091dc39c644d186fb1bf3abc8a4b041",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Data/Cosmetics/ShipCosmetics.asset"
       ],
-      "sha256": "902ad3c04ddc6cf51c11e26212b99799d65178aca2b0353f391541adbc707719",
-      "runtime_verified": false
+      "sha256": "f18fd407cc415d4bd8f6abcfd2d85e547de4740ea2e2fa3b809fcf92d4aaa16a",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/player-swept.aseprite"
     },
     {
       "id": "player",
       "output": "app/Assets/StarShift/Art/M8/player.png",
       "exists": true,
-      "classification": "KEEP AS REFERENCE",
       "guid": "1fff0d236f5468f11b1b795bbc70d58d",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Data/Cosmetics/ShipCosmetics.asset",
         "app/Assets/StarShift/Prefabs/Player/Player.prefab",
         "app/Assets/StarShift/Prefabs/UI/GameShellUI.prefab",
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
-      "sha256": "c20f45ef55229a73862690d5da0b2d576d0a8cac5415490f4b5ed32025439c8a",
-      "runtime_verified": false
+      "sha256": "aef0a6f09850ea41ea1a3e4bb5e4c790e8e1cf8e3576e92d7c4de44093cc736d",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/player.aseprite"
+    },
+    {
+      "id": "pulse-bolt-sheet",
+      "output": "app/Assets/StarShift/Art/M8/pulse-bolt-sheet.png",
+      "exists": true,
+      "guid": "5429645ce3d246ff0913241b52f57c01",
+      "metadata_exists": true,
+      "serialized_references": [],
+      "sha256": "08cc4d230cc60831a201e67684a20e35e35e1509c2414c13759544cb54fad836",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/pulse-bolt.aseprite"
+    },
+    {
+      "id": "pulse-bolt",
+      "output": "app/Assets/StarShift/Art/M8/pulse-bolt.png",
+      "exists": true,
+      "guid": "2c332e1ed1ff13f3a91895f93abdd45b",
+      "metadata_exists": true,
+      "serialized_references": [
+        "app/Assets/StarShift/Data/Weapons/PulseLaserLv1.asset"
+      ],
+      "sha256": "a67e4b8f004cff6987fc9bec3fde24afdda21e426086a3b3d026737ca197f452",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/pulse-bolt.aseprite"
     },
     {
       "id": "pulse-core-sheet",
       "output": "app/Assets/StarShift/Art/M8/pulse-core-sheet.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "60445ffe0b3494d6fa1b8ba2e91c9a46",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Data/Rewards/PulseCore.asset"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "075c8b4981b853eb13657e20b86ae83952b997f109b6c850a510d046db148683",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/pulse-core.aseprite"
     },
     {
       "id": "pulse-core",
       "output": "app/Assets/StarShift/Art/M8/pulse-core.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "97c69312d2ffa4602850699efdc8913c",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Data/Rewards/PulseCore.asset"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "961bf4a258485a81857e06048927c82873cb6a5a4df134b4159d06ee86f5676a",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/pulse-core.aseprite"
     },
     {
       "id": "raider-critical",
       "output": "app/Assets/StarShift/Art/M8/raider-critical.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "16a69a92eeb4b4870bdeea12e22eede2",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Raider.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "5f17fc1a00873d7564c9cf43dd02f71229377c5890bde7445782f467bb442029",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/raider-critical.aseprite"
     },
     {
       "id": "raider-damaged",
       "output": "app/Assets/StarShift/Art/M8/raider-damaged.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "6ff764c4ba9507e68baf5e83810a3f1e",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Raider.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "b5476ea3d77eca103dc0ec7864319c68319bd8546fe7636a3cf47cd9ca0c52a5",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/raider-damaged.aseprite"
     },
     {
       "id": "raider",
       "output": "app/Assets/StarShift/Art/M8/raider.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "6ab49b16504c51fea9ca042b55b876d7",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Raider.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "98964e5a2b13c715b161de106933cdcbebdf9044da026a30cff51140ce92226a",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/raider.aseprite"
+    },
+    {
+      "id": "reserve-missile-sheet",
+      "output": "app/Assets/StarShift/Art/M8/reserve-missile-sheet.png",
+      "exists": true,
+      "guid": "01aa57ac7310de2db940f956267d2754",
+      "metadata_exists": true,
+      "serialized_references": [],
+      "sha256": "702f8dbbb12d01a2f5f467af59f6f0942b94650576fe34cc1db8dedeb89e950e",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/reserve-missile.aseprite"
     },
     {
       "id": "reserve-missile",
       "output": "app/Assets/StarShift/Art/M8/reserve-missile.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "f1ac53e937564627db163456d6efcc91",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "1e525a5ccb01e45f6d634cfd15fd263b51fdc4ba458c2f84dcf4bfd84ccff2a9",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/reserve-missile.aseprite"
+    },
+    {
+      "id": "resource-asteroid-critical",
+      "output": "app/Assets/StarShift/Art/M8/resource-asteroid-critical.png",
+      "exists": true,
+      "guid": "5e1fb32f2c07fc2e385215831bb5d232",
+      "metadata_exists": true,
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/ResourceAsteroid.prefab"
+      ],
+      "sha256": "9f930463185b95c88f9d8ed976335ddc39a2109b26b39954fb56639f2f3ce619",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/resource-asteroid-critical.aseprite"
+    },
+    {
+      "id": "resource-asteroid-damaged",
+      "output": "app/Assets/StarShift/Art/M8/resource-asteroid-damaged.png",
+      "exists": true,
+      "guid": "8e234be0c9a14679e8a4aa6293d631f6",
+      "metadata_exists": true,
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/ResourceAsteroid.prefab"
+      ],
+      "sha256": "a81b83b15be52a88e61209aece62c13c2ae576e1acb57c787d84e06d9411c8a9",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/resource-asteroid-damaged.aseprite"
     },
     {
       "id": "resource-asteroid",
       "output": "app/Assets/StarShift/Art/M8/resource-asteroid.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "97aa99924cd178870a5d7b60dcc76f87",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/ResourceAsteroid.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "7d4eb26089fb44c9489157a84166abfc5127c3c001a2d3810d0b050b540e9ebb",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/resource-asteroid.aseprite"
+    },
+    {
+      "id": "rock-shatter-sheet",
+      "output": "app/Assets/StarShift/Art/M8/rock-shatter-sheet.png",
+      "exists": true,
+      "guid": "1fa8880f4ec9f902485345e96ebab983",
+      "metadata_exists": true,
+      "serialized_references": [
+        "app/Assets/StarShift/Scenes/02_Gameplay.unity"
+      ],
+      "sha256": "f238314afb4fe1677e88a006de973566c4c6d030311883545d57724ff17e19d7",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/rock-shatter.aseprite"
+    },
+    {
+      "id": "rock-shatter",
+      "output": "app/Assets/StarShift/Art/M8/rock-shatter.png",
+      "exists": true,
+      "guid": "60170fc80c4a4505b97479f645516ba8",
+      "metadata_exists": true,
+      "serialized_references": [],
+      "sha256": "063dc098213e5148c4c47095106d21dff2e2bdabc2e5e4b3cff61dd7132f71b3",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/rock-shatter.aseprite"
     },
     {
       "id": "scout-critical",
       "output": "app/Assets/StarShift/Art/M8/scout-critical.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "8cbd8dc9aac91fcd18a415462524a8fa",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Scout.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "8734ea6908b5e593b074f9cb2066f83023d2c93530366cbb78d5c4b4c6b0b811",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/scout-critical.aseprite"
     },
     {
       "id": "scout-damaged",
       "output": "app/Assets/StarShift/Art/M8/scout-damaged.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "0fac6d5fc2c0295ad9b5d7b42381816b",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Scout.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "a2f0e4b2651a667d0ec0bcc0c1e8081be46ebbb0243a24d8a8f7b7dec00f529a",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/scout-damaged.aseprite"
     },
     {
       "id": "scout",
       "output": "app/Assets/StarShift/Art/M8/scout.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "7ad1ceb63788406f79929003a8a66afc",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Scout.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "edd98359548a02a4c81d6e78aaaa4d97a9b2514e3ca7d6d7c0e0283981a16448",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/scout.aseprite"
     },
     {
       "id": "shield-activate-break-sheet",
       "output": "app/Assets/StarShift/Art/M8/shield-activate-break-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "b45cad5f0b44c10cd9c4e11644111b71",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab",
         "app/Assets/StarShift/Prefabs/Player/Player.prefab"
       ],
       "sha256": "2eac1d272733e43c697710671e92c427d49c21f03a7352d0b65956d3df0b81d8",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "shield-activate-break",
       "output": "app/Assets/StarShift/Art/M8/shield-activate-break.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "46e72643c9589761aab52958de1463a1",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab",
         "app/Assets/StarShift/Prefabs/Player/Player.prefab"
       ],
       "sha256": "bc845f97003e742b40656b709365076bb6c63157edc9dc0057b6b259a689c020",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "shield-cell-sheet",
       "output": "app/Assets/StarShift/Art/M8/shield-cell-sheet.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "19d808d38dabf07e896e350f6d8e2c85",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Data/Rewards/ShieldCell.asset"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "4f1f33d17000ec717ce4099d981afaa15352957cee13815492e3c912aee114e8",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/shield-cell.aseprite"
     },
     {
       "id": "shield-cell",
       "output": "app/Assets/StarShift/Art/M8/shield-cell.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "a5a07116ad5a45bfe8ff8549b81339bd",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Data/Rewards/ShieldCell.asset"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "49f0009522c2e643ca30a634ad19426cf16716f80cec58d4d206e05f8d3fa377",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/shield-cell.aseprite"
     },
     {
       "id": "smoke-debris-sheet",
       "output": "app/Assets/StarShift/Art/M8/smoke-debris-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "975bf02079abb2c539a9cdf0a0de18d4",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab",
@@ -1737,16 +1973,15 @@
         "app/Assets/StarShift/Prefabs/Enemies/WardenDrone.prefab"
       ],
       "sha256": "f7575c34b17c44fc29f40c31c5d3c9ec9e9bed958710b24564cafa3912eca7be",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "smoke-debris",
       "output": "app/Assets/StarShift/Art/M8/smoke-debris.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "ebd3a523066c4a3358ec348dab188ea9",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab",
@@ -1760,1346 +1995,1244 @@
         "app/Assets/StarShift/Prefabs/Enemies/WardenDrone.prefab"
       ],
       "sha256": "0ba4c7efd9c1ec0eefc4e1d040abf549e8e331c07881dcf3f7e518d1651db942",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "sniper-critical",
       "output": "app/Assets/StarShift/Art/M8/sniper-critical.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "498ecb97506be3c61ae6bcaa3dfc0f47",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Sniper.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "f0bd2d9ee2b2910f2d9e67141bfd256c072e929d9649ac97ea42167e9f8917af",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/sniper-critical.aseprite"
     },
     {
       "id": "sniper-damaged",
       "output": "app/Assets/StarShift/Art/M8/sniper-damaged.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "191769ae85c71837faca8c282f564b07",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Sniper.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "3e9ac6128525cea5f0858748cafca84677db2b5950858220847998031da03af5",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/sniper-damaged.aseprite"
     },
     {
       "id": "sniper",
       "output": "app/Assets/StarShift/Art/M8/sniper.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "c8887f926525ce15095228697495ac54",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Sniper.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "0ce3fc0c231c4f09cf4c1ded79740c1c9cc33a5b141b88ce8970efcfcc34e9dd",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/sniper.aseprite"
     },
     {
       "id": "star",
       "output": "app/Assets/StarShift/Art/M8/star.png",
       "exists": true,
-      "classification": "KEEP",
       "guid": "cf75ca4ca0819361b8ec50f6b9b0b039",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
       "sha256": "1473e9725049c1b2f579227f23ae7fd988d36154d5c3e6bc6ff649d44c237936",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "stellar-shard-sheet",
       "output": "app/Assets/StarShift/Art/M8/stellar-shard-sheet.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "a9a0ce0d33c81a3e2bb988465c6ff937",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Data/RegionA/Boss/BossGold.asset",
         "app/Assets/StarShift/Data/RegionB/Rewards/WardenGold.asset",
         "app/Assets/StarShift/Data/Rewards/StellarShard.asset"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "57d915cb178799666b8be99af3b34b6dc3ef5965393b9bda01e028f27e3436b1",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/stellar-shard.aseprite"
     },
     {
       "id": "stellar-shard",
       "output": "app/Assets/StarShift/Art/M8/stellar-shard.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "1bdbeb5344a099beaa2fbaaa77367316",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Data/RegionA/Boss/BossGold.asset",
         "app/Assets/StarShift/Data/RegionB/Rewards/WardenGold.asset",
         "app/Assets/StarShift/Data/Rewards/StellarShard.asset"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "6e461af769a4520637473e26b047ba2e5c6863d6c56e2520788835ceb4b4a701",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/stellar-shard.aseprite"
     },
     {
       "id": "supply-burst-sheet",
       "output": "app/Assets/StarShift/Art/M8/supply-burst-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "ddfe893bb301c3b5386d592375f3c510",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
-      "sha256": "2bd29f5c86c5b9beaba3399c6a68ce603c54397b93e80ea55d31ccd268c8f68f",
-      "runtime_verified": false
+      "sha256": "3ef68f32e8931376532a880421a69687f64818e7c69521d58ec1277c9bfe9517",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/supply-burst.aseprite"
     },
     {
       "id": "supply-burst",
       "output": "app/Assets/StarShift/Art/M8/supply-burst.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "6aedec57ce5a8cec8b1577256aa7132b",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "6575c83576909a2a799b89bf0d904c63836103d55be8210e6f63b760a7f20268",
-      "runtime_verified": false
+      "sha256": "ee0ef345137609d40f11152961e9878cc0e68b6a9ff5fa8092dcd19146467b87",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/supply-burst.aseprite"
     },
     {
       "id": "supply-drone-critical",
       "output": "app/Assets/StarShift/Art/M8/supply-drone-critical.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "98695641b3c860e66b2ad98f49c58825",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/SupplyDrone.prefab"
       ],
-      "sha256": "522320b14c9da8250a0ddf82a65a1818ed8ad19412dc989f4698efe52ca07669",
-      "runtime_verified": false
+      "sha256": "5b8da8465b64c2ea9d79012456857184aba5e044ccd95e2e8449062df156e137",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/supply-drone-critical.aseprite"
     },
     {
       "id": "supply-drone-damaged",
       "output": "app/Assets/StarShift/Art/M8/supply-drone-damaged.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "299516a61b76c503e99f3c52e8d6fb53",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/SupplyDrone.prefab"
       ],
-      "sha256": "f9abeb8e8703967d623bfe25bb1e7a9c4151970e5123dd3a1c0bee77833af567",
-      "runtime_verified": false
+      "sha256": "54a936a47def2b08390a5f07d00422a362f258bc741e43b15cc39987cbcdb7af",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/supply-drone-damaged.aseprite"
     },
     {
       "id": "supply-drone",
       "output": "app/Assets/StarShift/Art/M8/supply-drone.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "6fa9793c3a658bc2d8b0bcc0fcdfe608",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/SupplyDrone.prefab"
       ],
-      "sha256": "bfd6f4f3f475b1afc9b92d2b4eeb987039257c742d437875b2d6a4eb43bd1235",
-      "runtime_verified": false
+      "sha256": "0d9a0e13649f00b34d081073fd0d752bed30178bead164570366753ad989e37d",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/supply-drone.aseprite"
     },
     {
       "id": "support-companion",
       "output": "app/Assets/StarShift/Art/M8/support-companion.png",
       "exists": true,
-      "classification": "KEEP AS REFERENCE",
       "guid": "e17815ff91bd2b1118b277545e62002b",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Player/Player.prefab"
       ],
       "sha256": "b4611a57713768fe3260c5a2656b17c62162754e8397a9134be519714957adcf",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "support-drone-sheet",
       "output": "app/Assets/StarShift/Art/M8/support-drone-sheet.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "cce2a11c5ef47f6499b442ab6b560a90",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Data/Rewards/SupportDrone.asset"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "6f20725665245f3e865251914b9ff35718717ac95ef7689ef99a78e138bb04f9",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/support-drone.aseprite"
     },
     {
       "id": "support-drone",
       "output": "app/Assets/StarShift/Art/M8/support-drone.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "0064cd919baa8a5e6994c4d7c5e1bc77",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Data/Rewards/SupportDrone.asset"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "2796493a1a93f8c8c7bc448067fe8bd4eb9a31fe65a4c01d8b399ce3ef34c05d",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/support-drone.aseprite"
     },
     {
       "id": "telegraph-coral-sheet",
       "output": "app/Assets/StarShift/Art/M8/telegraph-coral-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "be291c5495448b5f5aa5ab6a21d11fd7",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
       "sha256": "e73d5327c9b94db29cb4c3c1fec862eec262cf89f4404330cd194cbff62ae4cd",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "telegraph-coral",
       "output": "app/Assets/StarShift/Art/M8/telegraph-coral.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "d8e8ee435ce93430ab388577e0914b28",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
       "sha256": "a0192203284db003ffca4954af8a058bbb69891f9241a8214ab8e4d365886f78",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "telegraph-lemon-sheet",
       "output": "app/Assets/StarShift/Art/M8/telegraph-lemon-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "3357e62cd0e64cddc95643e6d3d7a6c4",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
       "sha256": "010f464fd8d0017d4ce8d8f6f718f4ea9eb8627e1849d76084234e56a21b5f3a",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "telegraph-lemon",
       "output": "app/Assets/StarShift/Art/M8/telegraph-lemon.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "e6e5c1df6c3f65305be638ecdc16f11d",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
       "sha256": "fabfdb9953d90a986c553793f17547e4ab0b2c1627bafdea6cdf6dd249955407",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "trail-dot-beam",
       "output": "app/Assets/StarShift/Art/M8/trail-dot-beam.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "de757660b768e8a71ac4e94217df57ca",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
       "sha256": "daf9ae995468c660fe0e5a6cf9e9b5126f7fdb2b06a8063a202c6641b848b1df",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "trail-dot-missile",
       "output": "app/Assets/StarShift/Art/M8/trail-dot-missile.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "d2f01909a1ef22e9bb05d084e72b09b4",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
       "sha256": "9ef06a46728406157501a2041ac3dccd28b35291bb7c7021a99c83d2214bd5a5",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "trail-dot-plasma",
       "output": "app/Assets/StarShift/Art/M8/trail-dot-plasma.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "64430635e12cb3adaafd798f4818a563",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
       "sha256": "fbc6b0a0b502d06c0ced79a73f019cdf60b96ded97efb44445e91abfd619ae44",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "trail-dot-pulse",
       "output": "app/Assets/StarShift/Art/M8/trail-dot-pulse.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "d014ac468b455e0618db9c62d7e4d74c",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
       "sha256": "9914e8d69d26cd0116f86e9090620c19d83969c0ede95eb7b356c780e62d73a6",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "trail-ion-sheet",
       "output": "app/Assets/StarShift/Art/M8/trail-ion-sheet.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "04e5942898c3271cc9e2fa77c5e72f19",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Data/Cosmetics/ShipCosmetics.asset"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "0bbc29c8b3339f3a3d68fea66fed5955afbdf7982fad0a96f21d0984ba63d889",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/trail-ion.aseprite"
     },
     {
       "id": "trail-ion",
       "output": "app/Assets/StarShift/Art/M8/trail-ion.png",
-      "exists": false,
-      "classification": "DELETE",
+      "exists": true,
       "guid": "c79818951b067490b8670970bb8e2950",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "6bf28892d110eb8539067d2656054b211646f2b2085b435fa6ac213ce2c58a6d",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/trail-ion.aseprite"
     },
     {
       "id": "trail-rainbow-sheet",
       "output": "app/Assets/StarShift/Art/M8/trail-rainbow-sheet.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "c1b4d00544bed726eadedd6eef618947",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Data/Cosmetics/ShipCosmetics.asset"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "1bbdb66a2cf768c2afd53cd9b17be3f44d4f2a86b39a8fcdd1dfa35283f383b9",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/trail-rainbow.aseprite"
     },
     {
       "id": "trail-rainbow",
       "output": "app/Assets/StarShift/Art/M8/trail-rainbow.png",
-      "exists": false,
-      "classification": "DELETE",
+      "exists": true,
       "guid": "ad6e7fe4b830d53c39634eac796ef7e7",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "4a24a84fa5d624a7efe8713fa9e3b8e32afd79effb6b6e3cf64721431db53f54",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/trail-rainbow.aseprite"
     },
     {
       "id": "trail-standard-sheet",
       "output": "app/Assets/StarShift/Art/M8/trail-standard-sheet.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "4be1f4f8d851524a4bdfc9f4e41e65ec",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Data/Cosmetics/ShipCosmetics.asset"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "93e68997b9fc2126fc1705a98195138b21d8edbf565d760d621328424f4b0fb6",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/trail-standard.aseprite"
     },
     {
       "id": "trail-standard",
       "output": "app/Assets/StarShift/Art/M8/trail-standard.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "e8cfb193d5f0e15b79331cd10bdf4e46",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
-      "serialized_references": [
-        "app/Assets/StarShift/Prefabs/UI/GameShellUI.prefab"
-      ],
-      "sha256": null,
-      "runtime_verified": false
+      "metadata_exists": true,
+      "serialized_references": [],
+      "sha256": "a2132991658d9caf63ace3993e4b9567b9bc4600b7a7989999739f84e01d10ad",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/trail-standard.aseprite"
     },
     {
       "id": "ui-ammo",
       "output": "app/Assets/StarShift/Art/M8/ui-ammo.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "3eabcdc83a4318c2c98ce933d89088c1",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "5dd02bb91cca917ef4363f166e8f997b58d3fd227e90fbf2c9d14c34ae4bfe17",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/ui-ammo.aseprite"
     },
     {
       "id": "ui-boss-warning",
       "output": "app/Assets/StarShift/Art/M8/ui-boss-warning.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "d53aae57f65abe0568b52f5945cea69c",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/ResourceAsteroid.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/StormAsteroid.prefab"
       ],
       "sha256": "4acb0a63b983ca208f9dadf6af2d632c113de85197866b7c0b202921f664d7dc",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "ui-button-secondary",
       "output": "app/Assets/StarShift/Art/M8/ui-button-secondary.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "ebbdfb724b66a035abf445529f206373",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/UI/GameShellUI.prefab"
       ],
-      "sha256": "d2a127a77be01ccf4b8b9b53dc9a6a0f2b21077f4f12b860a62ddf72f1d61540",
-      "runtime_verified": false
+      "sha256": "ae74a921c42f6572c696ab0d89369a001af2d376ca4c925e8264c6922cbdeca3",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/ui-button-secondary.aseprite"
     },
     {
       "id": "ui-button",
       "output": "app/Assets/StarShift/Art/M8/ui-button.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "5d904a1af8cfc428e867187725f877da",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/UI/GameShellUI.prefab"
       ],
-      "sha256": "43a2e78d63ed2660b309ae1080dae2cb491b61cb19fc51cc5270e89cb3fe4925",
-      "runtime_verified": false
+      "sha256": "75f64db99ff1663349fb446fbf470b2fe67d973bc92f6fcc2292d940d55b649d",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/ui-button.aseprite"
     },
     {
       "id": "ui-card",
       "output": "app/Assets/StarShift/Art/M8/ui-card.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "a8d4d8ee929a2beea940a196a02ecbee",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/UI/GameShellUI.prefab"
       ],
-      "sha256": "e047f5429d3348a55e04627c0724e2500f9f407ce414cc6436d59cb657c35e8b",
-      "runtime_verified": false
-    },
-    {
-      "id": "ui-cosmetic-state",
-      "output": "app/Assets/StarShift/Art/M8/ui-cosmetic-state.png",
-      "exists": false,
-      "classification": "DELETE",
-      "guid": "f6e4ab9eaee4774e9831a53ea7b4ccd7",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
-      "serialized_references": [],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "e0fe8e8f7ebe5a06ebea72d1a1e3ce708f55f7e30e09c257b5b73892ee63d3e3",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/ui-card.aseprite"
     },
     {
       "id": "ui-heat-fill",
       "output": "app/Assets/StarShift/Art/M8/ui-heat-fill.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "a4309da69d419511cb8fad8af93ff71a",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
-      "sha256": "72784f0900b728ff1b4d9777985661c50b1fed393600c28dd1f3bff0b91da842",
-      "runtime_verified": false
+      "sha256": "12304b0cd32ce8f15705d61244f6cf84ead7fbc6f8a0f101d475ccdceda7632e",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/ui-heat-fill.aseprite"
     },
     {
       "id": "ui-heat-housing",
       "output": "app/Assets/StarShift/Art/M8/ui-heat-housing.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "9a77e130fc4583adcac4c55a390b1ebf",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
-      "sha256": "23a9b9b7c07d54d3ede94703e50d4c985c7c07b767a3d0c3796b4aacb1c08331",
-      "runtime_verified": false
+      "sha256": "c237348a594ea546ffef9f8c5d518c9589ea078ec8e1984bf576f99ad99cc5cd",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/ui-heat-housing.aseprite"
     },
     {
       "id": "ui-heat-notch",
       "output": "app/Assets/StarShift/Art/M8/ui-heat-notch.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "e78b7433c1ae8d8678f78591c6be9edd",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
-      "sha256": "5e6e6fb04a78ccb2f5f4f3d3567edacb81048aa6c13c6f557eb176b3abb5aa33",
-      "runtime_verified": false
+      "sha256": "bfeae8a4d6c3b0db9d26b4891618013daedb648860c44f16fe5c9c24adaae6db",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/ui-heat-notch.aseprite"
     },
     {
       "id": "ui-heat",
       "output": "app/Assets/StarShift/Art/M8/ui-heat.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "a9bbe3649ada06817b7319b246e39143",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
       "sha256": "6c6ed87986e1b8732945d21c1bc17bb2e5a5a692a66f50d5097ea445d8345fd9",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "ui-icon-pause",
       "output": "app/Assets/StarShift/Art/M8/ui-icon-pause.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "611b84783b9485a908bf4d830e803c5c",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
       "sha256": "87812ee62d2ea19db2f1c75fea89465c26294845ddf06ec2ca45783aa4dd7646",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "ui-life",
       "output": "app/Assets/StarShift/Art/M8/ui-life.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "f41d1c705d51c8f5f9deb10c4b9724d1",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
-      "sha256": "37f1c8a7b50b1ab9153a9e880e5ac4ad8840d6b86b2a08ab952c336038501929",
-      "runtime_verified": false
-    },
-    {
-      "id": "ui-mission-state",
-      "output": "app/Assets/StarShift/Art/M8/ui-mission-state.png",
-      "exists": false,
-      "classification": "DELETE",
-      "guid": "af8900412150d1b2bb4637438d432fa3",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
-      "serialized_references": [],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "7c493c1b77d64c5e252e194f65ef0eed2fd1be9eaccb4b751599973a67df8834",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/ui-life.aseprite"
     },
     {
       "id": "ui-modal",
       "output": "app/Assets/StarShift/Art/M8/ui-modal.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "97332bb0ce084331a879a445830d9d2a",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/UI/GameShellUI.prefab"
       ],
-      "sha256": "32ed3e193ce697678185ef3f068021a72985eeabcd3724bdc814572ae02f88e6",
-      "runtime_verified": false
+      "sha256": "2da28a1afd01726d9529eb4ef4cf788e4e793f8742b344e9242b1543eb5a1a79",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/ui-modal.aseprite"
     },
     {
       "id": "ui-overdrive",
       "output": "app/Assets/StarShift/Art/M8/ui-overdrive.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "43cb52a27f913d9ea8aee2643a241dde",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "51cab9b82a232557f7fa891af870080719ab4549b0bc4e1f60176d9a88531e2d",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/ui-overdrive.aseprite"
     },
     {
       "id": "ui-panel",
       "output": "app/Assets/StarShift/Art/M8/ui-panel.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "881dc1c2008f159c2a6dc15bcc2d004a",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/UI/GameShellUI.prefab",
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
-      "sha256": "cc7370f038fb4c86bd5ba815812fb6b31fb999daf2c41c0626b5302286261eb1",
-      "runtime_verified": false
+      "sha256": "ba5ef508a38385a699aa4507bd76cafce06309070e89a9fe8103f6a4ea85ed9a",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/ui-panel.aseprite"
     },
     {
       "id": "ui-shard",
       "output": "app/Assets/StarShift/Art/M8/ui-shard.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "137821ae5272f7b9ab2f23aa509719dc",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
-      "sha256": "b9591f47330785d40e60b94fce275dd70447dc14a3cb2f5c611407fa80dfc08a",
-      "runtime_verified": false
+      "sha256": "6c6e1e0fc6b33fab05d4a60f618bbdd45a8e3ad23b5a763205b4dd79a8948504",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/ui-shard.aseprite"
     },
     {
       "id": "ui-shield",
       "output": "app/Assets/StarShift/Art/M8/ui-shield.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "98444c3bbdb10e1dfb48a7ce4a1956aa",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
-      "sha256": "84b7dbfa4442cd9852d5c9b521fd211aeb1574e4f98a32f8d5e7a0aacf20eb5f",
-      "runtime_verified": false
+      "sha256": "d05a2c1799fa84eb3d4ad2b3d93f2beaf09c18ec18ca15c89d7f803c7ccd992e",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/ui-shield.aseprite"
     },
     {
       "id": "ui-support",
       "output": "app/Assets/StarShift/Art/M8/ui-support.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "d68641b37129bfaeb8aaa92dd09e4f45",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
-      "sha256": "2f790bf32d5b84b736c7767a19f6c849e2b00b732027ebc2250359d52d8b26e6",
-      "runtime_verified": false
+      "sha256": "af5702f74df7695d852e33a79889b707a9fe4270ec2500a54a7d730791bc08c3",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/ui-support.aseprite"
     },
     {
       "id": "ui-tab",
       "output": "app/Assets/StarShift/Art/M8/ui-tab.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "1e61a6830e2ceef8096ec1f8b1fb823e",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/UI/GameShellUI.prefab"
       ],
-      "sha256": "f17c91ad6730ca293dcd538497800c6b8e2e40c69556488192fe44ff4d9bedc7",
-      "runtime_verified": false
+      "sha256": "94a725a97858d6cc48fdf942425d5661c31a8f7269e76651917be2434401dc18",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/ui-tab.aseprite"
     },
     {
       "id": "ui-weapon-homing",
       "output": "app/Assets/StarShift/Art/M8/ui-weapon-homing.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "ef4bb3cc44ce66af1b9c9adf88be6ee0",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
-      "sha256": "4ce9bffc831818628de32d27aaa4ef1afb323657487b9152f5d9045f5851b640",
-      "runtime_verified": false
+      "sha256": "3ae2daed199bb32594547b7c48ab3e450ec84bd9b0bc40420d887b41b2673e0a",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/ui-weapon-homing.aseprite"
     },
     {
       "id": "ui-weapon-plasma",
       "output": "app/Assets/StarShift/Art/M8/ui-weapon-plasma.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "ee23b6f1b89f2a2dfa645f1623b56785",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
-      "sha256": "e16e1a9dcc80c65882c67d2909ab877dc33d49e49dae34986cc1efdaa3e25dcf",
-      "runtime_verified": false
+      "sha256": "858a8912f5045b838023e5020dce4487e164afa7202adfc2085180ec4efd87fc",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/ui-weapon-plasma.aseprite"
     },
     {
       "id": "ui-weapon-pulse",
       "output": "app/Assets/StarShift/Art/M8/ui-weapon-pulse.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "09eecce1362276bde93c8601ae5ad2af",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ],
-      "sha256": "bf3d6bbbe83cd39160cedbbd14d106db7a52facde00f513f42c707f6e5d1029f",
-      "runtime_verified": false
+      "sha256": "5f382e06850105fe2992721b769ceb65bd2594abbe320e09cbe7512f3de1fe70",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/ui-weapon-pulse.aseprite"
     },
     {
       "id": "vanguard-beam-pod-critical",
       "output": "app/Assets/StarShift/Art/M8/vanguard-beam-pod-critical.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "26f0275529b80c68d9b93fcb0124ee27",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "392c6ae91cce17c11c4f3b220ec86964232fd4fd92b462f567adc3d5251817d7",
-      "runtime_verified": false
+      "sha256": "cb48882554476e3c877439afd633e7d6e77d3a24986f742bfab3ac69e46c3765",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/vanguard-beam-pod-critical.aseprite"
     },
     {
       "id": "vanguard-beam-pod-damaged",
       "output": "app/Assets/StarShift/Art/M8/vanguard-beam-pod-damaged.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "03a5227bd5bcc353495973510eba9c51",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "6c2f52055057c654e28f1301842afbd230e2ee8f4bbec1a288c896fb65b3b600",
-      "runtime_verified": false
+      "sha256": "dcf5cfe467b8fa6889c0e51332a1becbbc802af5b1de10d6a01ef5a3c2f88939",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/vanguard-beam-pod-damaged.aseprite"
     },
     {
       "id": "vanguard-beam-pod",
       "output": "app/Assets/StarShift/Art/M8/vanguard-beam-pod.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "f22f7a044d98ef0f9b5ed942df8dcd8c",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
       ],
-      "sha256": "80d7ab83dbb1e83d1ae585ebeb4d11d15463d1d9683c2b303d044c592c89fc0a",
-      "runtime_verified": false
+      "sha256": "926ce8f908ba837acaff461020f0c24999047b00adb888cbcf49c5b5a8a44260",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/vanguard-beam-pod.aseprite"
     },
     {
       "id": "vanguard-critical",
       "output": "app/Assets/StarShift/Art/M8/vanguard-critical.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "15b4a0a4ec36506fda5493d6b7771917",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "ad03fc52813b9485d589e3a1d2579cf9d9ae35e78966529cfdefb1b5c364b08d",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/vanguard-critical.aseprite"
     },
     {
       "id": "vanguard-damaged",
       "output": "app/Assets/StarShift/Art/M8/vanguard-damaged.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "bdae9d96d3fef14beb2cea31fd54e79e",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "a288e4708f92eb59f4682421652dd0054dcdb2567b5e0bcef826b9a1d7769594",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/vanguard-damaged.aseprite"
     },
     {
       "id": "vanguard-engine-critical",
       "output": "app/Assets/StarShift/Art/M8/vanguard-engine-critical.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "3b08f90bed3da236a91781ac21556d29",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "fc5eeb197fb9b751ae2b516f8b16eec84df28a8913d87f13efd1679263834ffd",
-      "runtime_verified": false
+      "sha256": "3aeb764eb567afe1d7afce86b2b6c5a3609a2cb91e95c156d109bf4cae4d9b09",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/vanguard-engine-critical.aseprite"
     },
     {
       "id": "vanguard-engine-damaged",
       "output": "app/Assets/StarShift/Art/M8/vanguard-engine-damaged.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "3e5c00eded9418be5956812e182c642c",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "018d0ab054ed906b8b212458519e42db1293855567f010a795cc4cd6c2da309e",
-      "runtime_verified": false
+      "sha256": "3a566c3ad7df9e06abeac9ab574fcda5e82944ac7b23cc37cdda0c384112884c",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/vanguard-engine-damaged.aseprite"
     },
     {
       "id": "vanguard-engine",
       "output": "app/Assets/StarShift/Art/M8/vanguard-engine.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "53eb66a857e72aa59b5916b2a4067ae1",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
       ],
-      "sha256": "328e23baf8d25edd2eb1643b33555f9f10cc90f1ec993c73b1bd607e35914103",
-      "runtime_verified": false
+      "sha256": "2ddf8bfcaa591f5383934f6a0ff9bd52805de77e0e9d8e46792ee4567973463a",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/vanguard-engine.aseprite"
     },
     {
       "id": "vanguard-hull-critical",
       "output": "app/Assets/StarShift/Art/M8/vanguard-hull-critical.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "7f821ba16cd5f9bfdafbe8ad77c382e2",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "8d62d5253c18c338af103340009046ec6d9d61570548bb0d9b22d235505e4856",
-      "runtime_verified": false
+      "sha256": "ad03fc52813b9485d589e3a1d2579cf9d9ae35e78966529cfdefb1b5c364b08d",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/vanguard-hull-critical.aseprite"
     },
     {
       "id": "vanguard-hull-damaged",
       "output": "app/Assets/StarShift/Art/M8/vanguard-hull-damaged.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "5df5d4db7d45d3cbaa1e7e3156ca34c7",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "42f1fdb5f3ae7ec938c481b49ebb93f9278d9e5e1c5bf3278c30350690617f46",
-      "runtime_verified": false
+      "sha256": "a288e4708f92eb59f4682421652dd0054dcdb2567b5e0bcef826b9a1d7769594",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/vanguard-hull-damaged.aseprite"
     },
     {
       "id": "vanguard-hull",
       "output": "app/Assets/StarShift/Art/M8/vanguard-hull.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "db2ef81af217798e99bfa7fcc877afae",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
       ],
-      "sha256": "08d8cb87f1aa4c666fcb7c23ebae3af96bf45326414160c3b5213c1dc57795ae",
-      "runtime_verified": false
+      "sha256": "a246089c5f9211125edd2175bdc8bb2a778bc222ce4bb2284da80cf37b6e1443",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/vanguard-hull.aseprite"
     },
     {
       "id": "vanguard-missile-pod-critical",
       "output": "app/Assets/StarShift/Art/M8/vanguard-missile-pod-critical.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "fc7e72ba0958aedf6b3ce21d2bd7f60b",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "9a3634de9c614e7c0489036d58f91ac2eefdb6ef31a2adf8a8733f963d502ef2",
-      "runtime_verified": false
+      "sha256": "0c86efad41b9d769cd9f68ffb112f92970dd1540bf8d7992b782e8bdd785de7c",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/vanguard-missile-pod-critical.aseprite"
     },
     {
       "id": "vanguard-missile-pod-damaged",
       "output": "app/Assets/StarShift/Art/M8/vanguard-missile-pod-damaged.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "fede2e426ea2d8d829d7f1a2e471651e",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "54c8e952134a7e48958bae04623b00fece0b1ef186fefba1a2232e305dc1c897",
-      "runtime_verified": false
+      "sha256": "09097c56826a32f440f75f57213b340b1453fe912df8f6c67cd9843afca80562",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/vanguard-missile-pod-damaged.aseprite"
     },
     {
       "id": "vanguard-missile-pod",
       "output": "app/Assets/StarShift/Art/M8/vanguard-missile-pod.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "46afeb435dbe3f76186794f737826364",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
       ],
-      "sha256": "f0b3692a24f6cc9f097d63fb8c6041ce522afb20d406a6c7756d61ca95112841",
-      "runtime_verified": false
+      "sha256": "7ec7be2cfa40aac27eee9d5e0f12ffdeb36de7ef4baf6d5dc50e1b1116b98938",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/vanguard-missile-pod.aseprite"
     },
     {
       "id": "vanguard-reactor-critical",
       "output": "app/Assets/StarShift/Art/M8/vanguard-reactor-critical.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "e1318e2dfb9c6d63a97d2f7ed004f46b",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "abd97ea5d02b1250801bf17dfda405a253da439079162475aee1c420afd943d7",
-      "runtime_verified": false
+      "sha256": "0591ccc306f1d015b965e717011455177b797875333b88aa7ce91e44a66cdf32",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/vanguard-reactor-critical.aseprite"
     },
     {
       "id": "vanguard-reactor-damaged",
       "output": "app/Assets/StarShift/Art/M8/vanguard-reactor-damaged.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "935cda4222b66b4a9a43b85ddf948091",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "e761fd93cba940a682edbfafe434d6e304304ffa70422757cbd0f943cfe82052",
-      "runtime_verified": false
+      "sha256": "01f0530bc9ecab6b9ea1bf646c15266c58f9c1bc777e8d7e0d59df997245a025",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/vanguard-reactor-damaged.aseprite"
     },
     {
       "id": "vanguard-reactor",
       "output": "app/Assets/StarShift/Art/M8/vanguard-reactor.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "f15d3eff4d75179e3b4e037ab2f65780",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
       ],
-      "sha256": "709238f110565f8bbde4b1754435d32827704813feb491097d40893f7fad03ec",
-      "runtime_verified": false
+      "sha256": "8c01a6af715de60c67ef2bce5980027cb0a7261d4888db9ddc2d39deaa1490fc",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/vanguard-reactor.aseprite"
     },
     {
       "id": "vanguard-truss-critical",
       "output": "app/Assets/StarShift/Art/M8/vanguard-truss-critical.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "8e3c6c359cd5e344b910a98c41ef6839",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "a51b1ad27c3c2e584520f584fbffd809e40506517569b620299282d42ee3b638",
-      "runtime_verified": false
+      "sha256": "a36582b85f00084e98ab4b14f4cbf319f3e3b2e25dc5b23574f49ec2170b7fb7",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/vanguard-truss-critical.aseprite"
     },
     {
       "id": "vanguard-truss-damaged",
       "output": "app/Assets/StarShift/Art/M8/vanguard-truss-damaged.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "f06ba36f41d6c504d9c24d85dcf060cf",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "86f9fd8e1eb5dd2f13fb12d4ddd375c59d64a8e0abedc2567ccd2664b8946fb4",
-      "runtime_verified": false
+      "sha256": "83f91ddf69bb82d5a95702b402328a07244bdd216aef2528842ef70075514e29",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/vanguard-truss-damaged.aseprite"
     },
     {
       "id": "vanguard-truss",
       "output": "app/Assets/StarShift/Art/M8/vanguard-truss.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "7d0a159ee65f42ecabe312384086d549",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
       ],
-      "sha256": "01c83e676079d0db827ca358e817e997c642aed95ddb9f5dd8bb9fd7bf5fd77d",
-      "runtime_verified": false
+      "sha256": "c45c8d9bc2f05a67a5013f7bba4c8bc9bad72675271c9b958719b4df1941a751",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/vanguard-truss.aseprite"
     },
     {
       "id": "vanguard-wing-critical",
       "output": "app/Assets/StarShift/Art/M8/vanguard-wing-critical.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "c845fafd0a6b83c7ebdc1758a72c5c94",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "eb244d48860c7681bc0fd4bd7c2d81054974897b5f47f075bbbd88aceb9a403e",
-      "runtime_verified": false
+      "sha256": "080f3c5601b3b58b8aab058e61e370e095f2d249450ca472b2cc9388a872532c",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/vanguard-wing-critical.aseprite"
     },
     {
       "id": "vanguard-wing-damaged",
       "output": "app/Assets/StarShift/Art/M8/vanguard-wing-damaged.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "af4fb6ce162df55598ffe4e58203ff93",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "42a090856e980cc448a71372655af3ef0cca67871d5f80e4c5bbca22040a95a0",
-      "runtime_verified": false
+      "sha256": "25a3233b9660550425ea0d6d3b5dcfb05b75f9fdfb87aafc51be670f2efd545d",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/vanguard-wing-damaged.aseprite"
     },
     {
       "id": "vanguard-wing",
       "output": "app/Assets/StarShift/Art/M8/vanguard-wing.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "7180fd9ef0d237a8e85564aaadb79e90",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
       ],
-      "sha256": "470206abfcf3d4d183c235ea434ff1b55a2d9b8bfdfa9bb0b4b85115ebd1d5ba",
-      "runtime_verified": false
+      "sha256": "16321300ebafbee94c27d8a90f912678901e11d3b1a14ff59b9af1dfce0ad08d",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/vanguard-wing.aseprite"
     },
     {
       "id": "warden-beam-node-critical",
       "output": "app/Assets/StarShift/Art/M8/warden-beam-node-critical.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "9cfd08a8228d7e120a9dc780776d2c8c",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "dc276b71e47e335d0234df016ee7c6cee8780c13d81768e1202f36c656984ca8",
-      "runtime_verified": false
+      "sha256": "7a03d2f688353be202e5cbc3450e059671947e6c4486b8996f4a7e4d5c401322",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-beam-node-critical.aseprite"
     },
     {
       "id": "warden-beam-node-damaged",
       "output": "app/Assets/StarShift/Art/M8/warden-beam-node-damaged.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "13620344d50c90b5587a255b67eadfb6",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "1f2db0eef29d1ac4f6f4e0a4c92dc4cc637d6a9f54ba3e66b5c14cdd51253a8c",
-      "runtime_verified": false
+      "sha256": "548c2fb4dd05d8a5e5dadee30f6e9114020cb184c34435bd345d505fddaa658f",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-beam-node-damaged.aseprite"
     },
     {
       "id": "warden-beam-node",
       "output": "app/Assets/StarShift/Art/M8/warden-beam-node.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "045576816181f6b0096dd1392c85861d",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab"
       ],
-      "sha256": "8626c6e13e34802a9691dcee934007ab4513eb5ac538eb750a9ec1a908eea803",
-      "runtime_verified": false
+      "sha256": "2a28348a8b9fd09bbd057e5968f16f1f4c8065fbac64831010beed3ed6416540",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-beam-node.aseprite"
     },
     {
       "id": "warden-core-critical",
       "output": "app/Assets/StarShift/Art/M8/warden-core-critical.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "69c093ea42a372bba8ecb6b9f0d436d1",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "b899df54261db98d3e809cc9aabb34fb7327d05b6914da8e12d2d178cba1b2c9",
-      "runtime_verified": false
+      "sha256": "825846ef23ddf59a5ae817e72b2e2cb3ad65c6e37fb966f57f92baa4aea902a1",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-core-critical.aseprite"
     },
     {
       "id": "warden-core-damaged",
       "output": "app/Assets/StarShift/Art/M8/warden-core-damaged.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "98fa85b7cdc4c29fda6d2fc39cfeefb3",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "abd04c6e7d66432937d6fca32bd6853fa138f378395ed4d8827c51b5e8dc83c4",
-      "runtime_verified": false
+      "sha256": "656c7da6b0c8505e3ebde3c3a7cbffff4b5ff8b4b6195270fff34145e7740856",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-core-damaged.aseprite"
     },
     {
       "id": "warden-core-loop-sheet",
       "output": "app/Assets/StarShift/Art/M8/warden-core-loop-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "4a08d23a695b13dffa4bd59610279b18",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
       ],
       "sha256": "8d15ac8c838534e019c71159237ee73aa6535eb23d9e357c0abbdb3a3579eb90",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "warden-core",
       "output": "app/Assets/StarShift/Art/M8/warden-core.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "23aee5e4a6b73be3f9e49cabd3a0aa0f",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab"
       ],
-      "sha256": "f891674b0bd9a6f92209787bde055ed5c4937d4fcc8d8f5c68d5ab22e0c92092",
-      "runtime_verified": false
+      "sha256": "66f96912b47c512e3c414d700fd683def5c98cee54fa8e229b4409e74e069d4c",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-core.aseprite"
     },
     {
       "id": "warden-critical",
       "output": "app/Assets/StarShift/Art/M8/warden-critical.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "0616c19420b21dce1b9389c1d7323ccb",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "8202905f0cedefbc5a36d0f2d1fae99eb8c24dd01489241c99435453a6fe7450",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-critical.aseprite"
     },
     {
       "id": "warden-damaged",
       "output": "app/Assets/StarShift/Art/M8/warden-damaged.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "4e24e761212f29370ac1e1ea59a136b0",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "084a0b48c93dcf98d9f8fd14cdcb34663cb983ca67b1afb7f12f5420cc89442c",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-damaged.aseprite"
     },
     {
       "id": "warden-drone-critical",
       "output": "app/Assets/StarShift/Art/M8/warden-drone-critical.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "f701eefe2fd680b0fa98fa55df68b064",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/WardenDrone.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "a82bb745abef78620beef5075643a01bec0e389fb75dc39cd59abc322f0552a3",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-drone-critical.aseprite"
     },
     {
       "id": "warden-drone-damaged",
       "output": "app/Assets/StarShift/Art/M8/warden-drone-damaged.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "bab09f9db9a86d19fbd8b18bfa8cd32a",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/WardenDrone.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "f1f683a158dc132b112256d6d19c50a231aa8f57b395f9c35632867b3093cafb",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-drone-damaged.aseprite"
     },
     {
       "id": "warden-drone-node-critical",
       "output": "app/Assets/StarShift/Art/M8/warden-drone-node-critical.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "8db2465840dd5be11812e54b4e012187",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "4734b1ad29e258190d69ba7f5ef295817bf9c37b6ccff9702538964b0962092f",
-      "runtime_verified": false
+      "sha256": "ef5224ab64edf8526c30803d85a0327939980cdfcffb28e2142f25c79b7099c4",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-drone-node-critical.aseprite"
     },
     {
       "id": "warden-drone-node-damaged",
       "output": "app/Assets/StarShift/Art/M8/warden-drone-node-damaged.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "5decc8cddb5716c6997027923e7af01c",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "2c05672e46716cce9c41d4d2abb2299bbb8bf4be74f1909d59fc9fb26a5bf090",
-      "runtime_verified": false
+      "sha256": "ae00799f3ec669c8ffd3767f67095cd58b63b8fbe674c98f7d951fa191486eb2",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-drone-node-damaged.aseprite"
     },
     {
       "id": "warden-drone-node",
       "output": "app/Assets/StarShift/Art/M8/warden-drone-node.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "01b2883b8adef2697a8f932ff7e2d0eb",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab"
       ],
-      "sha256": "cdac29129424f93a71c4a221fffa8e330d4941f751997ac8c9bcb9c92d201b20",
-      "runtime_verified": false
+      "sha256": "93923c5e6bb8ed07bf0ab745d1366804651de11c523b2eaddfd5d1d8a4015f1d",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-drone-node.aseprite"
     },
     {
       "id": "warden-drone",
       "output": "app/Assets/StarShift/Art/M8/warden-drone.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "5024f2c4584a485a2988148937338ef4",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/WardenDrone.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "d5a67ba95706f833fc0270ed5ada40feec59b0399a24a87eb7794ce980f189a3",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-drone.aseprite"
+    },
+    {
+      "id": "warden-hull-critical",
+      "output": "app/Assets/StarShift/Art/M8/warden-hull-critical.png",
+      "exists": true,
+      "guid": "1732f4b783d74ec12bbf715ac806b991",
+      "metadata_exists": true,
+      "serialized_references": [],
+      "sha256": "8202905f0cedefbc5a36d0f2d1fae99eb8c24dd01489241c99435453a6fe7450",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-hull-critical.aseprite"
+    },
+    {
+      "id": "warden-hull-damaged",
+      "output": "app/Assets/StarShift/Art/M8/warden-hull-damaged.png",
+      "exists": true,
+      "guid": "56c9dcb199f2ff42f9c892e3654147cf",
+      "metadata_exists": true,
+      "serialized_references": [],
+      "sha256": "084a0b48c93dcf98d9f8fd14cdcb34663cb983ca67b1afb7f12f5420cc89442c",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-hull-damaged.aseprite"
     },
     {
       "id": "warden-hull",
       "output": "app/Assets/StarShift/Art/M8/warden-hull.png",
-      "exists": false,
-      "classification": "MISSING BUT REQUIRED",
+      "exists": true,
       "guid": "7bc63c117b52792efb67b5d1979a1a20",
-      "metadata_exists": false,
-      "metadata_origin": "tracked metadata; restore deliberately before recreating bound asset",
+      "metadata_exists": true,
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab"
       ],
-      "sha256": null,
-      "runtime_verified": false
+      "sha256": "a80f6d89dfc78bb9c59b6e06d71ecf9b668c676adddb776620afadc6002e2d06",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-hull.aseprite"
     },
     {
       "id": "warden-plasma-node-critical",
       "output": "app/Assets/StarShift/Art/M8/warden-plasma-node-critical.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "9019d2b8214e37657b3d8442cc5a2c87",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "0c2ee571b92614fabb9a7a1b0f06e4cd60a3bac4480f2c9185b1e12396a0b781",
-      "runtime_verified": false
+      "sha256": "39f6cf4e06abca74b0c2d74661dfb4a409b3cd73547dd0e6a5f1baedb51279a0",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-plasma-node-critical.aseprite"
     },
     {
       "id": "warden-plasma-node-damaged",
       "output": "app/Assets/StarShift/Art/M8/warden-plasma-node-damaged.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "406d08f9292ea165d865da431197c295",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "d1977de5b20e7d34b3134a7bb493d63934e7a868f2f54683717c044c1a6f6f5f",
-      "runtime_verified": false
+      "sha256": "4b83cb66fe11d9793bc7972d69abbeee3f8b9b5bc76919a7bcfb9f74d5950a2b",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-plasma-node-damaged.aseprite"
     },
     {
       "id": "warden-plasma-node",
       "output": "app/Assets/StarShift/Art/M8/warden-plasma-node.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "821609cfa0ca3a8c8a71f697a0b08abe",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab"
       ],
-      "sha256": "f891674b0bd9a6f92209787bde055ed5c4937d4fcc8d8f5c68d5ab22e0c92092",
-      "runtime_verified": false
+      "sha256": "5398a778c87adb43129ae8d2e88e5974cf87763cfae88ccc76f418cbbac95e90",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-plasma-node.aseprite"
     },
     {
       "id": "warden-shield-phase-sheet",
       "output": "app/Assets/StarShift/Art/M8/warden-shield-phase-sheet.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "fc19e0a0c4b1bcf8c830e2783b8fcf9f",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
       "sha256": "b2647b3818c41e299ad1bd6c66ed5622fd453fea12cb1faae126ef19c111890c",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "warden-shield-phase",
       "output": "app/Assets/StarShift/Art/M8/warden-shield-phase.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "aae82078d74f4c05a8da307a9f0e429b",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab"
       ],
       "sha256": "b87361c9aed4e3297c98a0c8d48711a621090612e6b0cf4315d5581ad14381ac",
-      "runtime_verified": false
+      "runtime_verified": false,
+      "source": "Retained candidate; remaining review recorded in asset-pipeline.md"
     },
     {
       "id": "warden-truss-critical",
       "output": "app/Assets/StarShift/Art/M8/warden-truss-critical.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "6c4b580c630da0144affd4f1da9e3952",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "c240b96227e491adfe3efeff1cb79de8ee5e7a31226b1254e48692bd33d5acea",
-      "runtime_verified": false
+      "sha256": "e1f92dc615cfe6b7acfcbe3a081b7f39a8dca0df81b9c49fe19c44755f60ce8e",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-truss-critical.aseprite"
     },
     {
       "id": "warden-truss-damaged",
       "output": "app/Assets/StarShift/Art/M8/warden-truss-damaged.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "d5a4d58c008b1cfd38cc10faf4685651",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "a00846cc82a55fb43561d5ab4b4b0b793ae748fa809f457ee9a559e9a55eee2d",
-      "runtime_verified": false
+      "sha256": "33e951ea2be44731b7aac8573ccd84efdf3fafc45beb41dce1c8ae374ea1686f",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-truss-damaged.aseprite"
     },
     {
       "id": "warden-truss",
       "output": "app/Assets/StarShift/Art/M8/warden-truss.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "0453e60f6a128091398165395ff543ce",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab"
       ],
-      "sha256": "84fe887c353b0ca2ca63f47654490b9430ee5eddf19a617ad2aa2cb8ebdf0ad7",
-      "runtime_verified": false
+      "sha256": "0642eedec3655ac66288d2bdeb47a1b1a9dd733796e97b4d000062997df4843e",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-truss.aseprite"
     },
     {
       "id": "warden-wing-critical",
       "output": "app/Assets/StarShift/Art/M8/warden-wing-critical.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "c1928473d469b95e9ab3f54439a913d7",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "5cb46e94ef0edec173f73003cb3a23af0f356f1c541da289b53deaa8e9ea3051",
-      "runtime_verified": false
+      "sha256": "24ece1b344f9196984455d5363515b83ef296a6e8d8e24bcde4f3909957c8252",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-wing-critical.aseprite"
     },
     {
       "id": "warden-wing-damaged",
       "output": "app/Assets/StarShift/Art/M8/warden-wing-damaged.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "0ec574b0b3a87523bad786f87db8c7e7",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [],
-      "sha256": "88157e8f29b630259597bb3e980b54e3c440eda205fde9b8ece8459136d2a9d2",
-      "runtime_verified": false
+      "sha256": "97fc1e08fd1354eef2d17eb0c8b9073ac5a3d24eaa6ce09d9b4aa3d09c1e2274",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-wing-damaged.aseprite"
     },
     {
       "id": "warden-wing",
       "output": "app/Assets/StarShift/Art/M8/warden-wing.png",
       "exists": true,
-      "classification": "REDRAW",
       "guid": "9ae50ca209020dd5d9bb707ec2caab97",
       "metadata_exists": true,
-      "metadata_origin": "filesystem",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab"
       ],
-      "sha256": "701e55ac1369fd11f48136ce99e8517f1f39eeb4c2b41de22137998dccdf4caf",
-      "runtime_verified": false
+      "sha256": "86fb8153b75ae617b2a32e820fdfd49f13127bacd35038abfae992430b350f3f",
+      "runtime_verified": false,
+      "source": "tools/assets/m8/rebuild/warden-wing.aseprite"
     }
   ]
 }

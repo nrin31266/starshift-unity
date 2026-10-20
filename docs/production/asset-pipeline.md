@@ -733,3 +733,27 @@ Mọi batch dùng isolated save/input, gameplay contract snapshot và Unity moti
 1600×900; kiểm tra quan trọng thêm 2000×900/farthest zoom. Không thay balance, collider,
 progression hoặc save semantics. Reorganize final runtime art bằng AssetDatabase sau
 integration; migration/tooling cũ chỉ retire khi replacement đã đủ để reproduce.
+
+### Current rebuild checkpoint
+
+Baseline cleanup commit: `4219c667`. Editable sources và thứ tự export nằm ở
+[rebuild sources](../../tools/assets/m8/rebuild/README.md). Cặp player A được giữ;
+chỉ hai vùng nozzle được repaint để bỏ cửa xả chồng. Mỗi cửa có một plume,
+movement trail tách riêng, nhỏ và chỉ phát khi di chuyển.
+
+Tám capsule có icon riêng, kính có cạnh sáng/tối và bốn frame glint nhẹ; Shard giữ
+crystal identity. Native slicing đã kiểm tra frame size/order và tham chiếu của 11
+PickupDefinition. Explosion player và mảnh giáp độc lập với hull; bảo vệ nhấp nháy
+ở ring. Recovery cue của boss là presentation tail, không đổi damage window.
+
+Evidence hiện tại: player survival/protection và UI checks bằng save riêng PASS;
+Menu/Hangar/approach/combat/Pause/Vanguard/Warden tại 1600×900 và 2000×900 PASS;
+boss Prepare/Lock/Attack/Recovery và freeze khi Pause PASS tại 2000×900. Native
+import check: 247 root textures và 13 enemy prefabs PASS. Gameplay/collider snapshot
+không đổi; Console không có compile/runtime error ở checkpoint này. Đây là các
+check đại diện, không phải bằng chứng mọi asset hoặc mọi encounter đã được duyệt.
+
+Rebuild chưa đóng: còn motion/damage review toàn roster và các VFX còn giữ lại,
+review Results/Victory/error states, rồi chuyển runtime art khỏi `Art/M8` bằng
+AssetDatabase và retire tooling/source probe không dùng. Không thực hiện cleanup
+cuối trước các bước đó. Chưa kiểm tra Android/device performance.

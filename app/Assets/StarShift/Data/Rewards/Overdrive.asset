@@ -15,7 +15,7 @@ MonoBehaviour:
   Kind: 3
   Branch: 0
   ShortCode: OD
-  Color: {r: 1, g: 0.45, b: 0.8, a: 1}
+  Color: {r: 1, g: 1, b: 1, a: 1}
   Sprite: {fileID: 21300000, guid: 6bb8edc9fc6fc26e59ee3d3dcafdb33b, type: 3}
   AnimationFrames:
   - {fileID: -1989764421, guid: fd3c617f406c8bcb19648f7f0e3a79dd, type: 3}

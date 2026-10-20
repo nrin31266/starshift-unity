@@ -42,19 +42,15 @@ public static class ConfigureM8Final
     { var so=new SerializedObject(target);var p=so.FindProperty(field);var all=values.ToArray();p.arraySize=all.Length;for(int i=0;i<all.Length;i++)p.GetArrayElementAtIndex(i).objectReferenceValue=all[i];so.ApplyModifiedPropertiesWithoutUndo(); }
     static void SpriteEngines(ShipAppearance appearance,SpriteRenderer hull,bool approach)
     {
+        foreach(var renderer in hull.GetComponentsInChildren<SpriteRenderer>(true))
+            if(renderer!=hull&&renderer.name.StartsWith("M8Engine"))UnityEngine.Object.DestroyImmediate(renderer.gameObject);
         var plumes=new List<SpriteRenderer>();
         for(int i=0;i<2;i++)
         {
-            var plume=Visual(hull.gameObject,"M8Engine"+(i==0?-1:1),"engine-loop",Vector3.zero,hull.sortingOrder-1,.6f);
-            var old=plume.GetComponent<SpriteFrameLoop>();if(old!=null)UnityEngine.Object.DestroyImmediate(old);
-            plume.transform.localRotation=Quaternion.identity;
-            plumes.Add(plume);
-            // Xóa triệt để các sprite ribbon cũ dán dính vào đuôi tàu để không còn lỗi 2 loại vệt chồng lên nhau
-            var oldRibbon=hull.transform.Find("EngineRibbon"+i);
-            if(oldRibbon!=null)UnityEngine.Object.DestroyImmediate(oldRibbon.gameObject);
+            var plume=Visual(hull.gameObject,"M8Engine"+i,"engine-loop",Vector3.zero,hull.sortingOrder-1,.32f);
+            plume.transform.localRotation=Quaternion.identity;plumes.Add(plume);
         }
-        if(appearance==null)return;
-        Objects(appearance,approach?"approachPlumes":"enginePlumes",plumes);
+        if(appearance!=null)Objects(appearance,approach?"approachPlumes":"enginePlumes",plumes);
     }
     static Image PreviewImage(Transform parent,string name)
     {
@@ -66,14 +62,17 @@ public static class ConfigureM8Final
     static void Preview(Image image)
     {
         image.preserveAspect=true;
-        var preview=Component<ShipPreview>(image.gameObject);preview.Hull=image;
-        preview.Engines=new Image[2];
-        for(int i=0;i<2;i++)
+        var preview=Component<ShipPreview>(image.gameObject);
+        foreach(var name in new[]{"Engine0","Engine1","Ribbon0","Ribbon1","MovementRibbon"})
         {
-            var oldRibbon=image.transform.Find("Ribbon"+i);
-            if(oldRibbon!=null)oldRibbon.gameObject.SetActive(false);
-            preview.Engines[i]=PreviewImage(image.transform,"Engine"+i);preview.Engines[i].sprite=S("engine-loop");
+            var old=image.transform.Find(name);
+            if(old!=null)UnityEngine.Object.DestroyImmediate(old.gameObject);
         }
+        var engines=new Image[2];
+        for(int i=0;i<2;i++){engines[i]=PreviewImage(image.transform,"Engine"+i);engines[i].sprite=S("engine-loop");}
+        Set(preview,"Hull",image);
+        Objects(preview,"Engines",engines);
+        Objects(preview,"Ribbons",System.Array.Empty<Image>());
     }
     static void PlayerRoot(GameObject root)
     {
@@ -84,10 +83,10 @@ public static class ConfigureM8Final
         if(appearance==null)return;
         var so=new SerializedObject(appearance);var approach=(SpriteRenderer)so.FindProperty("approachHull").objectReferenceValue;
         if(approach!=null){approach.sprite=S("player");SpriteEngines(appearance,approach,true);}
-        var motionTrail=(TrailRenderer)so.FindProperty("engineTrail").objectReferenceValue;
+        var motionTrail=(TrailRenderer)so.FindProperty("movementTrail").objectReferenceValue;
         if(motionTrail!=null)
         {
-            motionTrail.startWidth=.22f;motionTrail.endWidth=0.02f;motionTrail.time=.22f;motionTrail.sortingOrder=hull.sortingOrder-3;
+            motionTrail.startWidth=.07f;motionTrail.endWidth=0;motionTrail.time=.12f;motionTrail.sortingOrder=hull.sortingOrder-3;
         }
     }
     static void PlayerUi(GameObject root)
@@ -120,8 +119,10 @@ public static class ConfigureM8Final
         foreach(var spec in new[]{new[]{"chassis-arrow","MŨI GIÁO","player"},new[]{"chassis-swept","ƯNG KÍCH","player-swept"}})
         {
             var c=catalog.Find(spec[0]);c.DisplayName=spec[1];c.Sprite=S(spec[2]);c.AmberSprite=S(spec[2]+"-amber");c.FlipY=false;
-            c.EngineSockets=new[]{new Vector2(-9.5f/56.25f,-32.5f/56.25f),new Vector2(9.5f/56.25f,-32.5f/56.25f)};
-            c.MuzzleSocket=new Vector2(0,34.5f/56.25f);c.PlumeScale=0.5f;
+            c.EngineSockets=spec[0]=="chassis-arrow"
+                ?new[]{new Vector2(-10/56.25f,-28/56.25f),new Vector2(9/56.25f,-28/56.25f)}
+                :new[]{new Vector2(-9/56.25f,-32/56.25f),new Vector2(9/56.25f,-32/56.25f)};
+            c.MovementTrailSocket=new Vector2(0,-.3f);c.MuzzleSocket=new Vector2(0,.75f);c.PlumeScale=.32f;
         }
         catalog.Find("skin-amber").Tint=Color.white;
         var rainbow=catalog.Find("trail-rainbow");if(rainbow==null){rainbow=new CosmeticOption{Id="trail-rainbow",DisplayName="CẦU VỒNG",Slot=CosmeticSlot.Trail,ShardCost=8};catalog.Options=catalog.Options.Concat(new[]{rainbow}).ToArray();}
