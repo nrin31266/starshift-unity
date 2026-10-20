@@ -79,7 +79,9 @@ HUD cho biết survival, performance, currency và active weapon mà không che 
 M3.5 HUD là functional placeholder: Lives dùng sprite hiện có + count; phần chưa
 có icon thật dùng chữ viết tắt (`S` score, `SS` Stellar Shard, `H` heat) + value/state.
 Không tự vẽ icon thay thế ở phase này. M4-A thay placeholder bằng
-Score và Shards runtime thật; không hiển thị persistent balance chưa implement. Full weapon name không cần hiển thị
+Score runtime thật và số dư Stellar Shard do CampaignLifecycle cung cấp theo
+[economy owner](../gameplay/progression-economy.md#m4-a-runtime-boundary-provisional).
+Số dư vàng không reset khi chuyển mission. Full weapon name không cần hiển thị
 trong combat: bottom-right dùng `T1 L1` (type 1, level 1); `T1` là nhãn tạm cho
 Pulse, `T2` Plasma, `T3` Homing; đây là presentation code, không phải save ID. Tên đầy đủ có
 thể xuất hiện ở Pause/loadout/pickup/upgrade UI khi những consumer đó được làm.
@@ -303,13 +305,25 @@ boundary để bấm nút không khởi động drag/fire. Không thêm inventor
 
 BossHud được author dưới GameplayUI/SafeArea: compact centered name và HP bar dưới
 counters, không giant card hoặc common-enemy HP bar. Chỉ hiện khi Boss Encounter đang
-Running và Boss sống; ẩn ngay defeat/reset/exit. Phase B thêm `GIAI ĐOẠN 2` để cue
+Running và Boss sống; ẩn ngay defeat/reset/exit. Vanguard Phase B dùng `HỎA LỰC TĂNG CƯỜNG` để cue
 không chỉ phụ thuộc màu. Proper name Vanguard Frigate giữ English/provisional.
 Mission production dùng `NHIỆM VỤ 01`–`NHIỆM VỤ 04`; không expose internal IDs.
-Region-ready giữ gameplay theo hướng Right và gesture đang held sau approach; chưa có Mission 05/menu mới.
+Region-ready giữ gameplay theo hướng Right và gesture đang held sau approach;
+Mission05–08 đã nối theo [level owner](../content/levels-encounters.md#m6-region-b-authored-content-provisional), chưa thêm menu mới.
 
 
 M5 second feel pass giữ Boss HUD tại SafeArea top center, đưa track/name cao hơn để
 không chồng engine silhouette ở camera 9. Đây là placeholder composition; không thêm
 common-enemy HP bars. Beam warning/active khác nhau bằng full lane tint và bright core,
 không chỉ đổi màu. Exact combat geometry ở [enemy owner](../content/enemies-bosses.md#boss-1--vanguard-frigate-provisional).
+
+M6 readability refinement: khi Warden còn shield, bar xanh cyan hiển thị tổng HP
+node hiện tại/tổng HP node ban đầu, kèm số node còn lại. Khi zero nodes đang collapse
+hiện `KHIÊN ĐANG VỠ`; exposed mới chuyển bar sang HP core và `LÕI LỘ DIỆN`. Không
+để người chơi bắn node mà bar core đứng yên gây hiểu nhầm không có damage.
+Thông số HP/timing ở enemy owner; HUD chỉ đọc state, không quyết vulnerability.
+
+Directed threat warning phân biệt tracking/locked bằng độ dày, độ sáng và việc
+line ngừng bám, không chỉ màu. Dash line chỉ tới aim snapshot; beam/sweep warning
+đúng hướng và diện tích tác động. Những chỉnh sửa này cải thiện luồng đang có,
+không thêm screen/settings/progression mới.

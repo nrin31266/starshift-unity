@@ -215,11 +215,13 @@ namespace StarShift.Gameplay
             player.GetComponent<RelativeDragMovement>().ResetForCheckpoint(Direction);
             player.transform.rotation=Quaternion.Euler(0,0,PlayDirectionSpace.Rotation(Direction));
         }
-        public void FinishRegionTravel(bool preservePose = false)
+        public void FinishRegionTravel(bool preservePose = false, LevelDefinition destination = null)
         {
             Direction = PlayDirection.Right;
             presentation.SetDestinationPalette();
-            view.SetBaseline(level.Camera.View); view.RequestView(level.Camera.View, 0);
+            var target = destination != null ? destination : level;
+            var profile = target.Encounters[0].CameraOverride != null ? target.Encounters[0].CameraOverride : target.Camera;
+            view.SetBaseline(target.Camera.View); view.RequestView(profile.View, 0);
             player.GetComponent<PlayerRespawnEntrance>().Direction = Direction;
             if (!preservePose) player.GetComponent<RelativeDragMovement>().ResetForCheckpoint(Direction);
             player.transform.rotation = Quaternion.Euler(0,0,PlayDirectionSpace.Rotation(Direction));

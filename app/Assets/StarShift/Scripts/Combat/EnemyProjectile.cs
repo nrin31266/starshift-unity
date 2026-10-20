@@ -51,11 +51,11 @@ namespace StarShift.Combat
         }
 
         public void Launch(SingleFireDefinition definition, Transform muzzle, GameObject owner,
-            GameObject player, Action<EnemyProjectile> release, float aimOffset = 0)
+            GameObject player, Action<EnemyProjectile> release, float aimOffset = 0, Vector2? forward = null)
         {
             Owner = owner;
             target = player;
-            var aim = (Vector2)(player.transform.position - muzzle.position);
+            var aim = forward ?? (Vector2)(player.transform.position - muzzle.position);
             direction = aim.sqrMagnitude > .000001f ? aim.normalized : (Vector2)muzzle.up;
             direction = Quaternion.Euler(0, 0, aimOffset) * direction;
             speed = definition.ProjectileSpeed;

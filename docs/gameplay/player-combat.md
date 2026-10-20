@@ -297,7 +297,12 @@ Player phải bị giới hạn trong playable region của current gameplay cam
 không đi khỏi màn hình. Default region là full normalized viewport; gameplay phase
 có thể restrict bằng region normalized nằm trong `[0, 1]`, độc lập world coordinates.
 Framing/zoom policy thuộc [camera owner](../content/levels-encounters.md#master-campaign-table-và-camera-profiles).
-Không dùng hard-coded world rectangle theo map/boss/direction. Safe area HUD không
+Từ L1 Encounter 2, Up combat dùng viewport x 0–1, y 0–.55 để không bay sâu
+vào tuyến địch; phần dưới giữ để né. Right combat dùng x 0–.59, y 0–1.
+Chỉ chặn phía tiến vào tuyến địch; không thêm inset hai bên/đáy tạo thành hộp nhỏ.
+Đây vẫn là cơ chế normalized playable viewport hiện có, không thêm movement clamp thứ hai.
+Các giá trị `[TUNABLE]` nằm trong camera profiles; intro/travel và L1 Encounter 1
+vẫn dùng view riêng. Không dùng hard-coded world rectangle theo map/boss/direction. Safe area HUD không
 tự đồng nghĩa với world bounds. Exact margin, drag sensitivity và smoothing [TBD]/cần playtest.
 Camera đổi zoom không được làm cùng delta ngón tay có cảm giác điều khiển khác hẳn.
 

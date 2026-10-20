@@ -14,6 +14,7 @@ namespace StarShift.Persistence
         public bool Dirty { get; private set; }
         public string Diagnostic => store.Diagnostic;
         public SaveEnvelope Snapshot => Copy(data);
+        public int ShardBalance => data?.Profile.StellarShardBalance ?? 0;
         public CampaignProgress(JsonSaveStore store, Func<SaveEnvelope, bool> validate)
         {
             this.store = store; this.validate = validate;
@@ -77,6 +78,23 @@ namespace StarShift.Persistence
             data.Profile.UnlockedMissions = unlocked.ToArray();
             data.Campaign = new CampaignSave { MissionId = mission, Checkpoint = Copy(checkpoint) };
             Dirty = true;
+        }
+        public bool TryAdvanceMission(string mission, CheckpointData checkpoint)
+        {
+            var backup = Copy(data);
+            var wasDirty = Dirty;
+            var unlocked = new List<string>(data.Profile.UnlockedMissions);
+            if (!unlocked.Contains(mission)) unlocked.Add(mission);
+            data.Profile.UnlockedMissions = unlocked.ToArray();
+            data.Campaign = new CampaignSave { MissionId = mission, Checkpoint = Copy(checkpoint) };
+            Dirty = true;
+            if (!Flush())
+            {
+                data = backup;
+                Dirty = wasDirty;
+                return false;
+            }
+            return true;
         }
         public void SetRegionStatus(CampaignStatus status) { data.Campaign.Status = status; Dirty = true; }
         public bool SetSettings(SettingsData settings)

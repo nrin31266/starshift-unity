@@ -56,7 +56,7 @@ namespace StarShift.Rewards
             foreach (var group in encounter.Groups)
             {
                 var prefab = group.EnemyPrefab != null ? group.EnemyPrefab : encounter.ScoutPrefab;
-                if (Eligible(prefab.GetComponent<EnemyHealth>())) enemies += group.Count;
+                if (group.GrantsRewards && Eligible(prefab.GetComponent<EnemyHealth>())) enemies += group.Count;
             }
             roller.Reseed(seed);
             quota.Reset(seed ^ 0x51f15e, enemies, encounter.GuaranteedMajorCount);
@@ -92,8 +92,8 @@ namespace StarShift.Rewards
                     var camera = Camera.main;
                     for (int i = 0; i < table.BossShardCount; i++)
                     {
-                        var point = new Vector3(.07f + .86f * Mathf.Repeat(i * .618034f, 1), .58f + .27f * Mathf.Repeat(i * .414214f, 1), -camera.transform.position.z);
-                        var gold = Spawn(table.Shard, null, camera.ViewportToWorldPoint(point), true);
+                        var point = PlayDirectionSpace.Point(new Vector2(.07f + .86f * Mathf.Repeat(i * .618034f, 1), .58f + .27f * Mathf.Repeat(i * .414214f, 1)), runner.Flow.Direction);
+                        var gold = Spawn(table.Shard, null, camera.ViewportToWorldPoint(new Vector3(point.x, point.y, -camera.transform.position.z)), true);
                         gold?.Eject(new Vector2(Mathf.Sin(i * 2.4f) * .8f, .6f + Mathf.Repeat(i * .37f, 1)));
                     }
                 }
@@ -127,12 +127,14 @@ namespace StarShift.Rewards
             if (core == null) core = roller.SelectMajor(table, receiver, lives, loadout, false, false);
             var camera = Camera.main;
             var center = camera.WorldToViewportPoint(position);
-            center.x = Mathf.Clamp(center.x, .12f, .88f);
+            if (runner.Flow.Direction == PlayDirection.Right) center.y = Mathf.Clamp(center.y, .12f, .88f);
+            else center.x = Mathf.Clamp(center.x, .12f, .88f);
             position = camera.ViewportToWorldPoint(center);
             bool captured = false;
             Action capture = () => { if (captured) return; captured = true; rewards.RecordSupply(); };
-            var first = Spawn(core, null, position + Vector3.left * .35f, true);
-            var second = Spawn(support, null, position + Vector3.right * .35f, true);
+            var side = (Vector3)PlayDirectionSpace.Offset(Vector2.right, runner.Flow.Direction);
+            var first = Spawn(core, null, position - side * .35f, true);
+            var second = Spawn(support, null, position + side * .35f, true);
             if (first != null) { first.Eject(new Vector2(-1.5f, 1)); first.Collected += capture; }
             if (second != null) { second.Eject(new Vector2(1.5f, 1)); second.Collected += capture; }
             if (support != null) roller.RecordCrate(support, lives.CurrentLives);
@@ -147,9 +149,12 @@ namespace StarShift.Rewards
             // Giữ reward trong viewport; drop ngoài edge vẫn có cơ hội collection.
             var camera = Camera.main;
             var viewport = camera.WorldToViewportPoint(position);
-            viewport.x = Mathf.Clamp(viewport.x, .05f, .95f); viewport.y = Mathf.Clamp(viewport.y, .15f, .88f);
+            var local = PlayDirectionSpace.LocalPoint(viewport, runner.Flow.Direction);
+            local.x = Mathf.Clamp(local.x, .05f, .95f); local.y = Mathf.Clamp(local.y, .15f, .88f);
+            var point = PlayDirectionSpace.Point(local, runner.Flow.Direction);
+            viewport.x = point.x; viewport.y = point.y;
             ActivePickups++; PickupsSpawned++;
-            pickup.Launch(item, crate, camera.ViewportToWorldPoint(viewport), cleanup, receiver, Collect, Release);
+            pickup.Launch(item, crate, camera.ViewportToWorldPoint(viewport), cleanup, receiver, Collect, Release, runner.Flow.Direction);
             DropSpawned?.Invoke(item, crate);
             return pickup;
         }

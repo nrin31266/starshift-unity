@@ -21,8 +21,13 @@ namespace StarShift.UI
             var health = boss != null ? boss.Health : null;
             group.alpha = health != null && health.IsAlive ? 1 : 0;
             if (health == null) return;
-            label.text = boss.Definition.DisplayName + (boss.IsPhaseB ? " · GIAI ĐOẠN 2" : "");
-            fill.fillAmount = health.CurrentHp / (float)health.MaxHp;
+            var shields = boss.Shields;
+            bool shielded = shields != null && !shields.IsExposed;
+            var phase = shielded ? (shields.RemainingNodes > 0 ? " · NÚT KHIÊN " + shields.RemainingNodes : " · KHIÊN ĐANG VỠ")
+                : boss.IsPhaseB ? (shields != null ? " · LÕI LỘ DIỆN" : " · HỎA LỰC TĂNG CƯỜNG") : "";
+            label.text = boss.Definition.DisplayName + phase;
+            fill.fillAmount = shielded ? shields.CurrentShieldHp / (float)Mathf.Max(1, shields.MaximumShieldHp) : health.CurrentHp / (float)health.MaxHp;
+            fill.color = shielded ? new Color(.2f, .8f, 1) : new Color(1, .35f, .2f);
         }
     }
 }

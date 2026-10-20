@@ -17,7 +17,8 @@ namespace StarShift.Gameplay
         private float elapsed;
         private bool titleShown;
         public bool IsTravelling { get; private set; }
-        public bool IsMissionTravel => IsTravelling && NextMission != null;
+        public bool IsRegionTravel => NextMission != null && NextMission.RegionId != runner.Flow.Level.RegionId;
+        public bool IsMissionTravel => IsTravelling && NextMission != null && !IsRegionTravel;
         public bool DestinationReady { get; private set; }
         public LevelDefinition[] Missions => (LevelDefinition[])missions.Clone();
         public LevelDefinition FindMission(string id) => System.Array.Find(missions, m => m != null && m.Id == id);
@@ -34,12 +35,12 @@ namespace StarShift.Gameplay
         private void OnDisable() { runner.RunStarted -= Cancel; Cancel(); }
         public bool QueueAdvance()
         {
-            if(persistence.Mode==SessionMode.Replay || System.Array.IndexOf(missions,runner.Flow.Level)<0)return false;
+            if(persistence.Mode==SessionMode.Replay || System.Array.IndexOf(missions,runner.Flow.Level)<0 || NextMission == null)return false;
             IsTravelling=true;DestinationReady=false;elapsed=0;titleShown=false;enemyGate.Block();
-            if(NextMission==null)
+            if(IsRegionTravel)
             {
-                session.PrepareMajorTravel();journey.Begin(()=>{
-                    IsTravelling=false;DestinationReady=true;persistence.CompleteRegionTravel();session.ShowRegionReady(true);
+                session.PrepareMajorTravel();journey.Begin(NextMission, ()=>{
+                    IsTravelling=false;DestinationReady=true;persistence.CompleteRegionTravel();
                 });
             }
             else { runner.Flow.PrepareMissionTravel(NextMission, missionClearSeconds); runner.Flow.NotifyPresentationChanged(); }
@@ -57,7 +58,7 @@ namespace StarShift.Gameplay
         }
         public void RestoreDestination()
         {
-            IsTravelling=false;DestinationReady=true;runner.Flow.FinishRegionTravel();session.ShowRegionReady();
+            IsTravelling=false;DestinationReady=true;runner.Flow.FinishRegionTravel();persistence.CompleteRegionTravel();
         }
         public void Cancel()
         {

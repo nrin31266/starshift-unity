@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: M2RaiderArcs
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Encounters.EncounterDefinition
   Id: ENCOUNTER_1
-  Completion: 1
-  CompleteWhenScheduleExhausted: 1
+  Completion: 0
+  CompleteWhenScheduleExhausted: 0
   EntryBeats: []
   EntryLeadSeconds: 0.5
   TitleSeconds: 1.3
@@ -26,20 +26,21 @@ MonoBehaviour:
     SpawnScale: 1
     VisualSpin: 0
     ContinuousTransit: 0
-    Count: 5
+    Count: 1
     StartTime: 0
-    Stagger: 0.09
-    EnemyPrefab: {fileID: 6611317040080042917, guid: 9d316cc2f8530d4c0b69980929d92525, type: 3}
-    EnemyDefinition: {fileID: 11400000, guid: 97225e4379e67b2799306e7a3e546255, type: 2}
+    Stagger: 0.06
+    EnemyPrefab: {fileID: 6379430989045325071, guid: 784ef30a40ca6b2a4bb84885a353f5dd, type: 3}
+    EnemyDefinition: {fileID: 11400000, guid: 798768d7084f1f3b69d0195c69c1303a, type: 2}
     RewardOverride: {fileID: 0}
     Elite: {fileID: 0}
     Required: 1
+    GrantsRewards: 1
     Formation: 0
     Anchor: {x: 0, y: 0}
     SlotStep: {x: 0.18, y: 0}
     FormationRise: 0
-    Sequence: {fileID: 11400000, guid: 5bed347cd2adca09ebe761e04fd68648, type: 2}
-    Plan: {fileID: 11400000, guid: 3bf9fb9a520a1cb5d9525d76f670b5ea, type: 2}
+    Sequence: {fileID: 11400000, guid: 85e8daf60ed2105039158e552692ce39, type: 2}
+    Plan: {fileID: 11400000, guid: 02c32d87504ab4470947230b90424100, type: 2}
     FirstSlot: 0
     HpOverride: 0
     EntryAnchor: {x: 0.5, y: 1.12}
@@ -53,20 +54,133 @@ MonoBehaviour:
     SpawnScale: 1
     VisualSpin: 0
     ContinuousTransit: 0
-    Count: 5
+    Count: 1
     StartTime: 0
-    Stagger: 0.09
-    EnemyPrefab: {fileID: 6611317040080042917, guid: 9d316cc2f8530d4c0b69980929d92525, type: 3}
-    EnemyDefinition: {fileID: 11400000, guid: 97225e4379e67b2799306e7a3e546255, type: 2}
+    Stagger: 0.06
+    EnemyPrefab: {fileID: 6379430989045325071, guid: 784ef30a40ca6b2a4bb84885a353f5dd, type: 3}
+    EnemyDefinition: {fileID: 11400000, guid: 798768d7084f1f3b69d0195c69c1303a, type: 2}
     RewardOverride: {fileID: 0}
     Elite: {fileID: 0}
     Required: 1
+    GrantsRewards: 1
     Formation: 0
     Anchor: {x: 0, y: 0}
     SlotStep: {x: 0.18, y: 0}
     FormationRise: 0
-    Sequence: {fileID: 11400000, guid: 9a938eacad689eafabdb2b1d4864bd5b, type: 2}
-    Plan: {fileID: 11400000, guid: 3bf9fb9a520a1cb5d9525d76f670b5ea, type: 2}
+    Sequence: {fileID: 11400000, guid: 6c744f92796a650a896d65468443d384, type: 2}
+    Plan: {fileID: 11400000, guid: 02c32d87504ab4470947230b90424100, type: 2}
+    FirstSlot: 1
+    HpOverride: 0
+    EntryAnchor: {x: 0.5, y: 1.12}
+    HoldAnchor: {x: 0.5, y: 0.78}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 3
+    ExitAnchor: {x: 1.18, y: 0.3}
+    ExitDuration: 3
+  - EntryBeat: 0
+    SpawnScale: 1
+    VisualSpin: 0
+    ContinuousTransit: 0
+    Count: 1
+    StartTime: 0
+    Stagger: 0.06
+    EnemyPrefab: {fileID: 5853993610836594393, guid: b69defc3ea046f3a8aabd00d5068bc40, type: 3}
+    EnemyDefinition: {fileID: 11400000, guid: 5011691c5b2ff79afa8fe41314d98515, type: 2}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 1
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 11400000, guid: 2a8bfa360bf13de9284c5d79fd6c634f, type: 2}
+    Plan: {fileID: 11400000, guid: 02c32d87504ab4470947230b90424100, type: 2}
+    FirstSlot: 2
+    HpOverride: 0
+    EntryAnchor: {x: 0.5, y: 1.12}
+    HoldAnchor: {x: 0.5, y: 0.78}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 3
+    ExitAnchor: {x: 1.18, y: 0.3}
+    ExitDuration: 3
+  - EntryBeat: 0
+    SpawnScale: 1
+    VisualSpin: 0
+    ContinuousTransit: 0
+    Count: 1
+    StartTime: 0
+    Stagger: 0.06
+    EnemyPrefab: {fileID: 512193136586943245, guid: d4744a7a3418a4338aefd5704512e0be, type: 3}
+    EnemyDefinition: {fileID: 11400000, guid: 80e0e257be3b75890a17856e96fff062, type: 2}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 1
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 11400000, guid: afadf1fc3e1e83f689f457e200cd8e54, type: 2}
+    Plan: {fileID: 11400000, guid: 02c32d87504ab4470947230b90424100, type: 2}
+    FirstSlot: 3
+    HpOverride: 0
+    EntryAnchor: {x: 0.5, y: 1.12}
+    HoldAnchor: {x: 0.5, y: 0.78}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 3
+    ExitAnchor: {x: 1.18, y: 0.3}
+    ExitDuration: 3
+  - EntryBeat: 0
+    SpawnScale: 1
+    VisualSpin: 0
+    ContinuousTransit: 0
+    Count: 1
+    StartTime: 0
+    Stagger: 0.06
+    EnemyPrefab: {fileID: 512193136586943245, guid: d4744a7a3418a4338aefd5704512e0be, type: 3}
+    EnemyDefinition: {fileID: 11400000, guid: 80e0e257be3b75890a17856e96fff062, type: 2}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 1
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 11400000, guid: 2984dbc5022bcd7d090451d787d2174d, type: 2}
+    Plan: {fileID: 11400000, guid: 02c32d87504ab4470947230b90424100, type: 2}
+    FirstSlot: 4
+    HpOverride: 0
+    EntryAnchor: {x: 0.5, y: 1.12}
+    HoldAnchor: {x: 0.5, y: 0.78}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 3
+    ExitAnchor: {x: 1.18, y: 0.3}
+    ExitDuration: 3
+  - EntryBeat: 0
+    SpawnScale: 1
+    VisualSpin: 0
+    ContinuousTransit: 0
+    Count: 3
+    StartTime: 0
+    Stagger: 0.06
+    EnemyPrefab: {fileID: 2966396641657307375, guid: 01a518f29274925a191b17ec41cf6a99, type: 3}
+    EnemyDefinition: {fileID: 11400000, guid: 2c37a090b272d820c9642dfd8f189abe, type: 2}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 1
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 11400000, guid: bb4c1b5fceaa2b5809e23dc7cf31628a, type: 2}
+    Plan: {fileID: 11400000, guid: 02c32d87504ab4470947230b90424100, type: 2}
     FirstSlot: 5
     HpOverride: 0
     EntryAnchor: {x: 0.5, y: 1.12}
@@ -82,18 +196,47 @@ MonoBehaviour:
     ContinuousTransit: 0
     Count: 2
     StartTime: 0
-    Stagger: 0.09
-    EnemyPrefab: {fileID: 6611317040080042917, guid: 9d316cc2f8530d4c0b69980929d92525, type: 3}
-    EnemyDefinition: {fileID: 11400000, guid: 97225e4379e67b2799306e7a3e546255, type: 2}
+    Stagger: 0.06
+    EnemyPrefab: {fileID: 2966396641657307375, guid: 01a518f29274925a191b17ec41cf6a99, type: 3}
+    EnemyDefinition: {fileID: 11400000, guid: 2c37a090b272d820c9642dfd8f189abe, type: 2}
     RewardOverride: {fileID: 0}
     Elite: {fileID: 0}
     Required: 1
+    GrantsRewards: 1
     Formation: 0
     Anchor: {x: 0, y: 0}
     SlotStep: {x: 0.18, y: 0}
     FormationRise: 0
-    Sequence: {fileID: 11400000, guid: d9d6dfee5eafa3d18a0585be03cf0610, type: 2}
-    Plan: {fileID: 11400000, guid: 3bf9fb9a520a1cb5d9525d76f670b5ea, type: 2}
+    Sequence: {fileID: 11400000, guid: 0249b19e699c1ff95b60337b9c18e016, type: 2}
+    Plan: {fileID: 11400000, guid: 02c32d87504ab4470947230b90424100, type: 2}
+    FirstSlot: 8
+    HpOverride: 0
+    EntryAnchor: {x: 0.5, y: 1.12}
+    HoldAnchor: {x: 0.5, y: 0.78}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 3
+    ExitAnchor: {x: 1.18, y: 0.3}
+    ExitDuration: 3
+  - EntryBeat: 0
+    SpawnScale: 1
+    VisualSpin: 0
+    ContinuousTransit: 0
+    Count: 3
+    StartTime: 0
+    Stagger: 0.06
+    EnemyPrefab: {fileID: 2966396641657307375, guid: 01a518f29274925a191b17ec41cf6a99, type: 3}
+    EnemyDefinition: {fileID: 11400000, guid: 2c37a090b272d820c9642dfd8f189abe, type: 2}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 1
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 11400000, guid: 5f13ad895e889165bac91c49f819b7b7, type: 2}
+    Plan: {fileID: 11400000, guid: 02c32d87504ab4470947230b90424100, type: 2}
     FirstSlot: 10
     HpOverride: 0
     EntryAnchor: {x: 0.5, y: 1.12}
@@ -103,14 +246,70 @@ MonoBehaviour:
     HoldDuration: 3
     ExitAnchor: {x: 1.18, y: 0.3}
     ExitDuration: 3
+  - EntryBeat: 0
+    SpawnScale: 1
+    VisualSpin: 0
+    ContinuousTransit: 0
+    Count: 2
+    StartTime: 0
+    Stagger: 0.06
+    EnemyPrefab: {fileID: 6611317040080042917, guid: 9d316cc2f8530d4c0b69980929d92525, type: 3}
+    EnemyDefinition: {fileID: 11400000, guid: 97225e4379e67b2799306e7a3e546255, type: 2}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 1
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 11400000, guid: 57b2b90a545de680098048123e49bb2a, type: 2}
+    Plan: {fileID: 11400000, guid: 02c32d87504ab4470947230b90424100, type: 2}
+    FirstSlot: 13
+    HpOverride: 0
+    EntryAnchor: {x: 0.5, y: 1.12}
+    HoldAnchor: {x: 0.5, y: 0.78}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 3
+    ExitAnchor: {x: 1.18, y: 0.3}
+    ExitDuration: 3
+  - EntryBeat: 0
+    SpawnScale: 1
+    VisualSpin: 0
+    ContinuousTransit: 0
+    Count: 2
+    StartTime: 0
+    Stagger: 0.06
+    EnemyPrefab: {fileID: 6611317040080042917, guid: 9d316cc2f8530d4c0b69980929d92525, type: 3}
+    EnemyDefinition: {fileID: 11400000, guid: 97225e4379e67b2799306e7a3e546255, type: 2}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 1
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 11400000, guid: 9f6f60afaaea8378fa75a45e75bda0d8, type: 2}
+    Plan: {fileID: 11400000, guid: 02c32d87504ab4470947230b90424100, type: 2}
+    FirstSlot: 15
+    HpOverride: 0
+    EntryAnchor: {x: 0.5, y: 1.12}
+    HoldAnchor: {x: 0.5, y: 0.78}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 3
+    ExitAnchor: {x: 1.18, y: 0.3}
+    ExitDuration: 3
   OptionalEvents: []
-  CameraOverride: {fileID: 11400000, guid: 8be8a97867e6de8b795e7ef11c593922, type: 2}
+  CameraOverride: {fileID: 11400000, guid: c39037ea91406bdd7ad53a9fd57bc3cc, type: 2}
   GuaranteedMajorCount: 1
   GuaranteeTable: {fileID: 11400000, guid: 3f21893fa1f0805d69ff96a39947511f, type: 2}
   ActiveShooterLimit: 2
-  ShotSpacing: 0.22
-  ShotsPerVolley: 4
-  VolleyPause: 1.8
+  ShotSpacing: 0.65
+  ShotsPerVolley: 3
+  VolleyPause: 3
   ClearPauseSeconds: 0.7
   HandoffTravelSeconds: 0.85
   HandoffDelay: 2

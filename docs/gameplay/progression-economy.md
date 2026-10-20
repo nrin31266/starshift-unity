@@ -42,6 +42,7 @@ asteroid mới có định hướng, chưa có exact bonus; không tự gán s�
 | Sniper | 250 |
 | Interceptor | 250 |
 | Carrier | 500 |
+| Bulwark | 180 `[TUNABLE]` |
 | Elite | ×2 base score |
 | Boss | Large fixed bonus; exact amount [TBD] |
 | Supply target | Bonus score; exact amount [TBD] |
@@ -62,8 +63,11 @@ cho presentation hiện tại. Có runtime counts enemies destroyed, cores colle
 supply opportunities collected (nhặt ít nhất một item; một source vẫn chỉ tính một) để verify loop; chưa là full Campaign Result tracking.
 HUD đọc giá trị thực theo [UI owner](../presentation/ui-ux.md#gameplay-hud).
 M4-A ban đầu chỉ có runtime counters. M4-B persist checkpoint counters và tách
-Profile balance theo [save owner](../systems/save-profile.md); HUD session Shards
-vẫn là collected metric, không phải persistent wallet.
+Profile balance theo [save owner](../systems/save-profile.md). HUD currency dùng
+balance từ `CampaignLifecycle`: Campaign đọc Profile wallet, giữ qua mission,
+region, Retry/Continue và New Game. Replay/DevTest dùng ví tạm riêng, giữ qua
+mission và Retry trong cùng lượt; lượt replay/dev mới reset ví tạm và không ghi
+Profile. `RunRewards.Shards` vẫn là mission-local collected metric cho stats/ledger.
 
 ## Campaign progression và level unlock
 
@@ -164,3 +168,16 @@ M5 second human-feel pass thêm [Encounter reward floor](../content/weapons-item
 weapon persistence hoặc anti-farm high-water. Floor là world pickup, không permanent
 credit lúc enemy chết. Retry rollback weapon level; Replay/DevTest không write Profile.
 Không coi automated upgrade/drop counts thành final economy hoặc manual balance approval.
+
+
+## M6 release progression `[PROVISIONAL]`
+
+Sniper / Interceptor / Carrier dùng score seeds 250 / 250 / 500 từ bảng trên.
+Nebula Warden dùng fixed defeat score 4000 `[TUNABLE]`; modules/minions không score
+hoặc loot. Không thêm clear/no-hit bonus hoặc đổi Shard high-water semantics.
+
+Catalog current release kết thúc L8. Clear L4 unlock L5 sau journey; L5–L7 unlock
+mission tiếp theo, L8 commit current-campaign victory và không unlock L9. Đây là
+release boundary, không phải implement toàn bộ 12-level target. Persistent marker
+và Continue behavior thuộc [save owner](../systems/save-profile.md#m6-campaign-continuation-và-current-release-end-provisional).
+Replay vẫn isolated, không ghi Profile/Campaign hoặc chain mission.

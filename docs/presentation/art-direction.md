@@ -135,3 +135,31 @@ approved anchor, material, viewing angle, lighting, detail density và emissive 
 Ví dụ enemy roster Scout/Raider/Bomber/Sniper/Interceptor/Carrier dùng dark gunmetal,
 crimson emissive, angular hull và cùng shading language, nhưng vẫn phân biệt vai trò
 bằng silhouette. Không tạo lore/faction mới để giải thích một style khác.
+
+
+## M6 gameplay proxy readability `[PROVISIONAL]`
+
+Tiếp tục native placeholder sprites, không coi là approved production family.
+Interceptor dùng pointed hull hướng strike và engine plume; Sniper có long barrel;
+Carrier có large body/hangar rail. Hostile hull/accent giữ gunmetal/crimson/magenta,
+không dùng friendly cyan để phân biệt minion. Warden nodes có accent khác nhau nhưng
+shield network giữ teal defensive cue; active hostile beam vẫn magenta.
+
+Scene Player bỏ tint đỏ legacy, trở về cyan tint của prefab để tách friendly khỏi
+Interceptor/hostile silhouettes. Hai asteroid props không collider trong EnvironmentPlaceholders được giảm contrast
+để không nhầm với corridor hazards thật. Formation silhouettes/role placement ở
+[level owner](../content/levels-encounters.md#m6-region-b-authored-content-provisional);
+HP/physics footprints ở enemy owner. Chưa bắt đầu final art/audio/frontend pass.
+
+
+### Playable area hint `[PROVISIONAL]`
+
+Bình thường không tô nền hoặc vẽ khung giới hạn. Khi người chơi cố kéo vượt cạnh
+nội bộ rồi tiếp tục giữ khoảng .2 s, hiện một đoạn báo mảnh ngay gần vị trí chạm cạnh.
+Đoạn dài .14 viewport dọc cạnh, dày 2 pixel Game View, màu xanh xám RGBA
+(.45,.72,.80,.24) với alpha pulse .45–1 và fade .12 s `[TUNABLE]`.
+Nhả tay hoặc kéo vào trong thì tắt; giữ bắn mà chưa đẩy vượt cạnh không hiện.
+Không báo ở mép ngoài màn hình hoặc lúc camera đang transition. Animation dùng
+scaled time nên Pause đóng băng. `PlayableAreaPresentation` chỉ đọc camera region
+và telemetry từ movement; không quyết bounds/damage. Art thật có thể thay visual
+này mà giữ nguyên cơ chế giới hạn. Không phủ HUD hoặc chia nền thành hai mảng màu.

@@ -1,4 +1,6 @@
 using StarShift.Combat;
+using StarShift.Enemies;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 using UnityEngine.SceneManagement;
@@ -25,6 +27,8 @@ namespace StarShift.Player
         private readonly WeaponHeatState heat = new WeaponHeatState();
         private WeaponLoadout loadout;
         private PlayerTemporaryEffects effects;
+        private readonly List<EnemyHealth> volleyTargets = new List<EnemyHealth>(5);
+        private bool alternateLaunch;
         private PulseLaserDefinition ActiveDefinition => loadout != null && loadout.ActiveDefinition != null ? loadout.ActiveDefinition : definition;
         public WeaponBranch CurrentBranch => loadout != null ? loadout.ActiveBranch : WeaponBranch.Pulse;
         public int CurrentLevel => loadout != null ? loadout.ActiveLevel : 1;
@@ -47,6 +51,7 @@ namespace StarShift.Player
             loadout?.ResetForSession();
             if (!preserveThermalState) heat.Reset();
             ShotsFired = 0;
+            alternateLaunch = false;
             ResetCadence();
         }
 
@@ -61,19 +66,32 @@ namespace StarShift.Player
                 enabled = false;
                 return;
             }
-            projectileRoot = new GameObject("PlayerProjectiles").transform;
-            SceneManager.MoveGameObjectToScene(projectileRoot.gameObject, gameObject.scene);
-            projectiles = new ObjectPool<PlayerProjectile>(CreateProjectile, null,
-                projectile => projectile.ResetForPool(), projectile =>
-                {
-                    // Scene teardown có thể hủy projectile root trước weapon.
-                    if (projectile != null) Destroy(projectile.gameObject);
-                },
-                true, 8, 64);
+            EnsurePool();
+        }
+
+        private void EnsurePool()
+        {
+            if (projectiles != null && projectileRoot != null) return;
+            if (projectileRoot == null)
+            {
+                projectileRoot = new GameObject("PlayerProjectiles").transform;
+                SceneManager.MoveGameObjectToScene(projectileRoot.gameObject, gameObject.scene);
+            }
+            if (projectiles == null)
+            {
+                projectiles = new ObjectPool<PlayerProjectile>(CreateProjectile, null,
+                    projectile => projectile.ResetForPool(), projectile =>
+                    {
+                        // Scene teardown có thể hủy projectile root trước weapon.
+                        if (projectile != null) Destroy(projectile.gameObject);
+                    },
+                    true, 8, 64);
+            }
         }
 
         private void OnEnable()
         {
+            EnsurePool();
             if (loadout != null) loadout.Changed += ResetCadence;
             if (gameplayGate != null) gameplayGate.StateChanged += OnGameplayStateChanged;
             if (pointerInput != null) pointerInput.FireIntentChanged += ResetCadence;
@@ -107,9 +125,11 @@ namespace StarShift.Player
                 nextShotTime = now;
             }
             if (now + .000001 < nextShotTime) return;
+            EnsurePool();
             var config = ActiveDefinition;
             var pattern = config.Pattern(CurrentLevel);
             var count = pattern != null ? pattern.ProjectileCount : 1;
+            volleyTargets.Clear();
             for (int i = 0; i < count; i++)
             {
                 var slot = i - (count - 1) * .5f;
@@ -117,11 +137,29 @@ namespace StarShift.Player
                 var position = muzzle.position + muzzle.right * (pattern != null ? slot * pattern.LateralSpacing : 0);
                 var damage = pattern != null ? pattern.Damage : config.Damage;
                 if (pattern != null && Mathf.Abs(slot) < .01f) damage += pattern.CenterBonus;
+                EnemyHealth target = null;
+                float launchLane = 0;
+                if (config.TrackingDegreesPerSecond > 0)
+                {
+                    angle = -angle;
+                    target = PlayerProjectile.SelectTrackingTarget(position, muzzle.up, config.TrackingRange, gameObject.scene, volleyTargets);
+                    if (target == null)
+                    {
+                        volleyTargets.Clear();
+                        target = PlayerProjectile.SelectTrackingTarget(position, muzzle.up, config.TrackingRange, gameObject.scene);
+                    }
+                    if (target != null) volleyTargets.Add(target);
+                    // Volley lẻ giữ quả giữa đúng trục; volley một quả chỉ cong khi đã có đích.
+                    launchLane = Mathf.Abs(slot) < .01f
+                        ? (count == 1 && target != null ? (alternateLaunch ? -.65f : .65f) : 0)
+                        : -slot / ((count - 1) * .5f);
+                }
                 var projectile = projectiles.Get();
                 projectile.Launch(config, position, Quaternion.AngleAxis(angle, Vector3.forward) * muzzle.up,
-                    damage, pattern != null ? pattern.SplashRadius : 0, gameObject, ReleaseProjectile);
+                    damage, pattern != null ? pattern.SplashRadius : 0, gameObject, ReleaseProjectile, target, launchLane);
                 ShotsFired++;
             }
+            if (config.TrackingDegreesPerSecond > 0) alternateLaunch = !alternateLaunch;
             var interval = (pattern != null ? pattern.FireInterval : config.FireInterval) / (effects != null ? effects.FireRateMultiplier : 1);
             nextShotTime += interval;
             // Không bắn bù thành burst nếu clock/config đổi qua nhiều interval.

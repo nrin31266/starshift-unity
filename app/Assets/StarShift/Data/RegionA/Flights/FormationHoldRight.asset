@@ -23,17 +23,19 @@ MonoBehaviour:
     ClampToView: 0
     HoldUntilResolved: 0
     RepeatMotion: 0
+    MotionPeriod: 0
     Smooth: 1
     Cycles: 1
   - Kind: 3
-    Path: 0
+    Path: 4
     From: {x: 0.5, y: 0.62}
     To: {x: 0.5, y: 0.62}
-    Curve: {x: 0.065, y: 0.025}
+    Curve: {x: 0.025, y: 0.008}
     Duration: 20
     CanShoot: 1
     ClampToView: 1
     HoldUntilResolved: 1
-    RepeatMotion: 0
+    RepeatMotion: 1
+    MotionPeriod: 7
     Smooth: 1
     Cycles: 1

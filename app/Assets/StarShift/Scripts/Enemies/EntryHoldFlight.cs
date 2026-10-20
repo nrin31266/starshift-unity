@@ -29,6 +29,19 @@ namespace StarShift.Enemies
         private FlightSequence sequence;
         private Vector2 slotOffset;
         private PlayDirection direction;
+        private float timelineOffset;
+        private Vector2? entryOrigin;
+        public void SetEntryOrigin(Vector2 viewport) { entryOrigin = viewport; ApplyPosition(); }
+        public PlayDirection Direction => direction;
+        private Vector2 strikeFrom, strikeTarget;
+        private float strikeElapsed, strikeSeconds, returnSeconds;
+        public bool IsStriking { get; private set; }
+        public void BeginStrike(Vector2 target, float seconds, float returnDuration)
+        {
+            strikeFrom = flightCamera.WorldToViewportPoint(transform.position);
+            strikeTarget = target + (target - strikeFrom).normalized * .12f;
+            strikeSeconds = seconds; returnSeconds = returnDuration; strikeElapsed = 0; IsStriking = true;
+        }
         private int phaseIndex;
         private bool sequenceFinished;
         private Vector2 combatOffset;
@@ -76,6 +89,7 @@ namespace StarShift.Enemies
         public void Configure(Vector2 entry, Vector2 hold, Vector2 curve, float entrySeconds,
             Vector2 exit, float holdSeconds, float exitSeconds, bool continuous = false)
         {
+            IsStriking = false;
             sequence = null;
             continuousTransit = continuous;
             entryViewport = entry;
@@ -87,12 +101,13 @@ namespace StarShift.Enemies
             exitDuration = Mathf.Max(0, exitSeconds);
         }
 
-        public void ConfigureSequence(FlightSequence config, Vector2 offset, PlayDirection playDirection)
+        public void ConfigureSequence(FlightSequence config, Vector2 offset, PlayDirection playDirection, float encounterTime = 0)
         {
             sequence = config;
             continuousTransit = false;
             slotOffset = offset;
             direction = playDirection;
+            timelineOffset = encounterTime;
             phaseIndex = 0;
             sequenceFinished = false;
         }
@@ -114,13 +129,20 @@ namespace StarShift.Enemies
             sequenceFinished = false;
             combatOffset = offsetFrom = offsetTarget = Vector2.zero;
             offsetElapsed = offsetSeconds = 0; motionMultiplier = 1;
-            MotionPaused = false;
+            MotionPaused = IsStriking = false;
+            entryOrigin = null;
             ApplyPosition();
         }
 
         private void FixedUpdate()
         {
             if (!health.IsAlive || MotionPaused) return;
+            if (IsStriking)
+            {
+                strikeElapsed += Time.fixedDeltaTime;
+                if (strikeElapsed >= strikeSeconds + returnSeconds) IsStriking = false;
+                ApplyPosition(); return;
+            }
             if (offsetElapsed < offsetSeconds)
             { offsetElapsed += Time.fixedDeltaTime; combatOffset = Vector2.Lerp(offsetFrom,offsetTarget,Mathf.SmoothStep(0,1,offsetElapsed/offsetSeconds)); }
             elapsed = sequence != null ? elapsed + Time.fixedDeltaTime : Mathf.Min(entryDuration + holdDuration + exitDuration, elapsed + Time.fixedDeltaTime);
@@ -136,6 +158,14 @@ namespace StarShift.Enemies
         private void ApplyPosition()
         {
             if (flightCamera == null || !flightCamera.isActiveAndEnabled) return;
+            if (IsStriking)
+            {
+                var point = strikeElapsed <= strikeSeconds
+                    ? Vector2.Lerp(strikeFrom, strikeTarget, strikeElapsed / strikeSeconds)
+                    : Vector2.Lerp(strikeTarget, strikeFrom, Mathf.SmoothStep(0, 1, (strikeElapsed - strikeSeconds) / returnSeconds));
+                var world = flightCamera.ViewportToWorldPoint(new Vector3(point.x, point.y, -flightCamera.transform.position.z));
+                body.position = world; transform.position = world; return;
+            }
             if (sequence != null) { ApplySequencePosition(); return; }
             var depth = Vector3.Dot(transform.position - flightCamera.transform.position, flightCamera.transform.forward);
             if (continuousTransit)
@@ -190,12 +220,14 @@ namespace StarShift.Enemies
             bool fromClamp = phase.ClampToView || (phaseIndex > 0 && sequence.Phases[phaseIndex-1].ClampToView);
             bool toClamp = phase.ClampToView || (phaseIndex + 1 < sequence.Phases.Length && sequence.Phases[phaseIndex+1].ClampToView);
             var from = Project(phase.From, fromClamp);
+            if (phaseIndex == 0 && entryOrigin.HasValue) from = entryOrigin.Value;
             var to = Project(phase.To, toClamp);
-            var progress = phase.RepeatMotion ? Mathf.Repeat(clock / phase.Duration, 1) : clock / phase.Duration;
+            var progress = phase.RepeatMotion ? Mathf.Repeat((clock + (phase.MotionPeriod > 0 ? timelineOffset : 0)) / (phase.MotionPeriod > 0 ? phase.MotionPeriod : phase.Duration), 1) : clock / phase.Duration;
             var local = phase.Evaluate(progress, phase.From, phase.To);
             var linear = Vector2.Lerp(phase.From, phase.To, phase.Smooth ? Mathf.SmoothStep(0,1,progress) : Mathf.Clamp01(progress));
             var t = phase.Smooth ? Mathf.SmoothStep(0,1,progress) : Mathf.Clamp01(progress);
-            var viewport = Vector2.Lerp(from, to, t) + PlayDirectionSpace.Offset((local - linear) * motionMultiplier, direction);
+            var blend = phase.MotionPeriod > 0 ? Mathf.SmoothStep(0, 1, clock / .6f) : 1;
+            var viewport = Vector2.Lerp(from, to, t) + PlayDirectionSpace.Offset((local - linear) * (motionMultiplier * blend), direction);
             var position = flightCamera.ViewportToWorldPoint(new Vector3(viewport.x, viewport.y, depth));
             body.position = position;
             transform.position = position;

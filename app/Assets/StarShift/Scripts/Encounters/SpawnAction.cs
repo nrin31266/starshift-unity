@@ -22,6 +22,7 @@ namespace StarShift.Encounters
         public RewardDropTable RewardOverride;
         public EnemyModifierDefinition Elite;
         public bool Required = true;
+        public bool GrantsRewards = true;
         public FormationLayout Formation;
         public Vector2 Anchor;
         public Vector2 SlotStep = new Vector2(.18f, 0);

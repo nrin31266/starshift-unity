@@ -1,5 +1,6 @@
 using System;
 using StarShift.Encounters;
+using StarShift.Gameplay;
 using StarShift.Player;
 using UnityEngine;
 
@@ -30,7 +31,13 @@ namespace StarShift.Rewards
         private Vector3 visualScale;
         private bool visualInitialized;
         private float ejectionRemaining;
-        public void Eject(Vector2 velocity) { ejectionVelocity = velocity; ejectionRemaining = .45f; }
+        private PlayDirection direction;
+        private float DriftScale => direction == PlayDirection.Right ? gameplayCamera.aspect : 1;
+        public void Eject(Vector2 velocity)
+        {
+            velocity.y *= DriftScale;
+            ejectionVelocity = PlayDirectionSpace.Offset(velocity, direction); ejectionRemaining = .45f;
+        }
         public PickupDefinition Item { get; private set; }
         public RewardDropTable Crate { get; private set; }
         public float Remaining => remaining;
@@ -38,7 +45,8 @@ namespace StarShift.Rewards
         public bool IsActive => active && isActiveAndEnabled;
         public event Action Collected;
         public void Launch(PickupDefinition item, RewardDropTable crate, Vector3 position, EncounterCleanup scope,
-            PlayerPickupReceiver player, Func<RewardPickup, bool> onCollect, Action<RewardPickup> onRelease)
+            PlayerPickupReceiver player, Func<RewardPickup, bool> onCollect, Action<RewardPickup> onRelease,
+            PlayDirection playDirection = PlayDirection.Up)
         {
             if (!visualInitialized) { visualScale = visual.transform.localScale; visualInitialized = true; }
             Item = item; Crate = crate; cleanup = scope; token = scope.RewardToken; receiver = player;
@@ -51,6 +59,7 @@ namespace StarShift.Rewards
             ejectionVelocity = Vector2.zero; ejectionRemaining = 0;
             Collected = null;
             gameplayCamera = Camera.main;
+            direction = playDirection;
             transform.position = position;
             baseColor = crate != null ? new Color(1, .78f, .2f) : item.Color;
             visual.color = baseColor;
@@ -78,28 +87,34 @@ namespace StarShift.Rewards
                 ejectionRemaining = Mathf.Max(0, ejectionRemaining - Time.fixedDeltaTime);
             }
             bool shard = Item != null && Item.Kind == PickupKind.Shard;
+            var forward = (Vector3)PlayDirectionSpace.Offset(Vector2.up, direction);
             if (shard)
             {
                 fallVelocity = Mathf.Max(-Item.MaximumFallSpeed, fallVelocity - Item.FallAcceleration * Time.fixedDeltaTime);
-                position.y += fallVelocity * Time.fixedDeltaTime;
-                var floor = gameplayCamera.ViewportToWorldPoint(new Vector3(0, .06f, -gameplayCamera.transform.position.z)).y;
-                if (position.y <= floor && fallVelocity < 0 && bounceCount < 2)
+                // Giữ thời gian đi qua màn/nảy khi trục combat đổi từ chiều cao sang chiều rộng.
+                position += forward * (fallVelocity * DriftScale * Time.fixedDeltaTime);
+                var edge = PlayDirectionSpace.Point(new Vector2(0, .06f), direction);
+                var floor = Vector3.Dot(gameplayCamera.ViewportToWorldPoint(new Vector3(edge.x, edge.y, -gameplayCamera.transform.position.z)), forward);
+                var depth = Vector3.Dot(position, forward);
+                if (depth <= floor && fallVelocity < 0 && bounceCount < 2)
                 {
-                    position.y = floor;
+                    position += forward * (floor - depth);
                     var height = Item.ShardBounceHeight * gameplayCamera.orthographicSize * 2 * (bounceCount == 0 ? 1 : .35f);
                     fallVelocity = Mathf.Sqrt(2 * Item.FallAcceleration * height);
                     bounceCount++;
                 }
             }
-            else position += Vector3.down * ((Item != null ? Item.DriftSpeed : .8f) * Time.fixedDeltaTime);
+            else position -= forward * ((Item != null ? Item.DriftSpeed : .8f) * DriftScale * Time.fixedDeltaTime);
             if (graceRemaining >= 0)
             {
                 var viewport = gameplayCamera.WorldToViewportPoint(position);
-                viewport.x = Mathf.Clamp(viewport.x, .05f, .95f);
+                var local = PlayDirectionSpace.LocalPoint(viewport, direction);
+                local.x = Mathf.Clamp(local.x, .05f, .95f);
                 // Xu giữ quỹ đạo nảy hai lần rồi rơi ra, kể cả trong thời gian nhặt thưởng.
-                if (!shard) viewport.y = Mathf.Max(.09f, viewport.y);
+                if (!shard) local.y = Mathf.Max(.09f, local.y);
+                var point = PlayDirectionSpace.Point(local, direction);
+                viewport.x = point.x; viewport.y = point.y;
                 position = gameplayCamera.ViewportToWorldPoint(viewport);
-                if (!shard && viewport.y <= .09f) fallVelocity = 0;
             }
             transform.position = position;
             // Sweep đường đi của Player để drag nhanh vẫn nhận contact; không hút pickup.
@@ -109,7 +124,8 @@ namespace StarShift.Rewards
                 TryCollect();
             previousPlayerPosition = current;
             previousPickupPosition = position;
-            if (active && gameplayCamera.WorldToViewportPoint(position).y < -.06f) Release();
+            var end = gameplayCamera.WorldToViewportPoint(position);
+            if (active && (direction == PlayDirection.Right ? end.x : end.y) < -.06f) Release();
         }
         private static float SegmentDistanceSquared(Vector3 point, Vector3 from, Vector3 to)
         {

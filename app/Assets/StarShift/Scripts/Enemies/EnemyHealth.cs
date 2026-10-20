@@ -25,11 +25,15 @@ namespace StarShift.Enemies
         private EntryHoldFlight flight;
         private float visibleSeconds;
         private bool protectEntry;
+        private bool damageBlocked;
+        public void SetDamageBlocked(bool blocked) => damageBlocked = blocked;
+        public bool BlocksPlayerProjectiles => damageBlocked && Definition.MissileTier == MissileDamageTier.Boss && flight != null && flight.IsHolding;
+        public event Action BlockedHit;
         public bool CanReceiveDamage
         {
             get
             {
-                if (!IsAlive || (flight != null && flight.IsOutsideView)) return false;
+                if (damageBlocked || !IsAlive || (flight != null && flight.IsOutsideView)) return false;
                 return !protectEntry || (visibleSeconds >= .2f && (Definition.MissileTier != MissileDamageTier.Boss || flight.IsHolding));
             }
         }
@@ -57,6 +61,7 @@ namespace StarShift.Enemies
                 return;
             }
             SpawnVersion++;
+            damageBlocked = false;
             visibleSeconds = 0;
             CurrentHp = MaxHp;
             if (!active.Contains(this)) active.Add(this);
@@ -64,7 +69,9 @@ namespace StarShift.Enemies
 
         public void ReceivePlayerHit(int damage, GameObject owner)
         {
-            if (!CanReceiveDamage || damage <= 0) return;
+            if (damage <= 0) return;
+            if (BlocksPlayerProjectiles) { BlockedHit?.Invoke(); return; }
+            if (!CanReceiveDamage) return;
             CurrentHp = Mathf.Max(0, CurrentHp - damage);
             var lethal = CurrentHp == 0;
             try { Damaged?.Invoke(); }

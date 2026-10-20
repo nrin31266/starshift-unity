@@ -736,7 +736,7 @@ producers và clear hostile shots ngay khi zero HP, giữ dying boss root tới 
 sequence. Reward callback chạy sau beats, trước completion/reward grace. Stop/Retry
 hủy callback và thu hồi root; không để presentation cấp quyền damage.
 
-RegionCampaignFlow chỉ orchestration L1–L4 và destination skeleton, tham chiếu catalog
+RegionCampaignFlow orchestration L1–L8, same-region travel và A→B journey, tham chiếu catalog
 rõ. CampaignLifecycle giữ write permission/restore; CampaignProgress mutate DTO và
 atomic transaction. GameplaySession vẫn giữ clock/terminal/Pause. BossHud chỉ đọc
 health/name/phase; không quyết Boss lifecycle. Không thêm event bus hoặc scene thứ hai.
@@ -783,7 +783,51 @@ reward event để phát pooled visual burst, không có gameplay damage/shake a
 
 BossAttackModule giữ một local attack clock: projectile mode dùng pool hiện có;
 beam mode charge/active bounds và Physics2D query route qua PlayerContactReceiver.
-BossBeamPresentation nhận bounds/read-only active cue, không quyết damage. Beam
+AttackBeamPresentation nhận bounds/read-only active cue, không quyết damage. Beam
 braces motion qua flight owner và nhả khi cancel/end/death/disable. Phase runner
 cancel module trước reposition; death/generation/Retry vẫn do existing owners xử lý.
 Không thêm Wave runtime, per-Mission controller, loot framework hoặc boss-minion framework.
+
+
+## M6 enemy và boss extension boundaries `[PROVISIONAL]`
+
+Không thêm mission-specific runtime controller hoặc encounter framework. `DirectedAttack`
+đọc immutable `DirectedAttackDefinition`, giữ attack clock/locked aim và query beam damage
+qua PlayerContactReceiver; AttackBeamPresentation chỉ vẽ segment. SingleFireAttack adapter
+đưa Sniper/Interceptor qua EncounterFireCoordinator hiện có. EntryHoldFlight giữ committed
+strike/return pose và là writer duy nhất; attack không ghi transform của enemy hoặc Player.
+
+`EscortSpawner` chỉ quản cadence và bounded living-owner list có SpawnVersion guard.
+`EncounterRunner.SpawnReinforcement` validate group/token, rent/configure/activate và đăng
+ký cùng enemy slots, fire coordinator, cleanup/death hooks. Dynamic escorts không required,
+không reward/score/quota, không có world/save snapshot. Death/disable owner chỉ yêu cầu
+retreat; runner vẫn giữ release ownership qua ExitDrain hoặc hard reset.
+
+BossShieldNetwork quản core damage block và node health aggregation. BossPhaseRunner
+chọn shield/exposed rotation; BossAttackModule reuse plasma/projectile pool hoặc delegate
+DirectedAttack/EscortSpawner. Module health là instance riêng, không có score/drop hook.
+EnemyHealth giữ HP/damage authority; blocked core hit có feedback event nhưng không
+làm giảm HP, không cho presentation mở vulnerability. Core emitters duy trì phase 2
+sau module destruction; không thêm generic boss framework.
+
+RegionCampaignFlow dùng RegionId để phân biệt same-region travel với A→B journey;
+catalog hết ở L8 thì GameplaySession vào terminal result. Save transaction và legacy
+marker policy thuộc [save owner](save-profile.md#m6-campaign-continuation-và-current-release-end-provisional).
+
+
+M6 human-feedback extension: EncounterFireCoordinator sở hữu một budget chung cho
+common attacks và BossPhaseRunner; boss tính một source, minions dùng các slot còn
+lại. Count theo attack start, drain cả đợt trước rest, không mở slot mới vì một enemy
+vừa chết. EntryHoldFlight vẫn là pose writer duy nhất: authored MotionPeriod tách
+idle loop khỏi phase lifetime, clock encounter đồng bộ các slot, blend-in tránh
+pop sau entry. Escort entry origin là runtime state, không sửa FlightSequence asset.
+PlayableAreaPresentation đọc CurrentPlayableViewport và BoundaryPressure từ RelativeDragMovement
+để báo cạnh khi cố giữ kéo vượt giới hạn; không có lớp phủ nền thường trực hoặc
+pose writer mới. Movement vẫn clamp bằng PlayerMovementBounds hiện có.
+
+M6 combat closure organization: `Scripts/Enemies/Attacks` giữ common/direct attacks
+và `AttackBeamPresentation` dùng chung; `Enemies/Bosses` giữ module/phase/shield/death
+và barrage của boss; `Enemies/Presentation` giữ damage/fire/entry/asteroid cues.
+Namespace `StarShift.Enemies` và script GUID giữ nguyên; không tạo assembly/framework.
+`BossBarrageDefinition` giữ config, `BossBarrage` giữ timer/gap/pool runtime, damage
+vẫn qua existing PlayerContactReceiver. BossHud chỉ đọc tổng node HP hoặc core HP.

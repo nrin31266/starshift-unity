@@ -24,6 +24,8 @@ namespace StarShift.Combat
         [SerializeField] private Color projectileColor = new Color(.3f, .9f, 1);
         [SerializeField, Min(0)] private float trackingDegreesPerSecond;
         [SerializeField, Min(0)] private float trackingRange = 18;
+        [SerializeField, Min(0)] private float trackingLaunchSeconds = .16f;
+        [SerializeField, Range(0, 60)] private float trackingLaunchArcDegrees = 9;
         public WeaponBranch Branch => branch;
         [SerializeField] private Vector2 projectileScale = Vector2.one;
         [SerializeField] private Sprite projectileSprite;
@@ -34,6 +36,8 @@ namespace StarShift.Combat
         public Color ProjectileColor => projectileColor;
         public float TrackingDegreesPerSecond => trackingDegreesPerSecond;
         public float TrackingRange => trackingRange;
+        public float TrackingLaunchSeconds => trackingLaunchSeconds;
+        public float TrackingLaunchArcDegrees => trackingLaunchArcDegrees;
         public WeaponLevelPattern Pattern(int level) => levels != null && level > 0 && level <= levels.Length ? levels[level - 1] : null;
         [SerializeField] private PlayerProjectile projectilePrefab;
         [SerializeField, Min(.02f)] private float fireInterval = .2f;

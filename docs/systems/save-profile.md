@@ -50,8 +50,8 @@ hoặc mid-wave supply/drop objects. Definition và schedule được chạy l�
 
 ### Serialized campaign fields `[PROVISIONAL]`
 
-- `MissionId`: stable LevelDefinition ID; catalog production M5 gồm L1–L4.
-- `Status`: Active, MissionCleared, RegionTransition hoặc RegionReady; xem M5 boundary bên dưới.
+- `MissionId`: stable LevelDefinition ID; catalog production M6 gồm L1–L8.
+- `Status`: Active, MissionCleared, RegionTransition, RegionReady (legacy) hoặc CampaignCompleted; xem boundaries bên dưới.
 - `Checkpoint.EncounterId`: exact Encounter ID thuộc Mission, không lưu index/alias.
 - `Checkpoint.Lives`: 1..PlayerLives.MaximumLives.
 - `Checkpoint.Missiles`: 0..3 reserve; restore cùng checkpoint, ordinary death giữ nguyên.
@@ -63,7 +63,7 @@ hoặc mid-wave supply/drop objects. Definition và schedule được chạy l�
   ở [reward owner](../gameplay/progression-economy.md#m4-b-reward-và-record-policy-provisional).
   Reset khi capture Encounter mới; không rollback khi Retry/Continue.
 
-Stats hiện chỉ phục vụ M4 runtime owners; chưa là full Campaign Result schema.
+Stats hiện chỉ phục vụ M4 runtime owners; chưa là full Campaign Result schema; M6 current-release completion có marker riêng bên dưới.
 Playable seconds đếm fixed gameplay time khi run active và không cinematic/terminal;
 Pause không có physics ticks. Mission title overlay và handoff playable trong active run được tính; between-run travel
 không tự cộng Mission-local timer. Retry/
@@ -201,26 +201,15 @@ OS-level atomicity trên mọi filesystem chưa được chứng minh.
 
 ## M5 mission và region boundaries `[PROVISIONAL]`
 
-Catalog validation tra L1–L4 từ RegionCampaignFlow, không phụ thuộc level đang mở.
+Catalog validation tra L1–L8 từ RegionCampaignFlow, không phụ thuộc level đang mở.
 Continue load đúng definition trước restore checkpoint. Production L1 có hai Encounter;
 legacy testbed L1 checkpoints 3–5 không có production mapping tự động, không đoán
 state hoặc reset Profile để hợp thức hóa save invalid. Fixture cũ ID `M4_FIXTURE`
 chỉ dùng DevTest. Migration old test saves ngoài supported catalog vẫn chưa chốt.
 
-Clear L1–L3: CommitClear record → unlock next Mission + active entry checkpoint
-trong cùng envelope → flush → travel ngắn → launch next. Entry carry lives, weapon
-levels, active branch, reserve; reset mission-local stats. Không ghi checkpoint của
-Mission kế vào Mission cũ. Transaction atomic/idempotence tiếp tục theo storage trên.
-
-Clear L4: record + capture final resolved Player state + `RegionTransition` trong
-một transaction. Continue marker này reset departure environment/Up pose rồi chạy lại cinematic,
-bao gồm Planet reveal chờ tap và approach; không spawn Boss hoặc
-regrant death/clear rewards. Khi destination framing Right sẵn sàng, ghi `RegionReady`.
-Continue `RegionReady` dựng destination skeleton Right và trả control trực tiếp,
-yêu cầu gesture mới; không chạy fight/clear lần
-nữa. Marker dùng checkpoint Encounter thật của L4, không tạo L5/fake Encounter ID.
-Validator chỉ chấp nhận region markers ở Boss checkpoint của Mission cuối catalog.
-Schema vẫn 2; thêm enum statuses, không thay shape DTO hoặc đổi storage path.
+M5 thiết lập mission travel và semantic region markers. Contract hiện tại mở rộng
+catalog, resume legacy markers và release victory nằm ở [M6 boundary](#m6-campaign-continuation-và-current-release-end-provisional).
+Không giữ Right-ready skeleton làm production finish line sau khi đã có L5.
 
 Replay lấy preset của selected Mission, không chain qua Mission kế; Profile/Campaign
 bytes vẫn không writeback. Dev TRANSITION/Phase B giữ isolated boundary. Retry trong
@@ -236,3 +225,41 @@ Retry/Continue reset asteroid variant HP, damage presentation, Boss phase/motion
 beam charge/active bounds và pooled loot; weapon state vẫn restore checkpoint và
 Shard high-water vẫn preserved. DevFastStart và replay tiếp tục cùng write-permission
 boundary, không dùng seed override để cấp quyền ghi production.
+
+
+## M6 campaign continuation và current release end `[PROVISIONAL]`
+
+Catalog được mở rộng tới Mission08, không thêm production L9–L12. Save envelope
+vẫn schema 2, storage path/atomic write/backup giữ nguyên. `CampaignStatus.CampaignCompleted`
+append sau các enum cũ để giữ serialized numeric values. Không nâng version chỉ vì
+thêm content IDs hoặc status; client cũ không hiểu status mới vẫn reject qua validation.
+
+Clear L4 commit record và resolved checkpoint với `RegionTransition` trong một
+transaction. Journey Up→Right giữ checkpoint L4 cho tới khi destination approach
+hoàn tất. Sau đó `AdvanceMission` commit L5 entry/checkpoint/unlock trước khi launch.
+Nếu ghi đĩa thất bại trong `CompleteRegionTravel`, in-memory state được rollback về snapshot
+L4/`RegionTransition` chưa advance, session dừng ở trạng thái Pause và không vào màn hình Result
+hay advance sang L5 khi chưa ghi thành công; khi Resume hoặc reload Continue, hệ thống thử ghi lại/chạy
+lại transition an toàn mà không duplicate records hay corrupt save.
+Continue marker `RegionTransition` của M5 chạy lại journey; `RegionReady` legacy
+chuyển trực tiếp sang entry L5. Không replay Vanguard hoặc cấp lại record/reward.
+Continue checkpoint Active L5–L8 load đúng definition qua catalog trước restore.
+Rời Replay hoặc DevTest để Continue Campaign thực thi `ResetRuntime()`, reset `CurrentIndex = 0`
+và clamp bounds của `Current` encounter, khôi phục snapshot persistent chính xác mà không rò rỉ
+encounter index hay state từ phiên test/isolated.
+
+Clear L1–L3 và L5–L7 dùng same-region mission boundary hiện có: record + next entry checkpoint
+trong cùng transaction, reset mission-local stats và giữ player loadout/lives/reserve.
+Retry trong Pause của same-region travel dùng incoming entry đã commit, không
+replay Mission vừa clear hoặc ghép outgoing Encounter ID vào incoming Mission.
+Major A→B journey/approach chưa cho Retry; Continue dùng transition marker cho tới
+khi L5 entry được commit.
+
+Clear L8 commit record, resolved Player state và `CampaignCompleted`; UI/session
+vào current-campaign victory. Không tạo L9 checkpoint hoặc queue Region C travel.
+Continue completed save dựng terminal victory, không spawn boss hoặc regrant clear.
+
+Retry/Continue reset module HP, shield network, pending attacks/strikes, spawned drones,
+beam visuals/queries và reward world transient qua run/pooled lifecycle; không serialize
+boss phase, module state, drones hoặc mid-wave objects. Replay/DevFastStart vẫn thu
+hồi write permission trước start; M6 probes dùng test storage riêng và so production bytes.

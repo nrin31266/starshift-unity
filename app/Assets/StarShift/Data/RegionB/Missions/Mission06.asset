@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4179b97c92ab72e0bcc1e13a4938118, type: 3}
+  m_Name: Mission06
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Encounters.LevelDefinition
+  Id: L6
+  DisplayName: "NHI\u1EC6M V\u1EE4 06"
+  MissionNumber: 6
+  EnemyHealthMultiplier: 1.3
+  RegionEnemyHealthMultiplier: 1.3
+  RegionId: crimson-nebula
+  LocationName:
+  MissionBriefing: "\u0110\u1ECDc \u0111\u01B0\u1EDDng ng\u1EAFm. T\xECm khe h\u1EDF
+    gi\u1EEFa c\xE1c c\u1ED5ng m\u1EA3nh v\u1EE1."
+  Direction: 1
+  Camera: {fileID: 11400000, guid: 6a1cbe799800b5af1b7e823d3a1daeae, type: 2}
+  ReplayPreset:
+    Lives: 3
+    Missiles: 1
+    ActiveWeapon: 0
+    WeaponLevels: 030000000200000002000000
+  Intro:
+    Enabled: 0
+    ContinueDelaySeconds: 1.8
+    ArrivalTitle: "NHI\u1EC6M V\u1EE4 06"
+    MissionTitleSeconds: 2.1
+    MissionEntryLeadSeconds: 0.75
+    ApproachView:
+      orthographicSize: 8
+      playableViewport:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1
+        height: 1
+    TravelView:
+      orthographicSize: 9
+      playableViewport:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1
+        height: 1
+    ApproachSeconds: 0.7
+    TravelSeconds: 1.8
+    BrakeSeconds: 0.8
+  Encounters:
+  - {fileID: 11400000, guid: 10b1f89724441f4788d9730098117341, type: 2}
+  - {fileID: 11400000, guid: c1da9dd147c9990fcbab22b311167df8, type: 2}
+  - {fileID: 11400000, guid: e8c5258fac43993ff958404da1b80c9a, type: 2}
+  AdditionalStarts:
+  - Id: SNIPER
+    Encounter: {fileID: 11400000, guid: 10b1f89724441f4788d9730098117341, type: 2}
+  - Id: CORRIDOR
+    Encounter: {fileID: 11400000, guid: c1da9dd147c9990fcbab22b311167df8, type: 2}

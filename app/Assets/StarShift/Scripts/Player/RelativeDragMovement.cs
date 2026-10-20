@@ -25,6 +25,7 @@ namespace StarShift.Player
         private PlayerRespawnEntrance respawnEntrance;
         private Vector2 pendingPointerDelta;
         private Vector2 travelBias, appliedTravelBias;
+        public Vector2 BoundaryPressure { get; private set; }
         public void SetTravelBias(Vector2 normalizedOffset) => travelBias = normalizedOffset;
 
         private void Awake()
@@ -105,6 +106,18 @@ namespace StarShift.Player
             body.position = movementBounds.isActiveAndEnabled
                 ? movementBounds.ClampPosition(proposedPosition, movementCamera, PlayableViewport)
                 : proposedPosition;
+            var requested = (Vector2)worldDelta * sensitivity;
+            var excess = proposedPosition - body.position;
+            if (!pointerInput.FireHeld || !movementBounds.isActiveAndEnabled) BoundaryPressure = Vector2.zero;
+            else if (requested.sqrMagnitude > .000001f)
+                BoundaryPressure = Vector2.Dot(requested, excess) > .000001f ? excess.normalized : Vector2.zero;
+            else if (BoundaryPressure != Vector2.zero)
+            {
+                // Giữ phản hồi khi còn giữ tay; mở rộng camera phải bỏ áp lực cạnh cũ.
+                var probe = body.position + BoundaryPressure * .01f;
+                if ((probe - movementBounds.ClampPosition(probe, movementCamera, PlayableViewport)).sqrMagnitude < .000001f)
+                    BoundaryPressure = Vector2.zero;
+            }
             // Bỏ delta vượt cạnh ngay; kéo ngược không phải bù phần đã bị chặn.
             pendingPointerDelta = Vector2.zero;
         }
@@ -159,6 +172,7 @@ namespace StarShift.Player
         private void ResetInput()
         {
             pendingPointerDelta = Vector2.zero;
+            BoundaryPressure = Vector2.zero;
             if (pointerInput != null) pointerInput.ResetDrag();
         }
     }

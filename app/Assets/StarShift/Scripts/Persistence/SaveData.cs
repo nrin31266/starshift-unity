@@ -4,7 +4,7 @@ using StarShift.Combat;
 namespace StarShift.Persistence
 {
     public enum SessionMode { Campaign, Replay, DevTest }
-    public enum CampaignStatus { Active, MissionCleared, RegionTransition, RegionReady }
+    public enum CampaignStatus { Active, MissionCleared, RegionTransition, RegionReady, CampaignCompleted }
     public enum SaveLoadStatus { Missing, Loaded, RecoveredBackup, Invalid, UnsupportedVersion, IoFailure }
 
     [Serializable]

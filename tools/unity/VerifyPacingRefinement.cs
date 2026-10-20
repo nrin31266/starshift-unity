@@ -386,6 +386,8 @@ public static class VerifyPacingRefinement
             InputSystem.settings.editorInputBehaviorInPlayMode = InputSettings.EditorInputBehaviorInPlayMode.AllDeviceInputAlwaysGoesToGameView;
             InputSystem.settings.backgroundBehavior = InputSettings.BackgroundBehavior.IgnoreFocus;
             oldMouse = Mouse.current;
+            EditorApplication.playModeStateChanged += OnPlayModeChanged;
+            AssemblyReloadEvents.beforeAssemblyReload += RestoreInput;
             foreach (var d in InputSystem.devices)
                 if (d.native && d.enabled && (d is Mouse || d is Touchscreen)) { disabled.Add(d); InputSystem.DisableDevice(d); }
             mouse = InputSystem.AddDevice<Mouse>(); mouse.MakeCurrent(); touch = InputSystem.AddDevice<Touchscreen>();
@@ -438,14 +440,27 @@ public static class VerifyPacingRefinement
             await MouseEvent(anchor+Vector2.ClampMagnitude(delta,650),true);
         }
         static EncounterDefinition[] Configs() => new[] { "A", "B" }.Select(id => StarShift.Editor.RegionAAssetPaths.Load<EncounterDefinition>("Assets/StarShift/Data/Fixtures/Encounters/L1Encounter" + id + ".asset")).ToArray();
+        private void OnPlayModeChanged(PlayModeStateChange state)
+        {
+            if (state == PlayModeStateChange.ExitingPlayMode) RestoreInput();
+        }
+        private void RestoreInput()
+        {
+            // Dừng Play/reload có thể hủy async probe trước khi using chạy Dispose.
+            EditorApplication.playModeStateChanged -= OnPlayModeChanged;
+            AssemblyReloadEvents.beforeAssemblyReload -= RestoreInput;
+            if (mouse != null && mouse.added) InputSystem.RemoveDevice(mouse);
+            if (touch != null && touch.added) InputSystem.RemoveDevice(touch);
+            foreach (var d in disabled) if (d.added) InputSystem.EnableDevice(d);
+            if (oldMouse != null && oldMouse.added) oldMouse.MakeCurrent();
+            InputSystem.settings.editorInputBehaviorInPlayMode = oldEditor;
+            InputSystem.settings.backgroundBehavior = oldBackground;
+        }
         public void Dispose()
         {
+            RestoreInput();
             RestoreFlights();
             Session.enabled = false; Runner.StopRun(); Time.timeScale = 1;
-            InputSystem.RemoveDevice(mouse); InputSystem.RemoveDevice(touch);
-            foreach (var d in disabled) InputSystem.EnableDevice(d);
-            if (oldMouse != null && oldMouse.added) oldMouse.MakeCurrent();
-            InputSystem.settings.editorInputBehaviorInPlayMode = oldEditor; InputSystem.settings.backgroundBehavior = oldBackground;
             var life = Player.GetComponent<PlayerDamageLifecycle>(); life.enabled = false; life.enabled = true; Input.CancelGesture();
             view.SetBaseline(Runner.Flow.Level.Camera.View); view.RequestView(oldView, 0); gameView.GetType().GetMethod("SizeSelectionCallback").Invoke(gameView, new object[] { oldSize, null });
             gameViewZoom.GetType().GetMethod("SetTransform").Invoke(gameViewZoom, new object[] { oldGameViewPan, oldGameViewZoom });

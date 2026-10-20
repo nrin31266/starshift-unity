@@ -218,15 +218,21 @@ Seeds runtime `[TUNABLE]` bổ sung cho các pattern ở trên:
 |---|---|---|---|
 | Pulse | .18 / .18 / .18 / .17 / .16 s | 1 | Tia mảnh/nhanh, speed 15; lateral spacing .16 world units |
 | Plasma | .30 / .29 / .28 / .27 / .26 s | 1 | Speed 10; fan 30° / 36° / 42° / 48° / 54° |
-| Homing | .60 / .58 / .56 / .54 / .52 s | 2 | Speed 7.5, lifetime 4 s; fan 0°/16°/24°/32°/40°; tracking 210°/s, range 18; splash L3 .45/L4 .55/L5 .65 |
+| Homing | .60 / .58 / .56 / .54 / .52 s | 2 | Speed 7.5, lifetime 4 s; fan 0°/6°/10°/14°/18°; spacing .09; tracking 210°/s, range 18; splash L3 .45/L4 .55/L5 .65 |
 
-Homing chọn nearest hittable target phía trước lúc launch, turn có giới hạn; chỉ
-reacquire khi target cũ chết, chưa hittable hoặc instance đã được pool/reuse. Target
-ngoài màn/đang entry protection không được chọn. Splash không damage trùng target chính.
+Homing chia mục tiêu theo volley: ưu tiên nearest hittable phía trước chưa được gán;
+chỉ lặp mục tiêu khi đã dùng hết các mục tiêu hợp lệ. Không ép mọi quả vào một địch gần nhất.
+Trong .16 s đầu, mỗi quả bẻ ra ngoài tối đa 9° ngoài fan ban đầu `[TUNABLE]`, sau đó
+tracking 210°/s kéo về đích. Volley nhiều quả lẻ giữ quả giữa đúng trục; hai phía đối xứng khi không có mục tiêu.
+Volley một quả chỉ dùng .65 × arc đổi bên khi đã có đích; không có đích thì bay thẳng.
+Các quả hai bên vẫn tách vừa đủ để một mục tiêu đọc được nhiều quỹ đạo tên lửa. Đoạn tách vẫn sweep/collision và
+tính lifetime bình thường. Chỉ reacquire khi target cũ chết, chưa hittable hoặc instance
+đã được pool/reuse; không giữ reference sang một spawn mới. Target ngoài màn/đang entry
+protection không được chọn. Splash không damage trùng target chính.
 Plasma lifetime 1.5 s. Ba branch có sprite placeholder riêng: Pulse capsule,
 Plasma energy orb, Homing rocket có nose/fins/exhaust. Visual scale Plasma (.30,.24),
 Homing (.35,.48) nhân base sprite `[TUNABLE]`; Homing có trail .13 s. Plasma xòe từ
-cùng muzzle, Pulse dùng lateral spacing .16 world units; Homing xòe từ cùng muzzle. Sprite/scale/trail chỉ là presentation, không scale root/
+cùng muzzle, Pulse dùng lateral spacing .16 world units; Homing có lateral spacing .09 world units để fan gọn vẫn phân biệt được từng quả. Sprite/scale/trail chỉ là presentation, không scale root/
 collider. Pool reuse reset sprite, scale và xóa trail vertices trước launch mới;
 Support Drone/fallback config vẫn dùng sprite gốc khi không author override.
 Enemy HP không scale theo level.
@@ -261,10 +267,15 @@ vẫn theo projectile lifecycle, terminal session release friendly shots.
 Pickup là pooled runtime participant trong reward scope của EncounterCleanup.
 Collection dùng swept contact với đường di chuyển Player, bán kính .6 world units
 `[TUNABLE]`; không magnetism. Chỉ collect khi gameplay input gate mở, kể cả khi held fire.
-Power-up/crate drift xuống .8 world units/s và release khi qua viewport y -.06;
-không đọng thành hàng ở đáy màn. Shard bắt đầu fall speed 3.2, gravity 11, terminal
-speed 6.4 world units/s; nảy hai lần tại viewport y .06 với bounce height .06 × view
-height rồi .35 × lần đầu, sau đó rơi ra và recycle, kể cả trong reward grace;
+Pickup trôi ngược hướng combat: Up xuống dưới, Right sang trái. Power-up/crate drift
+seed .8 world units/s và release khi qua local depth -.06; không đọng thành hàng
+ở mép thoát. Shard bắt đầu fall speed 3.2, gravity 11, terminal speed 6.4; nảy hai lần
+tại local depth .06 với bounce height .06 × độ dài trục combat rồi .35 × lần đầu,
+sau đó rơi ra và recycle, kể cả trong reward grace. Speed/acceleration seeds tính theo
+chiều cao viewport; khi Right, displacement theo trục combat nhân camera aspect để giữ
+thời gian rơi/nảy tương đương Up trên màn rộng. Supply pair tách ngang khi Up, tách
+trên–dưới khi Right; ejection và boss gold distribution cùng dùng combat space.
+Grace giữ major ở local depth .09, clamp lateral .05–.95; shard vẫn rơi ra;
 không khóa xu ở đáy hoặc kéo xu ngược lên khi bắt đầu grace. Lifetime Shard 5 s, major trực
 tiếp 12 s, crate 8 s, cap active 6 `[TUNABLE]`. Relative swept contact xử lý chuyển
 động cả Player và pickup, không teleport/magnetism. Đây là test policy
@@ -491,7 +502,8 @@ cue thuộc [presentation owner](../presentation/audio-vfx.md#reserve-missile-im
 Normal/Elite random odds được tăng nhẹ như policy phía trên; quota bên dưới bổ sung floor progression cho
 combat quan trọng thay vì gắn guaranteed Core lên một SpawnAction. M3 Supply và M4
 preboss Supply dùng MajorCrate table để eject pair; resource asteroid giữ Shard path; Vanguard eject
-một defeat pair sau staged death, kèm 28 Shards rải x .07–.93, y .58–.85 viewport.
+một defeat pair sau staged death, kèm 28 Shards rải lateral .07–.93, depth .58–.85
+trong combat viewport (xoay theo Up/Right).
 Chỉ enemy được classify Boss mới dùng `BossShardCount`; supply không rải vàng. Boss
 gold dùng visual .55, initial fall 1.2, gravity 4.5, max speed 3 `[TUNABLE]`.
 Collection grace/timing thuộc [level owner](levels-encounters.md#m5-region-a-authored-content-provisional). Escape của Supply/resource không nhận reward.
@@ -518,8 +530,8 @@ Sau mỗi eligible kill: normal roll trước; major phù hợp đã ra thì cre
 Nếu chưa đạt, seeded remaining-kill selection chọn xác suất `remaining quota /
 remaining eligible population`, bắt buộc ở các kill cuối. Mỗi kill emit tối đa một
 selected direct item; quota không cộng thêm một major cạnh normal major vừa credit.
-Normal random drops sau khi đạt floor vẫn giữ odds đã author. Normal 2.5% major,
-Elite 10%; Shard Normal 25% / Elite 60% nếu major roll không ra; Core weight mỗi branch lần lượt 30/50, Progression 90 `[TUNABLE]`.
+Normal random drops sau khi đạt floor vẫn giữ odds đã author. Normal 1.8% major,
+Elite 10%; Shard Normal 18% / Elite 60% nếu major roll không ra; Core weight mỗi branch lần lượt 30/50, Progression 90 `[TUNABLE]`.
 Pity chỉ áp dụng support slot khi eject Supply/Boss pair, không chạy thêm cho quota item.
 
 Timeline fallback: nếu có ít nhất một eligible enemy đã bị hạ nhưng phần còn lại
@@ -538,3 +550,28 @@ wave. Collected Core/loadout rollback cùng checkpoint; Shard high-water và Rep
 DevTest write permission giữ theo [save owner](../systems/save-profile.md).
 Typed Core vẫn `[PROVISIONAL]`; Shield stacking, overflow và final replay economy
 còn TBD. Evidence và giới hạn test ở [dev/debug](../systems/dev-debug.md#m5-second-human-feel-pass-verification).
+
+
+## M6 population và reward density `[TUNABLE]`
+
+Formation population tăng để đọc silhouette, không tăng authored floor của Region A.
+NormalDrops giảm major 2.5%→1.8%, Shard 25%→18% để hạn chế tăng rolls do population.
+Elite odds giữ nguyên. Region B có năm floor opportunities: L5 E1/E3, L6 E1,
+L7 E2/E3, mỗi nơi 1 major. Các encounter B còn lại floor 0; Supply/resource/Boss
+pair dùng paths riêng. Không nhân floor theo population hoặc đặt guarantee trên mọi beat. Cap normal pickups
+vẫn 6; guaranteed overflow/filtering/seed/Retry-safe quota giữ nguyên.
+
+Carrier/Warden drones không phát EnemyDefeated/EnemyEscaped reward events, không
+score/drop/quota/pity. Shield modules cũng không reward. Đây là bounded pressure,
+không là nguồn farm vô hạn. Boss core death vẫn cấp existing defeat pair và Boss Shards,
+không đổi Profile/Shard semantics hoặc primary thermal.
+
+
+### Warden defeat reward `[TUNABLE]`
+
+Warden dùng `RegionB/Rewards/WardenDefeatDrops`, copy policy Core/support của boss
+qua native authoring nhưng độc lập bảng Supply. Defeat sau staged explosions eject
+36 gold pickups, không bị cap normal 6 chặn. WardenGold dùng visual scale .75 và
+lifetime 14 s; các seed nảy/drift dùng cùng pickup motion. Reward grace riêng ở
+[encounter owner](levels-encounters.md#m6-region-b-authored-content-provisional).
+Supply kill không rải gold, minions/modules không tạo reward rolls.

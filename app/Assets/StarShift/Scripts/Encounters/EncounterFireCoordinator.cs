@@ -15,6 +15,16 @@ namespace StarShift.Encounters
         private int next;
         private int volleyShots;
         private float remaining;
+        private BossPhaseRunner boss;
+        public int BusyCount => selected.Count + (boss != null && boss.IsAttacking ? 1 : 0);
+        public bool CanStartBossAttack => definition != null && safetyGate.CanFire &&
+            remaining <= 0 && volleyShots < definition.ShotsPerVolley && BusyCount < Mathf.Min(4, definition.ActiveShooterLimit);
+        public void RecordBossAttack() => RecordAttack();
+        private void RecordAttack()
+        {
+            volleyShots++;
+            remaining = volleyShots >= definition.ShotsPerVolley ? definition.VolleyPause : definition.ShotSpacing;
+        }
 
         public void Begin(EncounterDefinition config, EnemyFireGate gate)
         {
@@ -27,16 +37,16 @@ namespace StarShift.Encounters
         {
             attack.SetEncounterControlled();
             shooters.Add(attack);
+            var candidate = attack.GetComponent<BossPhaseRunner>();
+            if (candidate != null) boss = candidate;
         }
 
         public void Unregister(SingleFireAttack attack)
         {
             attack.SetEncounterControlled();
             shooters.Remove(attack);
-            if (selected.Remove(attack))
-            {
-                remaining = definition != null ? definition.ShotSpacing : 0;
-            }
+            selected.Remove(attack);
+            if (boss != null && boss.gameObject == attack.gameObject) boss = null;
             next = shooters.Count == 0 ? 0 : next % shooters.Count;
         }
 
@@ -48,6 +58,7 @@ namespace StarShift.Encounters
             definition = null;
             next = volleyShots = 0;
             remaining = 0;
+            boss = null;
         }
 
         private void FixedUpdate()
@@ -65,19 +76,26 @@ namespace StarShift.Encounters
                 var attack = selected[i];
                 if (attack != null && attack.isActiveAndEnabled && attack.IsTelegraphing) continue;
                 selected.RemoveAt(i);
-                volleyShots++;
-                remaining = volleyShots >= definition.ShotsPerVolley ? definition.VolleyPause : definition.ShotSpacing;
-                if (volleyShots >= definition.ShotsPerVolley) volleyShots = 0;
             }
-            if (selected.Count >= definition.ActiveShooterLimit) return;
-            remaining -= Time.fixedDeltaTime;
+            // Đợi cả đợt kết thúc rồi mới đếm nghỉ; kill/slot trống không mở đợt mới sớm.
+            if (volleyShots >= definition.ShotsPerVolley)
+            {
+                if (BusyCount > 0) return;
+                remaining -= Time.fixedDeltaTime;
+                if (remaining > 0) return;
+                volleyShots = 0;
+            }
+            else remaining -= Time.fixedDeltaTime;
+            if (BusyCount >= Mathf.Min(4, definition.ActiveShooterLimit)) return;
             if (remaining > 0 || shooters.Count == 0) return;
+            // Cho đặc nhiệm thể hiện đòn đầu trước khi hàng lính thường dùng hết budget.
+            for (int priority = 0; priority < 2; priority++)
             for (int i = 0; i < shooters.Count; i++)
             {
                 var index = (next + i) % shooters.Count;
-                if (shooters[index] == null || selected.Contains(shooters[index]) || !shooters[index].TryRequestAttack()) continue;
+                if (shooters[index] == null || (priority == 0 && !shooters[index].AwaitingFirstDirectedAttack) || selected.Contains(shooters[index]) || !shooters[index].TryRequestAttack()) continue;
                 selected.Add(shooters[index]);
-                remaining = definition.ShotSpacing;
+                RecordAttack();
                 next = (index + 1) % shooters.Count;
                 return;
             }
