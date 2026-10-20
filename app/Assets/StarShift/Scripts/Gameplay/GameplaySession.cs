@@ -16,6 +16,7 @@ namespace StarShift.Gameplay
         private InputSystemPointerInput pointer;
         private PulseLaserWeapon weapon;
         private RegionCampaignFlow region;
+        public bool RequireMissionResults { get; set; }
         private float previousScale;
         private bool previousAudioPause;
         private bool ownsClock;
@@ -84,6 +85,7 @@ namespace StarShift.Gameplay
         public void ResetRuntime(bool preserveInput = false)
         {
             region?.Cancel();
+            lifecycle.GetComponent<ShipAppearance>()?.ResetTrail();
             lifecycle.GetComponent<PlayerTemporaryEffects>()?.ResetForSession();
             lifecycle.GetComponent<EmergencyMissileReserve>()?.CancelPending();
             lifecycle.GetComponent<EmergencyMissilePresentation>()?.ResetForSession();
@@ -105,8 +107,41 @@ namespace StarShift.Gameplay
         private void OnMissionCompleted()
         {
             if (lifecycle.GetComponent<PlayerLives>().CurrentLives <= 0 || IsTerminal) return;
+            if (RequireMissionResults && Persistence.Mode != StarShift.Persistence.SessionMode.DevTest)
+            { ShowRegionComplete(); return; }
             if (region != null && region.QueueAdvance()) return;
             ShowRegionComplete();
+        }
+
+        public bool ContinueAfterResult()
+        {
+            if (!IsClear || IsCampaignVictory || Persistence.Mode != StarShift.Persistence.SessionMode.Campaign ||
+                !Persistence.Flush()) return false;
+            RestoreClock();
+            playerGate.SetState(PlayerGameplayState.Active);
+            return region.QueueAdvance();
+        }
+
+        public void HoldForShell()
+        {
+            runner.StopRun();
+            ResetRuntime();
+            playerGate.SetState(PlayerGameplayState.Entry);
+            playerGate.SetCinematicLock(true);
+            Freeze();
+        }
+
+        private void OnApplicationFocus(bool focused) { if (!focused) PauseForBackground(); }
+        private void OnApplicationPause(bool paused) { if (paused) PauseForBackground(); }
+        private void PauseForBackground()
+        {
+            pointer.CancelGesture();
+            if (HasActiveRun && !IsPaused && !IsTerminal)
+            {
+                IsPaused = true;
+                Freeze();
+                Changed?.Invoke();
+            }
         }
 
         public void PrepareMajorTravel()

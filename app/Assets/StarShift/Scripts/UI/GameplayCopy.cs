@@ -12,8 +12,6 @@ namespace StarShift.UI
         public const string MainMenu = "VỀ MENU CHÍNH";
         public const string MissionClear = "NHIỆM VỤ HOÀN THÀNH";
         public const string GameOver = "THẤT BẠI";
-        public const string Continue = "TIẾP THEO";
-        public const string Unavailable = "Chưa có trong bản thử nghiệm";
         public const string Placeholder = "—";
         public const string PulseLaser = "Pulse Laser";
         public const string HeatOverheated = "NÓNG";

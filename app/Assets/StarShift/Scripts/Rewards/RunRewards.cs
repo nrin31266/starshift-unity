@@ -16,7 +16,11 @@ namespace StarShift.Rewards
         public int EnemiesDestroyed { get; private set; }
         public int CoresCollected { get; private set; }
         public int SupplyCaptured { get; private set; }
-        public void AddKill(int score) { Score += Mathf.Max(0, score); EnemiesDestroyed++; }
+        public void AddKill(int score, bool countsAsEnemy = true)
+        {
+            Score += Mathf.Max(0, score);
+            if (countsAsEnemy) EnemiesDestroyed++;
+        }
         public event Action<int> ShardsChanged;
         public void AddShards(int amount)
         {

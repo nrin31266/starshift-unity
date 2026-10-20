@@ -3,7 +3,7 @@ using StarShift.Combat;
 
 namespace StarShift.Persistence
 {
-    public enum SessionMode { Campaign, Replay, DevTest }
+    public enum SessionMode { Campaign, Replay, DevTest, Frontend }
     public enum CampaignStatus { Active, MissionCleared, RegionTransition, RegionReady, CampaignCompleted }
     public enum SaveLoadStatus { Missing, Loaded, RecoveredBackup, Invalid, UnsupportedVersion, IoFailure }
 
@@ -49,6 +49,7 @@ namespace StarShift.Persistence
         public int HighScore;
         public string[] UnlockedMissions;
         public MissionRecord[] Records;
+        public string[] OwnedCosmetics = Array.Empty<string>(), EquippedCosmetics = Array.Empty<string>();
     }
 
     [Serializable]

@@ -29,6 +29,7 @@ namespace StarShift.Player
             hull.enabled = normalEnabled && gate.State != PlayerGameplayState.GameOver &&
                 (!protectedEntry || Mathf.Repeat(blinkTime, .2f) < .12f);
         }
+        public void SetHullTint(Color tint) { normalTint = tint; hull.color = tint; }
 
         private void OnDisable()
         {

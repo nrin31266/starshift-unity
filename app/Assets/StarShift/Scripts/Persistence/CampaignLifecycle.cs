@@ -25,6 +25,9 @@ namespace StarShift.Persistence
         private RegionCampaignFlow region;
         private LevelDefinition testFixture;
         private int isolatedShardBalance;
+        public bool HasPendingClear { get; private set; }
+        public bool NewBestScore { get; private set; }
+        public bool NewBestTime { get; private set; }
         public int ShardBalance
         {
             get
@@ -108,6 +111,8 @@ namespace StarShift.Persistence
         }
         public bool TryBoot()
         {
+            var shell = GetComponent<StarShift.UI.GameShell>();
+            if (shell != null && shell.isActiveAndEnabled) { shell.Boot(); return true; }
 #if UNITY_EDITOR
             return false;
 #else
@@ -124,6 +129,7 @@ namespace StarShift.Persistence
             if (launching) return;
             if (!Flush()) throw new IOException(Diagnostic);
             Mode = SessionMode.DevTest;
+            HasPendingClear = false;
             isolatedShardBalance = 0;
             checkpoint = null;
             pendingRegionTransition = false;
@@ -151,16 +157,21 @@ namespace StarShift.Persistence
                 Stats = rewards.Capture()
             };
         }
-        public bool NewGame()
+        public bool NewGame() => StartNewGame(false);
+        public bool RecoverNewGame() => StartNewGame(true);
+        private bool StartNewGame(bool recover)
         {
-            if (progress.Snapshot == null) return false;
+            if (recover ? LoadStatus != SaveLoadStatus.Invalid : progress.Snapshot == null) return false;
+            if (!Flush()) return false;
+            HasPendingClear = false;
             pendingRegionTransition = false;
             isolatedShardBalance = 0;
+            NewBestScore = NewBestTime = false;
             var level = testFixture != null ? testFixture : region != null ? region.Missions[0] : runner.Flow.Level;
             runner.StopRun(); session.ResetRuntime(); runner.Flow.LoadLevel(level);
             var initial = new CheckpointData { EncounterId = level.Encounters[0].Id, Lives = 3, Missiles = 1,
                 WeaponLevels = new[] { 1, 0, 0 }, Stats = new RunStatsData() };
-            if (!progress.NewGame(level.Id, initial)) return false;
+            if (!(recover ? progress.RecoverNewGame(level.Id, initial) : progress.NewGame(level.Id, initial))) return false;
             Mode = SessionMode.Campaign;
             checkpoint = initial;
             Launch("LEVEL_START", initial, false);
@@ -168,12 +179,14 @@ namespace StarShift.Persistence
         }
         public bool Continue()
         {
-            pendingRegionTransition = false;
             if (Mode == SessionMode.Campaign && !Flush()) return false;
             if (!progress.Reload()) return false;
             var snapshot = progress.Snapshot;
             var c = snapshot != null && snapshot.HasCampaign ? snapshot.Campaign : null;
             if (c == null || c.Status == CampaignStatus.MissionCleared) return false;
+            pendingRegionTransition = false;
+            HasPendingClear = false;
+            NewBestScore = NewBestTime = false;
             isolatedShardBalance = 0;
             runner.StopRun();
             session.ResetRuntime();
@@ -206,6 +219,8 @@ namespace StarShift.Persistence
             if (profile == null || Array.IndexOf(profile.UnlockedMissions, runner.Flow.Level.Id) < 0) return false;
             if (!Flush()) return false;
             Mode = SessionMode.Replay;
+            HasPendingClear = false;
+            NewBestScore = NewBestTime = false;
             isolatedShardBalance = 0;
             checkpoint = null;
             pendingRegionTransition = false;
@@ -213,10 +228,19 @@ namespace StarShift.Persistence
             Launch("LEVEL_START", preset != null ? new CheckpointData { EncounterId = runner.Flow.Level.Encounters[0].Id, Lives = preset.Lives, Missiles = preset.Missiles, ActiveWeapon = preset.ActiveWeapon, WeaponLevels = (int[])preset.WeaponLevels.Clone(), Stats = new RunStatsData() } : null, true);
             return true;
         }
+        public bool BeginReplay(string missionId)
+        {
+            var level = region?.FindMission(missionId);
+            var profile = progress.Snapshot?.Profile;
+            if (level == null || profile == null || Array.IndexOf(profile.UnlockedMissions, missionId) < 0 || !Flush()) return false;
+            runner.StopRun(); session.ResetRuntime(); runner.Flow.LoadLevel(level);
+            return BeginReplay();
+        }
         public void ExitIsolated()
         {
-            pendingRegionTransition = false;
             if (!Flush()) throw new IOException(Diagnostic);
+            pendingRegionTransition = false;
+            HasPendingClear = false;
             runner.StopRun();
             session.ResetRuntime();
             player.RestoreCheckpoint(3);
@@ -284,18 +308,35 @@ namespace StarShift.Persistence
         private void OnMissionCompleted()
         {
             if (Mode != SessionMode.Campaign || lives.CurrentLives <= 0) return;
-            progress.CommitClear(rewards.Score, rewards.PlaySeconds);
+            HasPendingClear = true;
+            TryCommitMissionClear();
+        }
+        private bool TryCommitMissionClear()
+        {
+            var previous = Array.Find(progress.Snapshot.Profile.Records, r => r.MissionId == runner.Flow.Level.Id);
+            var resolved = Capture(runner.Flow.Level.Encounters[runner.Flow.Level.Encounters.Length - 1].Id);
+            string nextId = null;
+            CheckpointData entry = null;
+            var status = CampaignStatus.MissionCleared;
             if (region != null && testFixture == null)
             {
                 var next = region.NextMission;
                 if (next != null && next.RegionId == runner.Flow.Level.RegionId)
                 {
-                    var entry = Capture(next.Encounters[0].Id); entry.Stats = new RunStatsData();
-                    progress.AdvanceMission(next.Id, entry);
+                    entry = Capture(next.Encounters[0].Id); entry.Stats = new RunStatsData();
+                    nextId = next.Id;
                 }
-                else { progress.Capture(Capture(runner.Flow.Level.Encounters[runner.Flow.Level.Encounters.Length - 1].Id)); progress.SetRegionStatus(next != null ? CampaignStatus.RegionTransition : CampaignStatus.CampaignCompleted); }
+                else status = next != null ? CampaignStatus.RegionTransition : CampaignStatus.CampaignCompleted;
             }
-            Flush();
+            if (!progress.TryCommitClear(rewards.Score, rewards.PlaySeconds, resolved, nextId, entry, status))
+            {
+                if (!session.IsTerminal) session.ShowRegionComplete();
+                return false;
+            }
+            HasPendingClear = false;
+            NewBestScore = previous == null || rewards.Score > previous.BestScore;
+            NewBestTime = rewards.PlaySeconds > 0 && (previous == null || previous.BestTimeSeconds <= 0 || rewards.PlaySeconds < previous.BestTimeSeconds);
+            return true;
         }
         public void AdvanceMission(LevelDefinition next, bool preservePoseAndInput = false)
         {
@@ -347,6 +388,7 @@ namespace StarShift.Persistence
         public bool Flush()
         {
             if (Mode != SessionMode.Campaign) return true;
+            if (HasPendingClear) return TryCommitMissionClear();
             if (pendingRegionTransition)
             {
                 if (flushingPendingTransition) return false;
@@ -356,7 +398,20 @@ namespace StarShift.Persistence
             }
             return progress.Flush();
         }
-        public bool SetSettings(SettingsData value) => Mode == SessionMode.Campaign && progress.SetSettings(value);
+        public bool ReloadStorage() => !HasPendingClear && !pendingRegionTransition && progress.Reload();
+        public void EnterFrontend()
+        {
+            if (runner.HasActiveRun || HasPendingClear || pendingRegionTransition || Mode == SessionMode.Campaign && Dirty)
+                throw new InvalidOperationException("Exit and save the current run before entering frontend.");
+            Mode = SessionMode.Frontend;
+        }
+        public bool EquipCosmetic(CosmeticCatalog catalog, string id)
+        {
+            if (Mode != SessionMode.Frontend || runner.HasActiveRun || catalog == null) return false;
+            var option = catalog.Find(id);
+            return option != null && progress.EquipCosmetic(id, option.ShardCost, (int)option.Slot, catalog.Defaults);
+        }
+        public bool SetSettings(SettingsData value) => !HasPendingClear && !pendingRegionTransition && progress.SetSettings(value);
         private void OnApplicationPause(bool paused) { if (paused) Flush(); }
         private void OnApplicationQuit() => Flush();
         private void OnDisable()
