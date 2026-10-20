@@ -8,12 +8,14 @@ Owner của asset sources, generation/import/slicing/naming/licensing/tooling v�
 
 `Gameplay placeholder` → `Visual reference pack` → `Style approval`
 → `Vertical-slice asset batch` → `Normalize` → `Import`
-→ `Review at gameplay scale` → `Android check` → `Lock visual family`
+→ `Unity Game View + Play Mode review` → `Lock visual family`
 → `Produce assets theo từng region`.
 
 Không generate toàn bộ 12 level ngay từ đầu. Style approval duyệt hướng nhìn qua
 reference pack; lock visual family chỉ sau khi batch đã qua Unity gameplay-scale
-review và Android check. Chưa kiểm tra Android thì ghi rõ chưa hoàn tất gate này.
+review và chạy trong Unity. Theo yêu cầu setup ngày 2026-10-20, giai đoạn M8
+hiện tại chỉ test trên Unity; không Android, build/release hoặc device gate.
+Mobile vẫn là product target, không phải bằng chứng device-tested.
 
 ### Placeholder-first
 
@@ -49,8 +51,8 @@ centered visible bounds, consistent scale, correct orientation, không shadow/ba
 ngoài ý muốn, alpha edge và padding. Background artwork giữ nền có chủ đích theo
 art direction. Review source kiểm tra style, alignment và readiness để import;
 Unity gameplay-scale review sau import vẫn bắt buộc.
-Offline Python utility trong `tools/assets/` có thể được tạo khi có task riêng;
-workflow này không yêu cầu tool mới.
+Offline PNG compose/validate utility đã có trong `tools/assets/`; reuse thay vì
+viết lại packer. Công cụ này không tự đánh giá style hoặc animation quality.
 
 ### PixelLab usage
 
@@ -62,7 +64,7 @@ rồi normalize, review và import. Không bắt mọi asset qua PixelLab.
 ### Tool routing cho StarShift
 
 Project MCP config nằm ở `../../.codex/config.toml`; chỉ bổ sung PixelLab cho
-checkout này. ImageGen/Figma/Canva và Unity/Comfy MCP hiện có được tái sử dụng,
+checkout này. ImageGen và Unity/Comfy MCP hiện có được tái sử dụng,
 không tạo server trùng hoặc đổi cấu hình global. Tài khoản connector vẫn thuộc
 tài khoản Codex, không được cô lập bởi project config; chỉ dùng cho task đang yêu cầu.
 
@@ -71,7 +73,9 @@ tài khoản Codex, không được cô lập bởi project config; chỉ dùng 
 | Concept, ship/enemy/boss, background raster | ImageGen, dùng approved anchors; sprite yêu cầu transparent background |
 | Pixel art hoặc sửa vùng ảnh | PixelLab image/edit/inpaint, output vẫn phải đạt art direction |
 | Object states và sprite animation | PixelLab object/state/animate hoặc animate image |
-| HUD/layout và vector source | Figma; Canva cho moodboard/presentation khi task cần |
+| Frame/palette/alignment cleanup | Aseprite; giữ source `.aseprite` |
+| Background/composite/mask/paint-over lớn | Krita; giữ source `.kra` |
+| Fallback không phụ thuộc generation quota | Local ComfyUI + SD1.5, chỉ một checkpoint |
 | Ghép/kiểm tra spritesheet PNG | [Offline tools](../../tools/assets/README.md) |
 | Import, slicing, pivot và gameplay-scale review | Unity MCP; reuse skill `sprite-editor` và grid-slicing snippet |
 | Workflow ảnh với node API | [Comfy seed](../../tools/assets/workflows/comfy-nano-banana.json), cần runtime/auth/validation |
@@ -106,8 +110,9 @@ Không đổi target art thành pixel art chỉ vì tool hỗ trợ pixel art.
    data provider với capability checks theo skill `sprite-editor`. Slice đúng số
    frame, bỏ ô dư cuối; thứ tự từ trên trái theo hàng. Không sửa `.meta` bằng tay;
    không tự chốt PPU/filter/compression còn TBD.
-6. Preview clip/state ở gameplay scale, kiểm tra Console và Android gate theo
-   canonical workflow. Chưa chạy thì ghi rõ chưa verified; không tự thay production art.
+6. Preview clip/state trong Game View và Play Mode ở gameplay scale, kiểm tra
+   Console theo canonical workflow. Chưa chạy thì ghi rõ chưa verified; không tự
+   thay production art. Không chạy Android/release trong giai đoạn này.
 
 ### Recipe Comfy workflow
 
@@ -129,24 +134,192 @@ JSON vào server chưa cài/chưa chạy và không coi `auth_login` là cài Co
 để đưa approved anchors vào request. Kiểm tra lại schema trước khi dùng; không
 truyền tham số `image` của hosted API thẳng vào graph JSON vì hai schema khác nhau.
 
-### Connection evidence ngày 2026-10-20
+### Toolchain setup ngày 2026-10-20
 
-- PixelLab: MCP initialize/list tools thành công, trả 103 tools; allowlist khớp
-  schema live. Sau reload đã gọi native tool `get_balance` thành công, còn 40
-  generations trial tại thời điểm kiểm tra. Chưa chạy generation hoặc xác minh output.
-- ImageGen: có tool trong phiên; chưa chạy generation ở task cấu hình này.
-- Unity MCP: thấy một Editor chạy đúng project StarShift `app/`; chưa import art mới.
-- Figma: một kết nối whoami thành công, RIN cần reauthenticate; chưa xác minh quyền
-  edit file đích. Canva: một kết nối search thành công, Primary cần reauthenticate;
-  search không xác nhận có design StarShift hoặc quyền edit design đích.
-- Comfy MCP: OAuth đã đăng nhập, token chưa hết hạn; partner catalog/schema gọi được.
-  Hosted `nano-banana` hỗ trợ prompt và reference images. ComfyUI local chưa chạy,
-  đường dẫn được báo không tồn tại trên đĩa; GPU 4 GiB VRAM, chưa cài/runtime-test
-  local diffusion. Chưa xác minh billing balance hoặc chạy hosted generation/graph JSON.
-- Offline PNG tool: Python/Pillow hiện có; synthetic pack/check tests pass.
+Setup-only; chưa bắt đầu M8 production. Chỉ test bằng ảnh kỹ thuật/synthetic,
+không duyệt visual family. Native resolution, PPU, palette, outline, kích thước
+sprite, số frame/FPS/animation rules vẫn [TBD]; chốt bằng Unity vertical art slice
+ở M8. **512×512 chỉ là canvas kiểm tra SD1.5, không phải sprite size.**
 
-Đây là snapshot; kiểm tra lại readiness/auth trước generation. Không cần cài thêm
-desktop art editor để chạy recipe PNG.
+Không dùng Figma/Canva trong pipeline này. Không Android hoặc release ở giai đoạn này.
+
+#### Installed tools và exact paths
+
+Các path dưới thuộc máy Linux của owner, không phải portable dependency trong Git.
+Mở agent tại `/home/nguyenvanrin/PersonalProjects/starshift` để nạp project PixelLab
+MCP config; chat mở từ repo khác có thể không expose native PixelLab tools.
+
+| Tool | Version / path / nhiệm vụ |
+|---|---|
+| PixelLab MCP | Server `0.2.0`, endpoint `https://api.pixellab.ai/mcp`; 103 tools; project `/home/nguyenvanrin/PersonalProjects/starshift/.codex/config.toml`; token `/home/nguyenvanrin/.config/starshift/pixellab-token` mode `0600` |
+| ImageGen | Native `image_gen.imagegen` service tool; không có local binary/version pin; generate/edit/reference raster, alpha theo request |
+| Comfy hosted | `comfy-cli 1.22.0`, `/home/nguyenvanrin/.local/bin/comfy`; MCP `comfy-mcp 0.10.0`; OAuth authenticated, hosted catalog/schema `nano-banana` verified; balance **$0** |
+| Local ComfyUI | `0.42.1`, commit `63be2f9b82ad0dac88a7ceaa28a9cf3154125a18`; `/home/nguyenvanrin/comfy/ComfyUI`; frontend `1.55.18`; localhost `http://127.0.0.1:8188` |
+| Local Python / CUDA | `/home/nguyenvanrin/comfy/ComfyUI/.venv/bin/python`, Python `3.12.14`, PyTorch `2.14.0+cu130`, torchvision `0.29.1`; CUDA tensor test PASS |
+| Aseprite | `1.3.18.6-dev` source build from official release `v1.3.18.6`; PATH `/home/nguyenvanrin/.local/bin/aseprite` → `/home/nguyenvanrin/.local/opt/starshift-art/aseprite/build/bin/aseprite`; frame/palette/alignment cleanup |
+| Krita | `5.3.4.1` (`bd6e8d0`); PATH launcher `/home/nguyenvanrin/.local/bin/krita` → `/home/nguyenvanrin/.local/opt/starshift-art/squashfs-root/AppRun`; official AppImage `/home/nguyenvanrin/.local/opt/starshift-art/krita-5.3.4.1.AppImage` |
+| PNG tools | `/usr/bin/python3` = `3.14.7`, Pillow `12.3.0`; `/usr/bin/magick` = ImageMagick `7.1.2-27 (Beta)` Q16-HDRI; deterministic compose/validation and nearest-neighbor conversion |
+| Unity | Editor `6000.5.9f1`, project `/home/nguyenvanrin/PersonalProjects/starshift/app`; MCP ready; Sprite Editor package `com.unity.2d.sprite 1.0.0`; CLI `/home/nguyenvanrin/.local/bin/unity` = `1.0.0-beta.13`, latest check PASS |
+| Build-only dependencies | CMake `4.4.4`, Ninja package `1.13.2` in `/home/nguyenvanrin/.local/bin`; official Skia `m124-08a5439a6b` in `/home/nguyenvanrin/.local/opt/starshift-art/skia`; GCC C++ support extracted from signed Fedora RPMs under `starshift-art/sysroot`, no root install |
+
+Aseprite source/INSTALL/license are preserved at
+`/home/nguyenvanrin/.local/opt/starshift-art/aseprite`; built for local use, no binary
+redistribution in Git. Sources: [official release](https://github.com/aseprite/aseprite/releases/tag/v1.3.18.6),
+[official build instructions](https://github.com/aseprite/aseprite/blob/main/INSTALL.md),
+[official Skia](https://github.com/aseprite/skia/releases/tag/m124-08a5439a6b).
+Krita uses the [official KDE download](https://download.kde.org/stable/krita/5.3.4.1/krita-5.3.4.1-x86_64.AppImage),
+extracted to avoid a FUSE dependency; launcher sets system Fontconfig paths.
+
+#### Local model và launch commands
+
+Exactly one checkpoint installed:
+`/home/nguyenvanrin/comfy/ComfyUI/models/checkpoints/v1-5-pruned-emaonly.safetensors`
+(4,265,146,304 bytes).
+SHA-256 `6ce0161689b3853acaa03779ec93eafe75a02f4ced659bee03f50797806fa2fa`,
+verified against the [model repository LFS object](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5/blob/main/v1-5-pruned-emaonly.safetensors).
+Source/model license: [model card](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5).
+No SDXL, FLUX, extra checkpoints, LoRA or custom node packs installed.
+
+```sh
+# Foreground server; leave terminal running, Ctrl-C to stop.
+starshift-comfy
+# Exact launcher: /home/nguyenvanrin/.local/bin/starshift-comfy
+# Executes, from /home/nguyenvanrin/comfy/ComfyUI:
+.venv/bin/python main.py --listen 127.0.0.1 --port 8188 \
+  --lowvram --disable-dynamic-vram --disable-all-custom-nodes \
+  --disable-partner-nodes --reserve-vram 0.8 --preview-method none
+
+# In another terminal, only after localhost server is ready:
+comfy run --host 127.0.0.1 --port 8188 \
+  --workflow /home/nguyenvanrin/PersonalProjects/starshift/tools/assets/workflows/comfy-sd15-smoke.json --wait
+
+aseprite /path/source.aseprite
+krita /path/background.kra
+python3 tools/assets/spritesheet.py --help
+```
+
+Minimal tested graph: `/home/nguyenvanrin/PersonalProjects/starshift/tools/assets/workflows/comfy-sd15-smoke.json`
+([repo JSON](../../tools/assets/workflows/comfy-sd15-smoke.json)). Seven core nodes,
+fixed seed 42, Euler/normal, CFG 7, 20 steps, batch 1, 512×512 technical sphere.
+Graph validation returned `valid=true`, zero errors/warnings, no partner nodes,
+`spends_credits=false`. On this GPU, server confirmed `LOW_VRAM`, CLIP on CPU and
+partial UNet offload. Baseline completed in **11.64 s**; this is one smoke result,
+not a production latency guarantee. Output is opaque RGB; sprites still need alpha
+cleanup. Final game sprite dimensions remain [TBD].
+
+Server was left running idle on localhost at checkpoint, with models unloaded and
+~3.2 GiB VRAM free reported afterward. Check `server_info` before starting another
+copy. For MCP: `server_info` → `system_stats` → `validate_workflow` →
+`run_workflow(wait=false)` → `job(status/wait)` → `fetch_outputs` →
+`free_memory(unload_models=true, free_memory=true)` after the batch. VRAM is shared
+with Unity; keep batch 1 and unload local models before gameplay review.
+
+#### Verification checkpoint
+
+PASS:
+- PixelLab initialize/list/get_balance; 40 trial generations, $0 paid credits and
+  daily bonus 5 reported at check. No PixelLab generation consumed in setup.
+- ImageGen actual technical generation: PNG RGBA, 1286×1223, alpha range 0–255.
+- Local SD1.5 generation + output fetch + nonblank 512×512 PNG + visual inspection;
+  prompt ID `bd4c3865-8afa-49a3-9e04-7010e07a38fc`; model checksum verified.
+- Comfy restart/health after official dependencies installed; `uv pip check` PASS
+  for all 103 packages. Full environment freeze is preserved with local evidence.
+- Aseprite version, GUI launch, three-frame `.aseprite` creation, individual PNG
+  export and 2-column spritesheet/JSON export; exact RGBA bytes/frame order/grid
+  match synthetic fixture, including semitransparent alpha and unused last cell.
+- Krita version and GUI launch; ImageMagick PNG32 nearest-neighbor export and alpha.
+- Existing `test_spritesheet.py`: **5/5 PASS**; mismatched canvas, opaque input,
+  overwrite protection, grid/count/padding rejection and exact frame order tested.
+- Unity import/slice/pivot/filter/PPU read-back using synthetic 16×16 frames;
+  3 named sprites in 2×2 grid, one unused cell omitted. Temporary PPU 16/center/Point
+  are fixture-only. Scratch Assets folder deleted through AssetDatabase; no scene
+  or production settings changed. Reusable [Unity check snippet](../../tools/assets/verify-unity-art-toolchain.cs)
+  uses live Unity 6 namespaces (`UnityEditor.SpriteRect`/`SpriteNameFileIdPair`,
+  `UnityEngine.SpriteAlignment`/`GUID`) and mandatory capability/name-file-ID checks.
+- Existing placeholder Game View screenshot captured/inspected; Console errors 0,
+  compilation failed false. One pre-existing duplicate-MCP-command warning remains.
+
+NOT TESTED / LIMITS:
+- Comfy hosted paid generation: balance confirmed $0; auth/catalog/schema only.
+- PixelLab generation/animation quality and production consistency; no art M8 batch.
+- Gameplay review of new art, final pixel family/animation rules, Android/release.
+  A Game View capture of placeholders does not claim new-art runtime verification.
+
+Evidence outside Git/Unity Assets:
+`/home/nguyenvanrin/.local/share/starshift/art-toolchain-checks/2026-10-20/` contains
+`checks.json`, `imagegen-smoke.png`, `bd4c3865_000.png`, `smoke.aseprite`,
+`aseprite-frames/`, `aseprite-sheet.png/json`, synthetic frames/helper sheet,
+`unity-game-view.png`, GUI/server logs and `comfy-python-lock.txt`.
+Local Comfy output also exists at
+`/home/nguyenvanrin/comfy/ComfyUI/output/toolchain-smoke/sd15-test_00001_.png`.
+Build logs/source/install files are outside the repo under
+`/home/nguyenvanrin/.local/opt/starshift-art/`.
+
+**Ready to begin M8 art production on this machine**, using PixelLab/ImageGen and
+tested local fallback. Comfy hosted remains unavailable for paid work until funded.
+Setup stops here; no production assets, PPU or final pixel-family decisions made.
+
+### Fallback order và quota
+
+1. PixelLab cho pixel-specific generation/animation; ImageGen cho concept/reference,
+   raster generation/edit. Chọn theo công việc, dùng cùng approved anchors.
+2. PixelLab hết quota/lỗi service: chuyển ImageGen, giữ source/seed/job IDs và review
+   lại consistency; ImageGen không thay hoàn toàn animation model của PixelLab.
+3. Comfy hosted (`nano-banana`) chỉ dùng khi auth và balance đủ; checkpoint hiện tại
+   balance **$0**, vì vậy bỏ qua route này cho đến khi owner nạp credit. Không tự mua.
+4. Local ComfyUI SD1.5 là fallback độc lập cloud quota. Chỉ dùng baseline đã cài;
+   không tự tải SDXL/FLUX/model packs/LoRA. Local output không tự có alpha hoặc
+   pixel-perfect edges; cleanup bằng Aseprite/Krita rồi kiểm tra lại.
+5. Khi AI không đạt consistency: sửa thủ công trong Aseprite/Krita; không âm thầm
+   đổi family hoặc tài khoản. Không có auto account rotation. Đổi token chỉ bằng
+   tài khoản có quyền sử dụng, giữ file secret ngoài Git và reload client nếu cần.
+
+### Exact asset recipe cho agent tiếp theo
+
+1. Đọc art direction và asset cần làm. Trong M8 vertical slice, quyết định và ghi
+   canvas/native size, palette/outline, PPU, pivot, filter/compression, frame order
+   và FPS theo family; setup này không đặt baseline thay các quyết định đó.
+2. Generate/reference qua primary route; lưu source, prompt, model/tool version,
+   seed/job ID, anchor và provenance/license. Local chạy workflow mẫu bên dưới
+   với prompt thay theo task; smoke prompt không dùng làm production prompt.
+3. Pixel conversion nếu cần: PixelLab `image_to_pixelart`/correction/reduce colors;
+   hoặc ImageMagick nearest-neighbor về **canvas đã chọn ở M8**, rồi Aseprite
+   chỉnh pixel, palette và alpha thủ công. Không coi downscale tự động là art hoàn tất.
+4. Aseprite: import frames theo thứ tự `frame_00.png`, `frame_01.png`, …; giữ fixed
+   canvas/padding, chỉnh palette/outline và alignment trên toàn animation, preview
+   loop/timing. Không trim/center từng frame. Lưu `.aseprite`; dùng Krita `.kra`
+   khi cần compositing/background/mask/paint-over, export PNG về cùng review gate.
+5. Export từng frame RGBA (không scale/trim). Ví dụ từ source đã cleanup:
+   `aseprite --batch source.aseprite --save-as 'frames/frame_{frame00}.png'`.
+   Parent folder phải có trước; tránh overwrite source/output đã có.
+6. Compose theo explicit frame order, không dựa vào glob chưa sort:
+
+   ```sh
+   python3 tools/assets/spritesheet.py pack \
+     /work/frame_00.png /work/frame_01.png /work/frame_02.png \
+     --columns 2 --output /work/asset_sheet.png
+   python3 tools/assets/spritesheet.py check /work/asset_sheet.png \
+     --cell FRAME_WIDTH FRAME_HEIGHT --frames 3
+   ```
+
+   `FRAME_WIDTH/HEIGHT`, columns và 3 frames chỉ minh họa; thay bằng batch thật.
+   Output là PNG RGBA, order trái→phải/trên→dưới. Check grid/count/trailing empty
+   cells; test byte-for-byte frame order. Kiểm thêm visible content từng frame,
+   alpha fringe trên nền sáng/tối, không checkerboard bake-in. Background opaque
+   có chủ đích không đi qua sprite-transparency validator.
+7. Unity Edit Mode: confirm đúng `app/`, Console không compile error; import runtime
+   PNG vào folder art phù hợp. Single sprite dùng Single; sheet dùng Multiple.
+   Reuse skill `sprite-editor`, capability checks và name/file-ID provider; không
+   sửa `.meta` tay. Rect nguồn: `x=(i%columns)*W`,
+   `y=sheetHeight-(i/columns+1)*H` (integer division), đúng `frameCount`, bỏ ô dư.
+   Đặt pivot/filter/PPU/compression theo quyết định family ở M8, giữ existing GUID.
+8. Tạo/wire animation theo named frames và timing đã duyệt; không dựa vào thứ tự
+   subasset do AssetDatabase trả. Review Game View tại actual gameplay scale,
+   Play Mode kiểm frame counter tiến, movement/rotation/loop, hit/death states,
+   silhouette với nền sáng/tối, alpha/pivot/jitter và Console. Iterate source →
+   export → validate → reimport giữ GUID. Không build/release hoặc Android.
+9. Ghi evidence và asset lifecycle. Source preview không thay Unity runtime review;
+   chỉ lock family sau vertical slice, chưa production cả campaign.
 
 ## Sprite sheet contract
 
@@ -174,8 +347,8 @@ source trước import theo luồng normalization. Không đánh đồng review 
 
 PNG/model/audio tồn tại chưa đủ để DONE. Visual asset chỉ DONE khi đúng style,
 import hợp lệ, đúng scale, readable trong gameplay và không phá visual hierarchy.
-Batch còn phải qua Android check trước khi lock family; preview source không thay
-Unity gameplay-scale review hoặc Android check.
+Batch phải qua Unity Game View và Play Mode review trước khi lock family; preview
+source không thay Unity gameplay-scale/runtime review.
 
 ## Art review environment `[PROVISIONAL]`
 
@@ -200,7 +373,7 @@ Các batch dưới là planning guideline, không thay
 | Region C | Late-game/final presentation assets, final boss, Rift effects, Region C environment |
 
 Vertical Slice batch dùng để kiểm chứng family sau style approval, trước khi lock.
-Các batch theo region tiếp nối sau Android check và lock visual family trong canonical
+Các batch theo region tiếp nối sau Unity runtime review và lock visual family trong canonical
 workflow; không production cả campaign một lượt. Review batch mới cùng anchors để
 phát hiện style drift.
 
@@ -289,8 +462,8 @@ Chỉ viết generator hoặc generate output khi có task asset/audio tương �
 ## Mobile import concerns
 
 Giữ transparent padding hợp lý, kiểm tra alpha edges/atlas bleeding, texture size,
-compression/format và mip/filter phù hợp art style. Test sprite nhỏ trên mobile,
-không chỉ ảnh full-size. Review transparent overdraw, excessive particles, giant
+compression/format và mip/filter phù hợp art style. Trong giai đoạn hiện tại, test sprite nhỏ trong Unity Game View ở aspect ratio
+mục tiêu, không chỉ ảnh full-size; device/mobile profiling để sau giai đoạn này. Review transparent overdraw, excessive particles, giant
 additive sprite, glow everywhere, trail count và sprite resolution quá lớn dưới
 mobile constraints. Source đẹp nhưng unreadable hoặc quá nặng trong gameplay thì
 không đạt. Budget texture/audio/particle và device baseline [TBD];

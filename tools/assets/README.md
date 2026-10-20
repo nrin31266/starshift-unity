@@ -1,6 +1,6 @@
 # Offline asset tools
 
-Offline PNG tools và Comfy workflow seed cho StarShift. Chạy từ repository root;
+Offline PNG tools và Comfy workflows cho StarShift. Chạy từ repository root;
 Python cần Pillow (đã có trên máy cấu hình hiện tại).
 
 Quy trình import, naming, nguồn và license thuộc
@@ -30,3 +30,16 @@ emit, có node tính phí và SaveImageAdvanced. Chưa chạy/validate trên run
 không phải local diffusion workflow hay final art prompt.
 Readiness, auth, dependency validation và recipe nằm trong
 [asset pipeline](../../docs/production/asset-pipeline.md#recipe-comfy-workflow).
+
+## Local fallback và Unity smoke check
+
+[comfy-sd15-smoke.json](workflows/comfy-sd15-smoke.json) là graph SD1.5 core-only,
+không có node tính phí. Canvas 512×512 chỉ dùng test; không chốt sprite size.
+Launch commands, model path/hash và checkpoint evidence ở
+[toolchain setup](../../docs/production/asset-pipeline.md#toolchain-setup-ngày-2026-10-20).
+
+[verify-unity-art-toolchain.cs](verify-unity-art-toolchain.cs) chạy qua Unity MCP
+`eval_file` trong Edit Mode với synthetic helper-sheet fixture tại đường dẫn ghi
+trong snippet. Kiểm capability, import, 3 rects/frame names, pivot/PPU/filter
+read-back rồi xóa scratch folder bằng AssetDatabase. PPU 16/center/Point chỉ là
+fixture; không thay đổi import settings hoặc scene production.
