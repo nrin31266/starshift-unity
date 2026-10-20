@@ -1,0 +1,91 @@
+{
+  "date": "2026-10-21",
+  "scope": "M8 preparation close; vertical slice + score/background fixes + one animation smoke + remaining L1-L8 manifest; no bulk art",
+  "score": {
+    "core": "PASS: L1-L8 synthetic 3636 total; mission records; checkpoint/rollback; NewGame; completed Continue; legacy v1/v2; long JSON",
+    "runtime": {
+      "status": "PASS",
+      "missionScore": 2000,
+      "campaignScore": 2700,
+      "realMissionClear": true,
+      "travelNoDoubleCount": true,
+      "hud": true,
+      "retry": true,
+      "continueRestore": true,
+      "replayIsolation": true,
+      "regionTransition": true,
+      "backgroundCoverage": "fixed scale + navy fill; both aspects x zoom 8/12/20; real intro/same-region/Up-to-Right transition"
+    },
+    "nearby_persistence_core": "PASS"
+  },
+  "background": {
+    "status": "PASS",
+    "fixedWorldExtent": true,
+    "navyCorners": true,
+    "introParallax": true,
+    "aspects": [
+      1600,
+      2000
+    ],
+    "zooms": [
+      8,
+      12,
+      20
+    ]
+  },
+  "animation": {
+    "status": "PASS",
+    "framesSeen": [
+      "shard-shimmer_00",
+      "shard-shimmer_01",
+      "shard-shimmer_02",
+      "shard-shimmer_03"
+    ],
+    "realPickup": true,
+    "visible": true,
+    "pause": true,
+    "productionSaveUnchanged": true
+  },
+  "pixellab": {
+    "remaining": 34,
+    "used": 6,
+    "total": 40,
+    "credit_usd": 0,
+    "smoke_jobs": 1,
+    "cost": 1,
+    "job_id": "c1658ac7-8897-467d-8024-e7573402b55c"
+  },
+  "tools": {
+    "pixellab": "CONNECTED",
+    "imagegen": "AVAILABLE; no generation invoked",
+    "comfy_sd15": "CONNECTED; local8188; existing workflow validated",
+    "aseprite": "1.3.18.6-dev",
+    "krita": "5.3.4.1",
+    "unity_mcp": "CONNECTED via Unity Pipeline MCP; correct app project",
+    "sprite_editor": "PASS provider/slice read-back",
+    "pillow": "12.3.0",
+    "imagemagick": "7.1.2-27",
+    "spritesheet": "5 tests PASS; smoke pack/check PASS"
+  },
+  "unity": {
+    "compilation_failed": false,
+    "console_errors": 0,
+    "console_warnings": 0,
+    "final_state": "Edit Mode"
+  },
+  "production_save": "primary/.bak/.invalid byte equality asserted by isolated score/background/animation tests; no rollback of owner progress",
+  "manifest": "tools/assets/m8/production-manifest.json",
+  "not_checked": [
+    "No broad historical regressions",
+    "No Android/device/build",
+    "No fresh ImageGen or SD1.5 inference"
+  ],
+  "evidence_local": [
+    ".design/score-carry/runtime.json",
+    ".design/m8/background/",
+    ".design/m8/animation-smoke/",
+    ".design/m8/runtime-1600.json",
+    ".design/m8/runtime-2000.json"
+  ],
+  "readiness": "READY for L1-L8 production task; proposed new canvas sizes still require targeted gameplay-scale review"
+}

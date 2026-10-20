@@ -29,6 +29,26 @@ Score là performance metric riêng, không phải currency và không dùng cù
 hoặc display semantics với Shard. Score có thể đến từ kill, Elite, boss, optional
 target, clear bonus và no-hit bonus nếu sau này cân bằng hợp lý.
 
+### Campaign score `[LOCKED]`
+
+Owner chốt ngày 2026-10-20: HUD Campaign hiển thị **tổng điểm xuyên mission**.
+Tổng = điểm các mission đã qua trong campaign này + `RunRewards.Score` của mission
+hiện tại. Mission results và `MissionRecord.BestScore` vẫn mission-local; không cộng
+kỷ lục của các lượt chơi khác vào run. `PlayerProfile.HighScore` giữ semantics record
+hiện có, không tự đổi thành tổng campaign.
+
+- Next mission cùng region hoặc qua region mới giữ tổng, chỉ reset mission-local stats.
+- Ordinary death giữ điểm như trước. Retry rollback phần điểm current Encounter về
+  checkpoint; không rollback điểm của các mission trước, không farm thêm bằng retry.
+- Continue restore tổng từ saved baseline và mission checkpoint.
+- New Game reset tổng campaign, giữ Profile/Shard/kỷ lục/Settings.
+- Replay/DevTest chỉ hiển thị điểm isolated session, không cộng/writeback Campaign.
+
+Ví dụ: clear L1 được 1,200; vào L2 HUD vẫn 1,200. L2 thêm 300 → HUD 1,500, kết quả
+L2 vẫn 300. Retry checkpoint L2 trước 300 đó → HUD 1,200. Điểm trong outgoing travel
+không được cộng hai lần khi incoming checkpoint đã commit. Persisted field và legacy
+behavior thuộc [save owner](../systems/save-profile.md#campaign-score-carry-locked).
+
 ### Score seed
 
 Các giá trị dưới là [PROVISIONAL], có thể cân sau playtest. Boss/supply/golden
@@ -157,7 +177,7 @@ record writeback vẫn cần User decision. Dev/Test cũng không writeback.
 
 Clear Mission 01–03 cập nhật record và unlock Mission kế tiếp, đồng thời đặt checkpoint
 entry của Mission đó trong cùng transaction. Lives/weapon levels/reserve được carry;
-mission-local stats reset cho Mission mới. Elite dùng ×2 base score. Vanguard runtime
+mission-local stats reset cho Mission mới; campaign score carry theo policy trên. Elite dùng ×2 base score. Vanguard runtime
 seed 2500 `[TUNABLE]` để thử clear flow; final boss bonus formula vẫn `[TBD]`.
 Replay dùng [draft presets](../content/levels-encounters.md#mission-replay-presets)
 và không chain sang Mission kế; giữ nguyên isolation, chưa chốt replay economy.
@@ -196,7 +216,8 @@ Mission-local stats reset ở fresh mission/replay và restore từ checkpoint k
 Continue. Ordinary death/encounter handoff giữ counters; Pause/terminal/loading không
 cộng mission gameplay time. Clear record lấy chính score/timer đó; failed run không
 update record. Best score và minimum positive time giữ độc lập; New Best UI chỉ sau
-successful persistence transaction. Full campaign aggregation chưa triển khai.
+successful persistence transaction. Campaign score aggregation đã triển khai theo policy trên; aggregate của các stats
+khác vẫn chưa triển khai.
 M7 Victory dùng result Mission08 của current A+B release, không consumer các metrics
 boss-clear/no-hit/elite aggregate của target campaign result còn mở ở trên.
 

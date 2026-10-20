@@ -43,3 +43,21 @@ Launch commands, model path/hash và checkpoint evidence ở
 trong snippet. Kiểm capability, import, 3 rects/frame names, pivot/PPU/filter
 read-back rồi xóa scratch folder bằng AssetDatabase. PPU 16/center/Point chỉ là
 fixture; không thay đổi import settings hoặc scene production.
+
+## M8 selected pixel slice
+
+`m8/sources/manifest.json` giữ selected/rejected raw generation provenance và font
+sources. `m8/cleaned/*.aseprite` là editable source; `m8/frames/` giữ explicit
+explosion frame order. `m8/author.lua` reproduce native selected exports bằng Aseprite;
+không rerun đè artist edits. `python3 tools/assets/m8/validate.py` kiểm actual PNG
+sizes, shared palette, binary alpha, distinct frames và exact sheet frame order.
+Full commands/import/runtime checks ở
+[M8 recipe](../../docs/production/asset-pipeline.md#m8-selected-sources-và-production-recipe).
+
+## M8 preparation checkpoint
+
+[Production manifest](m8/production-manifest.json) liệt kê remaining L1–L8 asset routes,
+outputs, native-size proposals và presentation bindings; không là bulk runner.
+Single animate-existing smoke giữ raw frames, Aseprite source/cleanup và cost provenance
+trong [animation-smoke](m8/animation-smoke/provenance.json). Pipeline/verification recipe
+ở [asset pipeline](../../docs/production/asset-pipeline.md#m8-preparation-checkpoint).

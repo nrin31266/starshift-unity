@@ -70,7 +70,7 @@ không gian. Giữ contrast cho projectile; background không tranh cùng mức 
 
 | Nhóm | Màu định hướng |
 |---|---|
-| Player/friendly base | cyan / electric blue |
+| Player/friendly base | ivory/slate hull, cyan / electric-blue identity |
 | Enemy normal | dark gunmetal + crimson / red emissive |
 | Enemy special / dangerous telegraph | magenta |
 | Reward / currency | amber / gold |
@@ -79,15 +79,16 @@ không gian. Giữ contrast cho projectile; background không tranh cùng mức 
 | Neutral asteroid | gray / brown |
 | Explosive hazard | orange-red |
 
-Hex cụ thể `[TUNABLE]`; bảng hex sẽ thuộc owner này khi có palette được review.
+M8 shared swatches được khóa trong section M8 bên dưới; semantic accents giữ bảng
+này. Biến thể region/asset ngoài slice vẫn `[TUNABLE]` qua review.
 
 ## Region look
 
 Tên region [PROVISIONAL]. Astra Frontier: deep blue/cyan space, asteroid field,
 military scouts, readability cho đoạn học. Crimson Nebula: red/crimson nebula,
 nguy hiểm hơn nhưng vẫn giữ contrast hostile shots. Titan Ring / Rift Approach:
-planet/ring khổng lồ, debris và rift, scale rộng. Exact palette hex [TUNABLE],
-chưa có giá trị cố định, không tự chọn palette final khi chưa review.
+planet/ring khổng lồ, debris và rift, scale rộng. M8 dark-blue patch là baseline Astra Frontier; palette final cho các regional
+packs khác vẫn [TUNABLE] và cần review riêng.
 
 ## Projectile contrast và reward identity
 
@@ -163,3 +164,97 @@ Không báo ở mép ngoài màn hình hoặc lúc camera đang transition. Anim
 scaled time nên Pause đóng băng. `PlayableAreaPresentation` chỉ đọc camera region
 và telemetry từ movement; không quyết bounds/damage. Art thật có thể thay visual
 này mà giữ nguyên cơ chế giới hạn. Không phủ HUD hoặc chia nền thành hai mảng màu.
+
+## M8 vertical art slice `[LOCKED]`
+
+Baseline được chọn sau review source và Play Mode 1600×900 / 2000×900 ngày
+2026-10-20: **modern medium-detail pixel art**, overhead hard-surface, player ivory
+với cyan cockpit, hostile gunmetal/crimson, nền navy thoáng. Đây là style lock cho
+batch tiếp theo, không phải owner acceptance cho toàn roster hoặc full game polish.
+Selected anchors/source provenance ở
+[manifest](../../tools/assets/m8/sources/manifest.json); cleaned `.aseprite` nằm trong
+`tools/assets/m8/cleaned/`, exports runtime trong `app/Assets/StarShift/Art/M8/`.
+
+### Pixel density và native canvas
+
+World sprites dùng **56.25 PPU**. Camera combat orthographic size 8 cho view cao
+16 units: `900 / 16 / 56.25 = 1` screen pixel/native texel ở cả hai target aspects.
+Giữ nguyên camera, formation, collider, HP và weapon cadence; không phóng art lên
+512px hoặc đổi root gameplay scale để vừa ảnh. Visual child của heavy/Raider bù
+root scale để hull có net scale 1. Menu player stage dùng integer 4×.
+
+| Family | Native canvas / baseline |
+|---|---|
+| Player | 64×80, nose up, center pivot |
+| Scout | 80×64, nose down, center pivot |
+| Raider derivative | 80×80, dài cánh/prongs; reuse Scout material |
+| Heavy/Bomber | 128×112, broad armor và separate pods |
+| Boss cannon module | 96×96, paired barrels, center pivot; full boss chưa final |
+| Friendly Pulse | 12×32; thin cyan/white needle |
+| Hostile bolt / charge cue | 20×24 diamond / 28×28 magenta brackets |
+| Stellar Shard | 32×40, faceted amber crystal |
+| HUD life icon | 24×28; icon texel density theo UI, PPU 100 |
+| UI panel / button | 32×32, 6px nine-slice border, PPU 100 |
+| Explosion | 64×64 frames; timing ở audio/VFX owner |
+| Environment patch | 768×336, background PPU 21, static far layer |
+
+Đây là reviewed anchors cho các family đã có; size của archetype khác phải đối chiếu
+silhouette ở camera thật, không scale đồng loạt theo một square canvas. Bounds là
+canvas gồm transparent padding, không phải hitbox. Runtime rotation/subpixel movement
+vẫn theo gameplay hiện có; Point filtering giữ cạnh sắc nhưng không phải cam kết
+pixel-grid-perfect ở mọi pose/zoom/cinematic hay mọi độ phân giải.
+
+### Palette, outline và vật liệu
+
+Shared 32-swatch palette, không dithering hoặc alpha antialias ở source:
+
+```text
+080f20 111d32 1c2e46 2d4660 46617a 6e899b a6bfcb e5f4f2
+0b3948 126578 1b9bb2 41d2de a0f1ec 271b32 50273d 87354c
+bb4057 ed6470 ffb69c 3b2836 745047 ad704b e8aa58 ffe0a0
+282846 505073 8484ac c0b8d1 464025 7e7745 bab773 f1edb3
+```
+
+Mỗi sprite chỉ dùng subset: player 16 opaque colors, Scout 14, heavy 15. Selective
+1px dark navy contour, 2px ở occlusion/deep seams khi cần; không viền đen dày quanh
+mọi panel. Metal dùng 3–4 value bands, light upper-left, highlight ở bevel và mặt
+trên; panel lớn trước, clusters nhỏ sau. Enemy tránh ivory-white diện lớn của player.
+Cyan/crimson emissive là 1–3px accent có bright core, không soft bloom halo. Friendly
+needle, hostile diamond và gold faceted pickup khác shape/value, không chỉ hue.
+Hit/damage tint hiện có giữ nguyên gameplay timing; damaged/critical repaint riêng
+chưa sản xuất, không reuse old proxy silhouette qua sprite override.
+
+### Environment và UI typography
+
+Nền chỉ 5 dark swatches, 87 sparse stars trong patch, stepped nebula ở góc và planet
+rim ở upper-right; giữa view trống. Far patch giữ fixed world scale dưới existing moving starfield; camera Solid Color
+navy #080f20 lấp vùng ngoài patch khi zoom/aspect mở rộng, không auto-scale art theo camera.
+parallax/movement giữ choreography cũ. Không rải điểm trắng/đỏ sáng giống đạn. Các
+planet/hazard/transition placeholder khác chưa được duyệt thành final environment.
+
+UI dùng chamfered navy panels, teal button plate, cyan upper-left border accent.
+Nine-slice giữ góc và viền; highlight sáng hơn, pressed tối hơn, disabled giảm alpha.
+HUD icon ít detail hơn hull, giữ silhouette. Score/Shard top row có 10px margin ở
+900px-height view sau sửa clipping; navigation M7 vẫn là baseline.
+
+**VT323 Regular** cho title/ship display; **Chakra Petch Medium/SemiBold** cho body,
+HUD và buttons. Cả ba font đi kèm SIL OFL 1.1, cover toàn bộ Vietnamese precomposed
+U+1EA0–U+1EF9 cùng Ă/Đ/Ơ/Ư và lowercase trong Unity `Font.HasCharacter` check.
+Giữ tiếng Việt; không bake text vào PNG, không fake-bold display hoặc auto shrink
+để che overflow. Glyph coverage không thay cho proofreading/composition mọi màn.
+
+### Review scope và phần chưa khóa
+
+Real L1 formation là primary playable anchor; L2 heavy encounter và L4 boss dùng
+đường chạy production để đối chiếu mass/module. Snapshot collider/physics/balance
+trước/sau authoring giống hệt. Screenshot và runtime assertions nằm ở local
+`.design/m8/` (ignored evidence theo convention hiện tại); recipe ở pipeline owner.
+
+Rejected: generated boss bị isometric/full-ship drift; generated background có quá
+nhiều điểm sáng/đỏ giống projectile. Thay bằng original Aseprite work bám anchors,
+không tốn thêm generation. Chỉ 5 Pixen outputs; không tạo dozens of variants.
+
+`[TBD]`: full boss hull/remaining modules, Tank/other roster, damage repaint, shield
+và Plasma/Missile contrast in final-art mix, remaining UI screens, regional background
+packs, full audio, device readability/performance. M8 slice không tự duyệt các phần
+này và không mở bulk batch tự động. Không Android/build/release trong pass này.

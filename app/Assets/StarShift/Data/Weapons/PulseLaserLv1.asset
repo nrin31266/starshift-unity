@@ -49,11 +49,13 @@ MonoBehaviour:
     CenterBonus: 0
     FireInterval: 0.16
     SplashRadius: 0
-  projectileColor: {r: 0.3, g: 0.9, b: 1, a: 1}
+  projectileColor: {r: 1, g: 1, b: 1, a: 1}
   trackingDegreesPerSecond: 0
   trackingRange: 18
-  projectileScale: {x: 0.25, y: 0.52}
-  projectileSprite: {fileID: 21300000, guid: d9089526a953176508058eba3a2ce9ff, type: 3}
+  trackingLaunchSeconds: 0.16
+  trackingLaunchArcDegrees: 9
+  projectileScale: {x: 1.25, y: 1}
+  projectileSprite: {fileID: 21300000, guid: c55a823144dcf136094f969890d58bd3, type: 3}
   trailSeconds: 0
   projectilePrefab: {fileID: 6313352160549666604, guid: 689fd7f0b61bc39b798a1aea031257f6, type: 3}
   fireInterval: 0.17

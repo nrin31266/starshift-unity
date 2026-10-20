@@ -32,6 +32,7 @@ namespace StarShift.Persistence
         public CampaignStatus Status;
         public CheckpointData Checkpoint;
         public int EncounterShardHighWater;
+        public long ScoreBeforeMission;
     }
 
     [Serializable]

@@ -68,7 +68,7 @@ HUD cho biết survival, performance, currency và active weapon mà không che 
 | Thành phần | Cách trình bày |
 |---|---|
 | Lives | Icon + count, bottom-left; không dùng player HP bar |
-| Score | Nhẹ trong HUD, không che combat |
+| Score | Tổng campaign trong Campaign; điểm riêng trong Replay/Dev, nhẹ và không che combat |
 | Stellar Shard | Currency riêng với score |
 | Pause | Action trong HUD, touch không kéo tàu |
 | Weapon | Type + level viết tắt khi chưa có icon, bottom-right; cycle giữa unlocked branches |
@@ -79,7 +79,7 @@ HUD cho biết survival, performance, currency và active weapon mà không che 
 M3.5 HUD là functional placeholder: Lives dùng sprite hiện có + count; phần chưa
 có icon thật dùng chữ viết tắt (`S` score, `SS` Stellar Shard, `H` heat) + value/state.
 Không tự vẽ icon thay thế ở phase này. M4-A thay placeholder bằng
-Score runtime thật và số dư Stellar Shard do CampaignLifecycle cung cấp theo
+Score hiển thị qua CampaignLifecycle.DisplayScore theo [campaign score](../gameplay/progression-economy.md#campaign-score-locked); số dư Stellar Shard do CampaignLifecycle cung cấp theo
 [economy owner](../gameplay/progression-economy.md#m4-a-runtime-boundary-provisional).
 Số dư vàng không reset khi chuyển mission. Full weapon name không cần hiển thị
 trong combat: bottom-right dùng `T1 L1` (type 1, level 1); `T1` là nhãn tạm cho

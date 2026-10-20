@@ -14,6 +14,8 @@ namespace StarShift.Persistence
         public bool Dirty { get; private set; }
         public string Diagnostic => store.Diagnostic;
         public SaveEnvelope Snapshot => Copy(data);
+        public string MissionId => data?.Campaign?.MissionId;
+        public long ScoreBeforeMission => data?.Campaign?.ScoreBeforeMission ?? 0;
         public int ShardBalance => data?.Profile.StellarShardBalance ?? 0;
         public CampaignProgress(JsonSaveStore store, Func<SaveEnvelope, bool> validate)
         {
@@ -86,12 +88,13 @@ namespace StarShift.Persistence
             data.Profile.Records = records.ToArray();
             Dirty = true;
         }
-        public void AdvanceMission(string mission, CheckpointData checkpoint)
+        public void AdvanceMission(string mission, CheckpointData checkpoint, int completedMissionScore)
         {
             var unlocked = new List<string>(data.Profile.UnlockedMissions);
             if (!unlocked.Contains(mission)) unlocked.Add(mission);
             data.Profile.UnlockedMissions = unlocked.ToArray();
-            data.Campaign = new CampaignSave { MissionId = mission, Checkpoint = Copy(checkpoint) };
+            data.Campaign = new CampaignSave { MissionId = mission, Checkpoint = Copy(checkpoint),
+                ScoreBeforeMission = checked(data.Campaign.ScoreBeforeMission + completedMissionScore) };
             Dirty = true;
         }
         public bool TryCommitClear(int score, float seconds, CheckpointData resolved,
@@ -100,7 +103,7 @@ namespace StarShift.Persistence
             var previous = Copy(data);
             var wasDirty = Dirty;
             CommitClear(score, seconds);
-            if (nextMission != null) AdvanceMission(nextMission, nextCheckpoint);
+            if (nextMission != null) AdvanceMission(nextMission, nextCheckpoint, score);
             else { Capture(resolved); SetRegionStatus(status); }
             return CommitOrRestore(previous, wasDirty);
         }
@@ -116,19 +119,10 @@ namespace StarShift.Persistence
         {
             var backup = Copy(data);
             var wasDirty = Dirty;
-            var unlocked = new List<string>(data.Profile.UnlockedMissions);
-            if (!unlocked.Contains(mission)) unlocked.Add(mission);
-            data.Profile.UnlockedMissions = unlocked.ToArray();
-            data.Campaign = new CampaignSave { MissionId = mission, Checkpoint = Copy(checkpoint) };
-            Dirty = true;
-            if (!Flush())
-            {
-                data = backup;
-                Dirty = wasDirty;
-                return false;
-            }
-            return true;
+            AdvanceMission(mission, checkpoint, data.Campaign.Checkpoint.Stats.Score);
+            return CommitOrRestore(backup, wasDirty);
         }
+
         public void SetRegionStatus(CampaignStatus status) { data.Campaign.Status = status; Dirty = true; }
         public bool SetSettings(SettingsData settings)
         {

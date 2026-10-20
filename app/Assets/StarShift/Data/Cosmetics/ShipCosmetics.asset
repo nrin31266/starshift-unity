@@ -18,7 +18,7 @@ MonoBehaviour:
     Slot: 0
     ShardCost: 0
     IsDefault: 1
-    Sprite: {fileID: 21300000, guid: e66efd296b97c16eab7f1652981b9955, type: 3}
+    Sprite: {fileID: 21300000, guid: 1fff0d236f5468f11b1b795bbc70d58d, type: 3}
     FlipY: 0
     Tint: {r: 1, g: 1, b: 1, a: 1}
   - Id: chassis-swept
@@ -36,7 +36,7 @@ MonoBehaviour:
     IsDefault: 1
     Sprite: {fileID: 0}
     FlipY: 0
-    Tint: {r: 0.12, g: 0.8, b: 1, a: 1}
+    Tint: {r: 1, g: 1, b: 1, a: 1}
   - Id: skin-amber
     DisplayName: "H\u1ED4 PH\xC1CH"
     Slot: 1

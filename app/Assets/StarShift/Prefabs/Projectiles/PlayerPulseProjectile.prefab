@@ -119,7 +119,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42210dbad076f1f09bd9b20e1e9516c7, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Combat.PlayerProjectile
 --- !u!1 &7694141649637857901
 GameObject:
@@ -353,8 +353,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 20
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 7ebac11f0bc9343509ecf0dec643b121, type: 3}
-  m_Color: {r: 0.1, g: 0.85, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: c55a823144dcf136094f969890d58bd3, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

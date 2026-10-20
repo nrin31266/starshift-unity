@@ -184,7 +184,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7dc8d051d3b512b6e9a7485e7ff13062, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.BossAttackModule
   definition: {fileID: 11400000, guid: c6f549c124a579eec81a5d035fcb32e4, type: 2}
   directed: {fileID: 0}
@@ -258,7 +258,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -4.2, y: -0.9, z: 0}
-  m_LocalScale: {x: 10.4, y: 3.2, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 374476986754646181}
@@ -312,8 +312,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 5
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 7ebac11f0bc9343509ecf0dec643b121, type: 3}
-  m_Color: {r: 0.48, g: 0.53, b: 0.6, a: 1}
+  m_Sprite: {fileID: 21300000, guid: cbbf28ad5f66d48ba9392a6d00528dbe, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -367,7 +367,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8905afb94db8f76f3ab77baaf90181e9, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.BossBeamPresentation
   column: {fileID: 5292102251691253823}
   core: {fileID: 6094422147817968349}
@@ -614,7 +614,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.2, y: -0.9, z: 0}
-  m_LocalScale: {x: 10.4, y: 3.2, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 374476986754646181}
@@ -668,8 +668,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 5
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 7ebac11f0bc9343509ecf0dec643b121, type: 3}
-  m_Color: {r: 0.48, g: 0.53, b: 0.6, a: 1}
+  m_Sprite: {fileID: 21300000, guid: cbbf28ad5f66d48ba9392a6d00528dbe, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -816,7 +816,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7dc8d051d3b512b6e9a7485e7ff13062, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.BossAttackModule
   definition: {fileID: 11400000, guid: 985f24cab7c37578c97234fb09205950, type: 2}
   directed: {fileID: 0}
@@ -840,7 +840,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b0b22ecf4e8b59715b86764f0f1b3745, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.BossBarrage
   definition: {fileID: 11400000, guid: fdbbc5b85a4eee3d3aa01941a0ff58a5, type: 2}
   lowerBandPresentation: {fileID: 5877598958399352585}
@@ -1509,7 +1509,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8905afb94db8f76f3ab77baaf90181e9, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.BossBeamPresentation
   column: {fileID: 4978960933494445687}
   core: {fileID: 6189127788771312192}
@@ -1913,7 +1913,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7dc8d051d3b512b6e9a7485e7ff13062, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.BossAttackModule
   definition: {fileID: 11400000, guid: b65331a46d5920aabae3585d76315b37, type: 2}
   directed: {fileID: 0}
@@ -2480,7 +2480,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7dc8d051d3b512b6e9a7485e7ff13062, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.BossAttackModule
   definition: {fileID: 11400000, guid: 93d87d275329d81e6baeea00f7bbeaeb, type: 2}
   directed: {fileID: 0}
@@ -2504,7 +2504,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8905afb94db8f76f3ab77baaf90181e9, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.BossBeamPresentation
   column: {fileID: 5300430218485000923}
   core: {fileID: 6866416923290077451}
@@ -3329,7 +3329,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8621c8fc44ed62e18ada98d89d6869cc, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EnemyHealth
   definition: {fileID: 11400000, guid: d71c29123ed865a69ba6ffa4bc358f56, type: 2}
 --- !u!114 &452154993021624810
@@ -3342,7 +3342,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2be931ca57530f2ed8b67136d3e1623c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EnemyDamagePresentation
   hull: {fileID: 7866495202575816645}
   damagedTint: {r: 0.9, g: 0.28, b: 0.3, a: 1}
@@ -3362,7 +3362,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 172d6236fa4fadb4190fafb89ff0223f, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EntryHoldFlight
   flightCamera: {fileID: 0}
   entryViewport: {x: 0.5, y: 1.12}
@@ -3379,7 +3379,7 @@ MonoBehaviour:
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9776de0480c13e380b4bc3ecb13fa2a5, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.SingleFireAttack
   definition: {fileID: 11400000, guid: 578528cb0c941fc0bb5cd4218a488026, type: 2}
   muzzle: {fileID: 3824345299418154087}
@@ -3395,7 +3395,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 318ce409fc22944a38b8c8078c0f0d90, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.BossPhaseRunner
   definition: {fileID: 11400000, guid: 3b85fa813352d1309b85efddc220be4a, type: 2}
   modules:
@@ -3414,7 +3414,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4d4411f58b4088e3dbfd818feeb9ad6c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.BossDeathSequence
   explosions:
   - {fileID: 332025386123037835}
@@ -3433,7 +3433,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9db9362f08f3a85fc9f58f4fa466170e, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EscortSpawner
   escortPrefab: {fileID: 4608862718319268343, guid: aa9a7a3671ced4ea99a1fa99ed3a17a1, type: 3}
   escortFlight: {fileID: 11400000, guid: ac7323f81a8c9fc6fbd037be8d321f4e, type: 2}

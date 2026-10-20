@@ -36,7 +36,7 @@ namespace StarShift.UI
         private bool journeyVisible;
         private float journeyHeading, journeySpeed, journeyPalette, journeyReveal;
         private float cueSpeed = .07f;
-        private Color environmentColor, planetColor;
+        private Color planetColor;
         private Color[] environmentTints;
         private Vector3[] environmentPositions;
         private StarShift.Player.RelativeDragMovement movement;
@@ -48,7 +48,7 @@ namespace StarShift.UI
             starRenderers = stars.GetComponentsInChildren<SpriteRenderer>(true);
             backdropRenderers = gameplayBackdrop.GetComponentsInChildren<SpriteRenderer>(true);
             backdropColors = new Color[backdropRenderers.Length];
-            environmentColor = gameplayCamera.backgroundColor; planetColor = planet.color;
+            planetColor = planet.color;
             environmentTints = new Color[backdropRenderers.Length]; environmentPositions = new Vector3[backdropRenderers.Length];
             for(int i=0;i<backdropRenderers.Length;i++){environmentTints[i]=backdropRenderers[i].color;environmentPositions[i]=backdropRenderers[i].transform.position;}
         }
@@ -181,7 +181,6 @@ namespace StarShift.UI
         }
         private void ApplyEnvironmentPalette(float amount)
         {
-            gameplayCamera.backgroundColor=Color.Lerp(environmentColor,new Color(.065f,.012f,.04f),amount);
             for(int i=0;i<backdropRenderers.Length;i++)backdropRenderers[i].color=Color.Lerp(environmentTints[i],new Color(.45f,.2f,.32f,environmentTints[i].a),amount);
         }
         public void SetDestinationPalette() => ApplyEnvironmentPalette(1);

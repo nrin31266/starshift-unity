@@ -20,6 +20,7 @@ namespace StarShift.Persistence
             if (!Enum.IsDefined(typeof(CampaignStatus), c.Status) || s == null ||
                 !checkpointExists(c.MissionId, s.EncounterId) || Array.IndexOf(p.UnlockedMissions, c.MissionId) < 0 ||
                 s.Lives < 1 || s.Lives > maximumLives || s.Missiles < 0 || s.Missiles > 3 || !Enum.IsDefined(typeof(WeaponBranch), s.ActiveWeapon) ||
+                c.ScoreBeforeMission < 0 || c.ScoreBeforeMission > long.MaxValue - int.MaxValue ||
                 s.WeaponLevels == null || s.WeaponLevels.Length != 3 || c.EncounterShardHighWater < 0) return false;
             for (int i = 0; i < s.WeaponLevels.Length; i++)
                 if (s.WeaponLevels[i] < (i == 0 ? 1 : 0) || s.WeaponLevels[i] > WeaponLoadout.MaximumLevel) return false;

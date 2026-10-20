@@ -10,6 +10,7 @@ namespace StarShift.Enemies
     public sealed class AsteroidDestructionPresentation : MonoBehaviour
     {
         [SerializeField] private Sprite burstSprite;
+        [SerializeField] private Sprite[] frames;
         [SerializeField, Min(.01f)] private float seconds = .35f;
         private EncounterRunner runner;
         private ObjectPool<SpriteRenderer> pool;
@@ -33,9 +34,10 @@ namespace StarShift.Enemies
         private void Show(EnemyHealth enemy, RewardDropTable table, Vector3 position)
         {
             bool supply = !enemy.Definition.BodyDamagesPlayer && table != null && table.Source == RewardSource.MajorCrate;
-            if (!supply && enemy.GetComponent<AsteroidVisualMotion>() == null) return;
+            if (!supply && enemy.GetComponent<AsteroidVisualMotion>() == null && (frames == null || frames.Length == 0)) return;
             var visual = pool.Get();
             visual.transform.position = position;
+            visual.sprite = frames != null && frames.Length > 0 ? frames[0] : burstSprite;
             active.Add(new Burst { Visual = visual, Scale = supply ? .6f : enemy.transform.localScale.x });
         }
         private void Update()
@@ -44,8 +46,10 @@ namespace StarShift.Enemies
             {
                 var burst = active[i]; burst.Age += Time.deltaTime;
                 float t = Mathf.Clamp01(burst.Age / seconds);
-                burst.Visual.transform.localScale = Vector3.one * burst.Scale * Mathf.Lerp(.25f, 1.4f, t);
-                burst.Visual.color = new Color(1, Mathf.Lerp(.85f, .25f, t), .12f, 1 - t);
+                bool animated = frames != null && frames.Length > 0;
+                if (animated) burst.Visual.sprite = frames[Mathf.Min(frames.Length - 1, (int)(t * frames.Length))];
+                burst.Visual.transform.localScale = Vector3.one * burst.Scale * (animated ? 1 : Mathf.Lerp(.25f, 1.4f, t));
+                burst.Visual.color = animated ? Color.white : new Color(1, Mathf.Lerp(.85f, .25f, t), .12f, 1 - t);
                 if (t < 1) continue;
                 pool.Release(burst.Visual); active.RemoveAt(i);
             }

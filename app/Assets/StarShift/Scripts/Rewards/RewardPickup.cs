@@ -29,6 +29,7 @@ namespace StarShift.Rewards
         private Camera gameplayCamera;
         private Vector2 ejectionVelocity;
         private Vector3 visualScale;
+        private Sprite defaultSprite;
         private bool visualInitialized;
         private float ejectionRemaining;
         private PlayDirection direction;
@@ -48,7 +49,7 @@ namespace StarShift.Rewards
             PlayerPickupReceiver player, Func<RewardPickup, bool> onCollect, Action<RewardPickup> onRelease,
             PlayDirection playDirection = PlayDirection.Up)
         {
-            if (!visualInitialized) { visualScale = visual.transform.localScale; visualInitialized = true; }
+            if (!visualInitialized) { visualScale = visual.transform.localScale; defaultSprite = visual.sprite; visualInitialized = true; }
             Item = item; Crate = crate; cleanup = scope; token = scope.RewardToken; receiver = player;
             collect = onCollect; release = onRelease; remaining = crate != null ? 8 : item.Lifetime;
             graceRemaining = -1;
@@ -61,11 +62,12 @@ namespace StarShift.Rewards
             gameplayCamera = Camera.main;
             direction = playDirection;
             transform.position = position;
-            baseColor = crate != null ? new Color(1, .78f, .2f) : item.Color;
+            visual.sprite = crate == null && item.Sprite != null ? item.Sprite : defaultSprite;
+            baseColor = crate != null ? new Color(1, .78f, .2f) : item.Sprite != null ? Color.white : item.Color;
             visual.color = baseColor;
-            visual.transform.localScale = visualScale * (item != null ? item.VisualScale : 1);
+            visual.transform.localScale = (crate == null && item.Sprite != null ? Vector3.one : visualScale) * (item != null ? item.VisualScale : 1);
             label.color = Color.white;
-            label.text = crate != null ? "BOX" : item.ShortCode;
+            label.text = crate != null ? "BOX" : item.Sprite != null ? "" : item.ShortCode;
             active = cleanup.Register(this, scope.Token);
             gameObject.SetActive(active);
         }

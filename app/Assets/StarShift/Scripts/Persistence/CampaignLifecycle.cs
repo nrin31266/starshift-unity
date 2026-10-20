@@ -36,6 +36,10 @@ namespace StarShift.Persistence
                 return Mode == SessionMode.Campaign && progress != null ? progress.ShardBalance : isolatedShardBalance;
             }
         }
+        // Incoming entry đã commit trong travel; không cộng lại điểm của mission outgoing.
+        public long DisplayScore => Mode == SessionMode.Campaign
+            ? progress.ScoreBeforeMission + (progress.MissionId == runner.Flow.Level.Id ? rewards.Score : 0)
+            : rewards.Score;
         public bool IsAdvancingMission { get; private set; }
         public SessionMode Mode { get; private set; } = SessionMode.DevTest;
         public bool CanRetry => checkpoint != null && !session.IsClear && (session.IsPaused || session.IsTerminal) &&

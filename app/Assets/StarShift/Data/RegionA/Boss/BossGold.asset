@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Rewards.PickupDefinition
   Kind: 0
   Branch: 0
-  ShortCode:
+  ShortCode: 
   Color: {r: 1, g: 0.76, b: 0.2, a: 1}
+  Sprite: {fileID: 21300000, guid: 1bdbeb5344a099beaa2fbaaa77367316, type: 3}
   VisualScale: 0.55
   Amount: 1
   Lifetime: 12

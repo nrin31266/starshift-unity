@@ -316,3 +316,24 @@ SettingsFeedback giữ hai AudioSource Music/SFX trong gameplay scene. Saved vol
 PlayMusic/PlaySfx dùng chính channels này. Chưa có final music/SFX clips hoặc adaptive
 mixer content; không claim nghe được volume change khi chưa có clip. ScreenShake toggle
 đọc ở reserve impact như contract trên; không tạo shake owner thứ hai.
+
+## M8 pixel animation baseline
+
+M8 selected explosion là **8 native 64×64 frames, 16 fps, 0.5 s scaled time**
+`[LOCKED]` cho small/common burst. Frame 0–2 white/amber ignition, 3–4 expanding
+clusters/shards, 5–6 darker debris/smoke, 7 empty. Center pivot/canvas không đổi,
+không trim hoặc đổi scale theo từng frame. Playback dùng existing pooled
+AsteroidDestructionPresentation, fixed scale theo source enemy; supply giữ scale .6.
+Legacy no-frame fixture vẫn dùng burst cũ. Không đổi death/HP/drop timing, thêm AoE,
+hoặc buộc gameplay đợi animation. Pause giữ frame; pool release sau duration và clear
+khi run reset. Actual frame advance và pool release đã assert trong Play Mode.
+
+Scout/Raider charge dùng magenta bracket sprite riêng, alpha 0 khi idle, hiện trắng
+texture tint khi existing fire component telegraph; hit flash chỉ ghi hull nên không
+che cue. Không đổi charge/fire timings. Pulse cyan thin needle, hostile bolt pink
+white-core diamond; Shard amber facets. Source/import conventions thuộc
+[asset pipeline](../production/asset-pipeline.md#m8-selected-sources-và-production-recipe),
+palette/material thuộc [art bible](art-direction.md#m8-vertical-art-slice-locked).
+
+M8 chỉ có một burst quality anchor; heavy/boss staged explosion/audio, hit particles,
+engine sheets và special VFX chưa final. Không xem common sheet là full VFX pack.

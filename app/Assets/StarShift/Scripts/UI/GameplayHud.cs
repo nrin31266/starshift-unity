@@ -55,7 +55,7 @@ namespace StarShift.UI
             shell = session.GetComponent<GameShell>();
         }
         private int previousBranch = -1;
-        private int previousScore = -1;
+        private long previousScore = -1;
         private int previousShards = -1;
         private int previousLives = -1;
         private int previousLevel = -1;
@@ -139,7 +139,8 @@ namespace StarShift.UI
                 }
                 weaponInventory.text = text;
             }
-            if (rewards != null && previousScore != rewards.Score) { previousScore = rewards.Score; scoreLabel.text = previousScore.ToString(); }
+            var score = session.Persistence != null ? session.Persistence.DisplayScore : rewards != null ? rewards.Score : 0;
+            if (previousScore != score) { previousScore = score; scoreLabel.text = previousScore.ToString(); }
             var shardBalance = session.Persistence != null ? session.Persistence.ShardBalance : rewards != null ? rewards.Shards : 0;
             if (previousShards != shardBalance) { previousShards = shardBalance; shardLabel.text = previousShards.ToString(); }
             if (effectLabel != null)

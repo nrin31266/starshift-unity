@@ -1,0 +1,150 @@
+{
+  "date": "2026-10-20",
+  "scope": "M8 vertical slice only; selected by agent after Unity review; owner aesthetic acceptance not claimed",
+  "generated": [
+    {
+      "name": "player",
+      "tool": "PixelLab MCP create_image_pixen",
+      "job_id": "aca8a670-8792-45d1-ac03-c639c57ea6e3",
+      "asset_id": "c37e554d-76c2-5302-b107-160f85fa0f14",
+      "request": {
+        "description": "Modern medium-detail hand-crafted pixel art for a serious sci-fi arcade shooter. Strict orthographic TOP-DOWN overhead view, nose points NORTH UP, bilaterally symmetric hard-surface spacecraft, visible dorsal top only, no front/side perspective. Strong purposeful silhouette. Clean pixel clusters, selective 1 pixel deep navy contour, no anti-aliasing, no dithering or noise, three or four discrete metal shading values, light from upper-left, sparse small emissive accents. Isolated single sprite centered, transparent background, 6-8 pixel transparent margins. Not cute, not toy-like, not NES ultra low-res, no text, no symbols, no ground shadow, no backdrop, no external bloom. Player interceptor: ivory titanium armor with slate-blue recesses, a long thin forward keel and sharply swept segmented wings, cyan cockpit near center, two compact blue thrusters at rear; strong delta silhouette with two side intakes. Dark contour anchors all outer edges.",
+        "width": 64,
+        "height": 80,
+        "no_background": true,
+        "seed": 8123,
+        "view": "high top-down",
+        "direction": "north",
+        "outline": "selective outline",
+        "detail": "medium detail"
+      },
+      "source": "player-raw.png",
+      "sha256": "0bbf6f43515260c5accc88c0bca3af5fa5af0d37576055cc9dc21c8270384a52",
+      "selected": true,
+      "review": "Sharp ivory delta; cyan cockpit separates friendly craft."
+    },
+    {
+      "name": "scout",
+      "tool": "PixelLab MCP create_image_pixen",
+      "job_id": "e4ffd86e-c03e-4779-8b63-8cda544eabf7",
+      "asset_id": "0461bc79-bc96-54fe-92d2-cd19a89afe16",
+      "request": {
+        "description": "Production-quality modern medium-detail PIXEL ART spacecraft sprite, strict orthographic overhead top-down view, clear angular silhouette, nose pointing DOWN SOUTH, bilateral symmetry, top dorsal surface only, selective 1px deep navy outline, clean contiguous pixel clusters, 3 discrete metal shading bands, upper-left lighting, no antialiasing, no dithering/noisy single pixels, no perspective, no ground shadow, no letters, no backdrop, transparent margins 6px. Serious hard-surface sci-fi arcade shooter. Palette deep navy #080f20, slate #1c2e46 #2d4660 #46617a #6e899b, crimson #87354c #bb4057 and small #ed6470 emissive. Crisp restrained highlights, no bloom. Small enemy interceptor / scout. Swept thin dark gunmetal crescent shoulders, forward paired needle prongs, narrow crimson central sensor and two small rear engines. Wide low agile silhouette, armor panels simple and legible, visible ship spans about 68x42px centered in canvas. No huge central blob.",
+        "width": 80,
+        "height": 64,
+        "no_background": true,
+        "view": "high top-down",
+        "direction": "south",
+        "outline": "selective outline",
+        "detail": "medium detail",
+        "seed": 8301
+      },
+      "source": "scout-raw.png",
+      "sha256": "60090d8a6a51167bb2d7b5ea24f3821e97f84fbb005b14c580dab0d616ffc567",
+      "selected": true,
+      "review": "Compact gunmetal sensor/wing silhouette."
+    },
+    {
+      "name": "heavy",
+      "tool": "PixelLab MCP create_image_pixen",
+      "job_id": "57aef3cf-a832-4f8f-a521-37ac01c346c7",
+      "asset_id": "9d47275f-dffd-5ffb-8a00-19005ae8132f",
+      "request": {
+        "description": "Production-quality modern medium-detail PIXEL ART spacecraft sprite, strict orthographic overhead top-down view, clear angular silhouette, nose pointing DOWN SOUTH, bilateral symmetry, top dorsal surface only, selective 1px deep navy outline, clean contiguous pixel clusters, 3 discrete metal shading bands, upper-left lighting, no antialiasing, no dithering/noisy single pixels, no perspective, no ground shadow, no letters, no backdrop, transparent margins 6px. Serious hard-surface sci-fi arcade shooter. Palette deep navy #080f20, slate #1c2e46 #2d4660 #46617a #6e899b, crimson #87354c #bb4057 and small #ed6470 emissive. Crisp restrained highlights, no bloom. Heavy enemy bomber with broad clipped angular armored shoulders and two separate heavy side engine pods, recessed crimson engine/sensor windows, squared center spine, two forward cannon barrels, industrial plated gunmetal. Broad massive silhouette unlike a thin scout; only 4-6 large readable panels, avoid decorative fine detail.",
+        "width": 128,
+        "height": 112,
+        "no_background": true,
+        "view": "high top-down",
+        "direction": "south",
+        "outline": "selective outline",
+        "detail": "medium detail",
+        "seed": 8302
+      },
+      "source": "heavy-raw.png",
+      "sha256": "2f7ad7b0c85b2d3bbed23f4bbb087e9d85c0f7343372b43cf7e1214e652059d5",
+      "selected": true,
+      "review": "Broad armor and separate crimson pods read heavier."
+    },
+    {
+      "name": "boss-module",
+      "tool": "PixelLab MCP create_image_pixen",
+      "job_id": "77fd1402-452e-4620-a739-481e8387331a",
+      "asset_id": "126dd190-cb76-525b-ae1a-b3b22ef2e8eb",
+      "request": {
+        "description": "Production-quality modern medium-detail PIXEL ART spacecraft sprite, strict orthographic overhead top-down view, clear angular silhouette, nose pointing DOWN SOUTH, bilateral symmetry, top dorsal surface only, selective 1px deep navy outline, clean contiguous pixel clusters, 3 discrete metal shading bands, upper-left lighting, no antialiasing, no dithering/noisy single pixels, no perspective, no ground shadow, no letters, no backdrop, transparent margins 6px. Serious hard-surface sci-fi arcade shooter. Palette deep navy #080f20, slate #1c2e46 #2d4660 #46617a #6e899b, crimson #87354c #bb4057 and small #ed6470 emissive. Crisp restrained highlights, no bloom. Single modular boss twin-cannon turret armor block, two long dark barrels pointing down, layered angular industrial shoulder armor around a recessed hot crimson core, visible mounting collar at rear. Not a full ship. Rectilinear powerful compact module with two strongly separated barrels, hard metal facets and few strong highlights.",
+        "width": 96,
+        "height": 96,
+        "no_background": true,
+        "view": "high top-down",
+        "direction": "south",
+        "outline": "selective outline",
+        "detail": "medium detail",
+        "seed": 8303
+      },
+      "source": "boss-module-raw.png",
+      "sha256": "b2dd638a9fe8a1ea27c199c9d8c88964b506bf8ccf2c8d81c9144eebd1e4c0ad",
+      "selected": false,
+      "review": "Rejected perspective/full-ship drift; replaced with Aseprite heavy-derived module."
+    },
+    {
+      "name": "background",
+      "tool": "PixelLab MCP create_image_pixen",
+      "job_id": "9e482b06-aa82-4714-9d6c-69c64388b1a7",
+      "asset_id": "fd69db50-e34f-5576-8744-a9adaee90561",
+      "request": {
+        "description": "Modern hand-crafted medium-detail pixel-art deep-space BACKGROUND, orthographic flat scrolling arcade shooter environment. Mostly empty near-black navy #080f20 with very restrained broad stepped blue nebula wisps in lower-value #111d32 and #1c2e46, a distant desaturated blue-gray crescent planet at upper-right edge partly cropped, sparse tiny dim pinpoint stars, one thin diagonal debris belt toward lower left. Keep the central 70 percent nearly empty and very dark for bright projectiles and formations. Intentional large pixel clusters, no dithering, no bright center glow, no text or UI, no spaceships, no luminous colored particles, no high contrast stars, no blur or antialiasing. Canvas is a single environment patch for a serious cohesive gunmetal/cyan/crimson sci-fi pixel game.",
+        "width": 768,
+        "height": 336,
+        "no_background": false,
+        "outline": "lineless",
+        "detail": "medium detail",
+        "seed": 8401
+      },
+      "source": "background-raw.png",
+      "sha256": "d1dc313e2cd132dc3d9b9d92fea4b659675f700ae78aaa5011f13092d89b1c9f",
+      "selected": false,
+      "review": "Rejected bright star/red object noise; replaced with sparse authored background."
+    }
+  ],
+  "original_pixel_work": {
+    "authoring": "StarShift M8 task; native Aseprite Lua author.lua",
+    "assets": [
+      "raider (derived Scout)",
+      "boss-module (derived heavy)",
+      "background",
+      "player-pulse",
+      "enemy-bolt",
+      "enemy-telegraph",
+      "stellar-shard",
+      "hud-ship",
+      "star",
+      "ui-panel",
+      "ui-button",
+      "explosion (8 frames)"
+    ],
+    "source": "cleaned/*.aseprite; frames/*.png",
+    "runtime": "../../../app/Assets/StarShift/Art/M8"
+  },
+  "fonts": [
+    {
+      "file": "VT323-Regular.ttf",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/vt323/VT323-Regular.ttf",
+      "license": "SIL Open Font License 1.1; accompanying OFL text in runtime font folder",
+      "sha256": "cf4de751ada78ceac033dbe16a687742939995b77bc2a052ae17a4957958594d"
+    },
+    {
+      "file": "ChakraPetch-Medium.ttf",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/chakrapetch/ChakraPetch-Medium.ttf",
+      "license": "SIL Open Font License 1.1; accompanying OFL text in runtime font folder",
+      "sha256": "d480f4f97405fac3600652e2e14fd0b14339031c0af4da11582994878f04d919"
+    },
+    {
+      "file": "ChakraPetch-SemiBold.ttf",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/chakrapetch/ChakraPetch-SemiBold.ttf",
+      "license": "SIL Open Font License 1.1; accompanying OFL text in runtime font folder",
+      "sha256": "45264de3204ddbd5fb3e14a2402acd5c630d16650ae5fc221d2c52da46a6734b"
+    }
+  ],
+  "rights_note": "AI sources are generated outputs, not third-party stock. No exclusive copyright or legal clearance claim. Keep applicable PixelLab account/service terms for distribution review; no imported external game art.",
+  "quota": "Verified final balance: 35/40 trial generations remaining, 5 used, $0 paid credit. Failed Pro/concurrent requests created no charge/job."
+}

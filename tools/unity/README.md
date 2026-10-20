@@ -535,3 +535,45 @@ flag khi Dispose, để các transition probes M5/M6 tiếp tục kiểm choreog
 Campaign tự handoff sau clear/save, Replay dừng Results; navigation proof dùng UiRig
 riêng không raw-start gameplay.
 Coverage/evidence và giới hạn thuộc [dev owner](../../docs/systems/dev-debug.md#m7-shell-results-và-hangar-verification-provisional).
+
+## M8 native art slice
+
+`ConfigureM8Art.Configure` chạy Edit Mode trên saved Gameplay scene: native importer,
+Sprite Editor 8-frame slicing và stable IDs, prefab/scene/UI/font references. Migration
+đã áp dụng; không rerun để reset manual art tuning. `Contracts` read-only snapshot
+colliders + gameplay/balance, authoring asserts equality trước/sau.
+
+`VerifyM8Art.Begin` args `[1600]` hoặc `[2000]` chạy Play Mode từ idle Menu; không
+chạy concurrent hoặc khi owner đang chơi; fresh Play Mode mỗi width. Test storage/input được cô lập trước frame
+wait và restore trong finally; production save byte equality kiểm sau cleanup.
+Kết quả async ở `.design/m8/runtime-WIDTH.json`, actual screenshots trong screenshots/.
+Pipeline/spec/known placeholder limits ở
+[M8 recipe](../../docs/production/asset-pipeline.md#m8-selected-sources-và-production-recipe).
+
+
+## Campaign score carry
+
+`VerifyCampaignScore.Core` chạy Edit Mode: same-region bank, region marker/destination,
+checkpoint total, record riêng, write-failure rollback/retry, completed Continue,
+NewGame, v1/v2 missing field và validation/long JSON. `VerifyPersistence.Core` là nearby
+regression cho store/ledger/Profile đã có.
+
+Fresh Play Mode, đợi khởi tạo xong; nếu DevFastStart đang bật, ExitIsolated + Shell.Boot
+chỉ trong runtime để về idle Menu → `VerifyCampaignScore.Begin`: temporary storage và disabled
+native input, real L1 last encounter clear → L2 travel/start, actual HUD, Retry,
+Continue/Replay isolation và real L4 marker → L5 region travel. Kết quả async tại
+`.design/score-carry/runtime.json`; cleanup restore input, damage, production storage
+và Menu, assert primary/backup/invalid bytes không đổi. Không thao tác Unity giữa test.
+
+Score probe cũng kiểm fixed world scale + navy fill ở 16:9/20:9 × zoom 8/12/20,
+real intro/mission travel/A→B. `Core` kiểm carry đầy đủ L1–L8.
+`VerifyM8Background.Run` từ fresh Play Mode Menu kiểm moving visible intro parallax,
+fixed world extents và rendered navy corners khi zoom-out; evidence `.design/m8/background/`.
+Không chạy lại full historical suite.
+
+`VerifyM8Animation.Import` chạy Edit Mode sau Aseprite cleanup và spritesheet pack/check;
+import/slice bốn 32×40 frames ở 56.25 PPU, center pivot, tạo native smoke clip.
+Fresh Play Mode Menu → `VerifyM8Animation.Begin` kiểm playback trên pooled Shard thật,
+Pause và production save byte equality; evidence `.design/m8/animation-smoke/`.
+Smoke assets không gắn vào production pickup; chỉ một PixelLab job, provenance và
+cleanup recipe ở `tools/assets/m8/animation-smoke/`.

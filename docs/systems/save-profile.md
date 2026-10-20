@@ -184,7 +184,7 @@ OS-level atomicity trên mọi filesystem chưa được chứng minh.
 
 ## Các contract còn mở
 
-- Full campaignRunStats, campaign aggregation và retry record eligibility [TBD].
+- Full campaignRunStats (ngoài Score) và retry record eligibility [TBD].
 - Final reward transaction policy và replay Shards/records [TBD]; M4 test policy ở economy owner.
 - Final effect carry-over và level-boundary restore [TBD].
 - Final multi-region/campaign unlock/completion [TBD]; Region A marker theo M5 bên dưới.
@@ -301,3 +301,31 @@ Recovery write fail giữ data invalid/unavailable và không claim đã tạo c
 Unsupported version không được reset/overwrite bằng recovery; I/O failure có retry.
 
 M7 đọc save M6, không đảm bảo client M6 cũ giữ các additive cosmetic fields khi ghi lại.
+
+
+## Campaign score carry `[LOCKED]`
+
+Schema 2 thêm optional `Campaign.ScoreBeforeMission` (`long`, nonnegative, reserve
+headroom `int.MaxValue` để cộng điểm mission); giá trị là điểm đã bank từ các mission
+trước trong **current campaign**, không phải tổng Profile best records. Missing field
+trong save v1/v2 đọc thành 0; v1 reserve migration vẫn giữ nguyên. Không boot rewrite
+hoặc đoán tổng từ records (records có thể thuộc campaign/replay khác). Vì save cũ chưa
+lưu lịch sử run, không thể phục hồi chính xác điểm các mission đã qua; chỉ tiếp tục
+cộng từ baseline 0 + checkpoint mission đang lưu. Profile/loadout/wallet giữ nguyên.
+
+`RunRewards.Score` và `Checkpoint.Stats.Score` vẫn mission-local. Lifecycle cung cấp
+`DisplayScore`; HUD không giữ authority riêng. Same-region clear bank outgoing score
+vào incoming CampaignSave trong cùng record/entry transaction. Trong travel, nếu
+runtime còn outgoing mission nhưng saved entry đã là incoming, HUD chỉ đọc baseline
+đã bank để không cộng đôi outgoing score. Incoming launch restore mission stats 0.
+
+Region marker giữ baseline trước outgoing mission cùng resolved outgoing checkpoint.
+Destination commit mới bank checkpoint score; failure rollback toàn transaction,
+retry không bank thêm lần nữa. CampaignCompleted giữ baseline + final mission stats
+cho Continue. Capture Encounter mới chỉ đổi checkpoint, không đổi banked score.
+Retry/Continue khôi phục mission score checkpoint; Replay/Dev không dùng campaign
+baseline. NewGame tạo CampaignSave mới baseline 0, giữ Profile/Settings.
+
+Như additive cosmetics, client cũ không đảm bảo giữ field này khi ghi lại; không
+hỗ trợ downgrade rồi tiếp tục campaign score. Không đổi store/backup path hoặc dựng
+migration framework. Policy điểm thuộc [economy owner](../gameplay/progression-economy.md#campaign-score-locked).

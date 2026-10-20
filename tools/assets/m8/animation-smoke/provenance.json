@@ -1,0 +1,52 @@
+{
+  "scope": "single preparation smoke only; no production pickup binding",
+  "date": "2026-10-21",
+  "tool": "animate_image_pixminimax",
+  "job_id": "c1658ac7-8897-467d-8024-e7573402b55c",
+  "asset_id": "d58bf58c-5d3b-5f40-a1af-a95e92cba64a",
+  "input": "app/Assets/StarShift/Art/M8/stellar-shard.png",
+  "input_sha256": "3d75347f4b074d08abf8dfa19e5825bdc4428bc795f87d294ccdabc72f3c9df0",
+  "requested_frames": 4,
+  "returned_frames": 5,
+  "selection": "raw 0 retained as returned input; generated raw 1..4 -> cleaned 0..3",
+  "native_size": [
+    32,
+    40
+  ],
+  "seed": 82101,
+  "enhance_prompt": false,
+  "no_background": true,
+  "cost_confirmed_before_job": 1,
+  "charged_generations": 1,
+  "balance_before": 35,
+  "balance_after": 34,
+  "cleanup": "Aseprite cleanup.lua: fixed input alpha silhouette, binary alpha, nearest shared palette; no canvas trim/center drift",
+  "source": "shard-shimmer.aseprite",
+  "sheet": "app/Assets/StarShift/Art/M8/Smoke/shard-shimmer.png",
+  "ppu": 56.25,
+  "pivot": [
+    0.5,
+    0.5
+  ],
+  "fps": 8,
+  "validation": {
+    "distinct_frames": 4,
+    "fixed_alpha": true,
+    "palette": true,
+    "grid": [
+      4,
+      1
+    ]
+  },
+  "files": {
+    "frames/shimmer_00.png": "c8f24481255daf39b36988239259808b8d99edce41017cefaa1fdf7f064a1395",
+    "frames/shimmer_01.png": "37ffdcbc89ed758d99e1a476002bc986fdb8315fdd64f261187ce6522ef79033",
+    "frames/shimmer_02.png": "6a9fe40ec7de957ffc1c450b045ba0a2ba6d5aad912769aa38738a56137ff4af",
+    "frames/shimmer_03.png": "5e2482105598a9bcb628de497cc5f9d81565b7f30407d932d52b82c131020cb0",
+    "raw/frame_00.png": "c22e9c6e9e179ba7cc8ef45e2ab3860440f8f4dc74d3703eeb7e5f9022266523",
+    "raw/frame_01.png": "19c81e6777aa327437e85fc70b1989d1131630568f81a3f7b8637bc2a8a51b7c",
+    "raw/frame_02.png": "382036f51897ef06ec5a731b6f6d547ca61b0ddfb09e6a00ca6c5dfa0b21f3d4",
+    "raw/frame_03.png": "6a52d580c7808b3bd124556569dac7924416a513bcc2404e9f7ffd605f7e82de",
+    "raw/frame_04.png": "731629973ae4c1c42fe95de70b2f8be583efdda7a3b29e14a316a03ac9e50495"
+  }
+}
