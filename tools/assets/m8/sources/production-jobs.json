@@ -1,0 +1,175 @@
+{
+  "date": "2026-10-21",
+  "tool": "PixelLab Pixen",
+  "anchors": [
+    "player",
+    "scout",
+    "heavy",
+    "boss-module"
+  ],
+  "license": "Generated with owner's PixelLab account; applicable service terms; no third-party source",
+  "generated": [
+    {
+      "id": "player-swept",
+      "request": {
+        "description": "Production-quality modern medium-detail PIXEL ART spacecraft, strictly orthographic overhead TOP-DOWN dorsal view, NOT isometric, clean selective 1px deep navy contour, 3-4 discrete metal value bands, upper-left lighting, clean clusters no antialias no dithering no text no cast shadow no bloom, centered on transparency with 5px margins. Same StarShift player family: ivory titanium panels, slate-blue seams, cyan cockpit. NORTH UP facing swept-wing player interceptor, long central gun at forward nose firing straight UP, swept angular wings with narrow wing tips reaching rearward, two compact rear engines at bottom exhausting DOWN. Mechanically purposeful sleek fast delta, readable at native mobile scale.",
+        "width": 64,
+        "height": 80,
+        "no_background": true,
+        "seed": 82101,
+        "view": "high top-down",
+        "direction": "north",
+        "outline": "selective outline",
+        "detail": "medium detail"
+      },
+      "job_id": "034b8037-87f0-4855-8eee-afa9ed90d764",
+      "response": "status: completed\nid: 034b8037-87f0-4855-8eee-afa9ed90d764\njob_id: 034b8037-87f0-4855-8eee-afa9ed90d764\nframes: 1\ntransparent: yes\nasset_id: ba6cbb82-c01a-5760-addb-fc7a049b7277\nasset_type: image\nasset_status: saved\ngallery: saved to your PixelLab gallery (pixellab.ai/create)\ncharged: 1 generation\ndownload: https://api.pixellab.ai/mcp/images/034b8037-87f0-4855-8eee-afa9ed90d764/download",
+      "source": "player-swept-raw.png",
+      "sha256": "be17fa627169966523095aa474e8cf841e47c16eaf1638ee0e29f4947916fafc"
+    },
+    {
+      "id": "bulwark",
+      "request": {
+        "description": "Modern medium-detail hand-crafted PIXEL ART StarShift sci-fi arcade production sprite. Strict orthographic overhead TOP-DOWN dorsal view, nose SOUTH DOWN, symmetric hard surface, clean angular silhouette, selective 1px navy contour, 3-4 discrete shading bands upper-left light, slate #46617a #6e899b #a6bfcb bright bevels with deep #080f20 seams. No antialias dithering bloom ground shadow text or perspective. Centered isolated transparency 6px margins. Bulwark armored tank spacecraft, broad hexagonal layered blue-grey steel armor, squat centerline cannon firing DOWN at lower edge, twin armored rear engines at upper edge, restrained warm bronze vents and crimson sensor",
+        "width": 112,
+        "height": 96,
+        "direction": "south",
+        "view": "high top-down",
+        "detail": "medium detail",
+        "outline": "selective outline",
+        "no_background": true,
+        "seed": 82102
+      },
+      "job_id": "6663b3c9-c18d-432c-921c-a897d0ad643d",
+      "response": "status: completed\nid: 6663b3c9-c18d-432c-921c-a897d0ad643d\njob_id: 6663b3c9-c18d-432c-921c-a897d0ad643d\nframes: 1\ntransparent: yes\nasset_id: a77f9f9a-4a58-5537-9542-6bb423135d53\nasset_type: image\nasset_status: saved\ngallery: saved to your PixelLab gallery (pixellab.ai/create)\ncharged: 1 generation\ndownload: https://api.pixellab.ai/mcp/images/6663b3c9-c18d-432c-921c-a897d0ad643d/download",
+      "source": "bulwark-raw.png",
+      "sha256": "dc81f764cc7262743c3fd41327cd0df19e3054b51aebd230f026dfbaff7c1e54"
+    },
+    {
+      "id": "sniper",
+      "request": {
+        "description": "Modern medium-detail hand-crafted PIXEL ART StarShift sci-fi arcade production sprite. Strict orthographic overhead TOP-DOWN dorsal view, nose SOUTH DOWN, clean angular silhouette, selective 1px navy contour, 3-4 discrete shading bands upper-left light, slate #46617a #6e899b #a6bfcb bright bevels with deep #080f20 seams. No antialias dithering bloom ground shadow text or perspective. Centered isolated transparency 6px margins. Sniper hostile spacecraft, long narrow precision railgun extends DOWN from center nose, forked slim graphite wings, violet recessed charge coil, two rear thrusters at upper edge. Long lance silhouette, brighter bevels",
+        "width": 80,
+        "height": 112,
+        "direction": "south",
+        "view": "high top-down",
+        "detail": "medium detail",
+        "outline": "selective outline",
+        "no_background": true,
+        "seed": 82103
+      },
+      "job_id": "d6f18062-7475-4e78-8f20-edc261f2d7c6",
+      "response": "status: completed\nid: d6f18062-7475-4e78-8f20-edc261f2d7c6\njob_id: d6f18062-7475-4e78-8f20-edc261f2d7c6\nframes: 1\ntransparent: yes\nasset_id: 9ecc7e2c-044d-555c-8f3a-5391cb0c516d\nasset_type: image\nasset_status: saved\ngallery: saved to your PixelLab gallery (pixellab.ai/create)\ncharged: 1 generation\ndownload: https://api.pixellab.ai/mcp/images/d6f18062-7475-4e78-8f20-edc261f2d7c6/download",
+      "source": "sniper-raw.png",
+      "sha256": "9d573519946e2a5444343c8bb1bf65c74c1dd3116b9228bfa57658aaf32a3574"
+    },
+    {
+      "id": "interceptor",
+      "request": {
+        "description": "Modern medium-detail hand-crafted PIXEL ART StarShift sci-fi arcade production sprite. Strict orthographic overhead TOP-DOWN dorsal view, nose SOUTH DOWN, clean angular silhouette, selective 1px navy contour, 3-4 discrete shading bands upper-left light, slate #46617a #6e899b #a6bfcb bright bevels with deep #080f20 seams. No antialias dithering bloom ground shadow text or perspective. Centered isolated transparency 6px margins. Interceptor hostile fast strike craft, sharp dart narrow swept blade wings, slate steel armor, restrained magenta sensor, twin nose guns on lower forward edge firing DOWN, upper rear thrusters exhausting UP",
+        "width": 64,
+        "height": 80,
+        "direction": "south",
+        "view": "high top-down",
+        "detail": "medium detail",
+        "outline": "selective outline",
+        "no_background": true,
+        "seed": 82104
+      },
+      "job_id": "17aa0b42-37ab-4b71-a67f-5838f7890ce4",
+      "response": "status: completed\nid: 17aa0b42-37ab-4b71-a67f-5838f7890ce4\njob_id: 17aa0b42-37ab-4b71-a67f-5838f7890ce4\nframes: 1\ntransparent: yes\nasset_id: 3628ac5f-9831-5068-b621-63b6e2beaa14\nasset_type: image\nasset_status: saved\ngallery: saved to your PixelLab gallery (pixellab.ai/create)\ncharged: 1 generation\ndownload: https://api.pixellab.ai/mcp/images/17aa0b42-37ab-4b71-a67f-5838f7890ce4/download",
+      "source": "interceptor-raw.png",
+      "sha256": "31a86469f546a18a23d684951e8c0253abb71d108b61aa63faf40e4ced5422d5"
+    },
+    {
+      "id": "carrier",
+      "request": {
+        "description": "Modern medium-detail hand-crafted PIXEL ART StarShift sci-fi arcade production sprite. Strict orthographic overhead TOP-DOWN dorsal view, nose SOUTH DOWN, clean angular silhouette, selective 1px navy contour, 3-4 discrete shading bands upper-left light, slate #46617a #6e899b #a6bfcb bright bevels with deep #080f20 seams. No antialias dithering bloom ground shadow text or perspective. Centered isolated transparency 6px margins. Carrier hostile broad angular aerospace hangar vessel, gunmetal layered armor and muted violet inset panels, two rectangular open dark launch bays facing DOWN at lower edge, rear engine row at top, two small gun turrets at forward corners, distinct massive wide silhouette",
+        "width": 160,
+        "height": 128,
+        "direction": "south",
+        "view": "high top-down",
+        "detail": "medium detail",
+        "outline": "selective outline",
+        "no_background": true,
+        "seed": 82105
+      },
+      "job_id": "b1db4bcc-abec-45ed-be73-77b507b8604a",
+      "response": "status: completed\nid: b1db4bcc-abec-45ed-be73-77b507b8604a\njob_id: b1db4bcc-abec-45ed-be73-77b507b8604a\nframes: 1\ntransparent: yes\nasset_id: de9d2de6-416e-58f9-a030-4ed345b1a757\nasset_type: image\nasset_status: saved\ngallery: saved to your PixelLab gallery (pixellab.ai/create)\ncharged: 1 generation\ndownload: https://api.pixellab.ai/mcp/images/b1db4bcc-abec-45ed-be73-77b507b8604a/download",
+      "source": "carrier-raw.png",
+      "sha256": "14bfdf0549f21acc051dccf2409b63b81431c228eb9891a59f40febedcb22360"
+    },
+    {
+      "id": "supply-drone",
+      "request": {
+        "description": "Modern medium-detail hand-crafted PIXEL ART StarShift sci-fi arcade production sprite. Strict orthographic overhead TOP-DOWN dorsal view, nose SOUTH DOWN, clean angular silhouette, selective 1px navy contour, 3-4 discrete shading bands upper-left light, slate #46617a #6e899b #a6bfcb bright bevels with deep #080f20 seams. No antialias dithering bloom ground shadow text or perspective. Centered isolated transparency 6px margins. Unmanned industrial cargo spacecraft, slate and ivory armor with amber gold docking lights, angular cargo container held between two side engine booms, rear propulsion at upper edge, flat mechanical hull no cockpit no gift box",
+        "width": 112,
+        "height": 80,
+        "direction": "south",
+        "view": "high top-down",
+        "detail": "medium detail",
+        "outline": "selective outline",
+        "no_background": true,
+        "seed": 82106
+      },
+      "job_id": "13ef6467-8cb0-4447-903d-710b311aa058",
+      "response": "status: completed\nid: 13ef6467-8cb0-4447-903d-710b311aa058\njob_id: 13ef6467-8cb0-4447-903d-710b311aa058\nframes: 1\ntransparent: yes\nasset_id: d1fa23db-7c17-5cae-b618-cfdd8696674a\nasset_type: image\nasset_status: saved\ngallery: saved to your PixelLab gallery (pixellab.ai/create)\ncharged: 1 generation\ndownload: https://api.pixellab.ai/mcp/images/13ef6467-8cb0-4447-903d-710b311aa058/download",
+      "source": "supply-drone-raw.png",
+      "sha256": "d846554cdc859e3e54fa63d248ffed1775d74bc3456f4feb4bf27045b9ec8834"
+    },
+    {
+      "id": "vanguard-hull",
+      "request": {
+        "description": "Modern medium-detail hand-crafted PIXEL ART StarShift sci-fi arcade production sprite. Strict orthographic overhead TOP-DOWN dorsal view, nose SOUTH DOWN, clean angular silhouette, selective 1px navy contour, 3-4 discrete shading bands upper-left light, slate #46617a #6e899b #a6bfcb bright bevels with deep #080f20 seams. No antialias dithering bloom ground shadow text or perspective. Centered isolated transparency 6px margins. Vanguard hostile industrial frigate central HULL ONLY for modular boss, broad angular battleship armored spine with two shoulder mounting sockets and rear engine hardpoints. Gunmetal steel with warm muted bronze recessed plates, small crimson windows, stepped bright slate bevels. DO NOT include guns or engines detached parts, these attach separately. Flat overhead dorsal hull fills middle 220x160, nose DOWN, not perspective",
+        "width": 256,
+        "height": 192,
+        "direction": "south",
+        "view": "high top-down",
+        "detail": "medium detail",
+        "outline": "selective outline",
+        "no_background": true,
+        "seed": 82107
+      },
+      "job_id": "9e58c7ab-34ab-4369-9663-2e004035068f",
+      "response": "status: completed\nid: 9e58c7ab-34ab-4369-9663-2e004035068f\njob_id: 9e58c7ab-34ab-4369-9663-2e004035068f\nframes: 1\ntransparent: yes\nasset_id: a3bd2983-f038-56e4-8208-292c47531c30\nasset_type: image\nasset_status: saved\ngallery: saved to your PixelLab gallery (pixellab.ai/create)\ncharged: 1 generation\ndownload: https://api.pixellab.ai/mcp/images/9e58c7ab-34ab-4369-9663-2e004035068f/download",
+      "source": "vanguard-hull-raw.png",
+      "sha256": "5758043767eadb9182ca8ee83b5d1ef28e7bb6f74b1ba07438ec546dada9cedb"
+    },
+    {
+      "id": "warden-hull",
+      "request": {
+        "description": "Modern medium-detail hand-crafted PIXEL ART StarShift sci-fi arcade production sprite. Strict orthographic overhead TOP-DOWN dorsal view, nose SOUTH DOWN, clean angular silhouette, selective 1px navy contour, 3-4 discrete shading bands upper-left light, slate #46617a #6e899b #a6bfcb bright bevels with deep #080f20 seams. No antialias dithering bloom ground shadow text or perspective. Centered isolated transparency 6px margins. Nebula Warden hostile alien-tech boss central HULL ONLY for modular boss, wide angular crescent exoskeleton with three shield-node mounting recesses, center circular recessed reactor socket. Cool violet titanium steel armor, small magenta conduits, bright slate bevels and dark navy seams. Nose DOWN, broad segmented side wings, no detached satellites, no weapons external modules, overhead dorsal only",
+        "width": 256,
+        "height": 192,
+        "direction": "south",
+        "view": "high top-down",
+        "detail": "medium detail",
+        "outline": "selective outline",
+        "no_background": true,
+        "seed": 82108
+      },
+      "job_id": "f52b87ab-f72a-44fe-ab51-b2cb8e1e5b64",
+      "response": "status: completed\nid: f52b87ab-f72a-44fe-ab51-b2cb8e1e5b64\njob_id: f52b87ab-f72a-44fe-ab51-b2cb8e1e5b64\nframes: 1\ntransparent: yes\nasset_id: e838fd8b-5e47-5ddc-9b3c-d9ce19fef74e\nasset_type: image\nasset_status: saved\ngallery: saved to your PixelLab gallery (pixellab.ai/create)\ncharged: 1 generation\ndownload: https://api.pixellab.ai/mcp/images/f52b87ab-f72a-44fe-ab51-b2cb8e1e5b64/download",
+      "source": "warden-hull-raw.png",
+      "sha256": "9e1cbec2a7b56b10215b5522dd3fb513c29091b0d5bb0e6688250180870d7db2"
+    },
+    {
+      "id": "asteroid-anchor",
+      "request": {
+        "description": "Modern medium-detail hand-crafted PIXEL ART StarShift sci-fi arcade production sprite. Strict orthographic overhead TOP-DOWN dorsal view, nose SOUTH DOWN, clean angular silhouette, selective 1px navy contour, 3-4 discrete shading bands upper-left light, slate #46617a #6e899b #a6bfcb bright bevels with deep #080f20 seams. No antialias dithering bloom ground shadow text or perspective. Centered isolated transparency 6px margins. Single irregular angular rocky asteroid, charcoal brown and slate rock, asymmetrical chipped silhouette, five broad fractured facets, upper-left lit grey bevels and dark navy crevices. Natural stone no metal no emissive, overhead top down, clean large pixel clusters",
+        "width": 128,
+        "height": 128,
+        "direction": "south",
+        "view": "high top-down",
+        "detail": "medium detail",
+        "outline": "selective outline",
+        "no_background": true,
+        "seed": 82109
+      },
+      "job_id": "77d1e5b3-f122-4e08-b7e8-2e3a9e4e9e1b",
+      "response": "status: completed\nid: 77d1e5b3-f122-4e08-b7e8-2e3a9e4e9e1b\njob_id: 77d1e5b3-f122-4e08-b7e8-2e3a9e4e9e1b\nframes: 1\ntransparent: yes\nasset_id: 8b4064ba-ad88-51d7-8084-05eba9ac42a2\nasset_type: image\nasset_status: saved\ngallery: saved to your PixelLab gallery (pixellab.ai/create)\ncharged: 1 generation\ndownload: https://api.pixellab.ai/mcp/images/77d1e5b3-f122-4e08-b7e8-2e3a9e4e9e1b/download",
+      "source": "asteroid-anchor-raw.png",
+      "sha256": "c7744cfb87b193f1ebd3c2603ecb65f8083484f25dee28518a3a835374019463"
+    }
+  ]
+}

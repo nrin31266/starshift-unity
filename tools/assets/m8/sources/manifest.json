@@ -146,5 +146,6 @@
     }
   ],
   "rights_note": "AI sources are generated outputs, not third-party stock. No exclusive copyright or legal clearance claim. Keep applicable PixelLab account/service terms for distribution review; no imported external game art.",
-  "quota": "Verified final balance: 35/40 trial generations remaining, 5 used, $0 paid credit. Failed Pro/concurrent requests created no charge/job."
+  "quota": "Verified final balance: 35/40 trial generations remaining, 5 used, $0 paid credit. Failed Pro/concurrent requests created no charge/job.",
+  "production": "production-jobs.json"
 }
