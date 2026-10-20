@@ -202,8 +202,9 @@ public static class VerifyGameShell
     }
     static async Task ClearCurrent(UiRig rig,int timeout=50000)
     {
+        var mission=Runner.Flow.Level.Id;
         var end=Time.realtimeSinceStartup+timeout/1000f;Time.timeScale=12;
-        while(!Session.IsTerminal&&Time.realtimeSinceStartup<end)
+        while(!Session.IsTerminal&&!Region.IsTravelling&&Runner.Flow.Level.Id==mission&&Time.realtimeSinceStartup<end)
         {
             if(Runner.Flow.CanContinue)Session.BeginMission();
             rig.Protect();
@@ -218,7 +219,23 @@ public static class VerifyGameShell
             foreach(var pickup in UnityEngine.Object.FindObjectsByType<RewardPickup>())pickup.Release();
             await Task.Delay(25);
         }
+        if(Save.Mode==SessionMode.Campaign&&!Save.HasPendingClear&&Region.NextMission!=null)
+        {
+            Check((Region.IsTravelling||Runner.Flow.Level.Id!=mission)&&Shell.Screen==ShellScreen.Playing&&!View.Screens[(int)ShellScreen.Results].activeSelf,"Campaign stopped at mission Results");
+            return;
+        }
         Check(Session.IsClear,"Mission clear timeout "+Runner.Flow.Level.Id);await Until(()=>Shell.Screen==ShellScreen.Results,1000,"Result navigation");
+    }
+    static async Task WaitForMission(UiRig rig,int mission)
+    {
+        var end=Time.realtimeSinceStartup+12;
+        while((Runner.Flow.Level.Id!="L"+mission||!Runner.HasActiveRun)&&Time.realtimeSinceStartup<end)
+        {
+            Check(Shell.Screen!=ShellScreen.Results,"Campaign required Results confirmation");
+            if(Runner.Flow.CanContinue){await rig.Mouse(new Vector2(600,400),true);await rig.Mouse(new Vector2(600,400),false);}
+            await Task.Delay(25);
+        }
+        Check(Runner.Flow.Level.Id=="L"+mission&&Runner.HasActiveRun,"Automatic/journey L"+mission);rig.Protect();
     }
     static async Task<object> Flow()
     {
@@ -240,9 +257,10 @@ public static class VerifyGameShell
             await rig.Mouse(point,true);await rig.Mouse(point+new Vector2(80,0),true);await rig.Mouse(point,false);
             Check(!rig.Input.FireHeld&&rig.Player.transform.position==position,"Settings drag moved/fired Player");
             await Click(View.SaveSettings);Check(Shell.Screen==ShellScreen.Pause,"Settings Back origin");await Click(View.Resume);Check(!Session.IsPaused&&!rig.Input.FireHeld,"Resume phantom press");rig.Protect();
-            await ClearCurrent(rig);Check(View.ResultStats.text.Contains(Rewards.Score.ToString("N0")),"HUD/result score mismatch");
-            Check(Save.PersistentSnapshot.Profile.Records.Any(r=>r.MissionId=="L1")&&View.Next.gameObject.activeSelf,"Clear record/Next");await Capture("clear-1600");
-            await Click(View.ResultMenu);Check(Shell.Screen==ShellScreen.Menu,"Result Menu");
+            await ClearCurrent(rig);
+            Check(Save.PersistentSnapshot.Profile.Records.Any(r=>r.MissionId=="L1")&&!View.Screens[(int)ShellScreen.Results].activeSelf,"Clear record/automatic campaign");await Capture("campaign-clear-auto-1600");
+            await WaitForMission(rig,2);Session.Pause();await Until(()=>Shell.Screen==ShellScreen.Pause,1000,"Automatic campaign Pause");
+            await Click(View.PauseMenu);await Click(View.Confirm);Check(Shell.Screen==ShellScreen.Menu,"Pause Menu");
             // Tạo lại storage service; màn hình đích vẫn đi qua nút Continue thật.
             Save.UseTestStorage(rig.Path);Shell.Boot();await Click(View.Continue);await Until(()=>Runner.Flow.Level.Id=="L2"&&Runner.HasActiveRun,2000,"Checkpoint Continue L2");rig.Protect();
             await Click(pause);await Click(View.PauseMenu);await Capture("confirmation-exit-1600");await Click(View.Cancel);Check(Shell.Screen==ShellScreen.Pause&&Session.IsPaused,"Cancel restore");
@@ -250,7 +268,7 @@ public static class VerifyGameShell
             Check(View.MissionCards.Length==8&&View.MissionCards[0].interactable&&View.MissionCards[1].interactable&&!View.MissionCards[2].interactable,"Unlock catalog");await Capture("missions-1600");
             var production=File.ReadAllBytes(rig.Path);await Click(View.MissionCards[0]);await Click(View.LaunchReplay);rig.Protect();
             Check(Save.Mode==SessionMode.Replay&&Runner.Flow.Level.Id=="L1","Replay launch");
-            await ClearCurrent(rig);Check(!View.Next.gameObject.activeSelf&&View.ResultReplay.gameObject.activeSelf,"Replay chaining");await Capture("replay-clear-1600");
+            await ClearCurrent(rig);Check(View.ResultStats.text.Contains(Rewards.Score.ToString("N0")),"Replay HUD/result score mismatch");Check(!View.Next.gameObject.activeSelf&&View.ResultReplay.gameObject.activeSelf,"Replay chaining");await Capture("replay-clear-1600");
             await Click(View.ResultMissions);Check(File.ReadAllBytes(rig.Path).SequenceEqual(production),"Replay wrote campaign/profile");await Click(View.BackButtons[0]);await Click(View.Continue);rig.Protect();Check(Runner.Flow.Level.Id=="L2","Replay→Campaign snapshot");
             var lives=rig.Player.GetComponent<PlayerLives>();rig.Player.GetComponent<PlayerDamageLifecycle>().enabled=true;lives.RestoreCheckpoint(1);rig.Gate.SetState(PlayerGameplayState.Active);Check(rig.Player.GetComponent<PlayerDamageLifecycle>().TryReceiveHit(null),"Fatal hit");
             await Until(()=>Shell.Screen==ShellScreen.Results&&Session.IsTerminal&&!Session.IsClear,3500,"Game Over");await Capture("game-over-1600");await Click(View.GameOverRetry);Check(Runner.HasActiveRun&&lives.CurrentLives>0,"GameOver Retry");rig.Protect();
@@ -262,14 +280,7 @@ public static class VerifyGameShell
                 Check(Save.PersistentSnapshot.Profile.Records.Any(r=>r.MissionId=="L"+mission),"Missing record L"+mission);
                 if(mission<8)
                 {
-                    await Click(View.Next);
-                    var travelEnd=Time.realtimeSinceStartup+12;
-                    while((Runner.Flow.Level.Id!="L"+(mission+1)||!Runner.HasActiveRun)&&Time.realtimeSinceStartup<travelEnd)
-                    {
-                        if(Runner.Flow.CanContinue){await rig.Mouse(new Vector2(600,400),true);await rig.Mouse(new Vector2(600,400),false);}
-                        await Task.Delay(25);
-                    }
-                    Check(Runner.Flow.Level.Id=="L"+(mission+1)&&Runner.HasActiveRun,"Next/journey L"+(mission+1));rig.Protect();
+                    await WaitForMission(rig,mission+1);
                 }
             }
             Check(Save.PersistentSnapshot.Campaign.Status==CampaignStatus.CampaignCompleted&&!View.Next.gameObject.activeSelf&&View.ResultMissions.gameObject.activeSelf,"Victory release boundary");await Capture("victory-1600");
@@ -277,7 +288,7 @@ public static class VerifyGameShell
             Check(Session.IsCampaignVictory&&!Runner.HasActiveRun&&Save.PersistentSnapshot.Profile.Records.Length==8,"Completed Continue respawn/reward");
             await Capture("victory-continue-1600");await Click(View.ResultMenu);await Click(View.NewGame);await Capture("confirmation-new-1600");await Click(View.Cancel);
             Check(Save.PersistentSnapshot.Campaign.Status==CampaignStatus.CampaignCompleted,"Canceled NewGame mutation");
-            return new{status="PASS",productionEntry=true,settings=true,pause=true,uiInput=true,clear=true,relaunch=true,missionHub=true,replayIsolation=true,gameOverRetry=true,regionAToB=true,victoryContinue=true,records=8,results,savePath=rig.Path};
+            return new{status="PASS",productionEntry=true,automaticCampaign=true,settings=true,pause=true,uiInput=true,clear=true,relaunch=true,missionHub=true,replayIsolation=true,gameOverRetry=true,regionAToB=true,victoryContinue=true,records=8,results,savePath=rig.Path};
         }
     }
     static async Task<object> Stats()
@@ -354,7 +365,7 @@ public static class VerifyGameShell
         using(var rig=new UiRig(1600))
         {
             Seed(rig,4,1);await Click(View.Continue);rig.Protect();await ClearCurrent(rig);
-            var records=Save.PersistentSnapshot.Profile.Records.Length;Directory.CreateDirectory(rig.Path+".tmp");await Click(View.Next);
+            var records=Save.PersistentSnapshot.Profile.Records.Length;Directory.CreateDirectory(rig.Path+".tmp");
             var end=Time.realtimeSinceStartup+12;
             while(!Save.HasPendingRegionTransition&&Time.realtimeSinceStartup<end)
             {
@@ -596,8 +607,8 @@ public static class VerifyGameShell
             Session.Pause();await Until(()=>Shell.Screen==ShellScreen.Pause,1000,"Pause");await Capture("pause-"+width);
             await Click(View.PauseMenu);await Capture("confirmation-"+width);await Click(View.Cancel);await Click(View.Resume);rig.Protect();
             Directory.CreateDirectory(rig.Path+".tmp");await ClearCurrent(rig);
-            Check(Save.HasPendingClear&&!View.Next.interactable&&!View.ResultRecord.text.Contains("KỶ LỤC MỚI"),"Save failure false progress");await Capture("clear-save-error-"+width);
-            Directory.Delete(rig.Path+".tmp");await Click(View.ResultRetrySave);Check(!Save.HasPendingClear&&View.Next.interactable,"Clear retry save");await Capture("clear-"+width);
+            Check(Save.HasPendingClear&&!View.Next.gameObject.activeSelf&&!View.ResultRecord.text.Contains("KỶ LỤC MỚI"),"Save failure false progress");await Capture("clear-save-error-"+width);
+            Directory.Delete(rig.Path+".tmp");await Click(View.ResultRetrySave);Check(!Save.HasPendingClear&&Shell.Screen==ShellScreen.Playing&&!View.Screens[(int)ShellScreen.Results].activeSelf,"Clear retry did not resume campaign");await Capture("campaign-clear-auto-"+width);
             return new{status="PASS",width,height=900,backgroundResumes=rig.BackgroundResumes,saveFailureRecovery=true,screens=9};
         }
     }

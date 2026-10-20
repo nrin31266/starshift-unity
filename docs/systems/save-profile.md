@@ -267,7 +267,8 @@ trước mutation, write failure restore cả state lẫn dirty flag. Không ch�
 Mission clear dùng `CampaignProgress.TryCommitClear`: record + resolved checkpoint/status
 hoặc incoming same-region entry/unlock trong cùng transaction. Failure rollback mutation,
 CampaignLifecycle giữ HasPendingClear và frozen runtime stats để thử lại; Result không
-claim record/Next thành công. Flush retry clear có tính idempotent. Các shard đã credit
+claim record/chuyển nhiệm vụ thành công. Flush retry clear có tính idempotent; UI
+tự tiếp tục Campaign sau khi retry thành công theo [UI owner](../presentation/ui-ux.md#level-clear-và-campaign-result). Các shard đã credit
 ở boundary trước vẫn giữ theo high-water policy; không regrant clear reward.
 
 Region journey vẫn dùng transaction M6. Failed destination commit vào Pause; Resume

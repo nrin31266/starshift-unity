@@ -98,8 +98,8 @@ adapter; không có audio framework. Các màn hình và Back semantics thuộc
 Shell giữ session ở Entry + cinematic lock khi Menu; background gameplay đang chạy
 được pause qua cùng clock owner, kể cả giữa intro. Loading giữ transition hold trên
 clock owner này; RunStarted không nhả clock trước khi blocker kết thúc. Pointer bị cancel ở các boundary.
-Mission Results chặn tự-advance trong Campaign/Replay production; Next mới gọi lại
-RegionCampaignFlow/PlanetJourney của M6. DevTest giữ fast transition để các verifier
+Campaign tự-advance qua RegionCampaignFlow/PlanetJourney của M6 sau clear/save;
+Replay dừng ở Results. Save failure vẫn giữ kết quả để retry trước khi đi tiếp. DevTest giữ fast transition để các verifier
 cũ tiếp tục sử dụng. Không thay đổi encounter/region transition choreography. ShipAppearance chỉ áp cosmetic
 renderer/tint/trail từ Profile lên Player và intro representation; giữ visual envelope
 và không đổi collider/movement/loadout. Session reset dọn cosmetic trail cùng các
@@ -421,7 +421,7 @@ unscaled time. Disable/teardown session trả clock/audio đã mượn, không g
 sang lượt Play sau. Input cancel tại Pause/Resume theo
 [player owner](../gameplay/player-combat.md#m2-ui-pointer-ownership).
 
-Full mission completion đặt gate `Result` ngay, stop runner/coordinator, block enemy
+`ShowRegionComplete` đặt gate `Result` ngay, stop runner/coordinator, block enemy
 fire, release hostile/friendly projectiles về existing pools và freeze simulation.
 Không chờ presentation delay mới khóa damage/input/fire. Game Over dùng cùng cleanup
 sau signal của lifecycle; session không sở hữu lives/death/respawn timers.

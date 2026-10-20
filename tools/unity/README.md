@@ -523,7 +523,8 @@ references, Dev OFF, tám missions và sáu cosmetic options. Shell UI được 
 
 Play Mode: dùng `VerifyGameShell.cs` trực tiếp qua Pipeline run_script. Mỗi Begin entry
 trả ngay; chờ ignored `.design/m7/<name>.json` về PASS/FAILED trước runtime probe kế.
-Entries: BeginCore, BeginStats, BeginInput, BeginFailures, BeginRecovery, BeginTeardown,
+Entries: BeginCore, BeginStats, BeginInput, BeginInputCleanup, BeginLoading,
+BeginProductionDamage, BeginFailures, BeginRecovery, BeginTeardown,
 BeginHangar(1600/2000), BeginLayouts(1600/2000), BeginTerminalLayouts(2000),
 BeginSceneRelaunch và BeginFlow. Core thuần storage, runtime probes dùng unique temp
 save và kiểm bytes production primary/backup/invalid không đổi. BeginFlow bấm UI thật,
@@ -531,5 +532,6 @@ chỉ accelerate combat qua existing damage/clock hooks; không gán shell resul
 
 Historical `VerifyPacingRefinement.Rig` tạm opt out explicit mission results rồi restore
 flag khi Dispose, để các transition probes M5/M6 tiếp tục kiểm choreography cũ. M7
-production không opt out; navigation proof dùng UiRig riêng không raw-start gameplay.
+Campaign tự handoff sau clear/save, Replay dừng Results; navigation proof dùng UiRig
+riêng không raw-start gameplay.
 Coverage/evidence và giới hạn thuộc [dev owner](../../docs/systems/dev-debug.md#m7-shell-results-và-hangar-verification-provisional).

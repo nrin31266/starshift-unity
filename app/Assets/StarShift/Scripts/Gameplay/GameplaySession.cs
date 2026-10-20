@@ -109,7 +109,7 @@ namespace StarShift.Gameplay
         private void OnMissionCompleted()
         {
             if (lifecycle.GetComponent<PlayerLives>().CurrentLives <= 0 || IsTerminal) return;
-            if (RequireMissionResults && Persistence.Mode != StarShift.Persistence.SessionMode.DevTest)
+            if (RequireMissionResults && Persistence.Mode == StarShift.Persistence.SessionMode.Replay)
             { ShowRegionComplete(); return; }
             if (region != null && region.QueueAdvance()) return;
             ShowRegionComplete();

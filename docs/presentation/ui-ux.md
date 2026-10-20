@@ -151,9 +151,10 @@ VỀ MENU CHÍNH
 
 ## Level Clear và Campaign Result
 
-Level Clear ưu tiên compact overlay/panel để giữ pacing: một ít stats, nút Continue
-và handoff sang level kế. Không bắt buộc scene riêng sau từng level;
-exact số stats hiển thị là [TUNABLE].
+Phiêu lưu (Chơi mới/Tiếp tục) tự chuyển sang nhiệm vụ kế tiếp sau khi clear và lưu
+thành công, dùng mission travel/region journey hiện có. Không mở panel kết quả
+hoặc yêu cầu bấm Nhiệm vụ tiếp theo giữa các nhiệm vụ. Replay dừng ở kết quả của
+nhiệm vụ đã chọn; Game Over và Victory vẫn có panel.
 
 M7 current-release Victory hiển thị kết quả Mission08 (Score/Kills/Time và một ít
 reward/survival counters thật), không fabricate campaign aggregation. Full target
@@ -171,7 +172,7 @@ region transition có thể chạy ngay trong Gameplay scene.
 Initial:          Boot → Main Menu
 New Game:         Main Menu → Gameplay → Level 1
 Continue:         Main Menu → load CampaignSave → Gameplay → level/wave checkpoint
-Normal progress:  Level intro → encounters → compact Level Clear → save → next level
+Normal progress:  Level intro → encounters → clear/save → automatic travel → next level
 Region boundary:  Boss level clear → cinematic transition → next region level
 Game Over:        Gameplay → Game Over overlay → Retry Wave / Main Menu
 Victory:          Nebula Warden → Victory overlay → Main Menu / Missions
@@ -350,15 +351,17 @@ Settings toggles hiển thị Bật/Tắt ngay khi chạm, tách rung thiết b�
 How to Play chia bốn khối chức năng: điều khiển, vũ khí/nhiệt, sống sót/tiếp tế và tạm dừng.
 Credits chỉ nêu Unity và trạng thái release/placeholder đã biết.
 
-Result contexts phân biệt Game Over, Campaign clear, Replay clear và current-release
-Victory. Mọi result đọc frozen `RunRewards` cho Score/Kills/Time; thêm Shards collected,
+Result contexts phân biệt Game Over, Replay clear, current-release Victory và lỗi
+lưu khi clear Campaign. Campaign clear thành công không mở Results. Mọi result đọc
+frozen `RunRewards` cho Score/Kills/Time; thêm Shards collected,
 Cores và Lives Lost. Best lấy Profile records; New Best chỉ hiện sau transaction clear
-thành công. Clear save failure giữ kết quả, tắt Next và cho Thử lưu lại. Menu/Back
+thành công. Clear save failure giữ kết quả và cho Thử lưu lại; sau khi lưu thành
+công tự chạy tiếp hành trình, không cần nút Next. Menu/Back
 không bỏ qua failed save. Game Over có semantic Retry và Menu; Victory có Menu và
 Missions, không có Next/L9. Completed Continue đọc Mission08 checkpoint stats.
 
-Clear Campaign giữ Result trước khi người chơi chọn Next; same-region incoming entry
-đã commit theo persistence boundary. Next dùng lại mission travel/region journey M6.
+Clear Campaign tự dùng mission travel/region journey M6; same-region incoming entry
+đã commit theo persistence boundary. Không thêm confirmation hoặc Results bắt buộc.
 Major region journey vẫn có establishing tap; screen overlay không thay choreography.
 
 Back/Escape: submenu → Menu, Settings → origin, confirmation → cancel, error → screen

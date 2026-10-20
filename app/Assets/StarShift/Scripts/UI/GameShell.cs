@@ -76,11 +76,13 @@ namespace StarShift.UI
             Bind(view.Resume, Resume); Bind(view.Retry, RequestRetry);
             Bind(view.PauseSettings, () => OpenSettings(ShellScreen.Pause));
             Bind(view.PauseMenu, () => Confirm(ShellCopy.ConfirmExit, () => ReturnToShell(ShellScreen.Menu)));
-            Bind(view.Next, () => RunOperation(session.ContinueAfterResult, () => Navigate(ShellScreen.Playing), ShellCopy.SaveFailed));
             Bind(view.ResultReplay, () => StartGame(() => save.BeginReplay(session.Flow.Level.Id)));
             Bind(view.ResultMissions, () => ReturnToShell(ShellScreen.Missions));
             Bind(view.ResultMenu, () => ReturnToShell(ShellScreen.Menu));
-            Bind(view.ResultRetrySave, () => RunOperation(save.Flush, RefreshResults, ShellCopy.SaveFailed));
+            Bind(view.ResultRetrySave, () => RunOperation(save.Flush, () => {
+                if (save.Mode == SessionMode.Campaign && region.NextMission != null && session.ContinueAfterResult()) Navigate(ShellScreen.Playing);
+                else RefreshResults();
+            }, ShellCopy.SaveFailed));
             Bind(view.GameOverRetry, Retry);
             Bind(view.Confirm, () => { var action = confirmed; CancelConfirmation(); action?.Invoke(); });
             Bind(view.Cancel, CancelConfirmation);
@@ -306,8 +308,7 @@ namespace StarShift.UI
             bool committed = !save.HasPendingClear && !save.Dirty;
             view.ResultRecord.text = ShellCopy.Best(record) + (clear && !replay && committed && (save.NewBestScore || save.NewBestTime) ? "\nKỶ LỤC MỚI" : "");
             view.ResultStatus.text = save.HasPendingClear ? ShellCopy.SaveFailed : replay ? "Kết quả chơi lại không thay đổi chiến dịch hoặc ví Shard." : "";
-            view.Next.gameObject.SetActive(clear && !replay && !victory);
-            view.Next.interactable = committed;
+            view.Next.gameObject.SetActive(false);
             view.ResultReplay.gameObject.SetActive(clear && replay);
             view.ResultMissions.gameObject.SetActive(clear && (replay || victory));
             view.ResultRetrySave.gameObject.SetActive(save.HasPendingClear);
