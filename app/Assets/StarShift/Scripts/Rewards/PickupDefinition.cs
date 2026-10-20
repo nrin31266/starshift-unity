@@ -13,6 +13,7 @@ namespace StarShift.Rewards
         public string ShortCode;
         public Color Color = Color.white;
         public Sprite Sprite;
+        public Sprite[] AnimationFrames;
         [Range(.2f,1)] public float VisualScale = 1;
         [Min(1)] public int Amount = 1;
         [Min(.1f)] public float Lifetime = 12;

@@ -19,6 +19,9 @@ namespace StarShift.UI
         [SerializeField] private PulseLaserWeapon weapon;
         [SerializeField] private Text livesLabel;
         [SerializeField] private Text weaponLabel;
+        [SerializeField] private Image weaponIcon;
+        [SerializeField] private Sprite[] weaponIcons;
+        [SerializeField] private Image shieldIcon, overdriveIcon, supportIcon;
         [SerializeField] private Text weaponInventory;
         [SerializeField] private Image heatFill;
         [SerializeField] private Image heatFrame;
@@ -127,6 +130,8 @@ namespace StarShift.UI
                 previousLevel = weapon.CurrentLevel;
                 previousBranch = (int)weapon.CurrentBranch;
                 weaponLabel.text = $"{GameplayCopy.WeaponName(weapon.CurrentBranch)} · CẤP {previousLevel}";
+                if (weaponIcon != null && weaponIcons != null && previousBranch < weaponIcons.Length)
+                    weaponIcon.sprite = weaponIcons[previousBranch];
             }
             if (weaponInventory != null)
             {
@@ -150,6 +155,9 @@ namespace StarShift.UI
                 if (second != previousOverdriveSeconds || drone != previousDroneSeconds || effects.HasShield != previousShield)
                 {
                     previousOverdriveSeconds = second; previousDroneSeconds = drone; previousShield = effects.HasShield;
+                    if (shieldIcon != null) shieldIcon.enabled = previousShield;
+                    if (overdriveIcon != null) overdriveIcon.enabled = second > 0;
+                    if (supportIcon != null) supportIcon.enabled = drone > 0;
                     var text = previousShield ? "KHIÊN" : "";
                     if (second > 0) text += $"  CƯỜNG HÓA {second}s";
                     if (drone > 0) text += $"  HỖ TRỢ {drone}s";

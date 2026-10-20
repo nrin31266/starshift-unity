@@ -25,7 +25,8 @@ namespace StarShift.Enemies
         }
 
         private void LateUpdate()
-            => core.color = attack.isActiveAndEnabled && attack.IsTelegraphing ? chargedTint : normalTint;
+            => core.color = attack.isActiveAndEnabled && attack.IsTelegraphing
+                ? Color.Lerp(chargedTint * new Color(1, 1, 1, .55f), chargedTint, .5f + .5f * Mathf.Sin(Time.time * 24)) : normalTint;
 
         private void OnDisable()
         {

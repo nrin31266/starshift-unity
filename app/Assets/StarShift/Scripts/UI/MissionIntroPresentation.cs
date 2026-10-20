@@ -7,6 +7,9 @@ namespace StarShift.UI
     public sealed class MissionIntroPresentation : MonoBehaviour
     {
         [SerializeField] private SpriteRenderer planet;
+        [SerializeField] private Sprite astraPlanet, crimsonPlanet;
+        [SerializeField] private SpriteRenderer farBackground;
+        [SerializeField] private Sprite astraBackground, crimsonBackground;
         [SerializeField] private Transform stars;
         [SerializeField] private Camera gameplayCamera;
         [SerializeField] private SpriteRenderer ship;
@@ -75,6 +78,8 @@ namespace StarShift.UI
             phase = nextPhase;
             progress = normalized;
             direction = playDirection;
+            if (astraPlanet != null && crimsonPlanet != null)
+                planet.sprite = playDirection == PlayDirection.Right ? crimsonPlanet : astraPlanet;
             stars.gameObject.SetActive(true);
             ship.gameObject.SetActive(!gameplayApproach);
             ApplyVisuals(0);
@@ -116,7 +121,9 @@ namespace StarShift.UI
                 var star = starRenderers[i];
                 star.transform.position = World(viewport);
                 star.transform.rotation = Quaternion.Euler(0,0,PlayDirectionSpace.Rotation(direction));
-                star.transform.localScale = new Vector3(.012f+.012f*depth,.02f+speed*.32f*depth,1);
+                star.transform.localScale = star.sprite.name == "star"
+                    ? new Vector3(.35f+.25f*depth,.45f+speed*6*depth,1)
+                    : new Vector3(.012f+.012f*depth,.02f+speed*.32f*depth,1);
                 star.color = new Color(.4f,.65f,.85f,opacity*(.3f+depth*.4f));
             }
             if (cueVisible) return;
@@ -165,7 +172,9 @@ namespace StarShift.UI
                 var offset=seed-vector*starDistance*depth;
                 var star=starRenderers[i];star.transform.position=World(new Vector2(Mathf.Repeat(offset.x+.15f,1.3f)-.15f,Mathf.Repeat(offset.y+.15f,1.3f)-.15f));
                 star.transform.rotation=Quaternion.Euler(0,0,journeyHeading);
-                star.transform.localScale=new Vector3(.012f+.012f*depth,.025f+journeySpeed*.3f*depth,1);
+                star.transform.localScale=star.sprite.name == "star"
+                    ? new Vector3(.35f+.25f*depth,.5f+journeySpeed*6*depth,1)
+                    : new Vector3(.012f+.012f*depth,.025f+journeySpeed*.3f*depth,1);
                 star.color=Color.Lerp(new Color(.4f,.65f,.85f,.65f),new Color(.85f,.3f,.48f,.65f),journeyPalette);
             }
             ApplyEnvironmentPalette(journeyPalette);
@@ -176,11 +185,14 @@ namespace StarShift.UI
                 var target=PlayDirectionSpace.Point(new Vector2(.7f,.76f),PlayDirection.Right);
                 planet.transform.position=World(Vector2.Lerp(new Vector2(1.1f,.3f),target,Mathf.SmoothStep(0,1,journeyReveal)));
                 planet.transform.localScale=Vector3.one*Mathf.Lerp(.25f,planetStartScale,journeyReveal);
-                planet.color=new Color(.62f,.17f,.32f,Mathf.Clamp01(journeyReveal*4));
+                if (crimsonPlanet != null) planet.sprite = crimsonPlanet;
+                planet.color=new Color(1,1,1,Mathf.Clamp01(journeyReveal*4));
             }
         }
         private void ApplyEnvironmentPalette(float amount)
         {
+            if (farBackground != null && astraBackground != null && crimsonBackground != null)
+                farBackground.sprite = amount < .5f ? astraBackground : crimsonBackground;
             for(int i=0;i<backdropRenderers.Length;i++)backdropRenderers[i].color=Color.Lerp(environmentTints[i],new Color(.45f,.2f,.32f,environmentTints[i].a),amount);
         }
         public void SetDestinationPalette() => ApplyEnvironmentPalette(1);

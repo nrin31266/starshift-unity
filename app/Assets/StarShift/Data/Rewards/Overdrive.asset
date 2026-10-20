@@ -16,6 +16,13 @@ MonoBehaviour:
   Branch: 0
   ShortCode: OD
   Color: {r: 1, g: 0.45, b: 0.8, a: 1}
+  Sprite: {fileID: 21300000, guid: 6bb8edc9fc6fc26e59ee3d3dcafdb33b, type: 3}
+  AnimationFrames:
+  - {fileID: -1989764421, guid: fd3c617f406c8bcb19648f7f0e3a79dd, type: 3}
+  - {fileID: -153115527, guid: fd3c617f406c8bcb19648f7f0e3a79dd, type: 3}
+  - {fileID: -808423885, guid: fd3c617f406c8bcb19648f7f0e3a79dd, type: 3}
+  - {fileID: 355441277, guid: fd3c617f406c8bcb19648f7f0e3a79dd, type: 3}
+  VisualScale: 1
   Amount: 1
   Lifetime: 12
   DriftSpeed: 0.8

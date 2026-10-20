@@ -16,6 +16,13 @@ MonoBehaviour:
   Branch: 1
   ShortCode: T2+
   Color: {r: 0.8, g: 0.4, b: 1, a: 1}
+  Sprite: {fileID: 21300000, guid: 4943f9e4f12b1da669b749054f109da0, type: 3}
+  AnimationFrames:
+  - {fileID: -667000622, guid: bbd35e35dbd070c18abf6ad075fdde43, type: 3}
+  - {fileID: 202628258, guid: bbd35e35dbd070c18abf6ad075fdde43, type: 3}
+  - {fileID: -1458965238, guid: bbd35e35dbd070c18abf6ad075fdde43, type: 3}
+  - {fileID: 1044123238, guid: bbd35e35dbd070c18abf6ad075fdde43, type: 3}
+  VisualScale: 1
   Amount: 1
   Lifetime: 12
   DriftSpeed: 0.8

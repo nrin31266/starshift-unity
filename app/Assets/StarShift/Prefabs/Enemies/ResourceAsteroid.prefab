@@ -113,7 +113,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8621c8fc44ed62e18ada98d89d6869cc, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EnemyHealth
   definition: {fileID: 11400000, guid: a5b258a4b397a9a3fa2edc1d7e575060, type: 2}
 --- !u!114 &6492516892839476873
@@ -126,7 +126,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2be931ca57530f2ed8b67136d3e1623c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EnemyDamagePresentation
   hull: {fileID: 1668067489286646524}
   damagedTint: {r: 0.7, g: 0.4, b: 0.24, a: 1}
@@ -146,7 +146,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 172d6236fa4fadb4190fafb89ff0223f, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EntryHoldFlight
   flightCamera: {fileID: 0}
   entryViewport: {x: 0.5, y: 1.12}
@@ -163,7 +163,7 @@ MonoBehaviour:
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9776de0480c13e380b4bc3ecb13fa2a5, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.SingleFireAttack
   definition: {fileID: 11400000, guid: cec3294973b19ab9584c75b98ed1eda7, type: 2}
   muzzle: {fileID: 7771955420635746815}
@@ -179,7 +179,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f12a66bc2de2bba1eaa574770fc556eb, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EnemyFirePresentation
   core: {fileID: 2386985393634018091}
   chargedTint: {r: 1, g: 0.2, b: 0.8, a: 1}
@@ -193,7 +193,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 37672b7fc196a607bb66c8a6cd55048a, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EnemyEntryTelegraph
   cue: {fileID: 7447211763372632756}
 --- !u!114 &613533931797441682
@@ -206,9 +206,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8c6d82123c11cfc2fa03938ba039ea6a, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.AsteroidVisualMotion
   visual: {fileID: 3537263704782913845}
+  sizeSprites: []
 --- !u!1 &2834276918074409433
 GameObject:
   m_ObjectHideFlags: 0
@@ -327,7 +328,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3912155033946478035}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -437,7 +438,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.7, y: 0.55, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7241006048869537091}
@@ -491,8 +492,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 5
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: a2c7215861e4660d18b5881062f29d7b, type: 3}
-  m_Color: {r: 0.9, g: 0.65, b: 0.2, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 97aa99924cd178870a5d7b60dcc76f87, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -527,9 +528,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9189593097524193945}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 1, w: -0.00000004371139}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2715226799043985467}
@@ -583,7 +584,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 8
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: e66efd296b97c16eab7f1652981b9955, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d53aae57f65abe0568b52f5945cea69c, type: 3}
   m_Color: {r: 1, g: 0.65, b: 0.2, a: 0.8}
   m_FlipX: 0
   m_FlipY: 0

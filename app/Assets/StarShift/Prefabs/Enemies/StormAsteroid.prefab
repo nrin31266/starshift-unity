@@ -138,7 +138,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.45, z: 0}
-  m_LocalScale: {x: 0.90000004, y: 0.132, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6222195105126228305}
@@ -192,7 +192,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 6
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 31f61b311b2fae5dfb5ab8d72d62ad2a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 486ed6e0c19a99ceebc6ae72cffd6672, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -285,7 +285,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8621c8fc44ed62e18ada98d89d6869cc, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EnemyHealth
   definition: {fileID: 11400000, guid: f3953511964357f80b6e921f6984eadb, type: 2}
 --- !u!114 &7247323250560891661
@@ -298,7 +298,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2be931ca57530f2ed8b67136d3e1623c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EnemyDamagePresentation
   hull: {fileID: 6314957006533597239}
   damagedTint: {r: 0.7, g: 0.4, b: 0.24, a: 1}
@@ -318,7 +318,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 172d6236fa4fadb4190fafb89ff0223f, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EntryHoldFlight
   flightCamera: {fileID: 0}
   entryViewport: {x: 0.5, y: 1.12}
@@ -335,7 +335,7 @@ MonoBehaviour:
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9776de0480c13e380b4bc3ecb13fa2a5, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.SingleFireAttack
   definition: {fileID: 11400000, guid: cec3294973b19ab9584c75b98ed1eda7, type: 2}
   muzzle: {fileID: 1602674938732697846}
@@ -351,7 +351,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f12a66bc2de2bba1eaa574770fc556eb, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EnemyFirePresentation
   core: {fileID: 7072439502628225940}
   chargedTint: {r: 1, g: 0.2, b: 0.8, a: 1}
@@ -365,7 +365,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc28183a7faa9fa9b88e9c3a9da5834d, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EnemyModifierPresentation
   accent: {fileID: 3510188853214994964}
 --- !u!114 &6240861397274465979
@@ -378,7 +378,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 37672b7fc196a607bb66c8a6cd55048a, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EnemyEntryTelegraph
   cue: {fileID: 1202847917013349573}
 --- !u!114 &3728605252279804940
@@ -391,9 +391,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8c6d82123c11cfc2fa03938ba039ea6a, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.AsteroidVisualMotion
   visual: {fileID: 7025169757438419103}
+  sizeSprites:
+  - {fileID: 21300000, guid: 04f6b8ca188115c548f67e88052cbf4e, type: 3}
+  - {fileID: 21300000, guid: 492de7188188a64a19690d054cce61bd, type: 3}
+  - {fileID: 21300000, guid: dd7dfe178dbbfe850844a66a2bda02e8, type: 3}
+  - {fileID: 21300000, guid: 99f7f1e6373d2bfba8fd580d06f9994e, type: 3}
 --- !u!1 &5886637288678723010
 GameObject:
   m_ObjectHideFlags: 0
@@ -450,9 +455,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6678515610909899423}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 1, w: -0.00000004371139}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6222195105126228305}
@@ -506,7 +511,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 8
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: e66efd296b97c16eab7f1652981b9955, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d53aae57f65abe0568b52f5945cea69c, type: 3}
   m_Color: {r: 1, g: 0.65, b: 0.2, a: 0.8}
   m_FlipX: 0
   m_FlipY: 0
@@ -557,7 +562,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7527123393053821073}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -636,7 +641,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.6, y: 0.6, z: 1}
+  m_LocalScale: {x: 1.1, y: 1.1, z: 1.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 392257181872070748}
@@ -690,8 +695,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 5
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: a2c7215861e4660d18b5881062f29d7b, type: 3}
-  m_Color: {r: 0.5, g: 0.52, b: 0.57, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 492de7188188a64a19690d054cce61bd, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

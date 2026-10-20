@@ -20,6 +20,7 @@ namespace StarShift.Rewards
         private int token;
         private bool active;
         private float remaining;
+        private float animationAge;
         private float graceRemaining = -1;
         private Color baseColor;
         private Vector3 previousPlayerPosition;
@@ -53,6 +54,7 @@ namespace StarShift.Rewards
             Item = item; Crate = crate; cleanup = scope; token = scope.RewardToken; receiver = player;
             collect = onCollect; release = onRelease; remaining = crate != null ? 8 : item.Lifetime;
             graceRemaining = -1;
+            animationAge = 0;
             previousPlayerPosition = player.transform.position;
             previousPickupPosition = position;
             fallVelocity = -(item != null ? item.DriftSpeed : .8f);
@@ -76,6 +78,9 @@ namespace StarShift.Rewards
             if (!active) return;
             if (cleanup.RewardToken != token) { Release(); return; }
             remaining -= Time.fixedDeltaTime;
+            animationAge += Time.fixedDeltaTime;
+            if (Crate == null && Item.AnimationFrames != null && Item.AnimationFrames.Length > 0)
+                visual.sprite = Item.AnimationFrames[(int)(animationAge / .14f) % Item.AnimationFrames.Length];
             if (graceRemaining >= 0) graceRemaining = Mathf.Max(0, graceRemaining - Time.fixedDeltaTime);
             var visibleRemaining = graceRemaining >= 0 ? Mathf.Min(remaining, graceRemaining) : remaining;
             var opacity = Mathf.Clamp01(visibleRemaining / expiryFadeSeconds);

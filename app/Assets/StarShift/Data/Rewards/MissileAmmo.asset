@@ -16,6 +16,13 @@ MonoBehaviour:
   Branch: 0
   ShortCode: MSL+1
   Color: {r: 0.7, g: 0.8, b: 1, a: 1}
+  Sprite: {fileID: 21300000, guid: 2a79eb64cb0515c2fbd7e4ea7ad41068, type: 3}
+  AnimationFrames:
+  - {fileID: 791377277, guid: 1ee8ea4a3825110ecb55030031ad7b69, type: 3}
+  - {fileID: -1747614316, guid: 1ee8ea4a3825110ecb55030031ad7b69, type: 3}
+  - {fileID: 2118193949, guid: 1ee8ea4a3825110ecb55030031ad7b69, type: 3}
+  - {fileID: 1612557961, guid: 1ee8ea4a3825110ecb55030031ad7b69, type: 3}
+  VisualScale: 1
   Amount: 1
   Lifetime: 12
   DriftSpeed: 0.8
