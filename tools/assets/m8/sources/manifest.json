@@ -147,5 +147,40 @@
   ],
   "rights_note": "AI sources are generated outputs, not third-party stock. No exclusive copyright or legal clearance claim. Keep applicable PixelLab account/service terms for distribution review; no imported external game art.",
   "quota": "Verified final balance: 35/40 trial generations remaining, 5 used, $0 paid credit. Failed Pro/concurrent requests created no charge/job.",
-  "production": "production-jobs.json"
+  "production": "production-jobs.json",
+  "final_overhaul": {
+    "date": "2026-10-21",
+    "charged_generations": 2,
+    "balance_after_player": 23,
+    "ceiling_additional": 8,
+    "sources": [
+      {
+        "id": "player-spear-final",
+        "model": "pixen",
+        "seed": 812901,
+        "job_id": "4cf50119-4020-48f5-a5d5-09b6789c1aa5",
+        "asset_id": "16e940ae-7015-557f-9913-b196f915b5be",
+        "raw": "player-spear-final-raw.png",
+        "sha256": "83f79e18551edb17c680eb2dc1ae2ff8b63b72078dc2b8ea0a1a15b219081f0e",
+        "decision": "Accepted after Aseprite nose symmetry and engine socket cleanup"
+      },
+      {
+        "id": "player-raptor-final",
+        "model": "pixen",
+        "seed": 812902,
+        "job_id": "9f6be0cc-f8de-410b-ae78-9111e3024561",
+        "asset_id": "17cfb0bc-eded-57b5-9446-4b404a3bbfab",
+        "raw": "player-raptor-final-raw.png",
+        "sha256": "d0a88d3d678e4f87d77415974e6196c57afdf0812414105e31ab535623247103",
+        "decision": "Raw feather wings rejected; manually repainted as continuous swept armor in final-player.lua"
+      }
+    ],
+    "failed_requests": [
+      {
+        "job_id": "7aa8e105-79fc-4535-a9df-a65d9e90e430",
+        "route": "edit_image_pixen",
+        "reason": "Free tier high demand; no output or charge"
+      }
+    ]
+  }
 }

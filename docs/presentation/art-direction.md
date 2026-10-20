@@ -292,3 +292,13 @@ output, binding và lifecycle từng asset. Source/import readiness không tự 
 runtime verified. Remaining polish: selective amber skin mask; riêng buff-expiry/warp
 sheet playback; asteroid damage repaint; audit các overlay/result variants ít gặp.
 Không chốt device readability/FPS hoặc full audio trong pass này.
+
+## M8 final overhaul `[PROVISIONAL]`
+
+Player chassis giữ ID/ownership/giá nhưng thay thiết kế và display name thành
+Mũi Giáo (default) và Ưng Kích (broad swept armor). Mỗi chassis có engine/muzzle
+sockets riêng; plume và short ribbon dùng cùng frame family trong gameplay,
+approach và UI preview/card. Amber là repaint vùng giáp, không tint toàn hull.
+Default propulsion luôn hiện; Ion giữ 8 Shards, Rainbow mới 8 Shards qua catalog
+hiện có. Banking chỉ đổi visual child. Source và evidence status ở
+[production manifest](../../tools/assets/m8/production-manifest.json).

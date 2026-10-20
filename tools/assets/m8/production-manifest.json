@@ -139,4 +139,31 @@
     {"id":"vanguard-truss","status":"IN-GAME VERIFIED","bound":true,"route":"Aseprite modular derivation","source":"tools/assets/m8/cleaned/vanguard-truss.aseprite","output":"app/Assets/StarShift/Art/M8/vanguard-truss.png","binding":"VanguardFrigate M8Truss children","native_size":[192,48],"ppu":56.25,"pivot":[0.5,0.5],"animation":"existing owner transforms; no collider/root edits"},
     {"id":"warden-truss","status":"IN-GAME VERIFIED","bound":true,"route":"Aseprite modular derivation","source":"tools/assets/m8/cleaned/warden-truss.aseprite","output":"app/Assets/StarShift/Art/M8/warden-truss.png","binding":"NebulaWarden M8Truss children","native_size":[192,48],"ppu":56.25,"pivot":[0.5,0.5],"animation":"existing owner transforms; no collider/root edits"}
   ]
+,
+  "final_overhaul": {
+  "baseline": "0f41376c",
+  "status": "IN PROGRESS",
+  "player": {
+    "status": "IN-GAME VERIFIED",
+    "chassis": [
+      "Mũi Giáo",
+      "Ưng Kích"
+    ],
+    "ids_preserved": [
+      "chassis-arrow",
+      "chassis-swept"
+    ],
+    "trails": [
+      "trail-none",
+      "trail-ion",
+      "trail-rainbow"
+    ],
+    "amber": "separate repainted sprites",
+    "verification": "tools/unity/VerifyM8Final.cs Player: actual store purchase/reload, 2 chassis x 3 trails in L1; isolated save bytes guarded",
+    "evidence": ".design/m8/final/player.json"
+  },
+  "generations_charged": 2,
+  "generations_remaining_recorded": 23,
+  "additional_ceiling": 8
+}
 }

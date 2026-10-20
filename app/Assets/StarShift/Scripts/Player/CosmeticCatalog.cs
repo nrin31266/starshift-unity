@@ -14,14 +14,21 @@ namespace StarShift.Player
         [Min(0)] public int ShardCost;
         public bool IsDefault;
         public Sprite Sprite;
+        public Sprite AmberSprite;
         public bool FlipY;
         public Color Tint = Color.white;
+        public Vector2[] EngineSockets = Array.Empty<Vector2>();
+        public Vector2 MuzzleSocket;
+        public float PlumeScale = .6f;
+        public Sprite[] AnimationFrames = Array.Empty<Sprite>();
+        public float TrailSeconds = .16f;
     }
 
     [CreateAssetMenu(menuName = "StarShift/Cosmetic Catalog")]
     public sealed class CosmeticCatalog : ScriptableObject
     {
         public CosmeticOption[] Options;
+        public Sprite[] EngineFrames;
         public CosmeticOption Find(string id) => Array.Find(Options, o => o.Id == id);
         public CosmeticOption Default(CosmeticSlot slot) => Array.Find(Options, o => o.Slot == slot && o.IsDefault);
         public string[] Defaults => new[] { Default(CosmeticSlot.Chassis).Id, Default(CosmeticSlot.Skin).Id, Default(CosmeticSlot.Trail).Id };

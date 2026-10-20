@@ -151,11 +151,11 @@ namespace StarShift.UI
         }
         private void Preview(Image ship, Image trail, PlayerProfile profile)
         {
-            var chassis = cosmetics.Equipped(profile, CosmeticSlot.Chassis);
-            ship.sprite = chassis.Sprite;
-            ship.rectTransform.localScale = new Vector3(1, chassis.FlipY ? -1 : 1, 1);
-            ship.color = cosmetics.Equipped(profile, CosmeticSlot.Skin).Tint;
-            trail.color = cosmetics.Equipped(profile, CosmeticSlot.Trail).Tint;
+            ship.GetComponent<ShipPreview>().Apply(cosmetics,
+                cosmetics.Equipped(profile, CosmeticSlot.Chassis),
+                cosmetics.Equipped(profile, CosmeticSlot.Skin),
+                cosmetics.Equipped(profile, CosmeticSlot.Trail));
+            trail.enabled = false;
         }
         private bool inStore;
         private void OpenCosmetics(bool store)
@@ -210,9 +210,10 @@ namespace StarShift.UI
                 view.CosmeticLabels[i].text = option.DisplayName + "\n" + (wearing ? "✓ " + ShellCopy.Equipped : cosmetics.Owns(profile, option) ? ShellCopy.Owned : option.ShardCost + " Stellar Shard");
                 view.CosmeticCards[i].GetComponent<Outline>().enabled = i == selectedCosmetic;
                 var swatch = view.CosmeticSwatches[i];
-                swatch.sprite = cosmeticSlot == CosmeticSlot.Chassis ? option.Sprite : cosmetics.Equipped(profile, CosmeticSlot.Chassis).Sprite;
-                swatch.rectTransform.localScale = new Vector3(1, (cosmeticSlot == CosmeticSlot.Chassis ? option.FlipY : cosmetics.Equipped(profile, CosmeticSlot.Chassis).FlipY) ? -1 : 1, 1);
-                swatch.color = cosmeticSlot == CosmeticSlot.Chassis ? cosmetics.Equipped(profile, CosmeticSlot.Skin).Tint : option.Tint.a == 0 ? Color.white : option.Tint;
+                swatch.GetComponent<ShipPreview>().Apply(cosmetics,
+                    cosmeticSlot == CosmeticSlot.Chassis ? option : cosmetics.Equipped(profile, CosmeticSlot.Chassis),
+                    cosmeticSlot == CosmeticSlot.Skin ? option : cosmetics.Equipped(profile, CosmeticSlot.Skin),
+                    cosmeticSlot == CosmeticSlot.Trail ? option : cosmetics.Equipped(profile, CosmeticSlot.Trail));
             }
             view.CosmeticDetail.text = selected.DisplayName + "\n" + (inStore ? "Mua và trang bị bằng Stellar Shard." : "Đã sở hữu · thay đổi miễn phí.") + " Chỉ thay đổi ngoại hình.";
             view.CosmeticAction.GetComponentInChildren<Text>().text = inStore ? (owned ? ShellCopy.Owned : profile.StellarShardBalance >= selected.ShardCost ? ShellCopy.Purchase(selected.ShardCost) : ShellCopy.NeedShards(selected.ShardCost - profile.StellarShardBalance)) : equipped ? ShellCopy.Equipped : ShellCopy.Equip;
