@@ -1723,6 +1723,7 @@ View PNG giữ cục bộ trong ignored `.design/m7/`; không đưa QA captures 
 | Teardown / teardown.json | Cleanup an toàn/idempotent khi Player/backdrop đã bị hủy; scene-relaunch kiểm object lifetime thật |
 | Stats / stats.json | Eligible death once, pooled reuse, escape/pressure/asteroid/shield-node exclusions, HUD authority, active/Pause time |
 | Input / input.json | Real multitouch second-finger Pause, canceled held intent, fresh Resume, Escape hierarchy và Pause checkpoint Retry |
+| Input cleanup / input-cleanup.json | Normal Dispose và interruption callback khi thoát Play/reload trả native mouse/touch, bỏ synthetic devices; cleanup input chạy trước storage/UI teardown |
 | Failures / failures.json | Region A→B failed destination transaction rồi Resume recovery, background pause, corrupt read retry, backup notice, failed NewGame return/retry, AudioSource volume consumers |
 | Recovery / recovery.json | Invalid save confirmation/cancel, archive original bytes, successful fresh Campaign; không overwrite unsupported save |
 | Hangar / hangar-1600.json, hangar-2000.json | Shared stage, Workshop owned-only/Store navigation, ba slots/sáu options, preview/purchase/cancel/re-equip, wallet once, rollback, reload/NewGame preservation, runtime chassis và Replay/Dev denial |

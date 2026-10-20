@@ -47,6 +47,7 @@ public static class VerifyGameShell
     public static object BeginStats()=>Begin("stats",Stats);
     public static object BeginFailures()=>Begin("failures",Failures);
     public static object BeginSceneRelaunch()=>Begin("scene-relaunch",SceneRelaunch);
+    public static object BeginInputCleanup()=>Begin("input-cleanup",InputCleanup);
     public static object BeginInput()=>Begin("input",Input);
     public static object BeginProductionDamage()=>Begin("production-damage",ProductionDamage);
     public static object BeginLoading()=>Begin("loading",Loading);
@@ -107,6 +108,8 @@ public static class VerifyGameShell
             InputSystem.settings.editorInputBehaviorInPlayMode=InputSettings.EditorInputBehaviorInPlayMode.AllDeviceInputAlwaysGoesToGameView;
             InputSystem.settings.backgroundBehavior=InputSettings.BackgroundBehavior.IgnoreFocus;
             oldMouse=UnityEngine.InputSystem.Mouse.current;
+            EditorApplication.playModeStateChanged+=OnPlayModeChanged;
+            AssemblyReloadEvents.beforeAssemblyReload+=RestoreInput;
             foreach(var device in InputSystem.devices)if(device.native&&device.enabled&&(device is UnityEngine.InputSystem.Mouse||device is Touchscreen)){disabled.Add(device);InputSystem.DisableDevice(device);}
             mouse=InputSystem.AddDevice<Mouse>();mouse.MakeCurrent();touch=InputSystem.AddDevice<Touchscreen>();activeRig=this;
         }
@@ -115,16 +118,28 @@ public static class VerifyGameShell
         {var state=new MouseState{position=point};if(held)state=state.WithButton(MouseButton.Left);InputSystem.QueueStateEvent(mouse,state);await Task.Delay(80);}
         public async Task Touch(int id,UnityEngine.InputSystem.TouchPhase phase,Vector2 point)
         {InputSystem.QueueStateEvent(touch,new TouchState{touchId=id,phase=phase,position=point});await Task.Delay(100);}
+        private void OnPlayModeChanged(PlayModeStateChange state)
+        {
+            if(state==PlayModeStateChange.ExitingPlayMode)RestoreInput();
+        }
+        private void RestoreInput()
+        {
+            // Dừng Play/reload có thể hủy probe trước Dispose; luôn trả lại input thật.
+            EditorApplication.playModeStateChanged-=OnPlayModeChanged;
+            AssemblyReloadEvents.beforeAssemblyReload-=RestoreInput;
+            if(mouse!=null&&mouse.added)InputSystem.RemoveDevice(mouse);
+            if(touch!=null&&touch.added)InputSystem.RemoveDevice(touch);
+            foreach(var device in disabled)if(device.added)InputSystem.EnableDevice(device);
+            if(oldMouse!=null&&oldMouse.added)oldMouse.MakeCurrent();
+            InputSystem.settings.editorInputBehaviorInPlayMode=oldEditor;
+            InputSystem.settings.backgroundBehavior=oldBackground;
+        }
         public void Dispose()
         {
+            RestoreInput();
             if(Directory.Exists(Path+".tmp"))Directory.Delete(Path+".tmp");
             Save.ExitIsolated();Save.UseTestStorage(originalPath);Time.timeScale=oldScale;AudioListener.pause=oldAudio;Shell.Boot();
             Player.GetComponent<PlayerDamageLifecycle>().enabled=true;
-            if(mouse.added)InputSystem.RemoveDevice(mouse);
-            if(touch.added)InputSystem.RemoveDevice(touch);
-            foreach(var device in disabled)if(device.added)InputSystem.EnableDevice(device);
-            if(oldMouse!=null&&oldMouse.added)oldMouse.MakeCurrent();
-            InputSystem.settings.editorInputBehaviorInPlayMode=oldEditor;InputSystem.settings.backgroundBehavior=oldBackground;
             selectedSize.SetValue(gameView,oldSize);
             foreach(var item in production){var now=File.Exists(originalPath+item.Key)?File.ReadAllBytes(originalPath+item.Key):null;Check((now==null&&item.Value==null)||(now!=null&&item.Value!=null&&now.SequenceEqual(item.Value)),"Production file changed "+item.Key);}
             activeRig=null;
@@ -386,6 +401,21 @@ public static class VerifyGameShell
             await Click(View.Continue);Check(Runner.Flow.Level.Id=="L5"&&Runner.CurrentIndex==1,"Recreated Region B checkpoint");
             return new{status="PASS",sceneRecreations=2,completedContinue=true,regionBCheckpoint=true,productionFilesUnchanged=true};
         }
+    }
+    static Task<object> InputCleanup()
+    {
+        var native=InputSystem.devices.Where(d=>d.native&&d.enabled&&(d is Mouse||d is Touchscreen)).ToArray();
+        Check(native.Any(d=>d is Mouse),"Enabled physical mouse required");
+        var before=InputSystem.devices.ToArray();
+        using(var rig=new UiRig(1600))
+        {
+            Check(native.All(d=>!d.enabled),"Probe did not isolate physical input");
+            typeof(UiRig).GetMethod("OnPlayModeChanged",Fields).Invoke(rig,new object[]{PlayModeStateChange.ExitingPlayMode});
+            Check(native.All(d=>d.enabled)&&InputSystem.devices.SequenceEqual(before),"Interrupted probe leaked input devices");
+        }
+        using(var rig=new UiRig(1600)){}
+        Check(native.All(d=>d.enabled)&&InputSystem.devices.SequenceEqual(before)&&UnityEngine.InputSystem.Mouse.current.native,"Dispose did not restore physical mouse");
+        return Task.FromResult<object>(new{status="PASS",interruptedCleanup=true,normalCleanup=true,physicalMouseEnabled=true,noSyntheticDeviceLeak=true});
     }
     static async Task<object> Input()
     {
