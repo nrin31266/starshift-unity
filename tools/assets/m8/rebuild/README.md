@@ -25,14 +25,13 @@ Keep existing Unity metadata alongside any recreated bound PNG before refreshing
 
 Native import/slicing uses `ConfigureM8Production.Import(ids, frameCount)` with four
 frames, except explosion (eight) and rock shatter (twelve). Rock uses its workbench
-anchor. `ConfigureM8Final.Player` binds the selected hulls and exactly two plumes;
-`RebuildM8Presentation` binds the movement trail, death fragments, glass cases and rock
-bursts. Do not rerun old whole-project configuration passes over this wiring.
+anchor. Final binding is stored in the versioned prefabs, scene and data. The
+one-time Configure/Rebuild migrations are retired; do not replay old setup over tuning.
 
 `python3 tools/assets/m8/rebuild/self_check.py` checks the approved hull boundary,
 glass-case identities, glint uniqueness and exact first-frame exports. Native checks:
 `VerifyM8Final.Ui`, `VerifyM8Final.Survival`, `VerifyM8ProductionLayout.Edit/Run`
-and `ConfigureM8Art.VerifyContracts`. Runtime checks require idle Menu and use
+and `InspectM8Production.Contracts` snapshots. Runtime checks require idle Menu and use
 separate save storage. Evidence is local under `.design/m8/`; it is not shipped art.
 
 Runtime exports are organized by category under `app/Assets/StarShift/Art/`;

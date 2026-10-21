@@ -100,6 +100,7 @@ namespace StarShift.Enemies
         }
         private void FixedUpdate()
         {
+            if (Time.timeScale <= 0) return;
             if (barrage != null || directed != null || !IsBusy) return;
             if (!health.IsAlive || !gate.CanContinueAttack) { CancelAttack(); return; }
             remaining -= Time.fixedDeltaTime;

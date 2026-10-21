@@ -88,6 +88,14 @@ public static class VerifyArtClosure
                 if(scope=="all"||scope=="dev")await DevRoutes();
                 if(scope=="all"||scope=="art")await ArtFlow();
                 if(scope=="death-world")await DeathWorld();
+                if(scope=="roster")
+                {
+                    await Start("L1");
+                    Directory.CreateDirectory("../.design/m8/final");
+                    var type=AppDomain.CurrentDomain.GetAssemblies().Select(a=>a.GetType("VerifyM8Final")).Last(t=>t!=null);
+                    await (Task)type.GetMethod("RosterGameplay",BindingFlags.NonPublic|BindingFlags.Static).Invoke(null,null);
+                    Evidence("roster",new{status="PASS",damageStages=true,poolReset=true,asteroidSizes=true});
+                }
                 if(scope=="e2e")
                 {
                     UnityEngine.Object.FindAnyObjectByType<ShellView>().Show(ShellScreen.Playing);gate.SetCinematicLock(false);
@@ -103,6 +111,7 @@ public static class VerifyArtClosure
                 save.ExitIsolated();runner.Flow.LoadLevel(oldLevel);save.UseTestStorage(original);shell.Boot();view.RequestView(oldView,0);Camera.main.ResetAspect();
                 foreach(var p in bytes){var after=File.Exists(original+p.Key)?File.ReadAllBytes(original+p.Key):null;Check(p.Value==null?after==null:after!=null&&p.Value.SequenceEqual(after),"Production save changed");}
                 if(Directory.Exists(Path.GetDirectoryName(temp)))Directory.Delete(Path.GetDirectoryName(temp),true);
+                await Until(()=>player.GetComponents<MonoBehaviour>().All(c=>c==null||c.GetType().Name!="ClosurePointer"),1000,"Closure pointer cleanup");
             }
             Evidence("verification",new{status="PASS",scope,productionSaveGuard=true});
         }
@@ -264,7 +273,11 @@ public static class VerifyArtClosure
                 {
                     await Until(()=>session.IsTerminal&&shell.Screen==ShellScreen.Results,2000,"Game Over overlay");
                     Check(runner.Generation==generation&&runner.SpawnedCount==spawned,"Fatal death advanced or cleaned runner");
-                    Check(boss.gameObject.activeInHierarchy&&hostile.Owner!=null&&friendly.Owner!=null&&module.IsBusy,"Game Over erased battlefield");
+                    // Mô phỏng physics tick còn trong batch sau khi clock vừa freeze.
+                    driver.SendMessage("FixedUpdate");module.SendMessage("FixedUpdate");
+                    Field<DirectedAttack>(module,"directed")?.SendMessage("FixedUpdate");
+                    await Capture("death-world-game-over-check");
+                    Check(boss.gameObject.activeInHierarchy&&hostile.Owner!=null&&friendly.Owner!=null&&module.IsBusy,"Game Over erased battlefield: actor="+boss.gameObject.activeInHierarchy+" hostile="+(hostile.Owner!=null)+" friendly="+(friendly.Owner!=null)+" skill="+module.IsBusy+" phase="+module.CurrentPhase);
                     Check(Time.timeScale==0&&!gate.CanInput&&!gate.CanTakeDamage,"Game Over permissions/clock");
                     var frozen=hostile.transform.position;await Task.Delay(120);Check(hostile.transform.position==frozen,"Game Over scene moved");
                     await Capture("death-world-game-over");view.ResultMenu.onClick.Invoke();await Until(()=>!shell.IsBusy&&shell.Screen==ShellScreen.Menu,4000,"Game Over Menu");

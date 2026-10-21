@@ -92,13 +92,13 @@ namespace StarShift.Enemies
 
         private void FixedUpdate()
         {
+            if (Time.timeScale <= 0) return;
             if (directed != null) return;
             if (!Eligible || !telegraphing && !fireGate.CanFire)
             {
                 ResetSequence();
                 return;
             }
-            if (Time.timeScale <= 0) return;
             remaining -= Time.fixedDeltaTime;
             if (remaining > .000001f) return;
             if (!IsTelegraphing)

@@ -77,6 +77,7 @@ namespace StarShift.Enemies
         }
         private void FixedUpdate()
         {
+            if (Time.timeScale <= 0) return;
             cooldown = Mathf.Max(0, cooldown - Time.fixedDeltaTime);
             if (recovery > 0)
             {

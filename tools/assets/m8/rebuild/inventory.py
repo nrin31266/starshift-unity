@@ -79,7 +79,7 @@ def inventory():
         evidence = ROOT / '.design/presentation-polish' / path
         checks[name] = json.loads(evidence.read_text()) if evidence.exists() else {'status': 'NOT RUN'}
     closure_checks = {}
-    for name in ('carry', 'strike', 'beams', 'boss', 'dev-editor', 'dev-runtime', 'art', 'e2e', 'final-state'):
+    for name in ('carry', 'strike', 'beams', 'boss', 'dev-editor', 'dev-runtime', 'art', 'e2e', 'final-state', 'death-world', 'roster'):
         path = ROOT / '.design/art-closure' / (name + '.json')
         closure_checks[name] = json.loads(path.read_text()) if path.exists() else {'status': 'NOT RUN'}
     closure = json.loads((SOURCE.parents[1] / 'closure/jobs.json').read_text())
@@ -89,7 +89,12 @@ def inventory():
     polish = json.loads((SOURCE.parents[1] / 'polish/jobs.json').read_text())
     used = sum(job['charged'] for job in ledger['jobs']) + sum(job['cost'] for job in polish['jobs'] + polish['animations'] if job['status'] == 'completed')
     ready = all(evidence.get('status') == 'PASS' or evidence.get('pass') is True or evidence.get('passed') is True for evidence in list(checks.values()) + list(closure_checks.values()))
-    result = dict(phase='ART CLOSURE VERIFIED' if ready else 'VERIFICATION INCOMPLETE',
+    cleanup = {}
+    for name in ('edit', 'runtime'):
+        path = ROOT / '.design/final-cleanup' / (name + '.json')
+        cleanup[name] = json.loads(path.read_text()) if path.exists() else {'status': 'NOT RUN'}
+    ready = ready and all(evidence.get('status') == 'PASS' for evidence in cleanup.values())
+    result = dict(final_cleanup=cleanup, next_phase='audio', phase='ART CLOSURE VERIFIED' if ready else 'VERIFICATION INCOMPLETE',
                   verification_scope='Representative flows and art fixtures; no device FPS, Android build or full-campaign completion claim',
                   quota=dict(original_account=dict(starting=40, charged=used, verified_remaining=0, pro_used=True), replacement_account=dict(starting=34, verified_remaining=0, charged_this_followup=closure_used)),
                   closure_checks=closure_checks, checks=checks, baseline_checks=baseline_checks, category_counts=dict(collections.Counter(Path(a['output']).parent.name for a in assets)),

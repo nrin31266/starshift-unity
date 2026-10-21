@@ -18,7 +18,8 @@ Normal death uses eight selected Pro frames over 0.5 s. Boss uses 16; both omit
 the corrupt first Pro frame and end empty. Strike lock uses eight animation
 frames. Other closure sheets use eight except the four-frame curtain bolt.
 UI icons and sweep arrow are single sprites. `ConfigureM8Production.Import`
-keeps existing sprite IDs; finish with `ConfigureArtClosure.Art` in Edit Mode.
+keeps existing sprite IDs. Final binding is stored in the versioned prefabs, scene
+and data; the one-time ConfigureArtClosure migration is retired.
 
 The manifest resolves closure sources first. Do not rerun older whole-project
 bootstrap passes on tuned production data. Runtime evidence and screenshots

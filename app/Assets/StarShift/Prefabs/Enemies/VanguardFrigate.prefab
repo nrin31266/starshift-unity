@@ -866,7 +866,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.BossBeamPresentation
   column: {fileID: 5292102251691253823}
   core: {fileID: 6094422147817968349}
-  sweepGuide: {fileID: 0}
   sweepArrow: {fileID: 0}
 --- !u!1 &2947131494573869427
 GameObject:
@@ -2256,7 +2255,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.BossBeamPresentation
   column: {fileID: 4978960933494445687}
   core: {fileID: 6189127788771312192}
-  sweepGuide: {fileID: 0}
   sweepArrow: {fileID: 0}
 --- !u!1 &4689738309148391740
 GameObject:
@@ -3382,7 +3380,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.BossBeamPresentation
   column: {fileID: 5300430218485000923}
   core: {fileID: 6866416923290077451}
-  sweepGuide: {fileID: 0}
   sweepArrow: {fileID: 0}
 --- !u!114 &2659799892943227181
 MonoBehaviour:

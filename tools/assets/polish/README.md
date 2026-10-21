@@ -21,8 +21,8 @@ Review staging before copying selected PNGs. Import with
 `ConfigureM8Production.Import(ids, frameCount)`: impacts, family cues, curtain,
 armor rupture, supply and heat vent use eight frames; focus markers use four;
 Warden shelter/sweep pulses use sixteen. Static beam/field/curtain bolt have no
-slicing. Run `ConfigurePolishVfx.Bind`, `ConfigurePolishVfx.BulwarkFire` and
-`ConfigurePresentationPolish.Apply` in Edit Mode. Apply the later closure binding after these passes; older whole-project setup tools are bootstrap history.
+slicing. Final binding is stored in the versioned prefabs, scene and data. The
+one-time polish/closure migrations are retired; do not replay old setup over tuning.
 
 Coin and generic player fragments are exported by the existing rebuild Lua files.
 `inventory.py` in `../m8/rebuild/` resolves closure, then polish sources and checks every

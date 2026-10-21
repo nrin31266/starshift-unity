@@ -6,16 +6,9 @@ namespace StarShift.Enemies
     {
         [SerializeField] private LineRenderer column;
         [SerializeField] private LineRenderer core;
-        [SerializeField] private LineRenderer sweepGuide;
         [SerializeField] private SpriteRenderer sweepArrow;
         private Camera gameplayCamera;
         private void Awake() => gameplayCamera = Camera.main;
-        public void Show(Bounds bounds, bool active)
-        {
-            var top = new Vector3(bounds.center.x, bounds.max.y, 0);
-            var bottom = new Vector3(bounds.center.x, bounds.min.y, 0);
-            ShowSegment(top, bottom, bounds.size.x, active);
-        }
         public void ShowSegment(Vector3 from, Vector3 to, float width, bool active, bool locked = true)
         {
             column.enabled = true;
@@ -41,7 +34,6 @@ namespace StarShift.Enemies
 
         public void ShowSweepDirection(Vector3 from, Vector3 to, bool visible)
         {
-            if (sweepGuide != null) sweepGuide.enabled = false;
             if (sweepArrow == null) return;
             sweepArrow.gameObject.SetActive(visible);
             sweepArrow.enabled = visible;
@@ -56,7 +48,7 @@ namespace StarShift.Enemies
                 sweepArrow.transform.localScale = new Vector3(size / Mathf.Max(.001f, bounds.x * Mathf.Abs(scale.x)), size / Mathf.Max(.001f, bounds.y * Mathf.Abs(scale.y)), 1);
             }
         }
-        public void Hide() { column.enabled = false; core.enabled = false; if (sweepGuide != null) sweepGuide.enabled = false; if (sweepArrow != null) sweepArrow.gameObject.SetActive(false); }
+        public void Hide() { column.enabled = false; core.enabled = false; if (sweepArrow != null) sweepArrow.gameObject.SetActive(false); }
         private void OnDisable() => Hide();
     }
 }

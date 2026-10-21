@@ -284,6 +284,7 @@ MonoBehaviour:
   - {fileID: 238753379, guid: 9d1e39be0478de0bdb14d3177e821240, type: 3}
   - {fileID: 926699035, guid: 9d1e39be0478de0bdb14d3177e821240, type: 3}
   strike: 1
+  strikeCueSizeAt900: 96
   frameSeconds: 0.07
 --- !u!1 &1557465056666476300
 GameObject:
@@ -968,7 +969,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.BossBeamPresentation
   column: {fileID: 5336195861714504393}
   core: {fileID: 2310236022949984764}
-  sweepGuide: {fileID: 0}
   sweepArrow: {fileID: 0}
 --- !u!1 &6698435735507470824
 GameObject:

@@ -12,7 +12,7 @@ namespace StarShift.Gameplay
         private bool preserveActiveAttacks;
         private float graceRemaining;
         public bool CanFire => isActiveAndEnabled && !blocked && graceRemaining <= 0 && Time.timeScale > 0;
-        public bool CanContinueAttack => isActiveAndEnabled && (!blocked || preserveActiveAttacks) && Time.timeScale > 0;
+        public bool CanContinueAttack => isActiveAndEnabled && (!blocked || preserveActiveAttacks);
         public event Action PermissionChanged;
         public float VisibleProjectileTimeLimit
         {

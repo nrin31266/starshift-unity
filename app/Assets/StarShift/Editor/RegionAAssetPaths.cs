@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -13,7 +12,7 @@ namespace StarShift.Editor
         {
             if (!path.StartsWith(Root, StringComparison.Ordinal) || path.Substring(Root.Length).Contains('/')) return path;
             var name = Path.GetFileNameWithoutExtension(path);
-            if (new[] { "TopHold", "ArcLeft", "ArcRight", "SineFormation", "PincerLeft", "PincerRight", "DiagonalStorm", "EscortLeft", "EscortRight" }.Contains(name))
+            if (name == "TopHold")
                 return "Assets/StarShift/Data/Fixtures/RegionAFlights/" + Path.GetFileName(path);
             var folder = name.StartsWith("Vanguard", StringComparison.Ordinal) || name == "BossCamera" || name == "BossGold" || name == "BeamMaterial" ? "Boss" : typeof(T).Name switch
             {

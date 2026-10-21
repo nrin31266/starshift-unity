@@ -379,6 +379,8 @@ view/region/aspect không làm entrance dùng stale world bounds.
 `EnemyFireGate` trên scene `Enemies` là shared safety authority: `Block()` hủy quyền
 fire/pending telegraph. `Block(preserveActiveAttacks: true)` chỉ chặn đòn mới khi
 Player chết; `CanContinueAttack` giữ quyền hoàn tất đòn đã bắt đầu.
+Clock Pause/Game Over không đổi quyền tiếp tục thành hard cancel; attack/coordinator
+bỏ qua physics tick khi timeScale bằng zero, kể cả tick còn trong batch đang xử lý.
 `ResumeAfter(seconds)` đếm scaled grace, không reset đòn đang giữ; `ClearProjectiles()`
 release active hostile projectiles cùng scene qua existing pool callback. Producers
 bind scene reference hoặc fallback tìm gate một lần; không có gate thì fail closed.

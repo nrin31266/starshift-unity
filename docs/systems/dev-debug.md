@@ -1,5 +1,10 @@
 # Dev và debug
 
+Các mục milestone bên dưới giữ evidence lịch sử. Cleanup art cuối đã retire các
+migration một lần và ba probe dư; lệnh hiện dùng theo
+[Unity tools](../../tools/unity/README.md). Không chạy lại builder từ Git history
+lên tuning hiện tại.
+
 ## Fixed clear pause grouped verification — 2026-10-19
 
 User điều chỉnh khoảng nghỉ cố định mặc định thành 1.0 s đứng im hoàn toàn sau khi xong địch (bắn hạ, tên lửa, hoặc tàu tự rời đi), rồi mới bay cuộn nhẹ 1.5 s chuyển sang encounter tiếp theo.
@@ -1800,3 +1805,24 @@ Retry checkpoint qua shell. Save byte guard PASS; strike và beam crossing regre
 được chạy lại. Các fixture lịch sử có assertion terminal cleanup đã đổi theo
 [player owner](../gameplay/player-combat.md#game-over); không coi evidence cũ là
 bằng chứng đã rerun toàn suite. Không claim Android/device FPS.
+
+## Final art cleanup — 2026-10-21
+
+Art đóng ở checkpoint này; phase tiếp theo là âm thanh. Đã retire 24 offline
+migration/probe dư, 34 assets không dùng, bảy proxy renderer ẩn và các API legacy
+không còn caller. Giữ current regression/shared fixtures, editable sources, PixelLab
+ledgers và recovery cá nhân; chi tiết ownership ở [asset pipeline](../production/asset-pipeline.md#final-cleanup-và-bàn-giao-âm-thanh).
+
+Final grouped verification PASS: closure carry/strike/beams/boss/dev/art; roster
+damage/pool/asteroid sizes; death-world bốn skill boss và ba quái, respawn/Game Over,
+Retry/Menu; một fixture đầy đủ năm encounter có Pause/death/missile; enemy/supply/
+asteroid/Bulwark bursts. Clock-zero guard đã được kiểm bằng physics tick gọi trực
+tiếp ở Game Over để skill không bị hard-cancel bởi tick còn trong batch.
+
+Harness chờ hủy input component trước probe tiếp theo; E2E đặt pointer trước nhấn
+và xử lý Pause do Editor mất focus. Chỉ rerun nhóm fail, không lặp toàn historical
+suite. Source 24 retained tools compile; native references 3.017 owners, 186 PNG,
+48 dev routes PASS; snapshot gameplay data/collider trước/sau giống nhau. Sau test
+reload saved scene, Edit Mode sạch, dev/debug OFF; Console zero errors/warnings.
+Save byte guards PASS. Evidence local `.design/final-cleanup/`, manifest lưu summary.
+Không claim Android/device FPS, full Campaign hoặc final audio.

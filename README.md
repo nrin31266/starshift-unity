@@ -1,40 +1,42 @@
 # StarShift
 
 Game bắn tàu không gian 2D arcade cinematic, landscape mobile, ưu tiên Android.
-Campaign dự kiến 12 level qua 3 region, đổi hướng chiến đấu Up → Right → Up;
-điều khiển relative drag và auto-fire.
+Điều khiển relative drag và giữ để bắn. Campaign hiện có Mission01–08 qua hai
+region; target design 12 level thuộc [game design](docs/design/game-design.md).
 
-Hiện trạng: đã khởi tạo scaffold và review canonical documentation; Unity vẫn ở
-scene mẫu, chưa có gameplay. Bắt đầu task từ [AGENTS.md](AGENTS.md), qua
-[documentation router](docs/README.md) rồi đọc canonical docs liên quan.
+Gameplay và art hiện tại đã qua các lượt kiểm tra Unity đại diện; phase tiếp theo
+là âm thanh. Phạm vi verification và giới hạn ở [dev/debug](docs/systems/dev-debug.md),
+nguồn art/import ở [asset pipeline](docs/production/asset-pipeline.md).
 
 ## Mở project
 
-Unity **6000.5.9f1**, revision `b57deb96f08d`, đọc từ
+Unity **6000.5.9f1**, revision `b57deb96f08d`, theo
 [ProjectVersion.txt](app/ProjectSettings/ProjectVersion.txt).
-Trong Unity Hub chọn **Add project from disk**, trỏ tới thư mục `app/`, rồi mở bằng
-đúng Editor version trên. Repository root không phải Unity project root.
+Trong Unity Hub chọn **Add project from disk**, trỏ tới `app/`.
+Scene chạy game là `Assets/StarShift/Scenes/02_Gameplay.unity`.
+Dev Mode mặc định OFF; test nhanh dùng dropdown Dev Fast Start trong scene.
 
 ## Repository
 
 ```text
-README.md / AGENTS.md   Giới thiệu và quy tắc làm việc
-app/                   Unity project
-docs/                  Canonical docs và router
-tools/audio/           Công cụ SFX offline trong tương lai
-tools/assets/          Công cụ asset offline trong tương lai
-tools/check_docs.py    Kiểm tra invariant tài liệu
+app/                   Unity project, runtime code và assets
+docs/                 Canonical docs và router
+tools/unity/          Importer, inspectors và regression probes hiện dùng
+tools/assets/         Nguồn Aseprite, PixelLab provenance và công cụ export
+tools/audio/          Nơi đặt công cụ offline cho phase âm thanh
+tools/check_docs.py   Kiểm tra tài liệu
 ```
 
 ## Phát triển
 
-Đọc [AGENTS.md](AGENTS.md), sau đó router và canonical owner của task.
-Commit `.meta` cùng asset; cache Unity và IDE đã được ignore.
-Không tự upgrade Editor/package. Chưa xác minh quy trình build Android hay gameplay
-runtime; hiện chưa có build command được chuẩn hóa.
-
-Kiểm tra Markdown ở root, `docs/`, `tools/` (local links và anchor ATX cơ bản):
+Bắt đầu từ [AGENTS.md](AGENTS.md), qua [documentation router](docs/README.md).
+Commit `.meta` cùng asset; giữ Editor/package versions hiện tại.
+[Unity tools](tools/unity/README.md) mô tả cách chạy regression với storage riêng.
+Không chạy lại migration cũ từ lịch sử Git lên tuning hiện tại.
 
 ```sh
-python tools/check_docs.py
+python3 tools/check_docs.py
+python3 tools/assets/m8/rebuild/inventory.py
 ```
+
+Chưa chứng nhận build Android, FPS trên thiết bị hoặc final audio mix.

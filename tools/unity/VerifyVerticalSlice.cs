@@ -407,7 +407,7 @@ public static class VerifyVerticalSlice
             Require(weapon.Heat == 0 && !weapon.IsOverheated, "Terminal replay retained heat.");
             var result = new { passed = true, width, height = Screen.height, lifecycleChecks, overheatSeconds, recoverySeconds,
                 capacity = profile.Capacity, heatPerSecond = profile.HeatPerSecond, coolingDelay = profile.CoolingDelay,
-                coolRate = profile.CoolRate, overheatCoolRate = profile.OverheatCoolRate, recoveryFraction = profile.RecoveryFraction,
+                coolRate = profile.CoolRate, overheatCoolRate = profile.OverheatCoolRate,
                 maxOnlyLock = true, movementIndependent = true, holdAutoResume = true, pauseFrozen = true, handoffRetainsHeat = true,
                 deathRespawnReset = lifecycleChecks, releaseBeforeMax = lifecycleChecks, tapBurst = lifecycleChecks, missionReset = true,
                 terminalFrozen = true, hudMatchesRuntime = true, screenshots = shots.ToArray() };

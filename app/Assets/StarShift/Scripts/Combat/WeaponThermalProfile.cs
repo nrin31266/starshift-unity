@@ -16,7 +16,6 @@ namespace StarShift.Combat
         public float CoolingDelay => coolingDelay;
         public float CoolRate => coolRate;
         public float OverheatCoolRate => overheatCoolRate;
-        public float RecoveryFraction => 0;
 
         private void OnValidate()
         {

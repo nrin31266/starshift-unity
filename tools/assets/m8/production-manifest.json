@@ -1,4 +1,28 @@
 {
+  "final_cleanup": {
+    "edit": {
+      "status": "PASS",
+      "gameplayAndCollidersUnchanged": true,
+      "nativeTextures": 186,
+      "serializedOwners": 3017,
+      "devRoutes": 48,
+      "compiledRetainedTools": true
+    },
+    "runtime": {
+      "status": "PASS",
+      "stage": "complete",
+      "passed": [
+        "all",
+        "roster",
+        "death-world",
+        "e2e",
+        "deaths"
+      ],
+      "productionSaveGuard": true,
+      "error": null
+    }
+  },
+  "next_phase": "audio",
   "phase": "ART CLOSURE VERIFIED",
   "verification_scope": "Representative flows and art fixtures; no device FPS, Android build or full-campaign completion claim",
   "quota": {
@@ -29,7 +53,11 @@
       "singleCue": true,
       "freshAim": true,
       "noReturnGhost": true,
-      "poolReuse": true
+      "poolReuse": true,
+      "fullChargeVisible": true,
+      "attackerChargeCue": true,
+      "lockOutsideHull": true,
+      "pause": true
     },
     "beams": {
       "status": "PASS",
@@ -98,13 +126,13 @@
         "ENCOUNTER_5"
       ],
       "peakVisible": 12,
-      "Score": 4300,
-      "Shards": 9,
+      "Score": 4600,
+      "Shards": 10,
       "CoresCollected": 6,
       "SupplyCaptured": 1,
-      "PickupsCollected": 20,
+      "PickupsCollected": 21,
       "upgrades": 4,
-      "frames": 1290,
+      "frames": 7713,
       "screenshots": [
         "/home/nguyenvanrin/PersonalProjects/starshift/.design/m4-a/screenshots/full-effects-1600.png",
         "/home/nguyenvanrin/PersonalProjects/starshift/.design/m4-a/screenshots/mission-clear-1600.png"
@@ -115,6 +143,26 @@
       "devModeOff": true,
       "debugFlagsOff": true,
       "sceneDirty": false
+    },
+    "death-world": {
+      "status": "PASS",
+      "skills": 4,
+      "enemyAttacks": 3,
+      "respawn": true,
+      "hostileAndFriendlyShots": true,
+      "noDuplicateDeath": true,
+      "noNewAttack": true,
+      "hardCancel": true,
+      "gameOverRetainsWorld": true,
+      "noFatalSpawnOrProgression": true,
+      "menuCleanup": true,
+      "checkpointRetry": true
+    },
+    "roster": {
+      "status": "PASS",
+      "damageStages": true,
+      "poolReset": true,
+      "asteroidSizes": true
     }
   },
   "checks": {
@@ -278,7 +326,7 @@
     },
     "serialized_references": {
       "status": "PASS",
-      "owners": 3061,
+      "owners": 3017,
       "issues": [],
       "sceneDirty": false
     }
@@ -1662,9 +1710,7 @@
         "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Carrier.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Raider.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/ResourceAsteroid.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Scout.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/StormAsteroid.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/SupplyDrone.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/WardenDrone.prefab"
       ]

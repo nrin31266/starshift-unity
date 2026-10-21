@@ -536,10 +536,9 @@ Production data thuộc `app/Assets/StarShift/Data/RegionA/`, chia theo trách n
 | `Boss` | Vanguard health, flight, phases, attacks, camera, beam material và defeat rewards |
 
 System fixtures tách tại `Data/Fixtures/Levels`, `Encounters`, `RegionAFlights`.
-Ba seed flights TopHold/ArcLeft/ArcRight còn được verifiers dùng, giữ tại fixture
-folder. Sáu generated flights cũ SineFormation/PincerLeft/PincerRight/DiagonalStorm/
-EscortLeft/EscortRight đã bỏ khỏi authored assets: không có GUID dependencies hoặc
-runtime/test loader; historical builders có thể tạo lại vào fixture folder.
+TopHold còn được shared verifier dùng, giữ tại fixture folder. ArcLeft/ArcRight và
+các seed flight cũ không có dependency/caller đã retire. Historical builders chỉ
+còn trong Git history, không phải lệnh authoring hiện tại.
 
 `RegionAAssetPaths` trong Editor là owner đường dẫn authoring theo type/name.
 Builders/verifiers dùng logical flat Region A name qua resolver; serialized gameplay
@@ -566,7 +565,7 @@ status cũ làm bằng chứng art hiện tại đã đạt. Baseline trước r
 Các whole-project authoring/verification passes cũ đã retire; không chạy lại lên
 presentation hiện tại. Native checks đang dùng là `VerifyM8Final`,
 `VerifyM8ProductionLayout`, `VerifyM8Background` và contract snapshot trong
-`ConfigureM8Art`. Chúng kiểm các scope đại diện, không thay device profiling.
+`InspectM8Production.Contracts`. Chúng kiểm các scope đại diện, không thay device profiling.
 
 ## M8 clean rebuild — 2026-10-21
 
@@ -596,10 +595,10 @@ frame; explosion tám; rock shatter mười hai với anchor workbench `(19,31)`
 cell 47×43. Glass cases 64×64, bốn cột; nội thất bán trong suốt có chủ đích. Point,
 no mipmaps, uncompressed; world 56.25 PPU, UI 100, environment 21.
 
-`ConfigureM8Final.Player` bind hai chassis A/Amber, sockets, hai plume và các lựa
-chọn trail. `RebuildM8Presentation` bind death fragments, asteroid size states,
-node damage, glass cases, heat rail và speed streaks. `ConfigureM8FleetCombat`
-giữ bootstrap composition lịch sử; final follow-up binding thuộc các pass polish phía dưới.
+Migration lịch sử `ConfigureM8Final.Player` đã bind hai chassis A/Amber, sockets, hai plume và các lựa
+chọn trail. `RebuildM8Presentation` đã bind death fragments, asteroid size states,
+node damage, glass cases, heat rail và speed streaks. `ConfigureM8FleetCombat` và các pass binding một lần đã retire sau cleanup cuối;
+scene/prefab/data đang version là source of truth của wiring hiện tại.
 Không dùng import hoặc authoring pass để thay gameplay definition, collider,
 balance, progression hay save semantics.
 
@@ -629,7 +628,7 @@ và các native tools đang dùng. Art không phù hợp được retire thay v�
 
 Quota tài khoản cũ: năm lượt ở rebuild, thêm 35 lượt completed trong [polish ledger](../../tools/assets/polish/jobs.json), đã kiểm balance về 0. Tài khoản token mới sau restart bắt đầu 34, đã dùng đủ 34 và kiểm balance về 0; chi tiết ở [closure ledger](../../tools/assets/closure/jobs.json). Các request bị rate limit hoặc invalid không tính charge; không cộng balance của hai tài khoản.
 
-Final native authoring: `ConfigurePolishVfx.Bind`, `ConfigurePolishVfx.BulwarkFire`, `ConfigurePresentationPolish.Apply`. Sheet focus bốn frame; hit/family cue/curtain/vent/supply tám; Warden pulse mười sáu. Import kiểm frame count theo source Aseprite, không ép mọi sheet về bốn. Mười ba export cũ không còn serialized owner đã được xóa bằng AssetDatabase; manifest chỉ nhận PNG đang bind. Những source/bootstrap cũ phục vụ tái tạo lịch sử không phải runtime content.
+Các migration đã áp dụng: `ConfigurePolishVfx.Bind`, `ConfigurePolishVfx.BulwarkFire`, `ConfigurePresentationPolish.Apply`; chúng đã retire, không là bước chạy lại hiện tại. Sheet focus bốn frame; hit/family cue/curtain/vent/supply tám; Warden pulse mười sáu. Import kiểm frame count theo source Aseprite, không ép mọi sheet về bốn. Mười ba export cũ không còn serialized owner đã được xóa bằng AssetDatabase; manifest chỉ nhận PNG đang bind. Những source/bootstrap cũ phục vụ tái tạo lịch sử không phải runtime content.
 
 Grouped proof trong `.design/presentation-polish/`: Settings reset từ Menu/Pause và lỗi IO/schema; actual weapon MAX tới zero, life loss và boss HUD; travel/blend/Pause/wide zoom; natural projectile drain; ba weapon impact, asteroid, bốn boss skills và armor ở 1600/2000; death one-shot/pool/no-reward và Supply 6 HP; Bulwark warning/shot/cooldown/shared cap. Full-mission evidence là fixture đại diện, không thay full campaign hay Android/device test.
 
@@ -643,8 +642,8 @@ với tài khoản cũ. Aseprite chọn frame, repaint, normalize icon và pack 
 sheet. Frame Pro đầu bị lỗi debris bị bỏ; enemy xuất tám frame trong 0.5 s,
 boss 16 frame. Input/source/rejected frame nằm ngoài Assets.
 
-Final binding theo thứ tự: import selected PNG với frame count thật, rồi
-`ConfigureArtClosure.Gameplay` / `.Art`. Source closure có ưu tiên hơn polish và
+Closure đã import selected PNG với frame count thật rồi áp binding một lần;
+`ConfigureArtClosure` đã retire. Wiring hiện tại nằm trong prefab/scene/data. Source closure có ưu tiên hơn polish và
 rebuild trong manifest. Các icon shield/overdrive/drone mới cũng được dùng để
 re-export hộp kính; không để icon HUD và item world khác identity.
 
@@ -655,3 +654,16 @@ AssetDatabase trước khi xóa PNG không dùng cùng meta. Không xóa editabl
 current runtime proof trong `.design/art-closure/`, không commit cache/screenshots.
 
 Closure cleanup còn bỏ 22 editable export đã bị source mới thay thế hoặc runtime asset đã retire; raw inputs/Lua recipe còn cần reproduce được giữ.
+
+## Final cleanup và bàn giao âm thanh
+
+Cleanup cuối retire 24 script authoring/probe dư sau khi kiểm caller; giữ importer,
+inspectors, current regressions và shared fixtures theo [Unity tools](../../tools/unity/README.md).
+Bỏ 34 assets không dùng và bảy hidden proxy renderers; năm ảnh chỉ phục vụ recovery
+cá nhân được move giữ GUID vào local ignored `Assets/_Recovery/LegacyArt`, không
+xóa scene recovery. Không thay gameplay data, collider hoặc tuning. Nguồn Aseprite,
+raw inputs/Lua và PixelLab ledgers được giữ để reproduce art.
+
+Phase tiếp theo là âm thanh; danh mục và feedback contract thuộc
+[audio/VFX](../presentation/audio-vfx.md). Không mở thêm generation art hoặc đổi
+gameplay trong cleanup này. Verification cuối thuộc [dev/debug](../systems/dev-debug.md).

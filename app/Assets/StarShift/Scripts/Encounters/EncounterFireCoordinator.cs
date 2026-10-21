@@ -63,6 +63,7 @@ namespace StarShift.Encounters
 
         private void FixedUpdate()
         {
+            if (Time.timeScale <= 0) return;
             if (definition == null) return;
             if (!safetyGate.CanFire)
             {

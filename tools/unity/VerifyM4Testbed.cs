@@ -326,11 +326,21 @@ public static class VerifyM4Testbed
             try
             {
                 await Until(()=>Runner.Flow.CanContinue,3000,"Intro not ready");
+                if(Session.IsPaused)Session.Resume();
+                // Đặt pointer trước khi nhấn để frame đầu không bị hiểu là drag.
+                await rig.MouseEvent(new Vector2(width*.8f,300),false);
                 await rig.MouseEvent(new Vector2(width*.8f,300),true);await rig.MouseEvent(new Vector2(width*.8f,300),false);
                 await Until(()=>Runner.Stage==EncounterStage.Running,10000,"Intro did not reach combat");
                 var deadline=Time.realtimeSinceStartup+145;
                 while(!Session.IsClear && Time.realtimeSinceStartup<deadline)
                 {
+                    // Editor có thể mất focus giữa lượt bot; không click tiếp lên menu Pause.
+                    if(Session.IsPaused)
+                    {
+                        UnityEngine.Object.FindAnyObjectByType<StarShift.UI.ShellView>().Resume.onClick.Invoke();
+                        await Until(()=>!Session.IsPaused,1000,"Background pause did not resume");
+                        await rig.MouseEvent(new Vector2(width*.5f,220),false);
+                    }
                     peak=Mathf.Max(peak,Enemies.Count(e=>!e.GetComponent<EntryHoldFlight>().IsOutsideView));
                     if(loadout.ActiveLevel>lastLevel)upgrades++;lastLevel=loadout.ActiveLevel;
                     if(withDeath && !death && Runner.CurrentIndex>=2)

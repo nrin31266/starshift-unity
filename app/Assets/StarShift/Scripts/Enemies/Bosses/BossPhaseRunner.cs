@@ -29,6 +29,7 @@ namespace StarShift.Enemies
         private void OnEnable() { IsPhaseB = false; next = 0; remaining = 1.5f; current = null; phaseCue.enabled = false; }
         private void FixedUpdate()
         {
+            if (Time.timeScale <= 0) return;
             if (!health.IsAlive) { CancelModules(); return; }
             if (!IsPhaseB && (shields != null ? shields.IsExposed : health.CurrentHp <= health.MaxHp * definition.PhaseBThreshold))
             {
