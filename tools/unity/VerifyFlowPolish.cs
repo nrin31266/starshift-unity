@@ -105,8 +105,9 @@ public static class VerifyFlowPolish
                 terminalShot.Launch(profile, owner.transform, owner, rig.Player, p => p.ResetForPool());
                 Check(life.TryReceiveHit(owner) && terminalShot.gameObject.activeSelf, "Last death prematurely cleared shots");
                 await Until(() => rig.Gate.State == PlayerGameplayState.GameOver, 1500, "Game Over did not finish");
-                Check(!terminalShot.gameObject.activeSelf && UnityEngine.Object.FindObjectsByType<PlayerProjectile>().Length == 0, "Terminal cleanup regressed");
-                var result = new { status = "PASS", results, pauseRequiresFreshPress = true, gameOverCleanup = true };
+                Check(terminalShot.gameObject.activeSelf && Time.timeScale == 0, "Game Over did not retain/freeze flying shot");
+                R.StopRun();Check(!terminalShot.gameObject.activeSelf,"Reset did not clean retained shot");
+                var result = new { status = "PASS", results, pauseRequiresFreshPress = true, gameOverPreservesShots = true, resetCleanup = true };
                 Directory.CreateDirectory("../.design/m5-respawn-continuity");
                 File.WriteAllText("../.design/m5-respawn-continuity/result.json", Newtonsoft.Json.JsonConvert.SerializeObject(result, Newtonsoft.Json.Formatting.Indented));
                 return result;

@@ -84,7 +84,7 @@ namespace StarShift.Enemies
                 if (recovery <= 0 && !IsBusy) SetPhase(AttackPhase.Idle);
             }
             if (!IsBusy) { beamDamage.Reset(); return; }
-            if (!health.IsAlive || !gate.CanFire || !isActiveAndEnabled || flight.IsExiting) { CancelAttack(); return; }
+            if (!health.IsAlive || !gate.CanContinueAttack || !isActiveAndEnabled || flight.IsExiting) { CancelAttack(); return; }
             elapsed += Time.fixedDeltaTime;
             if (!IsActive && elapsed <= definition.TrackingSeconds) aim = view.WorldToViewportPoint(player.transform.position);
             // LOCK: hết cửa sổ tracking, aim đã khóa; ATTACK bắt đầu ở ChargeSeconds.

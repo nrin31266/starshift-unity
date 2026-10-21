@@ -98,7 +98,7 @@ namespace StarShift.Enemies
         private void FixedUpdate()
         {
             if (!IsBusy || Time.timeScale <= 0) return;
-            if (!bossHealth.IsAlive || !fireGate.CanFire || bossFlight.IsExiting) { CancelAttack(); return; }
+            if (!bossHealth.IsAlive || !fireGate.CanContinueAttack || bossFlight.IsExiting) { CancelAttack(); return; }
             bool laser = definition.Kind == BossBarrageKind.IonShelter;
             if (!laser && IsActive && pulseIndex < definition.PulseCount && phaseRemaining <= definition.PulseInterval - .28f)
             {

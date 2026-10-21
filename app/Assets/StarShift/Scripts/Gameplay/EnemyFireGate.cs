@@ -9,8 +9,10 @@ namespace StarShift.Gameplay
     public sealed class EnemyFireGate : MonoBehaviour
     {
         private bool blocked;
+        private bool preserveActiveAttacks;
         private float graceRemaining;
         public bool CanFire => isActiveAndEnabled && !blocked && graceRemaining <= 0 && Time.timeScale > 0;
+        public bool CanContinueAttack => isActiveAndEnabled && (!blocked || preserveActiveAttacks) && Time.timeScale > 0;
         public event Action PermissionChanged;
         public float VisibleProjectileTimeLimit
         {
@@ -24,18 +26,21 @@ namespace StarShift.Gameplay
             }
         }
 
-        public void Block()
+        public void Block(bool preserveActiveAttacks = false)
         {
             blocked = true;
+            this.preserveActiveAttacks = preserveActiveAttacks;
             graceRemaining = 0;
-            PermissionChanged?.Invoke();
+            if (!preserveActiveAttacks) PermissionChanged?.Invoke();
         }
 
         public void ResumeAfter(float seconds)
         {
+            bool preserved = preserveActiveAttacks;
             blocked = false;
+            preserveActiveAttacks = false;
             graceRemaining = Mathf.Max(0, seconds);
-            PermissionChanged?.Invoke();
+            if (!preserved) PermissionChanged?.Invoke();
         }
 
         public void ClearProjectiles()

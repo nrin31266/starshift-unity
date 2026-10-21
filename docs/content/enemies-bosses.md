@@ -428,8 +428,9 @@ Tracking dùng line mảnh vàng nhạt; khi khóa hướng line dày/sáng hơn
 
 Interceptor dùng cùng attack gate nhưng strike: charge .85 s, tracking .2 s,
 committed dash .65 s qua target snapshot/overshoot .12 viewport, return 1.1 s và
-cooldown 4.5 s sau đòn đầu; initial delay .35 s. Một vòng khóa bám aim hiện tại khi
-charge, hiệu ứng phóng ngắn tại điểm xuất phát khi commit; không aim line và không
+cooldown 4.5 s sau đòn đầu; initial delay .35 s. Một vòng khóa lớn bao ngoài tàu
+Player bám aim hiện tại và co dần khi charge; Interceptor nạp sáng trên thân suốt
+cửa sổ báo trước, hiệu ứng phóng ngắn tại điểm xuất phát khi commit; không aim line và không
 hiện vòng khóa khi return/recovery. `EntryHoldFlight` là pose writer, không homing sau commit. Bounded
 return về slot cũ, không rời required kill set; ExitDrain hủy strike để retreat.
 

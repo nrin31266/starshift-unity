@@ -111,7 +111,7 @@ reset qua pool reuse; collider/root scale giữ nguyên. PickupCarryOver đo han
 1.01999664 s theo scaled clock (config 1 s), vẫn giữ powerup/Shard/crate qua boundary.
 
 Grouped PASS: MissileAndImpact, MissileCancellation, nine weapon salvos/heat,
-HomingMechanics, MissilesAndProtection, TerminalCueCleanup, PickupCarryOver và
+HomingMechanics, MissilesAndProtection, TerminalCueFreeze, PickupCarryOver và
 DropSelectionEdges. Một full Mission 01 mới PASS 4164 frames, 5 unique completions,
 accepted death/respawn, Pause/Resume và real reserve HUD click → đúng một detonation;
 4500 Score, 1 Shard, 5 cores, 1 supply, 11 pickups. Clear cleanup PASS. Native Game
@@ -186,7 +186,7 @@ hợp nhất vào Configure. Không chạy lại authoring để reset tuning us
 
 Grouped verification sau thay đổi PASS: PickupCarryOver, PickupsAndRewards (đợi hết
 shield-break protection trước fatal hit), HandoffSmoke, persistence Core/ActiveIsolation,
-Retry(5), DropSelectionEdges và TerminalCueCleanup. Fixture carry-over tự set/restore
+Retry(5), DropSelectionEdges và TerminalCueFreeze. Fixture carry-over tự set/restore
 clock để chạy được sau terminal probe. Một full Mission 01 mới PASS 4349 frames,
 5 unique completions, accepted death/Pause, 4200 Score, 4 Shards, 4 cores, 1 supply,
 14 pickups; Clear không còn buff/pickup/projectile. Compile và final Console 0 error/
@@ -1505,7 +1505,8 @@ pointer xuyên Dying/entrance; delta bị khóa không teleport; sau entrance k�
 30×20 px nhận đúng 30×20 px, held fire tự tiếp tục. Accepted death giữ hostile và
 friendly shots đang bay, hostile tiếp tục di chuyển; duplicate hit không trừ thêm
 life và post-entry protection vẫn chặn damage. Pause còn yêu cầu fresh press;
-Game Over vẫn cleanup đạn. Evidence `.design/m5-respawn-continuity/result.json`.
+Ở checkpoint lịch sử này Game Over cleanup đạn; current policy thuộc
+[player owner](../gameplay/player-combat.md#game-over). Evidence `.design/m5-respawn-continuity/result.json`.
 `VerifyPlayerDrag.Run` PASS short/long/release, projection 16:9/20:9 × ba zoom,
 held drag sau movement re-enable và touch/second-finger isolation. Cần bắt đầu run
 skip-intro trước suite này; chạy ngay sau terminal fixture với overlay còn mở sẽ
@@ -1791,3 +1792,11 @@ source; native references kiểm 3.061 owners, 186 PNG và dropdown 48 routes/8 
 VFX 16:9/20:9, enemy/Bulwark deaths và fixture năm encounter đã PASS; saved dev/debug
 OFF, scene sạch. Save byte guard chỉ chứng minh các lượt verification sau recovery;
 không thay giới hạn sự cố đã ghi ở trên. Không claim full Campaign/Android/FPS.
+
+Death-world follow-up: `VerifyArtClosure.Begin("death-world")` PASS cho bốn boss
+skills và Interceptor/Sniper/Bomber qua mất mạng, hostile/friendly shots, respawn,
+Game Over giữ/freeze world, không spawn/complete khi hết mạng, Menu cleanup và
+Retry checkpoint qua shell. Save byte guard PASS; strike và beam crossing regression
+được chạy lại. Các fixture lịch sử có assertion terminal cleanup đã đổi theo
+[player owner](../gameplay/player-combat.md#game-over); không coi evidence cũ là
+bằng chứng đã rerun toàn suite. Không claim Android/device FPS.

@@ -439,9 +439,9 @@ public static class VerifyM4Testbed
                 if(i<2)await Until(()=>rig.Gate.State==PlayerGameplayState.PostEntryInvincibility,3000,"GameOver fixture respawn failed");
             }
             await Until(()=>rig.Gate.State==PlayerGameplayState.GameOver,1500,"GameOver missing");
-            Require(rig.Lives.CurrentLives==0 && Session.IsTerminal && Time.timeScale==0 && !Runner.HasActiveRun,"GameOver failed to stop combat");
-            Require(effects.OverdriveRemaining==0 && effects.DroneRemaining==0 && Pickups.Length==0 && UnityEngine.Object.FindObjectsByType<PlayerProjectile>().Length==0,"GameOver retained combat state");
-            Restart(rig);Require(rig.Lives.CurrentLives==3 && Time.timeScale==1 && Runner.HasActiveRun,"Reset after terminal failed");
+            Require(rig.Lives.CurrentLives==0 && Session.IsTerminal && Time.timeScale==0,"GameOver failed to stop combat");
+            Require(effects.OverdriveRemaining==0 && effects.DroneRemaining==0,"GameOver retained player buffs");
+            Restart(rig);Require(rig.Lives.CurrentLives==3 && Time.timeScale==1 && Runner.HasActiveRun && Pickups.Length==0 && UnityEngine.Object.FindObjectsByType<PlayerProjectile>().Length==0,"Reset after terminal failed");
             return new{pass=true,minorProjectileGraceFade=true,pauseFade=true,gameOver=true,reset=true,enemyPoolCounts=counts,primaryProjectileCounts=projectileCounts};
         }
     }

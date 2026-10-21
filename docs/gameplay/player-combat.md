@@ -193,7 +193,7 @@ Fatal hit
 ```
 
 VS-018 khóa state Dying trước callback, rồi synchronously trừ đúng một life, áp
-active-weapon penalty và block hostile fire mới, giữ projectile đang bay. Dying state
+active-weapon penalty và block hostile fire mới; đòn đã charge/active cùng projectile đang bay tiếp tục kết thúc tự nhiên. Dying state
 yêu cầu placeholder death cue; presentation không được quyết khi nào trừ life hoặc cho phép hit tiếp.
 Death phase trước entrance dùng 0.6 s `[TUNABLE]`; clock scaled, callback feedback
 lỗi không được bỏ qua mandatory life/fire-gate work hoặc giữ sequence mắc kẹt.
@@ -265,15 +265,15 @@ enemy. Protection trong entrance và post-entry invincibility bảo vệ Player.
 Enemy-fire grace khoảng **1 s [TUNABLE]** sau entrance là tunable riêng, không thay
 thế protection của respawn entrance hoặc post-entry invincibility.
 
-Game Over vẫn release mọi `EnemyProjectile` active trong cùng gameplay scene;
-terminal session cũng cleanup friendly shots theo architecture. Không sửa enemy,
-snapshot/save. Release dùng callback về pool, reset ownership/target, hit flag,
-timer, velocity/simulation và callback trước reuse.
+Game Over giữ enemy, skill, hostile/friendly projectiles và reward còn tồn tại qua
+death sequence; sau đó freeze khung cảnh phía sau overlay. Retry hoặc về Menu mới
+cleanup world qua pool; không snapshot/save world giữa wave.
 
 Enemy-fire permission bị block suốt Dying và entrance. Khi safe entrance kết thúc,
 bắt đầu enemy-fire grace ở trên, độc lập post-entry invincibility; enemy movement
-vẫn chạy. Block hủy pending telegraph; resume chạy local delay/charge mới, không
-bắn bù. Pause đóng băng cả hai clocks. Shared authority/API thuộc
+vẫn chạy. Đòn đã bắt đầu được chạy hết charge/active/recovery; không hủy chỉ vì
+Player mất mạng. Resume không restart đòn cũ và không bắn bù đòn mới. Hard block
+cho transition/teardown vẫn hủy pending telegraph. Pause đóng băng cả hai clocks. Shared authority/API thuộc
 [architecture](../systems/architecture.md#m2-player-damage-lifecycle).
 
 ### Game Over
@@ -284,7 +284,7 @@ Retry load snapshot đầu wave/encounter checkpoint, không phục hồi world 
 serialization/restore chi tiết ở [save/profile](../systems/save-profile.md).
 
 VS-017–021 có terminal `GameOver` state và signal sau death phase: không respawn,
-không nhận hit tiếp, input/fire off và enemy-fire gate giữ block. Runner dừng
+không nhận hit tiếp, input/fire off và enemy-fire gate giữ block. Runner giữ world và dừng
 spawn/progression ngay khi lives về zero; signal sau death sequence mở minimal
 Game Over overlay. UI chi tiết ở
 [UI/UX](../presentation/ui-ux.md#m2-ui-implementation-provisional).

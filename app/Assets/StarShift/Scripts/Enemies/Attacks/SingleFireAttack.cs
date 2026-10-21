@@ -31,8 +31,8 @@ namespace StarShift.Enemies
         private bool telegraphing;
         public bool AwaitingFirstDirectedAttack => directed != null && directed.AttacksFired == 0;
         public bool IsTelegraphing => directed != null ? directed.IsBusy : telegraphing;
-        private bool CanRequestAttack => isActiveAndEnabled && Eligible && !IsTelegraphing && remaining <= .000001f;
-        private bool Eligible => fireGate != null && fireGate.CanFire && health.IsAlive &&
+        private bool CanRequestAttack => isActiveAndEnabled && fireGate != null && fireGate.CanFire && Eligible && !IsTelegraphing && remaining <= .000001f;
+        private bool Eligible => fireGate != null && fireGate.CanContinueAttack && health.IsAlive &&
             flight.isActiveAndEnabled && flight.CanShoot && flight.IsPointVisible(muzzle.position) &&
             target != null && target.gameObject.activeInHierarchy;
 
@@ -93,7 +93,7 @@ namespace StarShift.Enemies
         private void FixedUpdate()
         {
             if (directed != null) return;
-            if (!Eligible)
+            if (!Eligible || !telegraphing && !fireGate.CanFire)
             {
                 ResetSequence();
                 return;

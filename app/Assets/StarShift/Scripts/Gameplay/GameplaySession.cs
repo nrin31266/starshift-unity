@@ -174,7 +174,13 @@ namespace StarShift.Gameplay
         }
         public void ShowRegionComplete() { playerGate.SetState(PlayerGameplayState.Result); EndCombat(); }
 
-        private void OnGameOver() => EndCombat();
+        private void OnGameOver()
+        {
+            // Giữ nguyên khung cảnh sau death; Retry/Menu mới thu hồi world.
+            IsPaused = false;
+            Freeze();
+            Changed?.Invoke();
+        }
 
         private void EndCombat()
         {

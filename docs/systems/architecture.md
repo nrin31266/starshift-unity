@@ -377,11 +377,13 @@ khi movement đã ghi safe final pose. Sau camera Update, cùng pose được re
 view/region/aspect không làm entrance dùng stale world bounds.
 
 `EnemyFireGate` trên scene `Enemies` là shared safety authority: `Block()` hủy quyền
-fire/pending telegraph, `ResumeAfter(seconds)` đếm scaled grace, `ClearProjectiles()`
+fire/pending telegraph. `Block(preserveActiveAttacks: true)` chỉ chặn đòn mới khi
+Player chết; `CanContinueAttack` giữ quyền hoàn tất đòn đã bắt đầu.
+`ResumeAfter(seconds)` đếm scaled grace, không reset đòn đang giữ; `ClearProjectiles()`
 release active hostile projectiles cùng scene qua existing pool callback. Producers
 bind scene reference hoặc fallback tìm gate một lần; không có gate thì fail closed.
 Nó không chọn shooter, không đóng băng movement và không là encounter/FireDirector.
-Lifecycle giữ block qua death/entrance nhưng không clear đạn đang bay; request
+Lifecycle giữ soft block qua death/entrance, không clear đạn hoặc hủy skill đang chạy; request
 grace khi entrance hoàn tất và block terminal ở Game Over. M2 session nối Result sau full L1; general transition chưa có;
 owner sau có thể dùng cùng safety boundary, không suy từ Player `CanFire`.
 
@@ -423,8 +425,10 @@ sang lượt Play sau. Input cancel tại Pause/Resume theo
 
 `ShowRegionComplete` đặt gate `Result` ngay, stop runner/coordinator, block enemy
 fire, release hostile/friendly projectiles về existing pools và freeze simulation.
-Không chờ presentation delay mới khóa damage/input/fire. Game Over dùng cùng cleanup
-sau signal của lifecycle; session không sở hữu lives/death/respawn timers.
+Không chờ presentation delay mới khóa damage/input/fire. Game Over giữ world, không
+gọi StopRun/clear projectiles; runner ngừng spawn/progression khi lives zero, còn
+simulation chạy hết death phase rồi session freeze phía sau overlay. Retry/Menu
+mới teardown world. Session không sở hữu lives/death/respawn timers.
 Dev replay vẫn reset runtime qua lifecycle trước `StartRun`, không giả checkpoint.
 
 `PlayerGameplayGate.SetCinematicLock` tạm chặn input/fire/damage, không thay lifecycle
@@ -588,8 +592,10 @@ scope token → parent vào active root → activate. Projectiles của primary/
 scene root độc lập Player, tránh dịch chuyển cùng tàu. Pool reset bỏ callbacks,
 target/version, hit flags, lifetime và ownership. Static enemy registry chỉ giữ
 active health trong scene; OnDisable unregister, subsystem registration clear.
-Không dùng singleton/event bus/DI/loot framework mới. Game Over/Clear/reset release
-rewards qua existing scope, clear effects và friendly projectiles qua session/lifecycle.
+Không dùng singleton/event bus/DI/loot framework mới. Clear/reset release rewards
+qua existing scope, clear effects và friendly projectiles qua session/lifecycle.
+Game Over giữ world theo [player owner](../gameplay/player-combat.md#game-over);
+Retry/Menu mới release scope và projectiles.
 
 ## Component boundaries `[LOCKED]`
 

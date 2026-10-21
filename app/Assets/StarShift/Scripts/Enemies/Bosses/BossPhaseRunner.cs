@@ -35,12 +35,13 @@ namespace StarShift.Enemies
                 IsPhaseB = true; CancelModules(); next = 0; remaining = definition.TransitionSeconds; phaseCue.enabled = true;
                 flight.Reposition(definition.PhaseBOffset, definition.TransitionSeconds, definition.PhaseBMotionMultiplier);
             }
-            if (!gate.CanFire || !flight.IsHolding) { CancelModules(); remaining = Mathf.Max(remaining, 1); return; }
+            if (!gate.CanContinueAttack || !flight.IsHolding) { CancelModules(); remaining = Mathf.Max(remaining, 1); return; }
             if (current != null)
             {
                 if (current.IsBusy) return;
                 current = null; remaining = IsPhaseB ? definition.PhaseBRestSeconds : definition.PhaseARestSeconds;
             }
+            if (!gate.CanFire) return;
             remaining -= Time.fixedDeltaTime;
             if (remaining > 0) return;
             if (coordinator != null && !coordinator.CanStartBossAttack) return;

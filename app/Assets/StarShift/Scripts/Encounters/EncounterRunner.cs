@@ -179,7 +179,7 @@ namespace StarShift.Encounters
         {
             if (!HasActiveRun) return;
             if (playerGate.State == PlayerGameplayState.GameOver || (playerLives != null && playerLives.CurrentLives == 0))
-            { StopRun(); return; }
+                return;
             if (Stage == EncounterStage.Intro)
             {
                 var introToken = generation;
@@ -383,7 +383,7 @@ namespace StarShift.Encounters
                     NotifyBossDefeated(token);
                     death.Begin(() =>
                     {
-                        if (token != generation || Stage != EncounterStage.BossPostDeath) return;
+                        if (token != generation || Stage != EncounterStage.BossPostDeath || (playerLives != null && playerLives.CurrentLives == 0)) return;
                         EnemyDefeated?.Invoke(slot.Health, group.RewardOverride, slot.Health.transform.position);
                         dyingBoss = null;
                         NotifyBossPresentationComplete(token);
@@ -447,7 +447,7 @@ namespace StarShift.Encounters
         }
         public bool NotifyBossDefeated(int token)
         {
-            if (token != generation || Stage != EncounterStage.Running || Current.Completion != EncounterCompletion.Boss || bossDefeated) return false;
+            if (token != generation || Stage != EncounterStage.Running || Current.Completion != EncounterCompletion.Boss || bossDefeated || (playerLives != null && playerLives.CurrentLives == 0)) return false;
             bossDefeated = true;
             CloseProducers(); safetyGate.ClearProjectiles();
             if (token != generation) return false;
@@ -457,7 +457,7 @@ namespace StarShift.Encounters
         }
         public bool NotifyBossPresentationComplete(int token)
         {
-            if (token != generation || Stage != EncounterStage.BossPostDeath) return false;
+            if (token != generation || Stage != EncounterStage.BossPostDeath || (playerLives != null && playerLives.CurrentLives == 0)) return false;
             CompleteEncounter(); return true;
         }
         private void CompleteEncounter()

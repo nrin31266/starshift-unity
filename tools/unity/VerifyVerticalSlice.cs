@@ -757,6 +757,7 @@ public static class VerifyVerticalSlice
             var lifecycle = rig.Player.GetComponent<PlayerDamageLifecycle>();
             var signals = 0; Action onOver = () => signals++;
             lifecycle.GameOver += onOver;
+            int finalGeneration = 0, finalSpawned = 0;
             try
             {
                 for (int i = 0; i < 3; i++)
@@ -765,17 +766,17 @@ public static class VerifyVerticalSlice
                     Require(lifecycle.TryReceiveHit(null), "Hit not accepted.");
                     Require(rig.Lives.CurrentLives == 2 - i && !lifecycle.TryReceiveHit(null), "Duplicate fatal damage accepted.");
                     if (i < 2) continue;
-                    var spawned = Runner.SpawnedCount;
+                    finalSpawned = Runner.SpawnedCount;finalGeneration = Runner.Generation;
                     await Task.Delay(90);
-                    Require(!Runner.HasActiveRun && Runner.SpawnedCount == spawned && !Session.IsTerminal,
+                    Require(Runner.Generation == finalGeneration && Runner.SpawnedCount == finalSpawned && !Session.IsTerminal,
                         "Lives zero did not stop schedule before death sequence finished.");
                 }
                 await Until(() => Session.IsTerminal, 1200, "Game Over boundary missing.");
                 Require(!Session.IsClear && signals == 1 && rig.Gate.State == PlayerGameplayState.GameOver &&
-                    !rig.Gate.CanInput && !rig.Gate.CanFire && Enemies.Length == 0 &&
-                    UnityEngine.Object.FindObjectsByType<EnemyProjectile>().Length == 0, "Game Over cleanup/state invalid.");
+                    !rig.Gate.CanInput && !rig.Gate.CanFire && Time.timeScale == 0 &&
+                    Runner.Generation == finalGeneration, "Game Over retained-frame/state invalid.");
                 var capture = await Capture("game-over-20x9");
-                await Task.Delay(400); Require(signals == 1 && !Runner.HasActiveRun, "Duplicate Game Over or stale schedule.");
+                await Task.Delay(400); Require(signals == 1 && Runner.SpawnedCount == finalSpawned && Runner.Generation == finalGeneration, "Duplicate Game Over or stale schedule.");
                 return new { passed = true, signals, capture, finalLives = rig.Lives.CurrentLives, noSpawnDuringFinalDeath = true };
             }
             finally { lifecycle.GameOver -= onOver; }

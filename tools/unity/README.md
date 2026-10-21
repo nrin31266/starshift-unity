@@ -14,6 +14,8 @@ Saved Dev Mode mặc định OFF. Các debug flags của EncounterDebugView cũn
 `VerifyDevTools.Edit` kiểm dropdown theo tám mission trong Edit Mode.
 `VerifyArtClosure.Begin(scope)` chạy Play Mode từ idle Menu bằng storage/input
 riêng; scopes `carry`, `strike`, `beams`, `boss`, `dev`, `art`, hoặc `all`.
+Scope `death-world` kiểm bốn boss skills qua mất mạng, giữ shots/actor ở Game Over,
+freeze sau death, Menu cleanup và Retry từ checkpoint qua shell thật.
 Chờ `.design/art-closure/verification.json` terminal trước probe tiếp theo.
 `e2e` gọi `VerifyM4Testbed.FullMission` đã nạp trong cùng domain; nạp trước bằng
 entry `DropSelectionEdges`. Không chạy hai probe cùng lúc, không save runtime state.
@@ -172,7 +174,7 @@ CampaignLifecycle API, không cần Main Menu. Evidence/cost/limits thuộc
 follow-up, không chạy lại để overwrite later tuning. `VerifyGameplayFeel.BeginChecks`
 trả ngay; chờ `.design/gameplay-feel/progress.json` terminal. Có entries targeted
 Thermal, MissileAndImpact, ShieldRespawn, Pickups, EmptyEncounter, PickupCarryOver,
-MissileCancellation và TerminalCueCleanup. PickupCarryOver dùng cloned level/temp Campaign storage,
+MissileCancellation và TerminalCueFreeze. PickupCarryOver dùng cloned level/temp Campaign storage,
 kiểm đồ qua handoff, collect/Profile, Pause/lifetime và Retry/reset cleanup. Load
 một entry VerifyM4Testbed (Weapons hoặc DropSelectionEdges) trước HomingMechanics/Capture(width) để reuse existing Rig.
 Coverage và native screenshots ở [dev owner](../../docs/systems/dev-debug.md#gameplay-feel-verification).

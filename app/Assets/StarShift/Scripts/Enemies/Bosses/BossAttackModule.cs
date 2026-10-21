@@ -101,7 +101,7 @@ namespace StarShift.Enemies
         private void FixedUpdate()
         {
             if (barrage != null || directed != null || !IsBusy) return;
-            if (!health.IsAlive || !gate.CanFire) { CancelAttack(); return; }
+            if (!health.IsAlive || !gate.CanContinueAttack) { CancelAttack(); return; }
             remaining -= Time.fixedDeltaTime;
             // LOCK ở nửa sau telegraph để cue đọc đúng lúc sắp bắn.
             if (!IsBeamActive && remaining <= definition.TelegraphDuration * .5f) SetPhase(AttackPhase.Lock);

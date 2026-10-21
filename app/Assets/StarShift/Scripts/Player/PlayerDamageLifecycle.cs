@@ -79,7 +79,7 @@ namespace StarShift.Player
             {
                 lives.LoseLife();
                 try { weapon.ApplyDeathDowngrade(); }
-                finally { enemyFireGate.Block(); }
+                finally { enemyFireGate.Block(preserveActiveAttacks: true); }
             }
             return true;
         }
@@ -107,16 +107,8 @@ namespace StarShift.Player
             }
             else
             {
-                try { enemyFireGate.Block(); }
-                finally
-                {
-                    try { enemyFireGate.ClearProjectiles(); }
-                    finally
-                    {
-                        try { gate.SetState(PlayerGameplayState.GameOver); }
-                        finally { GameOver?.Invoke(); }
-                    }
-                }
+                try { gate.SetState(PlayerGameplayState.GameOver); }
+                finally { GameOver?.Invoke(); }
             }
         }
 

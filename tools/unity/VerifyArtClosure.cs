@@ -52,6 +52,7 @@ public static class VerifyArtClosure
     {
         runner.GetComponent<RegionCampaignFlow>().Cancel();runner.StopRun();
         runner.Flow.LoadLevel(runner.GetComponent<RegionCampaignFlow>().FindMission(mission));
+        player.RestoreCheckpoint(3);
         runner.StartRun(point,true,true,null,null);Protect();
         UnityEngine.Object.FindAnyObjectByType<ShellView>().Show(ShellScreen.Playing);Time.timeScale=1;
         UnityEngine.Object.FindAnyObjectByType<EnemyFireGate>().ResumeAfter(0);await Task.Delay(50);
@@ -86,6 +87,7 @@ public static class VerifyArtClosure
                 if(scope=="all"||scope=="boss")await BossSkills();
                 if(scope=="all"||scope=="dev")await DevRoutes();
                 if(scope=="all"||scope=="art")await ArtFlow();
+                if(scope=="death-world")await DeathWorld();
                 if(scope=="e2e")
                 {
                     UnityEngine.Object.FindAnyObjectByType<ShellView>().Show(ShellScreen.Playing);gate.SetCinematicLock(false);
@@ -142,19 +144,35 @@ public static class VerifyArtClosure
             root.GetComponent<SingleFireAttack>().SetEncounterControlled();root.SetActive(true);var attack=root.GetComponent<DirectedAttack>();
             Check(root.GetComponent<EnemyFirePresentation>()==null,"Duplicate muzzle cue remains");
             var warning=Field<SpriteRenderer>(root.GetComponent<DirectedAttackTelegraph>(),"warning");
+            var launch=Field<SpriteRenderer>(root.GetComponent<DirectedAttackTelegraph>(),"launch");
             for(int reuse=0;reuse<2;reuse++)
             {
                 if(reuse>0){root.SetActive(false);Place(new Vector2(.68f,.25f));root.SetActive(true);}
                 await Until(()=>flight.IsHolding,2000,"Interceptor hold");await Task.Delay(400);Check(attack.TryRequestAttack(),"Interceptor request");await Task.Delay(45);
                 var target=Camera.main.WorldToViewportPoint(player.transform.position);Check(Vector2.Distance(attack.AttackAim,target)<.015f,"Strike target reused old aim");
                 await Until(()=>warning.enabled&&Vector2.Distance(warning.transform.position,player.transform.position)<.3f,300,"Lock cue not at current target; strike="+Field<bool>(root.GetComponent<DirectedAttackTelegraph>(),"strike")+" warning="+warning.transform.position+" player="+player.transform.position+" enabled="+warning.enabled);
-                await Capture("strike-lock-"+reuse);await Until(()=>attack.AttacksFired>0,2000,"Strike commit: busy="+attack.IsBusy+" phase="+attack.Phase);
-                await Until(()=>!attack.IsBusy,2500,"Strike return");await Task.Delay(40);Check(!warning.enabled,"Recovery left a ghost target ring");
+                await Capture("strike-lock-"+reuse);
+                bool lateLockCaptured=false;float chargeEnd=Time.realtimeSinceStartup+2;
+                while(attack.AttacksFired==0&&Time.realtimeSinceStartup<chargeEnd)
+                {
+                    Check(warning.enabled&&launch.enabled,"Strike charge cue disappeared before commit");
+                    Check(warning.bounds.size.x/(Camera.main.orthographicSize*2)*900>=95,"Strike lock hidden inside player hull");
+                    Check(Vector2.Distance(launch.transform.position,root.transform.position)<.1f,"Charge cue left attacker");
+                    if(!lateLockCaptured&&attack.Phase==AttackPhase.Lock&&Field<float>(root.GetComponent<DirectedAttackTelegraph>(),"chargeAge")>.55f)
+                    {
+                        await Capture("strike-late-lock-"+reuse);lateLockCaptured=true;
+                        Time.timeScale=0;await Until(()=>Time.deltaTime==0,500,"Pause frame");var frozen=warning.transform.localScale;var frame=launch.sprite;await Task.Delay(100);
+                        Check(warning.transform.localScale==frozen&&launch.sprite==frame,"Paused strike warning advanced");Time.timeScale=1;
+                    }
+                    await Task.Delay(15);
+                }
+                Check(attack.AttacksFired>0&&lateLockCaptured,"Strike commit or readable late lock missing");
+                await Until(()=>!attack.IsBusy,2500,"Strike return");await Task.Delay(40);Check(!warning.enabled&&!launch.enabled,"Recovery left a ghost target/charge cue");
                 await Capture("strike-return-"+reuse);
             }
         }
         finally{UnityEngine.Object.Destroy(root);}
-        Evidence("strike",new{status="PASS",singleCue=true,freshAim=true,noReturnGhost=true,poolReuse=true});
+        Evidence("strike",new{status="PASS",singleCue=true,freshAim=true,noReturnGhost=true,poolReuse=true,fullChargeVisible=true,attackerChargeCue=true,lockOutsideHull=true,pause=true});
     }
     static async Task<EnemyHealth> Boss(string mission)
     {
@@ -205,6 +223,92 @@ public static class VerifyArtClosure
         Check(lanes.Count==3&&Mathf.Abs(lanes[0]-lanes[1])>.25f&&Mathf.Abs(lanes[0]-lanes[2])<.001f,"Curtain did not force readable zigzag");
         Check(openings.Max(g=>g.x)>openings.Min(g=>g.y),"A stationary safe column survives all curtain rows");
         Evidence("boss",new{status="PASS",noStationarySafeColumn=true,boundedTrackingBothDirections=true,cancelReleasesMotion=true,curtainLanes=lanes,noDebugBorders=true});
+    }
+    static async Task DeathWorld()
+    {
+        var fire=UnityEngine.Object.FindAnyObjectByType<EnemyFireGate>();
+        var session=runner.GetComponent<GameplaySession>();var shell=runner.GetComponent<GameShell>();
+        var view=UnityEngine.Object.FindAnyObjectByType<ShellView>();var lives=player.GetComponent<PlayerLives>();
+        foreach(var kind in new[]{"lane","curtain","sweep","ion"})
+        {
+            bool fatal=kind=="sweep";var boss=await Boss(kind=="lane"||kind=="curtain"?"L4":"L8");
+            var driver=boss.GetComponent<BossPhaseRunner>();
+            var module=boss.GetComponentsInChildren<BossAttackModule>().First(m=>kind=="lane"?Field<AttackBeamPresentation>(m,"beam")!=null:
+                kind=="sweep"?Field<DirectedAttack>(m,"directed")?.Definition.Sweep==true:
+                Field<BossBarrage>(m,"barrage")?.Definition.Kind==(kind=="curtain"?BossBarrageKind.ProjectileCurtain:BossBarrageKind.IonShelter));
+            Protect();Place(new Vector2(.15f,.2f));bool started=false;await Until(()=>started||(started=module.BeginAttack()),6000,"Death world skill start "+kind);
+            typeof(BossPhaseRunner).GetField("current",Private).SetValue(driver,module);driver.enabled=true;
+            await Until(()=>module.IsBeamActive||Field<DirectedAttack>(module,"directed")?.IsActive==true||Field<BossBarrage>(module,"barrage")?.IsActive==true,3000,"Active skill "+kind);
+            var hostileDefinition=UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<SingleFireDefinition>("Assets/StarShift/Data/RegionA/Boss/VanguardCurtainProjectile.asset"));
+            var friendlyDefinition=UnityEngine.Object.Instantiate(player.GetComponent<WeaponLoadout>().ActiveDefinition);
+            typeof(SingleFireDefinition).GetField("projectileSpeed",Private).SetValue(hostileDefinition,.1f);
+            typeof(PulseLaserDefinition).GetField("projectileSpeed",Private).SetValue(friendlyDefinition,.1f);
+            typeof(PulseLaserDefinition).GetField("projectileLifetime",Private).SetValue(friendlyDefinition,10f);
+            var hostile=UnityEngine.Object.Instantiate(hostileDefinition.ProjectilePrefab);var friendly=UnityEngine.Object.Instantiate(friendlyDefinition.ProjectilePrefab);
+            var emitter=new GameObject("DeathWorldShot").transform;emitter.position=Camera.main.ViewportToWorldPoint(new Vector3(.08f,.6f,9));emitter.position=new Vector3(emitter.position.x,emitter.position.y,0);
+            try
+            {
+                hostile.Launch(hostileDefinition,emitter,boss.gameObject,player.gameObject,p=>p.ResetForPool(),0,Vector2.down);
+                friendly.Launch(friendlyDefinition,emitter.position+Vector3.right,Vector2.up,1,0,player.gameObject,p=>p.ResetForPool());
+                effects.Clear();lives.RestoreCheckpoint(fatal?1:3);gate.SetState(PlayerGameplayState.Active);
+                int generation=runner.Generation,spawned=runner.SpawnedCount;var position=hostile.transform.position;
+                Check(player.TryReceiveHit(boss.gameObject),"Death world hit "+kind);
+                if(fatal)Check(!runner.NotifyBossDefeated(generation),"Fatal death allowed simultaneous boss completion");
+                await Task.Delay(120);
+                Check(module.IsBusy&&boss.gameObject.activeInHierarchy,"Player death cancelled skill/actor "+kind);
+                Check(hostile.Owner!=null&&friendly.Owner!=null&&hostile.transform.position!=position,"Player death cleared/froze flying shots "+kind);
+                Check(!fire.CanFire&&fire.CanContinueAttack&&!module.BeginAttack(),"Death fire permissions "+kind);
+                Check(!player.TryReceiveHit(boss.gameObject),"Duplicate death hit "+kind);
+                await Capture("death-world-dying-"+kind);
+                if(fatal)
+                {
+                    await Until(()=>session.IsTerminal&&shell.Screen==ShellScreen.Results,2000,"Game Over overlay");
+                    Check(runner.Generation==generation&&runner.SpawnedCount==spawned,"Fatal death advanced or cleaned runner");
+                    Check(boss.gameObject.activeInHierarchy&&hostile.Owner!=null&&friendly.Owner!=null&&module.IsBusy,"Game Over erased battlefield");
+                    Check(Time.timeScale==0&&!gate.CanInput&&!gate.CanTakeDamage,"Game Over permissions/clock");
+                    var frozen=hostile.transform.position;await Task.Delay(120);Check(hostile.transform.position==frozen,"Game Over scene moved");
+                    await Capture("death-world-game-over");view.ResultMenu.onClick.Invoke();await Until(()=>!shell.IsBusy&&shell.Screen==ShellScreen.Menu,4000,"Game Over Menu");
+                    Check(!boss.gameObject.activeInHierarchy&&hostile.Owner==null&&friendly.Owner==null,"Menu did not clean retained battlefield");
+                }
+                else
+                {
+                    await Until(()=>gate.State==PlayerGameplayState.PostEntryInvincibility,5000,"Respawn "+kind);
+                    Check(lives.CurrentLives==2&&boss.gameObject.activeInHierarchy,"Respawn lost life/actor "+kind);
+                    await Until(()=>fire.CanFire,2000,"Respawn grace "+kind);Protect();
+                    driver.enabled=false;module.CancelAttack();Check(module.BeginAttack(),"Hard cancel fixture "+kind);
+                    fire.Block();await Task.Delay(80);Check(!module.IsBusy,"Hard block stopped cancelling "+kind);
+                }
+            }
+            finally
+            {
+                Time.timeScale=1;UnityEngine.Object.Destroy(hostile.gameObject);UnityEngine.Object.Destroy(friendly.gameObject);UnityEngine.Object.Destroy(emitter.gameObject);
+                UnityEngine.Object.Destroy(hostileDefinition);UnityEngine.Object.Destroy(friendlyDefinition);
+            }
+        }
+        foreach(var name in new[]{"Interceptor","Sniper","Bomber"})
+        {
+            await Start("L1");runner.StopRun();Protect();Place(new Vector2(.15f,.2f));
+            var root=UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/StarShift/Prefabs/Enemies/"+name+".prefab"));root.SetActive(false);
+            try
+            {
+                var flight=root.GetComponent<EntryHoldFlight>();flight.Configure(new Vector2(.5f,.75f),new Vector2(.5f,.75f),Vector2.zero,.02f,new Vector2(.5f,1.3f),60,0);
+                var attack=root.GetComponent<SingleFireAttack>();attack.SetEncounterControlled();root.SetActive(true);
+                await Until(()=>flight.IsHolding,2000,"Death enemy hold "+name);bool started=false;
+                await Until(()=>started||(started=attack.TryRequestAttack()),3000,"Death enemy charge "+name);
+                effects.Clear();lives.RestoreCheckpoint(3);gate.SetState(PlayerGameplayState.Active);Check(player.TryReceiveHit(root),"Death enemy hit "+name);
+                await Task.Delay(100);Check(attack.IsTelegraphing&&root.activeInHierarchy,"Death cancelled enemy charge "+name);
+                await Capture("death-world-enemy-"+name);
+                await Until(()=>!attack.IsTelegraphing,4000,"Committed enemy attack did not finish "+name);
+            }
+            finally{UnityEngine.Object.Destroy(root);}
+        }
+        var save=runner.GetComponent<CampaignLifecycle>();save.ExitIsolated();shell.Boot();Check(save.NewGame()&&save.Continue(),"Retry campaign fixture");view.Show(ShellScreen.Playing);
+        Protect();lives.RestoreCheckpoint(1);gate.SetState(PlayerGameplayState.Active);Check(player.TryReceiveHit(null),"Retry fatal hit");
+        await Until(()=>session.IsTerminal&&shell.Screen==ShellScreen.Results,2000,"Retry Game Over");
+        Check(session.CanRetry,"Retained world blocked Retry");view.GameOverRetry.onClick.Invoke();
+        await Until(()=>!shell.IsBusy&&!session.IsTerminal&&runner.HasActiveRun,5000,"Retry retained world");
+        Check(lives.CurrentLives==3&&Time.timeScale>0,"Retry did not restore checkpoint/clock");
+        Evidence("death-world",new{status="PASS",skills=4,enemyAttacks=3,respawn=true,hostileAndFriendlyShots=true,noDuplicateDeath=true,noNewAttack=true,hardCancel=true,gameOverRetainsWorld=true,noFatalSpawnOrProgression=true,menuCleanup=true,checkpointRetry=true});
     }
     static async Task DevRoutes()
     {

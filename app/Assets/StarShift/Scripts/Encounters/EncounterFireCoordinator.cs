@@ -66,7 +66,7 @@ namespace StarShift.Encounters
             if (definition == null) return;
             if (!safetyGate.CanFire)
             {
-                selected.Clear();
+                if (!safetyGate.CanContinueAttack) selected.Clear();
                 volleyShots = 0;
                 remaining = definition.ShotSpacing;
                 return;

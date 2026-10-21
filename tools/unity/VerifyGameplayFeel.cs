@@ -656,7 +656,7 @@ public static class VerifyGameplayFeel
         }
     }
 
-    public static async Task<object> TerminalCueCleanup()
+    public static async Task<object> TerminalCueFreeze()
     {
         Start();Player.RestoreCheckpoint(1);Gate.SetState(PlayerGameplayState.Active);
         var presentation=Player.GetComponent<EmergencyMissilePresentation>();
@@ -679,8 +679,12 @@ public static class VerifyGameplayFeel
             Require(Player.TryReceiveHit(null),"Terminal setup hit");
             await Until(()=>Session.IsTerminal,2,"GameOver timeout");
             Require(callbackError==null,"Terminal cue callback failed: "+callbackError);
-            Require(fired && !Player.transform.Find("MissileBurst").GetComponent<LineRenderer>().enabled && Camera.main.GetComponent<GameplayViewController>().ImpactRemaining==0,"Terminal froze pending cue");
-            var result=new{pass=true,gameOver=true,burstCleared=true,impactCleared=true};Evidence("terminal-cue",result);return result;
+            await Task.Delay(50);
+            var remaining=Camera.main.GetComponent<GameplayViewController>().ImpactRemaining;
+            Require(fired && Player.transform.Find("MissileBurst").GetComponent<LineRenderer>().enabled && remaining>0,"Terminal erased pending cue");
+            await Task.Delay(100);Require(Camera.main.GetComponent<GameplayViewController>().ImpactRemaining==remaining,"Terminal cue did not freeze");
+            Session.ResetRuntime();Require(!Player.transform.Find("MissileBurst").GetComponent<LineRenderer>().enabled && Camera.main.GetComponent<GameplayViewController>().ImpactRemaining==0,"Reset retained terminal cue");
+            var result=new{pass=true,gameOver=true,burstPreserved=true,impactFrozen=true,resetClears=true};Evidence("terminal-cue",result);return result;
         }
         finally{gate.StateChanged-=pending;Runner.StopRun();}
     }
