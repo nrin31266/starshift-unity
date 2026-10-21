@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: VanguardCurtain
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.BossBarrageDefinition
   Kind: 0
-  OpeningWidth: 0.24
+  OpeningWidth: 0.18
   ChargeSeconds: 1.1
   PulseCount: 3
-  PulseInterval: 0.55
+  PulseInterval: 0.95
   ActiveSeconds: 0.55
-  ProjectilesPerRow: 21
+  ProjectilesPerRow: 25
   Projectile: {fileID: 11400000, guid: d0d3ce6ba60b15b848a0dc46e0e86722, type: 2}

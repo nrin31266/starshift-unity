@@ -71,6 +71,7 @@ namespace StarShift.Encounters
         public event Action<EncounterDefinition, int> EncounterStarted;
         public event Action<OptionalEvent, int> OptionalEventTriggered;
         public event Action<EnemyHealth, RewardDropTable, Vector3> EnemyDefeated;
+        public event Action<EnemyHealth, RewardDropTable, Vector3> EnemyDestroyed;
         public event Action<EnemyHealth> EnemyEscaped;
         public event Action RunStarted;
         public event Action MissionCompleted;
@@ -388,7 +389,11 @@ namespace StarShift.Encounters
                         NotifyBossPresentationComplete(token);
                     });
                 }
-                else if (group.GrantsRewards) EnemyDefeated?.Invoke(slot.Health, group.RewardOverride, slot.Health.transform.position);
+                else
+                {
+                    EnemyDestroyed?.Invoke(slot.Health, group.RewardOverride, slot.Health.transform.position);
+                    if (group.GrantsRewards) EnemyDefeated?.Invoke(slot.Health, group.RewardOverride, slot.Health.transform.position);
+                }
             };
             slot.Health.Died += slot.DeathHandler;
             root.SetActive(true);
@@ -436,8 +441,7 @@ namespace StarShift.Encounters
             {
                 cleanupOverlap = 0;
                 Stage = EncounterStage.ProjectileDrain;
-                safetyGate.BeginProjectileCleanup(Current.ProjectileGraceSeconds, Current.ProjectileFadeSeconds);
-                remaining = Current.ProjectileGraceSeconds + Current.ProjectileFadeSeconds + Time.fixedDeltaTime * 2;
+                remaining = visibleTime + Time.fixedDeltaTime * 2;
             }
             else CompleteEncounter();
         }

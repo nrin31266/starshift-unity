@@ -15,7 +15,7 @@ namespace StarShift.UI
         public const string Next = "NHIỆM VỤ TIẾP THEO";
         public const string Victory = "CHIẾN THẮNG";
         public const string ReleaseComplete = "ĐÃ HOÀN THÀNH CHIẾN DỊCH";
-        public const string ConfirmNew = "Bắt đầu hành trình mới?\nTiến độ chiến dịch hiện tại sẽ được thay thế. Shard, kỷ lục, ngoại hình và cài đặt được giữ lại.";
+        public const string ConfirmNew = "Bắt đầu hành trình mới?\nTiến độ chiến dịch hiện tại sẽ được thay thế. Coin, kỷ lục, ngoại hình và cài đặt được giữ lại.";
         public const string ConfirmExit = "Rời nhiệm vụ?\nKhi tiếp tục, bạn sẽ trở về đầu đợt đã lưu. Phần đang chơi sẽ được bỏ qua.";
         public const string ConfirmRetry = "Chơi lại từ đầu đợt đã lưu?\nĐiểm, thời gian và trang bị sẽ trở về đã lưu.";
         public const string Confirm = "ĐỒNG Ý";
@@ -23,6 +23,9 @@ namespace StarShift.UI
         public const string Loading = "ĐANG CHUẨN BỊ…";
         public const string RetrySave = "THỬ LƯU LẠI";
         public const string SaveSettings = "LƯU VÀ QUAY LẠI";
+        public const string ResetAll = "KHÔI PHỤC GỐC";
+        public const string ResetFailed = "Chưa khôi phục được dữ liệu. Tiến độ hiện tại vẫn được giữ. Hãy thử lại.";
+        public const string ConfirmResetAll = "Khôi phục gốc để chơi lại từ đầu?\nToàn bộ chiến dịch, Coin, kỷ lục, ngoại hình đã mua và cài đặt sẽ bị xóa. Không thể hoàn tác.";
         public const string SaveFailed = "Chưa lưu được tiến độ. Hãy thử lưu lại trước khi tiếp tục.";
         public const string StartFailed = "Chưa thể mở nhiệm vụ. Bạn có thể quay lại và thử lại.";
         public const string SettingsFailed = "Chưa lưu được cài đặt. Giá trị trước đó vẫn được giữ. Hãy thử lại.";
@@ -31,11 +34,11 @@ namespace StarShift.UI
         public const string Equipped = "ĐANG TRANG BỊ";
         public const string Equip = "TRANG BỊ";
         public const string Owned = "ĐÃ SỞ HỮU";
-        public const string CosmeticFailed = "Chưa lưu được lựa chọn. Shard và trang bị trước đó vẫn được giữ. Hãy thử lại.";
+        public const string CosmeticFailed = "Chưa lưu được lựa chọn. Coin và trang bị trước đó vẫn được giữ. Hãy thử lại.";
         public static readonly string[] CosmeticTabs = { "TÀU", "SƠN TÀU", "VỆT DI CHUYỂN" };
-        public static string Purchase(int cost) => $"MUA & TRANG BỊ · {cost} Stellar Shard";
-        public static string ConfirmPurchase(string name, int cost) => $"Mua {name} với {cost} Stellar Shard?\nChỉ thay đổi ngoại hình; không thay đổi chỉ số chiến đấu.";
-        public static string NeedShards(int cost) => $"CẦN THÊM {cost} Stellar Shard";
+        public static string Purchase(int cost) => $"MUA & TRANG BỊ · {cost} Coin";
+        public static string ConfirmPurchase(string name, int cost) => $"Mua {name} với {cost} Coin?\nChỉ thay đổi ngoại hình; không thay đổi chỉ số chiến đấu.";
+        public static string NeedShards(int cost) => $"CẦN THÊM {cost} Coin";
         public const string RetryRead = "THỬ ĐỌC LẠI";
         public const string RecoverSave = "TẠO CHIẾN DỊCH MỚI";
         public const string ConfirmRecovery = "Tạo lại chiến dịch từ dữ liệu lỗi?\nTiến độ chiến dịch sẽ bắt đầu lại. Hồ sơ và cài đặt còn hợp lệ được giữ; phần không đọc được sẽ được tạo mới. Bản dữ liệu lỗi được giữ để khôi phục về sau.";
@@ -61,9 +64,9 @@ namespace StarShift.UI
             int total = (int)Math.Min(int.MaxValue, Math.Max(0d, seconds));
             return total >= 3600 ? $"{total / 3600}:{total / 60 % 60:00}:{total % 60:00}" : $"{total / 60:00}:{total % 60:00}";
         }
-        public static string Stats(RunStatsData s) => $"ĐIỂM  {s.Score:N0}       HẠ GỤC  {s.EnemiesDestroyed}\nTHỜI GIAN  {Time(s.PlaySeconds)}\n\nShard đã nhặt  {s.Shards}     Core  {s.CoresCollected}     Mạng đã mất  {s.LivesLost}";
+        public static string Stats(RunStatsData s) => $"ĐIỂM  {s.Score:N0}       HẠ GỤC  {s.EnemiesDestroyed}\nTHỜI GIAN  {Time(s.PlaySeconds)}\n\nCoin đã nhặt  {s.Shards}     Core  {s.CoresCollected}     Mạng đã mất  {s.LivesLost}";
         public static string Best(MissionRecord r) => r == null ? "Chưa có kỷ lục hoàn thành" : $"KỶ LỤC  {r.BestScore:N0} điểm  ·  {Time(r.BestTimeSeconds)}";
-        public static string Wallet(int value) => $"STELLAR SHARD  {value:N0}";
+        public static string Wallet(int value) => $"{value:N0}";
         public static string MissionState(bool unlocked, bool current, bool cleared) => !unlocked ? "ĐÃ KHÓA" : current ? "ĐANG TIẾN HÀNH" : cleared ? "ĐÃ HOÀN THÀNH" : "ĐÃ MỞ";
     }
 }

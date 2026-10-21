@@ -30,7 +30,11 @@ def inventory():
             name = path.stem.removesuffix('-sheet')
             if name == 'warden-shield-phase':
                 name = 'shield-activate-break'
-            source = SOURCE / (name + '.aseprite')
+            source = SOURCE.parents[1] / 'closure' / (name + '.aseprite')
+            if not source.exists():
+                source = SOURCE.parents[1] / 'polish' / (name + '.aseprite')
+            if not source.exists():
+                source = SOURCE / (name + '.aseprite')
             if not source.exists():
                 source = SOURCE.parent / 'cleaned' / (name + '.aseprite')
             assert source.exists(), ('missing editable source', path)
@@ -54,13 +58,41 @@ def inventory():
     }.items():
         evidence = ROOT / path
         checks[name] = json.loads(evidence.read_text()) if evidence.exists() else {'status': 'NOT RUN'}
+    baseline_checks = checks
+    checks = {}
+    for name, path in {
+        'travel_blend_pause': 'screenshots/verification.json',
+        'factory_reset_coin_menu': 'settings.json',
+        'thermal_profiles': 'thermal.json',
+        'weapon_heat_player_death_boss_hud': 'combat.json',
+        'natural_projectile_drain': 'projectile-drain.json',
+        'vfx_1600': 'vfx-1600.json',
+        'vfx_2000': 'vfx-2000.json',
+        'enemy_deaths_supply': 'deaths.json',
+        'bulwark_fire': 'bulwark.json',
+        'full_mission': 'full-mission.json',
+        'native_importers': 'native-import.json',
+        'requested_contracts_only': 'contracts.json',
+        'final_editor_state': 'final-state.json',
+        'serialized_references': 'references.json',
+    }.items():
+        evidence = ROOT / '.design/presentation-polish' / path
+        checks[name] = json.loads(evidence.read_text()) if evidence.exists() else {'status': 'NOT RUN'}
+    closure_checks = {}
+    for name in ('carry', 'strike', 'beams', 'boss', 'dev-editor', 'dev-runtime', 'art', 'e2e', 'final-state'):
+        path = ROOT / '.design/art-closure' / (name + '.json')
+        closure_checks[name] = json.loads(path.read_text()) if path.exists() else {'status': 'NOT RUN'}
+    closure = json.loads((SOURCE.parents[1] / 'closure/jobs.json').read_text())
+    closure_used = sum(job['cost'] for job in closure['jobs'] + closure['animations'] if job['status'] == 'completed')
+    assert closure_used == 34 and closure['verified_remaining'] == 0, 'closure quota ledger mismatch'
     ledger = json.loads((SOURCE / 'jobs.json').read_text())
-    used = sum(job['charged'] for job in ledger['jobs'])
-    ready = all(evidence.get('status') == 'PASS' for evidence in checks.values())
-    result = dict(phase='READY FOR OWNER VISUAL REVIEW' if ready else 'VERIFICATION INCOMPLETE',
+    polish = json.loads((SOURCE.parents[1] / 'polish/jobs.json').read_text())
+    used = sum(job['charged'] for job in ledger['jobs']) + sum(job['cost'] for job in polish['jobs'] + polish['animations'] if job['status'] == 'completed')
+    ready = all(evidence.get('status') == 'PASS' or evidence.get('pass') is True or evidence.get('passed') is True for evidence in list(checks.values()) + list(closure_checks.values()))
+    result = dict(phase='ART CLOSURE VERIFIED' if ready else 'VERIFICATION INCOMPLETE',
                   verification_scope='Representative flows and art fixtures; no device FPS, Android build or full-campaign completion claim',
-                  quota=dict(starting=40, charged=used, inferred_remaining=40-used, pro_used=False),
-                  checks=checks, category_counts=dict(collections.Counter(Path(a['output']).parent.name for a in assets)),
+                  quota=dict(original_account=dict(starting=40, charged=used, verified_remaining=0, pro_used=True), replacement_account=dict(starting=34, verified_remaining=0, charged_this_followup=closure_used)),
+                  closure_checks=closure_checks, checks=checks, baseline_checks=baseline_checks, category_counts=dict(collections.Counter(Path(a['output']).parent.name for a in assets)),
                   assets=assets)
     (SOURCE.parent / 'production-manifest.json').write_text(json.dumps(result, indent=2) + '\n')
     print(f'PASS: {len(assets)} runtime PNGs with GUID, owner, hash and editable source')

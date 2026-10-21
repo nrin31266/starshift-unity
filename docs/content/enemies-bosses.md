@@ -65,7 +65,7 @@ Choreography flash/particle/SFX/shake thuộc [audio/VFX](../presentation/audio-
 
 ## M4-A non-attacking test targets `[PROVISIONAL]`
 
-Supply Drone dùng HP 3, Resource Asteroid dùng HP 2 `[TUNABLE]` trong placeholder
+Supply Drone dùng HP 6, Resource Asteroid dùng HP 2 `[TUNABLE]` trong shared
 prefabs. Cả hai reuse health/flight; attack disabled. Supply body không damage Player;
 resource asteroid body qua damaging contact gate. Không thêm archetype attack, boss
 hoặc production art mới. HP của Scout giữ nguyên khi Player upgrade.
@@ -256,8 +256,8 @@ missile fan → lane lock; rest 1.7 s. Không nhân projectile count cho toàn b
 
 ### Signature lane lock `[TUNABLE]`
 
-Beam pod charge 1.05 s bằng vùng magenta rộng 10% viewport, rồi active 1.5 s với
-white core. Tàu hãm chuyển động trong cả charge/active để beam giữ đúng pod/lane;
+Beam pod charge 1.05 s với cue hướng mảnh, rồi active 2 s với white core, bề dày 10% viewport. Trong đầu charge và active, đầu tia phía dưới đuổi lateral Player với tốc độ tối đa .22 viewport/s; cuối charge khóa hướng .45 phần duration để đọc lúc commit. Tia nối từ pod tới đầu aim, đổi hướng khi Player đổi phía, không teleport theo Player.
+Tàu hãm chuyển động trong cả charge/active để origin giữ đúng pod;
 khi cancel/end/death/Retry phải nhả motion pause. Luôn còn safe space rộng hai bên.
 Không instant hit, không beam tracking vô hạn hoặc AoE explosion.
 
@@ -407,7 +407,7 @@ Static balance seeds `[TUNABLE]`:
 | Interceptor | 16 | .85 × 1.2, directional |
 | Carrier | 34 | 2 × 1.65, large anchor |
 | Warden Drone | 2 | .55 × .65, light minion |
-| Bulwark | 28 | 1.65 × 1.45, front armor; không bắn |
+| Bulwark | 28 | 1.65 × 1.45, front armor; single shot chậm, charge .9 s, cooldown 5 s, initial delay 1.2 s, speed 3.6 |
 | Nebula Warden core | 520 | Capital hull + protected front |
 | Shield module | 110 each, 3 modules | Beam / Drone / Plasma, distinct accents |
 
@@ -428,8 +428,9 @@ Tracking dùng line mảnh vàng nhạt; khi khóa hướng line dày/sáng hơn
 
 Interceptor dùng cùng attack gate nhưng strike: charge .85 s, tracking .2 s,
 committed dash .65 s qua target snapshot/overshoot .12 viewport, return 1.1 s và
-cooldown 4.5 s sau đòn đầu; initial delay .35 s. Aim line kết thúc ở vị trí đã nhắm,
-không kéo xuyên cả màn như beam. `EntryHoldFlight` là pose writer, không homing sau commit. Bounded
+cooldown 4.5 s sau đòn đầu; initial delay .35 s. Một vòng khóa bám aim hiện tại khi
+charge, hiệu ứng phóng ngắn tại điểm xuất phát khi commit; không aim line và không
+hiện vòng khóa khi return/recovery. `EntryHoldFlight` là pose writer, không homing sau commit. Bounded
 return về slot cũ, không rời required kill set; ExitDrain hủy strike để retreat.
 
 Carrier có single secondary fire nhẹ và `EscortSpawner`: sau Hold, mỗi 5 s thử sinh
@@ -465,17 +466,18 @@ Presentation không quyết damage/vulnerability/completion.
 
 Vanguard Projectile Curtain: báo trước 1.1 s, chọn khe ở lateral .25 hoặc .75 phía
 xa vị trí Player lúc bắt đầu. Đạn xuất phát trước mặt boss .10 viewport, không sinh sau HUD/ngoài mép trên.
-Ba hàng đạn song song cách .55 s, speed 8.5; mỗi hàng
-21 vị trí, bỏ các viên thuộc khe .24 viewport và cộng margin bằng nửa chiều rộng
-đạn. Projectile riêng là đoạn plasma amber 2.1×.24 world, đủ chặn các khoảng đứng
-lọt giữa viên ở 16:9/20:9. Giữ khe trong cả ba hàng; lần dùng sau chọn lại theo Player.
+Ba hàng đạn cách .95 s, speed 8.5; hàng chẵn có
+25 vị trí, hàng lẻ dịch nửa slot và bỏ vị trí ngoài mép .98 để xen kẽ.
+Bỏ các viên thuộc khe .18 viewport và cộng margin bằng nửa chiều rộng
+đạn. Projectile amber 1.9×.45 world, animated và dày hơn; đủ chặn các khoảng đứng
+lọt giữa viên ở 16:9/20:9. Khe lần lượt ở lane gốc → lệch .28 về giữa → lane gốc, không có một cột đứng yên an toàn cả ba hàng. Sau .28 s attack cue, báo trước khe hàng kế tiếp trong phần interval còn lại; đạn đã bay vẫn giữ quỹ đạo/khe cũ. Lần dùng sau chọn lại theo Player.
 Producer giữ busy tới lúc hàng cuối bay khỏi view rồi mới vào rest; không stream vô hạn.
 
 Warden Ion Shelter: hai dải laser phủ ngoài khe .24 viewport, active .55 s mỗi nhịp,
 ba nhịp. Báo trước lần đầu 1.15 s; hai lần sau đổi khe .25↔.75 với .25 s nghỉ cộng
 1.15 s báo trước. Không đổi khe trong lúc damage đang bật. Charge tint nhạt bao
 đúng diện tích sẽ đánh; active tăng độ sáng hai mép hành lang, không vẽ lõi trắng
-rộng che actor/HUD. Fill alpha .035 charge/.13 active, mép .03/.05 world. Pause freeze, death/gate/cancel tắt
+rộng che actor/HUD. Fill texture alpha .09 charge/.35 active (dao động .035), không border/đường viền kỹ thuật. Pause freeze, death/gate/cancel tắt
 hit query và visual; Retry/pool reset mọi timer. Player phải tìm khe rồi đổi chỗ,
 không thể đứng ở góc cố định hết đợt. Đây là hành lang né riêng của attack, không
 thay playable bounds và không phải vật thể cover chặn mọi projectile khác.
@@ -489,3 +491,7 @@ Tham khảo ý tưởng: [community boss rework](https://forum.chickeninvaders.c
 changelog đã phát hành. [Dev discussion về danger zones/beam warnings](https://forum.chickeninvaders.com/t/mysterious-boss-danger-zone-warning/1619)
 phân biệt gợi ý vị trí với cảnh báo beam tức thời. StarShift vận dụng nguyên tắc
 telegraph rõ và khe né luân chuyển; không sao chép asset, tên boss hay mã CIU.
+
+### Continuous beam contact
+
+Beam query chạy sau relative movement. Ngoài overlap hiện tại, box cast theo chuyển động tương đối giữa tia và Player qua hai physics steps để drag nhanh hoặc tia quét không xuyên target. Chỉ nối sweep trong cùng active window; charge, cancel, recovery và pool reset cắt lịch sử query. Vẫn gọi PlayerContactReceiver nên invincibility/shield/life loss theo player owner, không tự trừ life từ VFX. Tia xoay/chase vẫn có thời gian active hữu hạn; visual và query dùng cùng segment/width.

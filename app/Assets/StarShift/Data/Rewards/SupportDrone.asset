@@ -25,7 +25,7 @@ MonoBehaviour:
   VisualScale: 1
   Amount: 1
   Lifetime: 12
-  DriftSpeed: 0.8
+  DriftSpeed: 1
   Duration: 11
   FireRateMultiplier: 1.6
   FallAcceleration: 14

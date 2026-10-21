@@ -46,6 +46,16 @@ namespace StarShift.Persistence
             Dirty = true;
             return CommitOrRestore(previous, wasDirty);
         }
+        public bool ResetAll()
+        {
+            if (data == null) return false;
+            var fresh = new SaveEnvelope { SchemaVersion = SaveValidation.CurrentVersion,
+                Profile = new PlayerProfile { UnlockedMissions = Array.Empty<string>(), Records = Array.Empty<MissionRecord>() },
+                Settings = SettingsData.Defaults() };
+            if (!store.Write(fresh, validate, resetHistory: true)) return false;
+            data = fresh; Dirty = false; LoadStatus = SaveLoadStatus.Loaded;
+            return true;
+        }
         public bool RecoverNewGame(string mission, CheckpointData initial)
         {
             if (data != null || LoadStatus != SaveLoadStatus.Invalid) return false;

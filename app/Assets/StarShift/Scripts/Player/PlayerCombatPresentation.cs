@@ -13,6 +13,8 @@ namespace StarShift.Player
         [SerializeField] private SpriteRenderer survival;
         [SerializeField] private Sprite[] muzzleFrames;
         [SerializeField] private Sprite[] rewardFrames;
+        [SerializeField] private Sprite[] coinRewardFrames, upgradeRewardFrames, shieldRewardFrames;
+        private Sprite[] activeRewardFrames;
         [SerializeField] private Sprite[] survivalFrames;
         [Header("Muzzle theo branch")]
         [SerializeField] private Sprite[] pulseMuzzleFrames;
@@ -40,14 +42,16 @@ namespace StarShift.Player
         private void OnCollected(PickupDefinition item)
         {
             rewardRemaining = .36f;
-            reward.color = item.Kind == PickupKind.ExtraLife ? new Color(.75f, 1, .8f) : item.Kind == PickupKind.Shield ? new Color(.4f, 1, .9f) : Color.white;
+            var frames = item.Kind == PickupKind.Shard ? coinRewardFrames : item.Kind == PickupKind.WeaponCore ? upgradeRewardFrames : item.Kind == PickupKind.Shield ? shieldRewardFrames : rewardFrames;
+            activeRewardFrames = frames != null && frames.Length > 0 ? frames : rewardFrames;
+            reward.color = item.Kind == PickupKind.ExtraLife ? new Color(.75f, 1, .8f) : Color.white;
         }
 
         private void LateUpdate()
         {
             if (weapon.ShotsFired != previousShots) { previousShots = weapon.ShotsFired; muzzleRemaining = .1f; }
             Present(muzzle, MuzzleFrames, ref muzzleRemaining, .1f);
-            Present(reward, rewardFrames, ref rewardRemaining, .36f);
+            Present(reward, activeRewardFrames, ref rewardRemaining, .36f);
             if (gate.State == PlayerGameplayState.PostEntryInvincibility)
             {
                 protectionAge += Time.deltaTime;

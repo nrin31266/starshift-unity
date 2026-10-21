@@ -19,7 +19,12 @@ namespace StarShift.Enemies
         [SerializeField] private Color lockTint = new Color(1, .25f, .35f, 1f);
         [SerializeField] private Color attackTint = new Color(1, .9f, .75f, 1f);
         [SerializeField, Min(.02f)] private float frameSeconds = .07f;
+        [SerializeField, Min(.1f)] private float cueScale = 1.25f;
+        [SerializeField, Min(24)] private float cueSizeAt900 = 52;
+        private Camera gameplayCamera;
         private AttackPhase phase;
+        private AttackPhase observedPhase;
+        private int observedPulses;
         private float age;
         private EnemyHealth health;
 
@@ -28,13 +33,15 @@ namespace StarShift.Enemies
             if (module == null) module = GetComponentInParent<BossAttackModule>();
             if (barrage == null) barrage = GetComponentInParent<BossBarrage>();
             health = GetComponentInParent<EnemyHealth>();
+            gameplayCamera = Camera.main;
         }
 
         private void OnEnable()
         {
             if (module != null) module.PhaseChanged += OnPhase;
             if (barrage != null) barrage.PhaseChanged += OnPhase;
-            phase = AttackPhase.Idle;
+            observedPhase = phase = AttackPhase.Idle;
+            observedPulses = 0;
             age = 0;
             if (cue != null) cue.enabled = false;
         }
@@ -48,6 +55,7 @@ namespace StarShift.Enemies
 
         private void OnPhase(AttackPhase next)
         {
+            observedPhase = next;
             if (next == AttackPhase.Idle && phase == AttackPhase.Recovery) return;
             // Tail chỉ thuộc presentation, không giữ module bận hoặc kéo dài damage window.
             phase = next == AttackPhase.Idle && phase == AttackPhase.Attack ? AttackPhase.Recovery : next;
@@ -57,6 +65,11 @@ namespace StarShift.Enemies
         private void LateUpdate()
         {
             if (cue == null || Time.timeScale <= 0) return;
+            // Module có thể ủy quyền phase cho DirectedAttack/Barrage mà không phát event riêng.
+            var current=barrage!=null?barrage.Phase:module!=null?module.CurrentPhase:AttackPhase.Idle;
+            if (current != observedPhase) OnPhase(current);
+            if (barrage != null && observedPulses != barrage.PulsesFired)
+            { observedPulses = barrage.PulsesFired; age = 0; }
             if (health != null && !health.IsAlive) phase = AttackPhase.Idle;
             if (phase == AttackPhase.Recovery && age >= frameSeconds * attackFrames.Length) phase = AttackPhase.Idle;
             var frames = phase == AttackPhase.Attack || phase == AttackPhase.Recovery ? attackFrames : phase == AttackPhase.Lock ? lockFrames : phase == AttackPhase.Prepare ? prepareFrames : null;
@@ -69,7 +82,12 @@ namespace StarShift.Enemies
             cue.color = tint;
             // Scale nhẹ theo phase: LOCK lớn hơn PREPARE để đọc mức nguy hiểm.
             float scale = phase == AttackPhase.Attack ? 1.15f : phase == AttackPhase.Lock ? 1f : .8f;
-            cue.transform.localScale = Vector3.one * scale;
+            if (gameplayCamera != null && cue.sprite != null)
+            {
+                float size=gameplayCamera.orthographicSize*2/900*cueSizeAt900*scale*cueScale;
+                var parent=cue.transform.parent.lossyScale;var bounds=cue.sprite.bounds.size;
+                cue.transform.localScale=new Vector3(size/Mathf.Max(.001f,bounds.x*Mathf.Abs(parent.x)),size/Mathf.Max(.001f,bounds.y*Mathf.Abs(parent.y)),1);
+            }
         }
     }
 }

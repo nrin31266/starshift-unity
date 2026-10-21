@@ -26,10 +26,13 @@ namespace StarShift.Dev
 
         private bool pendingBossPhaseB;
         private bool pendingVictory;
+        private int pendingGeneration;
         private void FixedUpdate()
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (!pendingBossPhaseB && !pendingVictory) return;
+            if (!GetComponent<EncounterRunner>().HasActiveRun || GetComponent<EncounterRunner>().Generation != pendingGeneration || GetComponent<StarShift.Persistence.CampaignLifecycle>().Mode != StarShift.Persistence.SessionMode.DevTest)
+            { pendingBossPhaseB = pendingVictory = false; return; }
             foreach (var enemy in StarShift.Enemies.EnemyHealth.Active)
             {
                 var boss = enemy.GetComponent<StarShift.Enemies.BossPhaseRunner>();
@@ -51,19 +54,32 @@ namespace StarShift.Dev
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (!isActiveAndEnabled || !devModeEnabled) return false;
-            Replay();
-            return true;
+            return ReplayConfiguredStart();
 #else
             return false;
 #endif
         }
 
         [ContextMenu("Replay Configured Start")]
-        public void Replay()
+        public void Replay() => ReplayConfiguredStart();
+
+        private bool ReplayConfiguredStart()
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            if (!Application.isPlaying || !isActiveAndEnabled || !devModeEnabled) return;
+            if (!Application.isPlaying || !isActiveAndEnabled || !devModeEnabled) return false;
             var runner = GetComponent<EncounterRunner>();
+            var level = startLevel != null ? startLevel : runner.Flow.Level;
+            var transition = startPoint == "TRANSITION";
+            var victory = startPoint == "VICTORY";
+            var route = transition ? "LEVEL_START" : victory ? "BOSS" : startPoint;
+            var region = GetComponent<RegionCampaignFlow>();
+            var missions = region != null ? region.Missions : System.Array.Empty<LevelDefinition>();
+            int missionIndex = System.Array.IndexOf(missions, level);
+            if (level == null || level.ResolveStart(route) < 0 || transition && (missionIndex < 0 || missionIndex + 1 >= missions.Length))
+            {
+                Debug.LogWarning("Dev Start Point không hợp lệ; chọn lại route trong Inspector.", this);
+                return false;
+            }
             runner.StopRun();
             foreach (var projectile in FindObjectsByType<PlayerProjectile>())
                 if (projectile.gameObject.scene == gameObject.scene) projectile.Release();
@@ -72,10 +88,10 @@ namespace StarShift.Dev
             player.enabled = true;
             player.GetComponent<PlayerPointerInput>().ResetDrag();
             if (startLevel != null) runner.Flow.LoadLevel(startLevel);
-            var transition = startPoint == "TRANSITION";
-            pendingVictory = startPoint == "VICTORY";
+            pendingVictory = victory;
             pendingBossPhaseB = startPoint == "BOSS_PHASE_B";
-            runner.StartRun(transition || pendingVictory ? "BOSS" : startPoint, pendingVictory ? false : standalone, skipIntro, overrideDirection ? direction : (PlayDirection?)null, cameraOverride);
+            runner.StartRun(route, pendingVictory ? false : standalone, skipIntro, overrideDirection ? direction : (PlayDirection?)null, cameraOverride);
+            pendingGeneration = runner.Generation;
             if (transition) { runner.StopRun(); GetComponent<RegionCampaignFlow>().QueueAdvance(); }
             if (deterministicRewards) GetComponent<StarShift.Rewards.RewardDirector>()?.SetTestSeed(rewardSeed);
             var loadout = player.GetComponent<WeaponLoadout>();
@@ -87,6 +103,9 @@ namespace StarShift.Dev
                     while (loadout.Level(branch) < Mathf.Clamp(startingWeaponLevel, 1, WeaponLoadout.MaximumLevel))
                         if (!loadout.ApplyCore(branch)) break;
                 }
+            return true;
+#else
+            return false;
 #endif
         }
     }

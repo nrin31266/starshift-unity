@@ -1,0 +1,102 @@
+{
+  "source": "ee9fc062-b375-418a-8fe0-a4442573507c",
+  "cost": 10,
+  "assets": [
+    {
+      "id": "vanguard-curtain",
+      "object_id": "c45f5b77-001b-4e63-bc57-aed8a8c59cd8",
+      "url": "https://backblaze.pixellab.ai/file/pixellab-characters/objects/a82d22d9-9644-4175-8252-4586c3a3dfaa/c45f5b77-001b-4e63-bc57-aed8a8c59cd8/rotations/unknown.png",
+      "raw": "raw/vanguard-curtain.png"
+    },
+    {
+      "id": "vanguard-lane-beam",
+      "object_id": "c6b2c091-ec65-455b-9e1b-32fc4c7d66a5",
+      "url": "https://backblaze.pixellab.ai/file/pixellab-characters/objects/a82d22d9-9644-4175-8252-4586c3a3dfaa/c6b2c091-ec65-455b-9e1b-32fc4c7d66a5/rotations/unknown.png",
+      "raw": "raw/vanguard-lane-beam.png"
+    },
+    {
+      "id": "warden-ion-shelter",
+      "object_id": "2444472e-4e1c-489c-a533-6916c10b66be",
+      "url": "https://backblaze.pixellab.ai/file/pixellab-characters/objects/a82d22d9-9644-4175-8252-4586c3a3dfaa/2444472e-4e1c-489c-a533-6916c10b66be/rotations/unknown.png",
+      "raw": "raw/warden-ion-shelter.png"
+    },
+    {
+      "id": "warden-beam-sweep",
+      "object_id": "2e2de626-d227-4b26-928c-e6b49965ce4b",
+      "url": "https://backblaze.pixellab.ai/file/pixellab-characters/objects/a82d22d9-9644-4175-8252-4586c3a3dfaa/2e2de626-d227-4b26-928c-e6b49965ce4b/rotations/unknown.png",
+      "raw": "raw/warden-beam-sweep.png"
+    },
+    {
+      "id": "impact-pulse",
+      "object_id": "376bc307-0f05-4052-aef6-c22902b91c0e",
+      "url": "https://backblaze.pixellab.ai/file/pixellab-characters/objects/a82d22d9-9644-4175-8252-4586c3a3dfaa/376bc307-0f05-4052-aef6-c22902b91c0e/rotations/unknown.png",
+      "raw": "raw/impact-pulse.png"
+    },
+    {
+      "id": "impact-plasma",
+      "object_id": "19cd51c0-79ae-4b03-a6d9-2985b3d43e24",
+      "url": "https://backblaze.pixellab.ai/file/pixellab-characters/objects/a82d22d9-9644-4175-8252-4586c3a3dfaa/19cd51c0-79ae-4b03-a6d9-2985b3d43e24/rotations/unknown.png",
+      "raw": "raw/impact-plasma.png"
+    },
+    {
+      "id": "impact-homing",
+      "object_id": "ba25f459-a209-4e2e-bd67-90d02f1d5a80",
+      "url": "https://backblaze.pixellab.ai/file/pixellab-characters/objects/a82d22d9-9644-4175-8252-4586c3a3dfaa/ba25f459-a209-4e2e-bd67-90d02f1d5a80/rotations/unknown.png",
+      "raw": "raw/impact-homing.png"
+    },
+    {
+      "id": "impact-rock",
+      "object_id": "051a594e-4362-4955-838d-228d72ffa6b5",
+      "url": "https://backblaze.pixellab.ai/file/pixellab-characters/objects/a82d22d9-9644-4175-8252-4586c3a3dfaa/051a594e-4362-4955-838d-228d72ffa6b5/rotations/unknown.png",
+      "raw": "raw/impact-rock.png"
+    },
+    {
+      "id": "focus-gun",
+      "object_id": "f0350e0b-1d81-4807-9d95-6aafa467be03",
+      "url": "https://backblaze.pixellab.ai/file/pixellab-characters/objects/a82d22d9-9644-4175-8252-4586c3a3dfaa/f0350e0b-1d81-4807-9d95-6aafa467be03/rotations/unknown.png",
+      "raw": "raw/focus-gun.png"
+    },
+    {
+      "id": "focus-sniper",
+      "object_id": "667b7d50-9f0b-480e-b912-e101d0b6468a",
+      "url": "https://backblaze.pixellab.ai/file/pixellab-characters/objects/a82d22d9-9644-4175-8252-4586c3a3dfaa/667b7d50-9f0b-480e-b912-e101d0b6468a/rotations/unknown.png",
+      "raw": "raw/focus-sniper.png"
+    },
+    {
+      "id": "focus-strike",
+      "object_id": "f184bac8-e845-495e-9241-55ed79770df6",
+      "url": "https://backblaze.pixellab.ai/file/pixellab-characters/objects/a82d22d9-9644-4175-8252-4586c3a3dfaa/f184bac8-e845-495e-9241-55ed79770df6/rotations/unknown.png",
+      "raw": "raw/focus-strike.png"
+    },
+    {
+      "id": "focus-missile",
+      "object_id": "2f56bbea-21c1-43da-ae8d-2d20f10d5e59",
+      "url": "https://backblaze.pixellab.ai/file/pixellab-characters/objects/a82d22d9-9644-4175-8252-4586c3a3dfaa/2f56bbea-21c1-43da-ae8d-2d20f10d5e59/rotations/unknown.png",
+      "raw": "raw/focus-missile.png"
+    },
+    {
+      "id": "impact-shield",
+      "object_id": "755bfd79-f779-40bf-aa54-2ea80a5132c4",
+      "url": "https://backblaze.pixellab.ai/file/pixellab-characters/objects/a82d22d9-9644-4175-8252-4586c3a3dfaa/755bfd79-f779-40bf-aa54-2ea80a5132c4/rotations/unknown.png",
+      "raw": "raw/impact-shield.png"
+    },
+    {
+      "id": "boss-armor-rupture",
+      "object_id": "995a6d71-a2c5-4214-8efc-5537cf01a82c",
+      "url": "https://backblaze.pixellab.ai/file/pixellab-characters/objects/a82d22d9-9644-4175-8252-4586c3a3dfaa/995a6d71-a2c5-4214-8efc-5537cf01a82c/rotations/unknown.png",
+      "raw": "raw/boss-armor-rupture.png"
+    },
+    {
+      "id": "thermal-vent",
+      "object_id": "73cce87e-c18e-4ce8-8416-9de4ec8daebd",
+      "url": "https://backblaze.pixellab.ai/file/pixellab-characters/objects/a82d22d9-9644-4175-8252-4586c3a3dfaa/73cce87e-c18e-4ce8-8416-9de4ec8daebd/rotations/unknown.png",
+      "raw": "raw/thermal-vent.png"
+    },
+    {
+      "id": "supply-burst",
+      "object_id": "a7ba4a4b-bbf8-4a09-81f8-22d0d9762692",
+      "url": "https://backblaze.pixellab.ai/file/pixellab-characters/objects/a82d22d9-9644-4175-8252-4586c3a3dfaa/a7ba4a4b-bbf8-4a09-81f8-22d0d9762692/rotations/unknown.png",
+      "raw": "raw/supply-burst.png"
+    }
+  ]
+}

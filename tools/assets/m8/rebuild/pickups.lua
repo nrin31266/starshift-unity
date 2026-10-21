@@ -35,8 +35,11 @@ for _,spec in ipairs(specs)do
  end
  saveFrames(spec[1],frames)
 end
--- Shard giữ crystal world identity; chỉ thêm glint nhẹ như các pickup.
-local shard=Image{fromFile=root..'/salvage/stellar-shard.png'};local frames={}
-for f=0,3 do local a=Image(shard);local x=10+f*3;local y=8+f*4;rect(a,x,y,2,3,'fff0c5');frames[#frames+1]=a end
+-- Technical ID giữ tương thích; hình mới là đồng vàng xoay, không còn tinh thể.
+local coin=Image{fromFile=root..'/../../polish/raw/coin.png'};local frames={}
+for f,width in ipairs{30,22,10,26}do
+ local a=image(32,40);local face=Image(coin);face:resize(width,32);a:drawImage(face,Point(math.floor((32-width)/2),4))
+ rect(a,math.floor((32-width)/2)+2,10+f*2,2,2,'fff6bd');frames[#frames+1]=a
+end
 saveFrames('stellar-shard',frames)
 print('PASS: eight transparent square cases with large icons; four subtle glint frames each')

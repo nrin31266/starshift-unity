@@ -21,7 +21,7 @@ namespace StarShift.Combat
             {
                 coolingDelayRemaining = 0;
                 Heat = Mathf.Max(0, Heat - profile.OverheatCoolRate * seconds);
-                if (Heat <= profile.Capacity * profile.RecoveryFraction) IsOverheated = false;
+                if (Heat <= 0) IsOverheated = false;
                 return;
             }
             if (held)

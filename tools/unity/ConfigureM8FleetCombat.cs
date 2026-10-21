@@ -15,7 +15,11 @@ public static class ConfigureM8FleetCombat
     const string Art = "Assets/StarShift/Art/";
     static string ArtPath(string id) => AssetDatabase.FindAssets(id + " t:Texture2D", new[]{Art.TrimEnd('/')})
         .Select(AssetDatabase.GUIDToAssetPath).Single(path => System.IO.Path.GetFileNameWithoutExtension(path) == id);
-    static Sprite S(string id) => AssetDatabase.LoadAssetAtPath<Sprite>(ArtPath(id)) ?? throw new InvalidOperationException("Missing " + id);
+    static Sprite S(string id)
+    {
+        var path=AssetDatabase.FindAssets(id+" t:Texture2D",new[]{Art.TrimEnd('/')}).Select(AssetDatabase.GUIDToAssetPath).FirstOrDefault(p=>System.IO.Path.GetFileNameWithoutExtension(p)==id);
+        return path!=null?AssetDatabase.LoadAssetAtPath<Sprite>(path):Frames(id).First();
+    }
     static Sprite[] Frames(string id) => AssetDatabase.LoadAllAssetsAtPath(ArtPath(id + "-sheet")).OfType<Sprite>().OrderBy(s => s.name, StringComparer.Ordinal).ToArray();
 
     static void Set(UnityEngine.Object o, string field, UnityEngine.Object value)
@@ -59,12 +63,12 @@ public static class ConfigureM8FleetCombat
     {
         var feedback = root.GetComponent<EnemyHitPresentation>();
         if (feedback == null) return;
-        var renderer = Visual(root, "M8Impact", "impact-hull", Vector3.zero, 14, 1f);
+        var renderer = Visual(root, "M8Impact", "hit-pulse", Vector3.zero, 14, 1f);
         renderer.enabled = false;
         Set(feedback, "impact", renderer);
-        Array(feedback, "hullImpactFrames", Frames("impact-hull"));
-        Array(feedback, "shieldImpactFrames", Frames("impact-shield"));
-        Array(feedback, "moduleImpactFrames", Frames("impact-module"));
+        Array(feedback, "hullImpactFrames", Frames("hit-pulse"));
+        Array(feedback, "shieldImpactFrames", Frames("hit-shield"));
+        Array(feedback, "moduleImpactFrames", Frames("hit-homing"));
         Float(feedback, "impactSeconds", .22f);
         // Sprite hull impact đặt tại điểm trúng nhưng không xoay theo root.
         renderer.transform.localRotation = Quaternion.identity;
@@ -92,12 +96,12 @@ public static class ConfigureM8FleetCombat
         var barrage = root.GetComponent<BossBarrage>();
         if (module == null && barrage == null) return;
         var presentation = Component<BossSkillPhasePresentation>(root);
-        var cue = Visual(root, "M8PhaseCue", "attack-telegraphs", Vector3.zero, 13, 1f);
+        var cue = Visual(root, "M8PhaseCue", "focus-missile", Vector3.zero, 13, 1f);
         cue.enabled = false;
         Set(presentation, "module", module);
         Set(presentation, "barrage", barrage);
         Set(presentation, "cue", cue);
-        Array(presentation, "prepareFrames", Frames("attack-telegraphs"));
+        Array(presentation, "prepareFrames", Frames("focus-missile"));
         Array(presentation, "lockFrames", Frames("telegraph-special"));
         Array(presentation, "attackFrames", Frames("boss-blast"));
     }
@@ -129,7 +133,7 @@ public static class ConfigureM8FleetCombat
                 Damage(root, spriteId);
                 // Normal hostile dùng charge coral/lemon; chỉ Sniper/Interceptor (special) dùng magenta beam.
                 bool special = pair[0] == "Sniper" || pair[0] == "Interceptor";
-                FireCue(root, special, special ? "charge-beam" : "charge-hostile");
+                FireCue(root, special, special ? "focus-sniper" : "focus-gun");
             });
         }
         Prefab("Enemies/SupplyDrone", root =>
@@ -158,7 +162,7 @@ public static class ConfigureM8FleetCombat
             var definition = AssetDatabase.LoadAssetAtPath<SingleFireDefinition>(path);
             var name = definition.name;
             bool special = name.Contains("WardenPlasma") || name.Contains("Curtain");
-            string id = special ? "hostile-special" : name.Contains("BomberSpread") || name.Contains("WardenSweep") ? "hostile-lemon" : "hostile-coral";
+            string id = special ? "hostile-special" : name.Contains("Bulwark") || name.Contains("BomberSpread") || name.Contains("WardenSweep") ? "hostile-lemon" : "hostile-coral";
             var so = new SerializedObject(definition);
             so.FindProperty("projectileSprite").objectReferenceValue = S(id);
             so.FindProperty("projectileColor").colorValue = Color.white;
@@ -249,7 +253,7 @@ public static class ConfigureM8FleetCombat
             if (damage != null) { Set(damage, "damagedSprite", S("resource-asteroid-damaged")); Set(damage, "criticalSprite", S("resource-asteroid-critical")); }
         });
         var runner = UnityEngine.Object.FindAnyObjectByType<AsteroidDestructionPresentation>();
-        if (runner != null) Array(runner, "supplyFrames", Frames("supply-burst"));
+        if (runner != null) Array(runner, "supplyFrames", Frames("supply-burst-polished"));
         Save();
         return new { playerDebris = true, stagedBoss = 2, asteroidStates = 4 };
     }

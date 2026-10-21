@@ -16,7 +16,7 @@ namespace StarShift.UI
         public const string GameOver = "THẤT BẠI";
         public const string Placeholder = "—";
         public const string PulseLaser = "Pulse Laser";
-        public const string HeatOverheated = "KHÓA";
+        public const string HeatOverheated = "XẢ NHIỆT";
         public const string HeatHot = "NÓNG";
         public static string Encounter(int number) => $"ĐỢT {number}";
         public static string Weapon(int level) => $"{PulseLaser} · CẤP {level}";

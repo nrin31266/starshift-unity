@@ -78,7 +78,7 @@ namespace StarShift.Enemies
             if (BlocksPlayerProjectiles)
             {
                 try { BlockedHit?.Invoke(); }
-                finally { HitPresented?.Invoke(new EnemyHitInfo(EnemyHitKind.ShieldBlock, hit.Point, hit.Normal, damage)); }
+                finally { HitPresented?.Invoke(new EnemyHitInfo(EnemyHitKind.ShieldBlock, hit.Point, hit.Normal, damage, hit.Branch)); }
                 return;
             }
             if (!CanReceiveDamage) return;
@@ -87,7 +87,7 @@ namespace StarShift.Enemies
             try
             {
                 Damaged?.Invoke();
-                HitPresented?.Invoke(new EnemyHitInfo(hit.Kind, hit.Point, hit.Normal, damage));
+                HitPresented?.Invoke(new EnemyHitInfo(hit.Kind, hit.Point, hit.Normal, damage, hit.Branch));
             }
             finally { if (lethal) ResolveDeath(); }
         }

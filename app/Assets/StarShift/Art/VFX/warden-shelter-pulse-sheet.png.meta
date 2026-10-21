@@ -1,0 +1,634 @@
+fileFormatVersion: 2
+guid: b532f115028ef904683d31151d338068
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2446762737438474720
+    second: warden-shelter-pulse-sheet_0
+  - first:
+      213: 7124920099671202498
+    second: warden-shelter-pulse-sheet_1
+  - first:
+      213: 2145286340455834355
+    second: warden-shelter-pulse-sheet_2
+  - first:
+      213: -2460953471184957804
+    second: warden-shelter-pulse-sheet_3
+  - first:
+      213: 8721756556086776418
+    second: warden-shelter-pulse-sheet_4
+  - first:
+      213: 2425849515680740854
+    second: warden-shelter-pulse-sheet_5
+  - first:
+      213: -7363359276830945333
+    second: warden-shelter-pulse-sheet_6
+  - first:
+      213: 1166448207177227456
+    second: warden-shelter-pulse-sheet_7
+  - first:
+      213: 7587853365525750681
+    second: warden-shelter-pulse-sheet_8
+  - first:
+      213: 1470590049635443391
+    second: warden-shelter-pulse-sheet_9
+  - first:
+      213: 150764612679926434
+    second: warden-shelter-pulse-sheet_10
+  - first:
+      213: 6636847450783642859
+    second: warden-shelter-pulse-sheet_11
+  - first:
+      213: -356634849808291028
+    second: warden-shelter-pulse-sheet_12
+  - first:
+      213: -7023082989558689082
+    second: warden-shelter-pulse-sheet_13
+  - first:
+      213: -3721242101888116267
+    second: warden-shelter-pulse-sheet_14
+  - first:
+      213: 878621107014135578
+    second: warden-shelter-pulse-sheet_15
+  - first:
+      213: -6412256518308406724
+    second: warden-shelter-pulse-sheet_16
+  - first:
+      213: -6112555349274213306
+    second: warden-shelter-pulse-sheet_17
+  - first:
+      213: 4352849724253439058
+    second: warden-shelter-pulse-sheet_18
+  - first:
+      213: -2374897780447934096
+    second: warden-shelter-pulse-sheet_19
+  - first:
+      213: -273573430248331063
+    second: warden-shelter-pulse-sheet_20
+  - first:
+      213: 5698097690046551018
+    second: warden-shelter-pulse-sheet_21
+  - first:
+      213: 7526207650612519355
+    second: warden-shelter-pulse-sheet_22
+  - first:
+      213: -6658131870132611069
+    second: warden-shelter-pulse-sheet_23
+  - first:
+      213: -9092223583861705229
+    second: warden-shelter-pulse-sheet_24
+  - first:
+      213: -9082110269650107079
+    second: warden-shelter-pulse-sheet_25
+  - first:
+      213: 1155830783430687565
+    second: warden-shelter-pulse-sheet_26
+  - first:
+      213: -5781713579752870266
+    second: warden-shelter-pulse-sheet_27
+  - first:
+      213: 4473636397901472923
+    second: warden-shelter-pulse-sheet_28
+  - first:
+      213: 5366330128980873474
+    second: warden-shelter-pulse-sheet_29
+  - first:
+      213: 8233567913299117141
+    second: warden-shelter-pulse-sheet_30
+  - first:
+      213: -1479241855416495253
+    second: warden-shelter-pulse-sheet_31
+  - first:
+      213: 1941496124986694651
+    second: warden-shelter-pulse-sheet_32
+  - first:
+      213: 8176372189640642935
+    second: warden-shelter-pulse-sheet_33
+  - first:
+      213: -911189743483302760
+    second: warden-shelter-pulse-sheet_34
+  - first:
+      213: 8874359488148732891
+    second: warden-shelter-pulse-sheet_35
+  - first:
+      213: -4128943678082853742
+    second: warden-shelter-pulse-sheet_36
+  - first:
+      213: -843017026755706878
+    second: warden-shelter-pulse-sheet_37
+  - first:
+      213: -9158885032898542767
+    second: warden-shelter-pulse-sheet_38
+  - first:
+      213: 9025304114550341077
+    second: warden-shelter-pulse-sheet_39
+  - first:
+      213: -5080668645799508323
+    second: warden-shelter-pulse-sheet_40
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 56.25
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: warden-shelter-pulse_00
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 192
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f789c3117f81aac2889d56bc8ef94da8
+      internalID: 1570444644
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warden-shelter-pulse_01
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 192
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: da11edf7103dfc309a1e186eec90488c
+      internalID: 985155
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warden-shelter-pulse_02
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 192
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a0a38574b3eb27a35b89313d021313b3
+      internalID: 788201520
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warden-shelter-pulse_03
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 192
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 624df3dbcd623121b90c88d5bf2428fe
+      internalID: -1847387738
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warden-shelter-pulse_04
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 128
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9c52f5ca853d1f725a5406c380d4801c
+      internalID: 1580912180
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warden-shelter-pulse_05
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 128
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d894c2493432eed36b60f93000b6c708
+      internalID: -1808348860
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warden-shelter-pulse_06
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 128
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3aa3ae6760bf25a3c86e501c7c1b242a
+      internalID: -1764488054
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warden-shelter-pulse_07
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 128
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e08ba558869ed782dab52a6c7f609d17
+      internalID: -1908190824
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warden-shelter-pulse_08
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a0a531129e1c2e6eba79f423b61c81b8
+      internalID: 899060255
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warden-shelter-pulse_09
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8091060346b7d70cf8857ce85e3c993c
+      internalID: -1151149422
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warden-shelter-pulse_10
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7ca2103f899cc88d6a3f93c6fe392b16
+      internalID: -140671390
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warden-shelter-pulse_11
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c0adf1b9ef0016527b560668f33b8b37
+      internalID: 2081070678
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warden-shelter-pulse_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ef8c216123c595b33b9c39eb5d4b4080
+      internalID: -486521762
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warden-shelter-pulse_13
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 318d1d887fdb89976ab3069530e8fe47
+      internalID: -934992403
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warden-shelter-pulse_14
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dc1d8f2706da33ecb8004d6940b134e9
+      internalID: 1500202978
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warden-shelter-pulse_15
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8b7c18a25273a897786ba6f45df1779c
+      internalID: 1958544403
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    outline: []
+    customData:
+    physicsShape: []
+    bones: []
+    spriteID: fcdb0c468683db3dda5e8958b20555f5
+    internalID: 0
+    vertices: []
+    indices:
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      warden-shelter-pulse_00: 1570444644
+      warden-shelter-pulse_01: 985155
+      warden-shelter-pulse_02: 788201520
+      warden-shelter-pulse_03: -1847387738
+      warden-shelter-pulse_04: 1580912180
+      warden-shelter-pulse_05: -1808348860
+      warden-shelter-pulse_06: -1764488054
+      warden-shelter-pulse_07: -1908190824
+      warden-shelter-pulse_08: 899060255
+      warden-shelter-pulse_09: -1151149422
+      warden-shelter-pulse_10: -140671390
+      warden-shelter-pulse_11: 2081070678
+      warden-shelter-pulse_12: -486521762
+      warden-shelter-pulse_13: -934992403
+      warden-shelter-pulse_14: 1500202978
+      warden-shelter-pulse_15: 1958544403
+  mipmapLimitGroupName:
+  pSDRemoveMatte: 0
+  userData:
+  assetBundleName:
+  assetBundleVariant:

@@ -15,6 +15,5 @@ MonoBehaviour:
   capacity: 100
   heatPerSecond: 8.5
   coolingDelay: 0.3
-  coolRate: 30
-  overheatCoolRate: 50
-  recoveryFraction: 0.4
+  coolRate: 18
+  overheatCoolRate: 65

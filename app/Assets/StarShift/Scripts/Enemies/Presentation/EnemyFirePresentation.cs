@@ -14,6 +14,8 @@ namespace StarShift.Enemies
         private SpriteRenderer chargeCue;
         [SerializeField, Tooltip("Magenta dành cho special danger; normal hostile dùng coral/lemon.")]
         private bool specialDanger;
+        [SerializeField, Min(16)] private float cueSizeAt900 = 40;
+        private Camera gameplayCamera;
         private SingleFireAttack attack;
         private Color normalTint;
         private float age;
@@ -22,6 +24,7 @@ namespace StarShift.Enemies
         private void Awake()
         {
             attack = GetComponent<SingleFireAttack>();
+            gameplayCamera = Camera.main;
             if (core == null)
             {
                 Debug.LogError("EnemyFirePresentation requires a core renderer.", this);
@@ -54,7 +57,14 @@ namespace StarShift.Enemies
             // Vòng co vào lõi trong lúc telegraph; reset frame mỗi lần bắt đầu charge.
             int frame = Mathf.Clamp((int)(age / .07f), 0, chargeFrames.Length - 1);
             chargeCue.sprite = chargeFrames[frame];
-            chargeCue.color = specialDanger ? new Color(1, .55f, .95f, 1) : Color.white;
+            chargeCue.color = specialDanger ? new Color(1, .95f, 1, 1) : Color.white;
+            if (gameplayCamera != null && chargeCue.sprite != null)
+            {
+                float width=gameplayCamera.orthographicSize*2/900*cueSizeAt900;
+                var parent=chargeCue.transform.parent!=null?chargeCue.transform.parent.lossyScale:Vector3.one;
+                var bounds=chargeCue.sprite.bounds.size;
+                chargeCue.transform.localScale=new Vector3(width/Mathf.Max(.001f,bounds.x*Mathf.Abs(parent.x)),width/Mathf.Max(.001f,bounds.y*Mathf.Abs(parent.y)),1);
+            }
         }
     }
 }

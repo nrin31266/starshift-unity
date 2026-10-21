@@ -1,0 +1,46 @@
+{
+  "object": {
+    "id": "2e2de626-d227-4b26-928c-e6b49965ce4b",
+    "name": "base",
+    "prompt": "Warden Beam Sweep: energetic magenta pink rotating four-armed beam focus with a thick round faceted violet core and four short broad crescent blades, bright white center",
+    "size": {
+      "width": 64,
+      "height": 64
+    },
+    "directions": 1,
+    "view": "low top-down"
+  },
+  "spritesheet": {
+    "path": "Warden_Beam_Sweep_energetic_m.png",
+    "cell_size": {
+      "width": 64,
+      "height": 64
+    },
+    "sheet_size": {
+      "width": 1024,
+      "height": 128
+    },
+    "columns": 16,
+    "pivot": "cell-center",
+    "rows": [
+      {
+        "row": 0,
+        "type": "rotations",
+        "frame_count": 1,
+        "directions": [
+          "unknown"
+        ]
+      },
+      {
+        "row": 1,
+        "type": "animation",
+        "frame_count": 16,
+        "animation": "Sweep focus energy discharge",
+        "animation_group_id": "8d6cb5e3-22c8-496a-9138-da52833bdea1",
+        "direction": "unknown"
+      }
+    ]
+  },
+  "export_version": "1.0",
+  "export_date": "2026-10-21T05:30:26.207035+00:00"
+}

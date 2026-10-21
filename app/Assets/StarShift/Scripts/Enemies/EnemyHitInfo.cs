@@ -1,4 +1,5 @@
 using UnityEngine;
+using StarShift.Combat;
 
 namespace StarShift.Enemies
 {
@@ -12,16 +13,18 @@ namespace StarShift.Enemies
         public readonly Vector2 Point;
         public readonly Vector2 Normal;
         public readonly int Damage;
+        public readonly WeaponBranch Branch;
 
-        public EnemyHitInfo(EnemyHitKind kind, Vector2 point, Vector2 normal, int damage)
+        public EnemyHitInfo(EnemyHitKind kind, Vector2 point, Vector2 normal, int damage, WeaponBranch branch = WeaponBranch.Pulse)
         {
             Kind = kind;
             Point = point;
             Normal = normal;
             Damage = damage;
+            Branch = branch;
         }
 
-        public static EnemyHitInfo AtCenter(Transform target, EnemyHitKind kind, int damage)
-            => new EnemyHitInfo(kind, target != null ? (Vector2)target.position : Vector2.zero, Vector2.up, damage);
+        public static EnemyHitInfo AtCenter(Transform target, EnemyHitKind kind, int damage, WeaponBranch branch = WeaponBranch.Pulse)
+            => new EnemyHitInfo(kind, target != null ? (Vector2)target.position : Vector2.zero, Vector2.up, damage, branch);
     }
 }

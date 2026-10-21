@@ -521,7 +521,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 12
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 90ffcc87deff258d095ca97cc97becc4, type: 3}
+  m_Sprite: {fileID: 1274355277, guid: 65bf9832cc150b2218ef5203a85e3f41, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1320,6 +1320,37 @@ MonoBehaviour:
   - {fileID: 208762683, guid: 65bf9832cc150b2218ef5203a85e3f41, type: 3}
   - {fileID: 111409123, guid: 65bf9832cc150b2218ef5203a85e3f41, type: 3}
   - {fileID: -525245634, guid: 65bf9832cc150b2218ef5203a85e3f41, type: 3}
+  - {fileID: 912861063, guid: 65bf9832cc150b2218ef5203a85e3f41, type: 3}
+  - {fileID: -1648693065, guid: 65bf9832cc150b2218ef5203a85e3f41, type: 3}
+  - {fileID: -1382557286, guid: 65bf9832cc150b2218ef5203a85e3f41, type: 3}
+  - {fileID: 815001242, guid: 65bf9832cc150b2218ef5203a85e3f41, type: 3}
+  coinRewardFrames:
+  - {fileID: 1162136363, guid: 1f5ad11eed0076d13ad3aea90c97ae5f, type: 3}
+  - {fileID: 269857052, guid: 1f5ad11eed0076d13ad3aea90c97ae5f, type: 3}
+  - {fileID: 271079264, guid: 1f5ad11eed0076d13ad3aea90c97ae5f, type: 3}
+  - {fileID: 1924975091, guid: 1f5ad11eed0076d13ad3aea90c97ae5f, type: 3}
+  - {fileID: 1522360954, guid: 1f5ad11eed0076d13ad3aea90c97ae5f, type: 3}
+  - {fileID: 1701465916, guid: 1f5ad11eed0076d13ad3aea90c97ae5f, type: 3}
+  - {fileID: -1000523456, guid: 1f5ad11eed0076d13ad3aea90c97ae5f, type: 3}
+  - {fileID: 1298904411, guid: 1f5ad11eed0076d13ad3aea90c97ae5f, type: 3}
+  upgradeRewardFrames:
+  - {fileID: 1274355277, guid: 65bf9832cc150b2218ef5203a85e3f41, type: 3}
+  - {fileID: 208762683, guid: 65bf9832cc150b2218ef5203a85e3f41, type: 3}
+  - {fileID: 111409123, guid: 65bf9832cc150b2218ef5203a85e3f41, type: 3}
+  - {fileID: -525245634, guid: 65bf9832cc150b2218ef5203a85e3f41, type: 3}
+  - {fileID: 912861063, guid: 65bf9832cc150b2218ef5203a85e3f41, type: 3}
+  - {fileID: -1648693065, guid: 65bf9832cc150b2218ef5203a85e3f41, type: 3}
+  - {fileID: -1382557286, guid: 65bf9832cc150b2218ef5203a85e3f41, type: 3}
+  - {fileID: 815001242, guid: 65bf9832cc150b2218ef5203a85e3f41, type: 3}
+  shieldRewardFrames:
+  - {fileID: 617034406, guid: 1a874d9f5b6f09cd1a9ca57133698d1b, type: 3}
+  - {fileID: -477149609, guid: 1a874d9f5b6f09cd1a9ca57133698d1b, type: 3}
+  - {fileID: 9747288, guid: 1a874d9f5b6f09cd1a9ca57133698d1b, type: 3}
+  - {fileID: -185551613, guid: 1a874d9f5b6f09cd1a9ca57133698d1b, type: 3}
+  - {fileID: -302288146, guid: 1a874d9f5b6f09cd1a9ca57133698d1b, type: 3}
+  - {fileID: 1077991214, guid: 1a874d9f5b6f09cd1a9ca57133698d1b, type: 3}
+  - {fileID: -532716203, guid: 1a874d9f5b6f09cd1a9ca57133698d1b, type: 3}
+  - {fileID: -882134033, guid: 1a874d9f5b6f09cd1a9ca57133698d1b, type: 3}
   survivalFrames:
   - {fileID: 847903551, guid: c346e7feeed2e673d8b8d633e84b2990, type: 3}
   - {fileID: -2064468834, guid: c346e7feeed2e673d8b8d633e84b2990, type: 3}

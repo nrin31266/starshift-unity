@@ -1,0 +1,46 @@
+{
+  "object": {
+    "id": "2444472e-4e1c-489c-a533-6916c10b66be",
+    "name": "base",
+    "prompt": "Warden Ion Shelter: two turquoise cyan curved electric brackets with a clear large protected gap between them, six chunky bright electrode sparks, ivory white hot edges",
+    "size": {
+      "width": 64,
+      "height": 64
+    },
+    "directions": 1,
+    "view": "low top-down"
+  },
+  "spritesheet": {
+    "path": "Warden_Ion_Shelter_two_turquo.png",
+    "cell_size": {
+      "width": 64,
+      "height": 64
+    },
+    "sheet_size": {
+      "width": 1024,
+      "height": 128
+    },
+    "columns": 16,
+    "pivot": "cell-center",
+    "rows": [
+      {
+        "row": 0,
+        "type": "rotations",
+        "frame_count": 1,
+        "directions": [
+          "unknown"
+        ]
+      },
+      {
+        "row": 1,
+        "type": "animation",
+        "frame_count": 16,
+        "animation": "Ion shelter energy pulse",
+        "animation_group_id": "3e4e6f79-5e49-4396-84c8-aa4e3eb5bbc6",
+        "direction": "unknown"
+      }
+    ]
+  },
+  "export_version": "1.0",
+  "export_date": "2026-10-21T05:23:18.244894+00:00"
+}

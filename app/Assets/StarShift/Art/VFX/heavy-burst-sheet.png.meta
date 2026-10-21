@@ -1,0 +1,456 @@
+fileFormatVersion: 2
+guid: 9831e66b337afb105ac1befd6c809272
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -6467023333886566928
+    second: heavy-burst-sheet_0
+  - first:
+      213: -1032179402208266623
+    second: heavy-burst-sheet_1
+  - first:
+      213: 170338622631018293
+    second: heavy-burst-sheet_2
+  - first:
+      213: 5803470977596133668
+    second: heavy-burst-sheet_3
+  - first:
+      213: -2811080385724578340
+    second: heavy-burst-sheet_4
+  - first:
+      213: 9127650984363145638
+    second: heavy-burst-sheet_5
+  - first:
+      213: -693491326894293219
+    second: heavy-burst-sheet_6
+  - first:
+      213: 4347777582161150676
+    second: heavy-burst-sheet_7
+  - first:
+      213: 4901705105957029314
+    second: heavy-burst-sheet_8
+  - first:
+      213: -1430983194289212028
+    second: heavy-burst-sheet_9
+  - first:
+      213: 3760326737211205241
+    second: heavy-burst-sheet_10
+  - first:
+      213: -820841414395488880
+    second: heavy-burst-sheet_11
+  - first:
+      213: 3377513293755880704
+    second: heavy-burst-sheet_12
+  - first:
+      213: 3335644065857861596
+    second: heavy-burst-sheet_13
+  - first:
+      213: -3895279954800644259
+    second: heavy-burst-sheet_14
+  - first:
+      213: 7066342464955896430
+    second: heavy-burst-sheet_15
+  - first:
+      213: 8781294287394563282
+    second: heavy-burst-sheet_16
+  - first:
+      213: 4243436713297841660
+    second: heavy-burst-sheet_17
+  - first:
+      213: 5321493131045169790
+    second: heavy-burst-sheet_18
+  - first:
+      213: -7144764190184963131
+    second: heavy-burst-sheet_19
+  - first:
+      213: 1033889719226438889
+    second: heavy-burst-sheet_20
+  - first:
+      213: 3807725800310965636
+    second: heavy-burst-sheet_21
+  - first:
+      213: -7201128234170918249
+    second: heavy-burst-sheet_22
+  - first:
+      213: 5935112350934036530
+    second: heavy-burst-sheet_23
+  - first:
+      213: -6472662041058059809
+    second: heavy-burst-sheet_24
+  - first:
+      213: 2654214187410450249
+    second: heavy-burst-sheet_25
+  - first:
+      213: 3273374670982846121
+    second: heavy-burst-sheet_26
+  - first:
+      213: 3510655988769568267
+    second: heavy-burst-sheet_27
+  - first:
+      213: 8811283492892468868
+    second: heavy-burst-sheet_28
+  - first:
+      213: 5843884489599099509
+    second: heavy-burst-sheet_29
+  - first:
+      213: -2466011356130189306
+    second: heavy-burst-sheet_30
+  - first:
+      213: 8924762857762400695
+    second: heavy-burst-sheet_31
+  - first:
+      213: -5657692895287207866
+    second: heavy-burst-sheet_32
+  - first:
+      213: 7035352271492523282
+    second: heavy-burst-sheet_33
+  - first:
+      213: -8631909164326939812
+    second: heavy-burst-sheet_34
+  - first:
+      213: 409084248429330777
+    second: heavy-burst-sheet_35
+  - first:
+      213: -3074231438551497176
+    second: heavy-burst-sheet_36
+  - first:
+      213: -8957731863134765372
+    second: heavy-burst-sheet_37
+  - first:
+      213: 7652785342955905591
+    second: heavy-burst-sheet_38
+  - first:
+      213: -2371653227390769232
+    second: heavy-burst-sheet_39
+  - first:
+      213: 297910735365959652
+    second: heavy-burst-sheet_40
+  - first:
+      213: 9220790197166741621
+    second: heavy-burst-sheet_41
+  - first:
+      213: 696954075103424587
+    second: heavy-burst-sheet_42
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 56.25
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: heavy-burst_00
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c57f704b7fdadf156bcbe06ff02b2643
+      internalID: 22486298
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: heavy-burst_01
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8ce145fb0ce8a73059f6410821747c1a
+      internalID: 1109905707
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: heavy-burst_02
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cbfaa7ebd3a31a96b9a98ea438bbc81d
+      internalID: 1071784749
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: heavy-burst_03
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 149e0eab2fc50fad5bd36c4dd44d2206
+      internalID: -335747069
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: heavy-burst_04
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9e3953dd1735a758ebff6b0695fc0461
+      internalID: 413986363
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: heavy-burst_05
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3acbb976afa8d203e88c1b7e6e9eb97f
+      internalID: -540870067
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: heavy-burst_06
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 21d2f5d49140971108d43e873ef4f105
+      internalID: -879306744
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: heavy-burst_07
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f4fcc94e9064c1d37a183ff5d6db935f
+      internalID: 13794956
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    outline: []
+    customData:
+    physicsShape: []
+    bones: []
+    spriteID: a61a4e877fc0b27b49236e095f73d5f5
+    internalID: 0
+    vertices: []
+    indices:
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      heavy-burst_00: 22486298
+      heavy-burst_01: 1109905707
+      heavy-burst_02: 1071784749
+      heavy-burst_03: -335747069
+      heavy-burst_04: 413986363
+      heavy-burst_05: -540870067
+      heavy-burst_06: -879306744
+      heavy-burst_07: 13794956
+  mipmapLimitGroupName:
+  pSDRemoveMatte: 0
+  userData:
+  assetBundleName:
+  assetBundleVariant:

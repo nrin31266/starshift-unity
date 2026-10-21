@@ -182,6 +182,18 @@ Không tự xóa/reset Profile. Backup có thể cũ hơn transaction mới nh�
 báo recovery, không claim không mất tiến độ. Retain một backup/một invalid diagnostic;
 OS-level atomicity trên mọi filesystem chưa được chứng minh.
 
+### Khôi phục gốc theo yêu cầu người chơi
+
+Settings có explicit **KHÔI PHỤC GỐC** với confirmation mặc định chọn Hủy.
+Sau xác nhận, xóa Campaign, Coin, records, unlocked Missions và cosmetics đã mua;
+Settings về defaults, quay lại Menu để chọn Chơi mới. Khác New Game giữ Profile.
+Replay/DevTest không được gọi thao tác này. Schema/technical currency IDs giữ nguyên.
+Candidate fresh được validate và flush temp trước; chỉ commit thành công mới đổi
+in-memory state và dừng run. Xóa `.bak`/`.invalid` trước atomic primary replacement
+để không tự phục hồi tiến độ cũ sau reset. Nếu I/O fail trước replacement thì primary
+và runtime data vẫn giữ; history có thể đã bị xóa, UI báo lỗi và cho retry.
+Không tự reset do lỗi load hoặc unsupported schema.
+
 ## Các contract còn mở
 
 - Full campaignRunStats (ngoài Score) và retry record eligibility [TBD].

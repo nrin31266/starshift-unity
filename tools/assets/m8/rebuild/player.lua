@@ -57,7 +57,23 @@ for _,id in ipairs{'trail-ion','trail-rainbow'} do
  sheet(id,16,64,frames,.1)
 end
 
-local hull=Image{fromFile=root..'/approved/player.png'}
-for i,spec in ipairs{{7,34},{35,34},{16,52},{34,52}}do
- local fragment=Image(24,28,ColorMode.RGB);fragment:drawImage(hull,Point(-spec[1],-spec[2]));save(fragment,'player-fragment-'..(i-1))
+-- Mảnh giáp chung: không crop cánh/cockpit của chassis A vào mọi tàu sau này.
+local plates={{{4,5},{19,4},{20,16},{15,22},{5,20}},{{6,6},{18,6},{21,12},{19,22},{5,21},{3,14}},{{4,8},{17,5},{21,13},{17,23},{7,22},{3,15}},{{5,3},{18,5},{21,14},{16,21},{6,22},{2,15}}}
+for i,points in ipairs(plates)do
+ local fragment=Image(24,28,ColorMode.RGB)
+ for y=0,27 do local xs={}
+  for j,a in ipairs(points)do local b=points[j%#points+1]
+   if(a[2]<=y and b[2]>y)or(b[2]<=y and a[2]>y)then xs[#xs+1]=a[1]+(y-a[2])*(b[1]-a[1])/(b[2]-a[2])end
+  end
+  table.sort(xs)
+  if #xs>=2 then local left,right=math.ceil(xs[1]),math.floor(xs[#xs])
+   for x=left,right do
+    local edge=x-left<2 or right-x<2
+    local h=x==left and 'd9f4f6' or edge and '304a60' or y<10 and 'a8c3d0' or y>18 and '263d53' or x<12 and '7e9fb2' or '57778f'
+    fragment:putPixel(x,y,rgba(h))
+   end
+  end
+ end
+ for y=10+i,11+i do for x=8+i,9+i do fragment:putPixel(x,y,rgba(y==10+i and 'fff0b1' or 'b9893d'))end end
+ save(fragment,'player-fragment-'..(i-1))
 end

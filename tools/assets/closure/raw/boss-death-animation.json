@@ -1,0 +1,46 @@
+{
+  "object": {
+    "id": "2477e198-5a73-493c-94fd-8cf1a31d2578",
+    "name": "base",
+    "prompt": "boss final core detonation, substantial magenta violet orange plasma flower with white hot center and silver debris",
+    "size": {
+      "width": 64,
+      "height": 64
+    },
+    "directions": 1,
+    "view": "low top-down"
+  },
+  "spritesheet": {
+    "path": "boss_final_core_detonation_su.png",
+    "cell_size": {
+      "width": 64,
+      "height": 64
+    },
+    "sheet_size": {
+      "width": 1024,
+      "height": 128
+    },
+    "columns": 16,
+    "pivot": "cell-center",
+    "rows": [
+      {
+        "row": 0,
+        "type": "rotations",
+        "frame_count": 1,
+        "directions": [
+          "unknown"
+        ]
+      },
+      {
+        "row": 1,
+        "type": "animation",
+        "frame_count": 16,
+        "animation": "Boss core rupture and debris",
+        "animation_group_id": "f34fff89-6cd3-405c-beac-2c4e9ef6a0e8",
+        "direction": "unknown"
+      }
+    ]
+  },
+  "export_version": "1.0",
+  "export_date": "2026-10-21T12:24:45.489476+00:00"
+}

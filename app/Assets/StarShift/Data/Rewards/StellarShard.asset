@@ -25,9 +25,9 @@ MonoBehaviour:
   VisualScale: 1
   Amount: 1
   Lifetime: 5
-  DriftSpeed: 3.2
+  DriftSpeed: 3.5
   Duration: 8
   FireRateMultiplier: 1.6
-  FallAcceleration: 11
-  MaximumFallSpeed: 6.4
+  FallAcceleration: 12.1
+  MaximumFallSpeed: 7
   ShardBounceHeight: 0.06

@@ -1119,7 +1119,7 @@ findings. Thermal/lifecycle contract không thay đổi.
 
 Production starts: Mission01–03 LEVEL_START / ENCOUNTER_1–3 theo số encounter thật;
 Mission01 chỉ có hai Encounter. Mission04 thêm PRE_BOSS, BOSS, BOSS_PHASE_B.
-DevFastStart TRANSITION chạy context handoff thật của Mission04, không alias vào wave
+DevFastStart TRANSITION chạy context handoff thật của mission có đích kế tiếp (Mission04 để thử đổi hành tinh), không alias vào wave
 hoặc Mission05 giả. Phase B seed gây damage qua health owner một lần sau spawn;
 đây là DevTest, không snapshot/restore Boss phase vào campaign.
 
@@ -1756,3 +1756,38 @@ scripts/references, required UI refs, catalog defaults và production build entr
 Không làm final art/font/pixel spec, Android build/certification, physical haptic/audio
 QA, controller feature hoặc FPS profiling. Current audio foundation chưa có final
 clips; kiểm volume routing không chứng minh final mix. Chỉ terminal PASS của probe mới là evidence hoàn thành.
+
+## Presentation polish follow-up — 2026-10-21
+
+Grouped native evidence ở `.design/presentation-polish/`, manifest/source routing thuộc [asset pipeline](../production/asset-pipeline.md#presentation-polish-follow-up--2026-10-21). Các scope mới: factory reset Menu/Pause và failure paths; zero-heat vent/held resume/Pause; Coin UI/world; life-loss generic fragments; natural projectile exit/pool; travel và continuous region blend; hit/focus/boss skills/armor ở 1600×900 và 2000×900; common enemy death one-shot/no-reward/pool và Supply 6 HP; Bulwark telegraph/single shot/5 s cooldown/shared firing cap. Full mission đại diện đi qua năm encounter với real input, reward, Pause, death/respawn, reserve và terminal cleanup; không phải full Campaign hay Android evidence.
+
+Trong một draft Pause-reset fixture, coroutine New Game còn pending khi fixture trả storage về production. Đã dừng fixture và khôi phục checkpoint L2 từ backup; Profile và Settings đối chiếu giống nhau. Các probe sau đối chiếu bytes, fixture có shell transition phải đợi `IsBusy == false` trước khi trả storage cả trong finally. Không claim lịch sử backup trước sự cố giữ nguyên. Chi tiết recovery chỉ lưu local, không đưa save cá nhân vào Git.
+
+Test nhanh đổi hành tinh: trong scene `02_Gameplay`, chọn `L1Encounters` → `Dev Fast Start`. Route đã chuẩn bị **Start Level = Mission04**, **Start Point = TRANSITION**, **Standalone = off**. Bật **Dev Mode Enabled** rồi Play để đi thẳng vào hành trình Astra→Crimson; raw start chạy DevTest, không ghi CampaignSave/Profile. Sau test tắt checkbox để khởi động về Menu bình thường. Saved default của checkpoint này để OFF; đã smoke Menu với save L2 và Console sạch sau khi sửa start point trống.
+
+
+## Current dev Inspector và art closure
+
+Start Point của `DevFastStart` là dropdown theo Start Level: đầu mission, encounter
+thực, AdditionalStarts (gồm boss phase B), chuyển cảnh nếu có mission kế tiếp và
+Victory nếu mission có boss. ID cũ không hợp lệ hiện cảnh báo và không được replay.
+Validation chạy trước khi dừng/reset lượt hiện tại. TRANSITION dùng handoff thật
+cho cả cùng hành tinh và đổi hành tinh; không cần mission có encounter BOSS.
+
+Inspector có nút chạy lại route, Pause/Resume và Menu trong Play Mode; replay cần
+Dev Mode, các thao tác bị khóa khi shell đang xử lý. Camera/hướng/seed nằm trong
+foldout nâng cao. Không thêm debug runtime manager mới; giữ EncounterDebugView
+(bounds/path/spawn/hitbox/FPS/labels), mặc định mọi flag OFF. Utility Editor không
+được đọc state runtime chưa Awake khi xem scene ngoài Play Mode.
+
+Current probes và cách chạy ở [Unity tools](../../tools/unity/README.md#current-art-closure-và-dev-tools).
+Các checkpoint M2 bên trên là lịch sử: 20 bootstrap/fixture đã retire sau khi kiểm
+callers; shared rigs và current targeted regression vẫn giữ. Art closure dùng
+storage riêng, disk snapshot và byte-compare primary/backup/invalid sau cleanup;
+không chạy chồng probes hoặc sửa save người chơi để test.
+
+Final closure checkpoint 2026-10-21: `VerifyArtClosure.Begin("all")` PASS trên final
+source; native references kiểm 3.061 owners, 186 PNG và dropdown 48 routes/8 missions.
+VFX 16:9/20:9, enemy/Bulwark deaths và fixture năm encounter đã PASS; saved dev/debug
+OFF, scene sạch. Save byte guard chỉ chứng minh các lượt verification sau recovery;
+không thay giới hạn sự cố đã ghi ở trên. Không claim full Campaign/Android/FPS.

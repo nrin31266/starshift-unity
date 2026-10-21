@@ -88,7 +88,7 @@ namespace StarShift.Gameplay
         {
             region?.Cancel();
             lifecycle.GetComponent<ShipAppearance>()?.ResetTrail();
-            lifecycle.GetComponent<PlayerTemporaryEffects>()?.ResetForSession();
+            if (!preserveInput) lifecycle.GetComponent<PlayerTemporaryEffects>()?.ResetForSession();
             lifecycle.GetComponent<EmergencyMissileReserve>()?.CancelPending();
             lifecycle.GetComponent<EmergencyMissilePresentation>()?.ResetForSession();
             lifecycle.GetComponentInChildren<SupportDrone>()?.ResetForSession();
@@ -167,7 +167,6 @@ namespace StarShift.Gameplay
             pointer.CancelGesture();enemyFireGate.Block();ReleaseFriendlyProjectiles();
             lifecycle.GetComponent<EmergencyMissileReserve>()?.CancelPending();
             lifecycle.GetComponent<EmergencyMissilePresentation>()?.ResetForSession();
-            lifecycle.GetComponent<PlayerTemporaryEffects>()?.ResetForSession();
         }
         public void ShowRegionReady(bool preserveInput = false)
         {

@@ -58,7 +58,7 @@ namespace StarShift.Persistence
             catch (Exception e) when (e is IOException || e is UnauthorizedAccessException || e is ArgumentException)
             { Diagnostic = e.Message; return null; }
         }
-        public bool Write(SaveEnvelope data, Func<SaveEnvelope, bool> validate)
+        public bool Write(SaveEnvelope data, Func<SaveEnvelope, bool> validate, bool resetHistory = false)
         {
             if (!validate(data)) { Diagnostic = "Refused invalid state."; return false; }
             try
@@ -68,6 +68,17 @@ namespace StarShift.Persistence
                 using (var stream = new FileStream(Path + ".tmp", FileMode.Create, FileAccess.Write, FileShare.None))
                 { stream.Write(bytes, 0, bytes.Length); stream.Flush(true); }
                 if (Read(Path + ".tmp", validate, out _) != SaveLoadStatus.Loaded) throw new IOException("Temp validation failed.");
+                if (resetHistory)
+                {
+                    if (Read(Path, validate, out _) == SaveLoadStatus.UnsupportedVersion)
+                    { Diagnostic = "Refused newer/unsupported save overwrite."; return false; }
+                    // Xóa history trước commit; lỗi I/O vẫn giữ primary cũ, không phục hồi tiến độ đã reset từ backup.
+                    File.Delete(Path + ".bak"); File.Delete(Path + ".invalid");
+                    if (File.Exists(Path)) File.Replace(Path + ".tmp", Path, null);
+                    else File.Move(Path + ".tmp", Path);
+                    Diagnostic = null;
+                    return true;
+                }
                 // Backup chỉ nhận primary hợp lệ; bản corrupt vẫn được giữ để chẩn đoán.
                 if (File.Exists(Path))
                 {

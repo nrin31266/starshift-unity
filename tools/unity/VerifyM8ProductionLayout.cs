@@ -53,7 +53,10 @@ public static class VerifyM8ProductionLayout
             Check(importer.filterMode==FilterMode.Point&&!importer.mipmapEnabled&&importer.textureCompression==TextureImporterCompression.Uncompressed&&importer.npotScale==TextureImporterNPOTScale.None,"Importer mismatch "+path);
             if(path.EndsWith("-sheet.png"))
             {
-                var frames=AssetDatabase.LoadAllAssetsAtPath(path).OfType<Sprite>().OrderBy(f=>f.name,StringComparer.Ordinal).ToArray();int count=path.EndsWith("explosion-sheet.png")?8:path.EndsWith("rock-shatter-sheet.png")?12:4;
+                var frames=AssetDatabase.LoadAllAssetsAtPath(path).OfType<Sprite>().OrderBy(f=>f.name,StringComparer.Ordinal).ToArray();
+                var id=Path.GetFileNameWithoutExtension(path).Replace("-sheet","");
+                var source=new[]{"../tools/assets/closure/","../tools/assets/polish/","../tools/assets/m8/rebuild/","../tools/assets/m8/cleaned/"}.Select(folder=>folder+id+".aseprite").FirstOrDefault(File.Exists);
+                Check(source!=null,"Editable animation source missing "+path);int count=BitConverter.ToUInt16(File.ReadAllBytes(source),6);
                 Check(frames.Length==count,"Frame count "+path);
                 foreach(var frame in frames)Check((frame.pivot-(path.EndsWith("rock-shatter-sheet.png")?new Vector2(19,31):frame.rect.size*.5f)).sqrMagnitude<.001f,"Pivot "+frame.name);
             }

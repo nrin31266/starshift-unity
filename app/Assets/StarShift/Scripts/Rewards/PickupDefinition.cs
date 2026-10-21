@@ -17,7 +17,7 @@ namespace StarShift.Rewards
         [Range(.2f,1)] public float VisualScale = 1;
         [Min(1)] public int Amount = 1;
         [Min(.1f)] public float Lifetime = 12;
-        [Min(0)] public float DriftSpeed = .65f;
+        [Min(0)] public float DriftSpeed = 1;
         [Min(.1f)] public float Duration = 8;
         [Min(1)] public float FireRateMultiplier = 1.6f;
         [Min(.1f)] public float FallAcceleration = 14;

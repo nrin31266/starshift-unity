@@ -268,6 +268,13 @@ proxy; Player movement/Rigidbody vẫn giữ writer cũ. Hide/reset restore Play
 và backdrop đã có; không mutate Player tint/physics hoặc instantiate theo từng phase.
 Planet vẫn là procedural placeholder, không final art hoặc canonical planet identity.
 
+Travel backdrop `[TUNABLE]`: artwork nebula lặp liền mạch ở native world size;
+nền xa trôi theo cùng hướng bay với vận tốc bằng ba lần scalar travel, tách khỏi
+sao gần. Idle giữ drift nhẹ .035; minor handoff tăng .08→1.03→.08, Mission travel
+.25→1.75→.25 theo sin. Intro Travel/Brake và hành trình đổi hành tinh nhân thêm 1.8 vào vận tốc nền để warp khác rõ nhịp Mission/encounter; streak/choreography vẫn giữ scalar riêng.
+Astra→Crimson chồng hai artwork bằng smooth alpha xuyên Turn, giữ nền đích qua
+AwaitingTap/Approach. Không đổi timing, camera contract hoặc authority movement.
+
 A → B có starfield cue mờ, nhẹ, fade in/out trong khoảng nghỉ do encounter owner
 quyết; giữ HUD, optional short contextual copy auto fade, không confirmation. Không
 bắt đầu cue khi còn shot cũ cần
@@ -341,8 +348,9 @@ không để animation/color quyết damage. Defeat chain vẫn 2.4 s trước d
 
 ## M6 gameplay placeholder feedback `[PROVISIONAL]`
 
-M6 không thêm final art/audio. Sniper/Interceptor dùng mảnh aim line khi charge và
-beam/committed strike khi active; cue là presentation, hit query do attack owner giữ.
+M6 dùng placeholder; current Sniper/Interceptor cues theo
+[enemy owner](../content/enemies-bosses.md#m6-region-b-runtime-mechanics-provisional).
+Cue là presentation, hit query do attack owner giữ.
 Warden Beam Sweep có magenta direction arrow trong charge để đọc chiều quét trước
 khi active; line/core tăng độ sáng và bề rộng khi fire, không dùng cue làm hit authority.
 
@@ -367,7 +375,7 @@ M8 selected explosion là **8 native 64×64 frames, 16 fps, 0.5 s scaled time**
 `[LOCKED]` cho small/common burst. Frame 0–2 white/amber ignition, 3–4 expanding
 clusters/shards, 5–6 darker debris/smoke, 7 empty. Center pivot/canvas không đổi,
 không trim hoặc đổi scale theo từng frame. Playback dùng existing pooled
-AsteroidDestructionPresentation, fixed scale theo source enemy; supply giữ scale .6.
+AsteroidDestructionPresentation: common enemy dùng bank explosion riêng, còn asteroid dùng rock shatter và supply dùng burst hộp quà. Burst sống trên scene, độc lập hull bị disable/return pool; địch không nhận reward vẫn phát nổ qua EnemyDestroyed. Common enemy chạy 0.5 s; asteroid/supply giữ duration riêng .35 s, supply scale .9.
 Legacy no-frame fixture vẫn dùng burst cũ. Không đổi death/HP/drop timing, thêm AoE,
 hoặc buộc gameplay đợi animation. Pause giữ frame; pool release sau duration và clear
 khi run reset. Actual frame advance và pool release đã assert trong Play Mode.
@@ -379,8 +387,7 @@ white-core diamond; Shard amber facets. Source/import conventions thuộc
 [asset pipeline](../production/asset-pipeline.md#m8-selected-sources-và-production-recipe),
 palette/material thuộc [art bible](art-direction.md#m8-vertical-art-slice-locked).
 
-M8 chỉ có một burst quality anchor; heavy/boss staged explosion/audio, hit particles,
-engine sheets và special VFX chưa final. Không xem common sheet là full VFX pack.
+Common burst không thay staged death của boss. Các bank impact/focus/signature mới bên dưới bổ sung feedback theo từng loại. Audio clip và device profiling chưa thuộc bằng chứng hình ảnh này.
 
 ## M8 production motion `[PROVISIONAL]`
 
@@ -406,3 +413,23 @@ Intro, same-planet handoff và region journey dùng cùng texture streak có lõ
 heading theo hướng bay/turn. Chỉ thay presentation speed và opacity, không đổi
 phase durations, gameplay movement, collider hoặc save. Streak thu ngắn và fade
 khi Brake; Pause giữ scaled motion. Các giá trị visual là `[TUNABLE]`.
+
+## Presentation polish — 2026-10-21
+
+Impact giữ WeaponBranch từ projectile đến EnemyHitPresentation: Pulse cyan, Plasma violet, Homing amber; asteroid dùng rock hit riêng, shield có bank riêng. Mỗi bank tám frame; scale world lần lượt .55/.8/1.05/.65, shield .5, triệt tiêu scale không đều của parent để sprite không dẹp. Impact chỉ phản hồi hit; death burst ở scene xử lý lethal hit độc lập.
+
+Focus gun/sniper dùng bốn frame với footprint 44 px ở chiều cao 900; directed lock 48 px, boss skill 52 px. Cue bám module thật, theo scaled time và luôn tắt khi cancel/death/pool reset. Vanguard curtain và lane beam, Warden ion shelter và sweep có bank prepare/lock/attack riêng; các phase vẫn do attack module điều khiển. Ion field dùng texture gân bán trong suốt phía sau actor, không phủ tint lên tàu; mép không có round caps. Gameplay/timing/gap thuộc [enemy owner](../content/enemies-bosses.md).
+
+Vanguard văng hai mảnh giáp tại hai ngưỡng damage art .5/.25, burst và mảnh sống .75 s; không đổi HP hay collider. Heat vent dùng tám frame nhỏ cạnh thanh nhiệt trong lúc MAX đang xả; Pause giữ frame và hết xả thì tắt. Không thêm âm thanh xả ở lượt này.
+
+## Art closure feedback — 2026-10-21
+
+Special fields bỏ border/khung debug: Ion Shelter dùng gân năng lượng bán trong suốt, Sweep dùng sprite mũi tên bóng bẩy thay polyline. Giữ lõi laser thật và cue focus. Interceptor chỉ có một target marker ở aim hiện tại trong Prepare/Lock; marker tắt trong dash/return/recovery, launch spark phát tại vị trí xuất phát .24 s và không bám theo tàu để thành ghost.
+
+Bank impact Pulse/Plasma/Homing/Rock, supply burst và phản hồi nhặt item được repaint từ atlas mới. Coin, Core và Shield có collection bank riêng; icon Shield/Overdrive/Support được chuẩn hóa alpha bounds vào canvas 48×48 rồi đưa vào ba hộp kính hiện có. Không thay identity, reward hoặc gameplay size của item.
+
+Common death vẫn tám native frames / .5 s; animation Pro 16 frame được chọn tám keyframes, bỏ frame nguồn nhiễu và kết thúc trong suốt. Heavy enemy có burst riêng. Boss dùng 16 frame trong owner BossDeathSequence; burst cuối ở .5 s cuối death duration và kết thúc cùng impact, không kết thúc VFX sớm rồi để khoảng chết. Một renderer chỉ có một animation writer; bỏ SpriteFrameLoop trên renderer do staged/death owner điều khiển. Player vẫn giữ bốn mảnh giáp generic và hai plume của cặp tàu A.
+
+Tuning skill và continuous collision thuộc [enemy owner](../content/enemies-bosses.md); carry-over buff thuộc [item owner](../content/weapons-items-drops.md#pickup-và-effect-test-policy). Quota/source/slicing thuộc [asset pipeline](../production/asset-pipeline.md).
+
+Interceptor dùng lock sprite và launch spark; bỏ đường ray chỉ mục tiêu thẳng của strike. Reserve missile dùng splash sheet mới, frame và opacity đi theo scaled time/Pause.

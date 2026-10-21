@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2664840628666978910}
   - component: {fileID: 4034294665519480759}
+  - component: {fileID: 1563387096391041726}
   m_Layer: 11
   m_Name: Visual
   m_TagString: Untagged
@@ -27,7 +28,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.1132812, y: 1.0546875, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6374718325543021497}
@@ -81,7 +82,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 21
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 2ebe4ee3b92261ff0819f0bbeb23a0a5, type: 3}
+  m_Sprite: {fileID: -1209492434, guid: 25a0ab503bc538da091b20bcb2d63536, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -92,6 +93,25 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
+--- !u!114 &1563387096391041726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1121051407720994871}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d364d129dbff81e2b885711660454a62, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Gameplay.SpriteFrameLoop
+  frames:
+  - {fileID: -1209492434, guid: 25a0ab503bc538da091b20bcb2d63536, type: 3}
+  - {fileID: -1137360310, guid: 25a0ab503bc538da091b20bcb2d63536, type: 3}
+  - {fileID: -348246704, guid: 25a0ab503bc538da091b20bcb2d63536, type: 3}
+  - {fileID: -832527771, guid: 25a0ab503bc538da091b20bcb2d63536, type: 3}
+  visibilitySource: {fileID: 0}
+  frameSeconds: 0.1
 --- !u!1 &4408128967116245128
 GameObject:
   m_ObjectHideFlags: 0
@@ -198,7 +218,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.1, y: 0.24}
+  m_Size: {x: 1.9, y: 0.45}
   m_EdgeRadius: 0
 --- !u!114 &6193780818524589115
 MonoBehaviour:

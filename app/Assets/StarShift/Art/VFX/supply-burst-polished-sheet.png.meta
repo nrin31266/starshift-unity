@@ -1,0 +1,471 @@
+fileFormatVersion: 2
+guid: 3d1b9a95920ea8b1699113d42d42f48c
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5154323985616242315
+    second: supply-burst-polished-sheet_0
+  - first:
+      213: 1138879465512509317
+    second: supply-burst-polished-sheet_1
+  - first:
+      213: 591637510200642658
+    second: supply-burst-polished-sheet_2
+  - first:
+      213: 2256620871775404679
+    second: supply-burst-polished-sheet_3
+  - first:
+      213: 6857803074177622530
+    second: supply-burst-polished-sheet_4
+  - first:
+      213: -5886890715554336933
+    second: supply-burst-polished-sheet_5
+  - first:
+      213: 2970744752618226522
+    second: supply-burst-polished-sheet_6
+  - first:
+      213: -6254689073167753130
+    second: supply-burst-polished-sheet_7
+  - first:
+      213: -3843842242274420009
+    second: supply-burst-polished-sheet_8
+  - first:
+      213: -8720832500477761404
+    second: supply-burst-polished-sheet_9
+  - first:
+      213: -6454712120097476182
+    second: supply-burst-polished-sheet_10
+  - first:
+      213: -4630353174235548511
+    second: supply-burst-polished-sheet_11
+  - first:
+      213: -9122584826358098619
+    second: supply-burst-polished-sheet_12
+  - first:
+      213: -1723533352300330746
+    second: supply-burst-polished-sheet_13
+  - first:
+      213: -6030398048376939162
+    second: supply-burst-polished-sheet_14
+  - first:
+      213: -8786941252517801788
+    second: supply-burst-polished-sheet_15
+  - first:
+      213: -8208780398196125740
+    second: supply-burst-polished-sheet_16
+  - first:
+      213: -3647676503034252978
+    second: supply-burst-polished-sheet_17
+  - first:
+      213: 8654801471172446567
+    second: supply-burst-polished-sheet_18
+  - first:
+      213: 5638130649797405346
+    second: supply-burst-polished-sheet_19
+  - first:
+      213: -7906187103038770448
+    second: supply-burst-polished-sheet_20
+  - first:
+      213: 4441128203304948015
+    second: supply-burst-polished-sheet_21
+  - first:
+      213: -6209397392089120552
+    second: supply-burst-polished-sheet_22
+  - first:
+      213: 5084325232010101424
+    second: supply-burst-polished-sheet_23
+  - first:
+      213: 3236046177311108993
+    second: supply-burst-polished-sheet_24
+  - first:
+      213: 5642150463849661314
+    second: supply-burst-polished-sheet_25
+  - first:
+      213: -8711612880223284851
+    second: supply-burst-polished-sheet_26
+  - first:
+      213: -4086960540940014951
+    second: supply-burst-polished-sheet_27
+  - first:
+      213: -35666506916551515
+    second: supply-burst-polished-sheet_28
+  - first:
+      213: -2955800867788340385
+    second: supply-burst-polished-sheet_29
+  - first:
+      213: -3458448086234767527
+    second: supply-burst-polished-sheet_30
+  - first:
+      213: -2186631324210797082
+    second: supply-burst-polished-sheet_31
+  - first:
+      213: -7772902098953276539
+    second: supply-burst-polished-sheet_32
+  - first:
+      213: 8386616513754595248
+    second: supply-burst-polished-sheet_33
+  - first:
+      213: 5876485250966515800
+    second: supply-burst-polished-sheet_34
+  - first:
+      213: -5105079734289571806
+    second: supply-burst-polished-sheet_35
+  - first:
+      213: 5150107952196146299
+    second: supply-burst-polished-sheet_36
+  - first:
+      213: -2565562066124617571
+    second: supply-burst-polished-sheet_37
+  - first:
+      213: 3544003121522529757
+    second: supply-burst-polished-sheet_38
+  - first:
+      213: -2743598951436805065
+    second: supply-burst-polished-sheet_39
+  - first:
+      213: -918302799634471401
+    second: supply-burst-polished-sheet_40
+  - first:
+      213: -8900011188748608857
+    second: supply-burst-polished-sheet_41
+  - first:
+      213: 5113882248460145664
+    second: supply-burst-polished-sheet_42
+  - first:
+      213: 8662175825951675797
+    second: supply-burst-polished-sheet_43
+  - first:
+      213: -7296268538761226548
+    second: supply-burst-polished-sheet_44
+  - first:
+      213: -3820445097684087812
+    second: supply-burst-polished-sheet_45
+  - first:
+      213: -6160644885982556409
+    second: supply-burst-polished-sheet_46
+  - first:
+      213: -3361377897273912781
+    second: supply-burst-polished-sheet_47
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 56.25
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: supply-burst-polished_00
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b6cf4310f03577ae990156ff4e277a8d
+      internalID: -909954623
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: supply-burst-polished_01
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f3a16de71c1d96e2d8be959f0169a8a1
+      internalID: -782914293
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: supply-burst-polished_02
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c907344dc0454c4ba94c7f282c8f38cc
+      internalID: -304180368
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: supply-burst-polished_03
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e56bb830716e97596b33699ae2b800a7
+      internalID: 1828282369
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: supply-burst-polished_04
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 67bf76423b8e47e788b636661d5c4481
+      internalID: 1634860604
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: supply-burst-polished_05
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4e133e30b507b0ad9bd7b47ac8e4f199
+      internalID: 736316670
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: supply-burst-polished_06
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a50296384c111620480093ef1aa513d9
+      internalID: 1980204979
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: supply-burst-polished_07
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: da2d0975aa6057d50a21c7b6c79af8c7
+      internalID: 1569191303
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    outline: []
+    customData:
+    physicsShape: []
+    bones: []
+    spriteID: 541351a83dacaac9998eae7d9e118386
+    internalID: 0
+    vertices: []
+    indices:
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      supply-burst-polished_00: -909954623
+      supply-burst-polished_01: -782914293
+      supply-burst-polished_02: -304180368
+      supply-burst-polished_03: 1828282369
+      supply-burst-polished_04: 1634860604
+      supply-burst-polished_05: 736316670
+      supply-burst-polished_06: 1980204979
+      supply-burst-polished_07: 1569191303
+  mipmapLimitGroupName:
+  pSDRemoveMatte: 0
+  userData:
+  assetBundleName:
+  assetBundleVariant:

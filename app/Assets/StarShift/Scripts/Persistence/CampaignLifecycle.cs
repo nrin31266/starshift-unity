@@ -162,6 +162,17 @@ namespace StarShift.Persistence
             };
         }
         public bool NewGame() => StartNewGame(false);
+        public bool CanResetAll => Mode != SessionMode.Replay && Mode != SessionMode.DevTest && progress.Snapshot != null;
+        public bool ResetAll()
+        {
+            if (!CanResetAll || !progress.ResetAll()) return false;
+            Mode = SessionMode.Frontend;
+            HasPendingClear = pendingRegionTransition = false;
+            NewBestScore = NewBestTime = false;
+            isolatedShardBalance = 0; checkpoint = null;
+            runner.StopRun(); session.ResetRuntime();
+            return true;
+        }
         public bool RecoverNewGame() => StartNewGame(true);
         private bool StartNewGame(bool recover)
         {

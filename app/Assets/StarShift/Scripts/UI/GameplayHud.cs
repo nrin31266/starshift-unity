@@ -63,6 +63,8 @@ namespace StarShift.UI
         private int previousLives = -1;
         private int previousLevel = -1;
         private float previousHeat = -1;
+        [SerializeField] private Image heatVent;
+        [SerializeField] private Sprite[] heatVentFrames;
         private bool previousOverheated;
         private readonly Dictionary<int, float> tapStarts = new Dictionary<int, float>();
 
@@ -177,7 +179,7 @@ namespace StarShift.UI
             if (pickupLabel == null) return;
             pickupLabel.text = item.Kind switch {
                 PickupKind.WeaponCore => $"{GameplayCopy.WeaponName(item.Branch)} · CẤP {loadout.Level(item.Branch)}",
-                PickupKind.Shard => $"+{item.Amount} Stellar Shard", PickupKind.Shield => "KHIÊN",
+                PickupKind.Shard => $"+{item.Amount} Coin", PickupKind.Shield => "KHIÊN",
                 PickupKind.Overdrive => "CƯỜNG HÓA", PickupKind.SupportDrone => "TÀU HỖ TRỢ",
                 PickupKind.MissileAmmo => "+1 TÊN LỬA", PickupKind.ExtraLife => "+1 MẠNG", _ => "" };
             cueRemaining = 1.2f;
@@ -191,6 +193,11 @@ namespace StarShift.UI
             if (Mathf.Approximately(previousHeat, fraction) && previousOverheated == overheated) return;
             previousHeat = fraction;
             previousOverheated = overheated;
+            if (heatVent != null)
+            {
+                heatVent.enabled=overheated&&heatVentFrames!=null&&heatVentFrames.Length>0;
+                if(heatVent.enabled)heatVent.sprite=heatVentFrames[(int)(Time.time/.06f)%heatVentFrames.Length];
+            }
             heatFill.rectTransform.anchorMax = new Vector2(fraction, 1);
             bool hot = overheated || fraction >= .8f;
             var color = overheated ? new Color(1, .36f, .22f) : hot ? new Color(1, .74f, .2f) : new Color(.26f, .92f, 1);

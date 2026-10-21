@@ -6,6 +6,7 @@ namespace StarShift.Enemies
     public sealed class BossDeathSequence : MonoBehaviour
     {
         [SerializeField] private SpriteRenderer[] explosions;
+        [SerializeField] private Sprite[] explosionFrames;
         [SerializeField, Tooltip("Staged module/fragment destruction; tùy chọn, không đổi timing death.")]
         private StagedDestructionPresentation staged;
         [SerializeField, Min(.1f)] private float duration = 2.4f;
@@ -26,9 +27,15 @@ namespace StarShift.Enemies
             elapsed += Time.deltaTime;
             for (int i = 0; i < explosions.Length; i++)
             {
-                var local = elapsed - i * .35f;
-                explosions[i].enabled = local >= 0 && local < .35f;
-                explosions[i].transform.localScale = Vector3.one * Mathf.Max(.01f, local * (i == explosions.Length - 1 ? 7 : 3));
+                bool final = i == explosions.Length - 1;
+                float seconds = final ? .5f : .35f;
+                var local = elapsed - (final ? duration - seconds : i * .35f);
+                explosions[i].enabled = local >= 0 && local < seconds;
+                if (!explosions[i].enabled) continue;
+                float t = local / seconds;
+                explosions[i].transform.localScale = Vector3.one * Mathf.Lerp(.3f, final ? 9.6f : 1.1f, t);
+                if (explosionFrames != null && explosionFrames.Length > 0)
+                    explosions[i].sprite = explosionFrames[Mathf.Min(explosionFrames.Length - 1, (int)(t * explosionFrames.Length))];
             }
             if (elapsed < duration) return;
             IsPlaying = false;

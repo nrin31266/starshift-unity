@@ -168,8 +168,8 @@ public static class RebuildM8Presentation
         var burst = UnityEngine.Object.FindAnyObjectByType<AsteroidDestructionPresentation>(FindObjectsInactive.Include);
         if (burst == null) throw new Exception("Missing asteroid presentation");
         var rock = Frames("rock-shatter");
-        var cargo = Frames("supply-burst");
-        if (rock.Length != 12 || cargo.Length != 4) throw new Exception("Invalid burst frame count");
+        var cargo = Frames("supply-burst-polished");
+        if (rock.Length != 12 || cargo.Length != 8) throw new Exception("Invalid burst frame count");
         SetArray(burst, "frames", rock); SetArray(burst, "supplyFrames", cargo);
         Set(burst, "burstSprite", rock[1]);
         AssetDatabase.SaveAssets(); EditorSceneManager.MarkSceneDirty(burst.gameObject.scene); EditorSceneManager.SaveOpenScenes();

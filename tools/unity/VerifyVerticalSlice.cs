@@ -60,14 +60,34 @@ public static class VerifyVerticalSlice
         return path;
     }
 
+    public static async Task<object> NaturalProjectileDrain()
+    {
+        Require(Application.isPlaying&&!Runner.HasActiveRun,"Idle Menu required");
+        var save=Runner.GetComponent<StarShift.Persistence.CampaignLifecycle>();var shell=Runner.GetComponent<GameShell>();
+        var path=save.SavePath;var before=new[]{"",".bak",".invalid"}.ToDictionary(s=>s,s=>System.IO.File.Exists(path+s)?System.IO.File.ReadAllBytes(path+s):null);
+        var temp=System.IO.Path.Combine(System.IO.Path.GetTempPath(),"starshift-drain-"+Guid.NewGuid().ToString("N"),"save.json");
+        var level=Runner.Flow.Level;
+        try
+        {
+            save.UseTestStorage(temp);shell.Boot();Runner.Flow.LoadLevel(AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Fixtures/Levels/M4SystemTestbed.asset"));
+            var result=await MinorProjectileCleanup();
+            System.IO.File.WriteAllText("../.design/presentation-polish/projectile-drain.json",Newtonsoft.Json.JsonConvert.SerializeObject(result,Newtonsoft.Json.Formatting.Indented));return result;
+        }
+        finally
+        {
+            Runner.StopRun();save.ExitIsolated();Runner.Flow.LoadLevel(level);save.UseTestStorage(path);shell.Boot();
+            foreach(var pair in before){var after=System.IO.File.Exists(path+pair.Key)?System.IO.File.ReadAllBytes(path+pair.Key):null;Require(pair.Value==null?after==null:after!=null&&pair.Value.SequenceEqual(after),"Production save changed");}
+            if(System.IO.Directory.Exists(System.IO.Path.GetDirectoryName(temp)))System.IO.Directory.Delete(System.IO.Path.GetDirectoryName(temp),true);
+        }
+    }
+
     public static async Task<object> MinorProjectileCleanup()
     {
         using (var rig = new Rig(1600, 6))
         {
-            var originalLevel = Runner.Flow.Level;
             var profile = UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<SingleFireDefinition>(
                 "Assets/StarShift/Data/Enemies/ScoutSingleFire.asset"));
-            Set(profile, "projectileSpeed", 1f);
+            Set(profile, "projectileSpeed", 4f);
             Set(profile, "projectileLifetime", .1f);
             var target = new GameObject("MinorCleanupTarget", typeof(BoxCollider2D), typeof(MinorCleanupHitProbe));
             var hitbox = target.GetComponent<BoxCollider2D>(); hitbox.isTrigger = true; hitbox.size = Vector2.one * .2f;
@@ -79,14 +99,14 @@ public static class VerifyVerticalSlice
                 p => { releases++; p.ResetForPool(); }, p => UnityEngine.Object.DestroyImmediate(p.gameObject));
             EnemyProjectile shot = null;
             Action<EnemyProjectile> recycle = p => pool.Release(p);
-            string title = null, detail = null; float titleDuration = 0;
-            Action<string, string, float> onTitle = (copy, description, duration) => { title = copy; detail = description; titleDuration = duration; };
-            Runner.Flow.TitleRequested += onTitle;
             try
             {
                 Runner.StartRun("ENCOUNTER_1", false, true, null, null);
-                await Until(() => Enemies.Length == 3, 2500, "Minor cleanup fixture did not spawn.");
-                target.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(.5f, .1f, 10));
+                var expected=Runner.Current.Groups.Sum(g=>g.Count);
+                await Until(() => Runner.SpawnedCount==expected&&Enemies.Length==expected,4500,"Minor cleanup fixture did not spawn");
+                await Until(() => Enemies.Length==expected&&Enemies.All(e=>e.CanReceiveDamage),3500,"Fixture still entering");
+                var fireGate=UnityEngine.Object.FindAnyObjectByType<EnemyFireGate>();fireGate.Block();fireGate.ClearProjectiles();
+                target.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(.5f, -.2f, 10));
                 muzzle.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(.5f, .65f, 10));
                 shot = pool.Get();
                 shot.Launch(profile, muzzle.transform, Enemies[0].gameObject, target, recycle);
@@ -107,36 +127,26 @@ public static class VerifyVerticalSlice
                     "Minor cleanup locked HUD/movement or retained hostile producers.");
                 Require(shot.gameObject.activeSelf && collider.enabled && shot.transform.position != initialPosition,
                     "Grace did not preserve a moving visible shot.");
-                await Until(() => !collider.enabled, 1200, "Visible shot never entered safe fade.");
-                var graceElapsed = Time.fixedTime - drainStart;
-                Require(shot.gameObject.activeSelf && shot.VisibleFlightTimeLimit > 0 &&
-                    Mathf.Abs(graceElapsed - Runner.Current.ProjectileGraceSeconds) < .08f,
-                    "Fade started outside the configured visible-shot grace.");
-                var fadeStart = Time.fixedTime;
+                await Task.Delay(100);
+                Require(shot.gameObject.activeSelf&&collider.enabled&&visual.color==color,"Visible projectile faded or lost damage");
                 Session.Pause(); var frozen = shot.transform.position; var frozenColor = visual.color;
                 await Task.Delay(100);
                 Require(shot.transform.position == frozen && visual.color == frozenColor, "Pause advanced cleanup flight/fade.");
                 Session.Resume();
-                target.transform.position = shot.transform.position;
-                Physics2D.SyncTransforms();
-                typeof(EnemyProjectile).GetMethod("OnTriggerEnter2D", Fields).Invoke(shot, new object[] { hitbox });
-                await Until(() => visual.color.a < color.a * .8f, 500, "Projectile alpha did not fade.");
-                Require(shot.gameObject.activeSelf && visual.color.a > 0 && probe.Hits == 0,
-                    "Fading projectile damaged the target or vanished abruptly.");
-                await Until(() => !shot.gameObject.activeSelf, 1000, "Faded projectile was not recycled.");
-                var fadeElapsed = Time.fixedTime - fadeStart;
+                while(shot.gameObject.activeSelf)
+                {
+                    Require(visual.color==color&&collider.enabled,"Projectile faded before viewport exit");
+                    Require(Time.fixedTime-drainStart<3,"Natural exit exceeded flight time");await Task.Delay(10);
+                }
+                var flightElapsed = Time.fixedTime - drainStart;
                 Require(probe.Hits == 0 && releases == 1 && pool.CountInactive == 1 && shot.Owner == null &&
-                    visual.color == color && !collider.enabled &&
-                    Mathf.Abs(fadeElapsed - Runner.Current.ProjectileFadeSeconds) < .08f,
-                    "Fade timing, pool reset or damage suppression failed.");
+                    visual.color == color && !collider.enabled,
+                    "Natural exit or pool reset failed.");
                 await Until(() => Runner.Stage == EncounterStage.Handoff, 500, "Cleanup did not finish before handoff.");
                 var handoffStart = Time.fixedTime;
-                var announcement = UnityEngine.Object.FindAnyObjectByType<GameplayAnnouncement>();
                 await Until(() => Runner.IsHandoffTravel, 2500, "Travel did not start after clear pause.");
-                Require(title == originalLevel.Encounters[1].TransitionTitle && detail == originalLevel.Encounters[1].TransitionDescription &&
-                    Mathf.Approximately(titleDuration, Runner.Current.EffectiveHandoffTravelSeconds) &&
-                    announcement.transform.Find("Title").GetComponent<Text>().alignment == TextAnchor.MiddleCenter,
-                    "Minor title/copy/duration was not synchronized to handoff travel.");
+                var travelSeconds=Runner.Current.EffectiveHandoffTravelSeconds;
+                Require(UnityEngine.Object.FindAnyObjectByType<MissionIntroPresentation>().IsCueVisible,"Minor travel cue missing");
                 var reused = pool.Get(); Require(reused == shot, "Pool did not reuse the cleaned projectile.");
                 target.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(.8f, .5f, 10));
                 muzzle.transform.position = target.transform.position + Vector3.up * .05f;
@@ -149,24 +159,22 @@ public static class VerifyVerticalSlice
                 muzzle.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(.999f, .5f, 10));
                 edgeShot.Launch(profile, muzzle.transform, rig.Player, target, recycle);
                 var edgeStart = Time.fixedTime;
-                edgeShot.BeginCleanup(.65f, .3f);
                 await Until(() => !edgeShot.gameObject.activeSelf, 400, "Offscreen shot waited for fade instead of recycling.");
                 Require(Time.fixedTime - edgeStart < .3f && releases == 3 && probe.Hits == 1,
                     "Viewport exit did not recycle early and cleanly.");
-                await Until(() => Time.fixedTime - handoffStart >= 1.5f, 2200, "Extended handoff stalled.");
+                await Until(() => Time.fixedTime - handoffStart >= .9f, 1500, "Extended handoff stalled.");
                 Require(Runner.CurrentIndex == 0 && Runner.Stage == EncounterStage.Handoff &&
-                    announcement.GetComponent<CanvasGroup>().alpha > .5f, "Cue/title did not remain readable for the longer handoff.");
+                    UnityEngine.Object.FindAnyObjectByType<MissionIntroPresentation>().IsCueVisible, "Travel cue ended before handoff.");
                 var screenshot = await Capture("minor-handoff-cleanup");
                 await Until(() => Runner.CurrentIndex == 1, 1000, "Next encounter never started.");
                 Require(!shot.gameObject.activeSelf && Runner.CompletionCount == 1,
                     "Old projectile or duplicate completion crossed the encounter boundary.");
-                return new { passed = true, graceElapsed, fadeElapsed, handoffDuration = titleDuration, title, detail,
-                    damageDisabledAtFade = true, poolReuseRestoredDamage = true, pauseFrozen = true,
+                return new { passed = true, flightElapsed, handoffDuration = travelSeconds,
+                    naturalExitNoFade = true, poolReuseRestoredDamage = true, pauseFrozen = true,
                     viewportExitRecyclesEarly = true, movementAndHudActive = true, noOldShotInNextEncounter = true, screenshot };
             }
             finally
             {
-                Runner.Flow.TitleRequested -= onTitle;
                 Runner.StopRun();
                 if (shot != null && shot.gameObject.activeSelf) shot.Release();
                 pool.Dispose();
@@ -310,7 +318,7 @@ public static class VerifyVerticalSlice
                 "Overheated weapon spawned a new shot.");
             await Until(() => !weapon.IsOverheated, 1700, "Recovery never enabled fire.");
             var recoverySeconds = Time.fixedTime - recoveryStart;
-            Require(recoverySeconds >= 1.15f && recoverySeconds <= 1.35f && weapon.HeatFraction <= .43f,
+            Require(recoverySeconds >= 1.45f && recoverySeconds <= 1.7f && weapon.HeatFraction <= .04f,
                 "Unexpected recovery threshold/timing: " + recoverySeconds + "/" + weapon.HeatFraction);
             await Until(() => UnityEngine.Object.FindObjectsByType<PlayerProjectile>().Length > 0, 500, "Held fire did not resume automatically.");
             Require(rig.Input.FireHeld, "Hold-through fixture lost intent.");
@@ -911,7 +919,7 @@ public static class VerifyVerticalSlice
             profile.View = new GameplayViewSettings(size,new Rect(0,0,1,1));
             Runner.StartRun("LEVEL_START", false, !intro, null, profile);
         }
-        public void Protect() { Player.GetComponent<PlayerDamageLifecycle>().enabled = false; Gate.SetState(PlayerGameplayState.PostEntryInvincibility); UnityEngine.Object.FindAnyObjectByType<EnemyFireGate>().ResumeAfter(0); }
+        public void Protect() { Player.GetComponent<PlayerDamageLifecycle>().enabled = false; Gate.SetCinematicLock(false); Gate.SetState(PlayerGameplayState.PostEntryInvincibility); UnityEngine.Object.FindAnyObjectByType<EnemyFireGate>().ResumeAfter(0); }
         public void Unprotect() { Player.GetComponent<PlayerDamageLifecycle>().enabled = true; Gate.SetState(PlayerGameplayState.Active); }
         public void Place(Vector2 position) { Player.GetComponent<Rigidbody2D>().position = position; Player.transform.position = new Vector3(position.x, position.y, 0); }
         public async Task MouseEvent(Vector2 position, bool held)

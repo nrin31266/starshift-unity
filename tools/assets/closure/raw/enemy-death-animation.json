@@ -1,0 +1,46 @@
+{
+  "object": {
+    "id": "34ed7b01-0461-417e-a8aa-a7dfee1bd3a7",
+    "name": "base",
+    "prompt": "small spaceship explosion, chunky round white-hot ignition with golden orange lobes and flying silver fragments, very bright",
+    "size": {
+      "width": 64,
+      "height": 64
+    },
+    "directions": 1,
+    "view": "low top-down"
+  },
+  "spritesheet": {
+    "path": "small_spaceship_explosion_chu.png",
+    "cell_size": {
+      "width": 64,
+      "height": 64
+    },
+    "sheet_size": {
+      "width": 1024,
+      "height": 128
+    },
+    "columns": 16,
+    "pivot": "cell-center",
+    "rows": [
+      {
+        "row": 0,
+        "type": "rotations",
+        "frame_count": 1,
+        "directions": [
+          "unknown"
+        ]
+      },
+      {
+        "row": 1,
+        "type": "animation",
+        "frame_count": 16,
+        "animation": "Small enemy death ignition and breakup",
+        "animation_group_id": "a1b4ffea-cf49-4a75-afb9-aa220cc27ac1",
+        "direction": "unknown"
+      }
+    ]
+  },
+  "export_version": "1.0",
+  "export_date": "2026-10-21T12:22:15.284394+00:00"
+}

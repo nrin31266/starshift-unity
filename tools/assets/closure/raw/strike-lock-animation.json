@@ -1,0 +1,46 @@
+{
+  "object": {
+    "id": "a4dc6527-c525-4a7e-897f-86fb048c369b",
+    "name": "base",
+    "prompt": "amber square rounded target lock reticle with four thick beveled corners and tiny center dot, one single ring, not nested",
+    "size": {
+      "width": 64,
+      "height": 64
+    },
+    "directions": 1,
+    "view": "low top-down"
+  },
+  "spritesheet": {
+    "path": "amber_square_rounded_target_lo.png",
+    "cell_size": {
+      "width": 64,
+      "height": 64
+    },
+    "sheet_size": {
+      "width": 512,
+      "height": 128
+    },
+    "columns": 8,
+    "pivot": "cell-center",
+    "rows": [
+      {
+        "row": 0,
+        "type": "rotations",
+        "frame_count": 1,
+        "directions": [
+          "unknown"
+        ]
+      },
+      {
+        "row": 1,
+        "type": "animation",
+        "frame_count": 8,
+        "animation": "Interceptor single target lock",
+        "animation_group_id": "eb515c8d-633b-4ac1-b85e-8d6758513673",
+        "direction": "unknown"
+      }
+    ]
+  },
+  "export_version": "1.0",
+  "export_date": "2026-10-21T12:29:17.993028+00:00"
+}

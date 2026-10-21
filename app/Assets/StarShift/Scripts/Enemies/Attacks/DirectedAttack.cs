@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace StarShift.Enemies
 {
-    [DisallowMultipleComponent]
+    [DisallowMultipleComponent, DefaultExecutionOrder(40)]
     public sealed class DirectedAttack : MonoBehaviour
     {
         [SerializeField] private DirectedAttackDefinition definition;
@@ -15,8 +15,7 @@ namespace StarShift.Enemies
         private EnemyFireGate gate;
         private PlayerGameplayGate player;
         private Camera view;
-        private ContactFilter2D filter;
-        private readonly Collider2D[] hits = new Collider2D[8];
+        private BeamDamageQuery beamDamage;
         private Vector2 aim;
         private float elapsed;
         private float cooldown;
@@ -34,7 +33,7 @@ namespace StarShift.Enemies
         }
         public Bounds DamageBounds { get; private set; }
         // Aim đã khóa (viewport) để telegraph strike bám đúng điểm lao.
-        public Vector2 AttackAim { get; private set; }
+        public Vector2 AttackAim => aim;
         public DirectedAttackDefinition Definition => definition;
         private void Awake()
         {
@@ -45,8 +44,7 @@ namespace StarShift.Enemies
             view = Camera.main;
             if (definition == null || !definition.IsValid || muzzle == null || presentation == null || health == null || flight == null || gate == null || player == null || view == null)
                 throw new System.InvalidOperationException("Invalid directed attack composition: " + name);
-            filter.SetLayerMask(1 << player.GetComponentInChildren<Collider2D>().gameObject.layer);
-            filter.useTriggers = true;
+            beamDamage = new BeamDamageQuery(player);
         }
         private bool Eligible => isActiveAndEnabled && health.IsAlive && gate.CanFire && flight.CanShoot && flight.IsHolding && !flight.IsStriking && flight.IsPointVisible(muzzle.position);
         public bool TryRequestAttack()
@@ -71,6 +69,7 @@ namespace StarShift.Enemies
         private float recovery;
         public void CancelAttack()
         {
+            beamDamage?.Reset();
             IsBusy = IsActive = false;
             if (Phase != AttackPhase.Idle) SetPhase(AttackPhase.Idle);
             cooldown = definition != null ? (AttacksFired == 0 ? Mathf.Min(.35f, definition.CooldownSeconds) : definition.CooldownSeconds) : 1;
@@ -84,7 +83,7 @@ namespace StarShift.Enemies
                 recovery = Mathf.Max(0, recovery - Time.fixedDeltaTime);
                 if (recovery <= 0 && !IsBusy) SetPhase(AttackPhase.Idle);
             }
-            if (!IsBusy) return;
+            if (!IsBusy) { beamDamage.Reset(); return; }
             if (!health.IsAlive || !gate.CanFire || !isActiveAndEnabled || flight.IsExiting) { CancelAttack(); return; }
             elapsed += Time.fixedDeltaTime;
             if (!IsActive && elapsed <= definition.TrackingSeconds) aim = view.WorldToViewportPoint(player.transform.position);
@@ -93,7 +92,6 @@ namespace StarShift.Enemies
             if (!IsActive && elapsed >= definition.ChargeSeconds)
             {
                 IsActive = true; elapsed = 0; AttacksFired++;
-                AttackAim = aim;
                 SetPhase(AttackPhase.Attack);
                 if (definition.Kind == DirectedAttackKind.Strike)
                 {
@@ -110,6 +108,7 @@ namespace StarShift.Enemies
                 }
                 return;
             }
+            if (definition.Kind == DirectedAttackKind.Strike) { presentation.Hide(); return; }
             var from = (Vector2)view.WorldToViewportPoint(muzzle.position);
             var to = aim;
             if (definition.Sweep)
@@ -143,14 +142,14 @@ namespace StarShift.Enemies
                 var size = new Vector2(delta.magnitude, definition.BeamWidth);
                 var center = (a + b) * .5f;
                 DamageBounds = new Bounds(center, new Vector3(Mathf.Abs(delta.x) + definition.BeamWidth, Mathf.Abs(delta.y) + definition.BeamWidth, 1));
-                int count = Physics2D.OverlapBox(center, size, Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg, filter, hits);
-                for (int i = 0; i < count; i++) hits[i].GetComponentInParent<PlayerContactReceiver>()?.ReceiveEnemyHit(health.gameObject);
+                beamDamage.Apply(center, size, Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg, health.gameObject);
                 if (elapsed >= definition.ActiveSeconds)
                 {
                     // RECOVERY: beam tắt, cue giữ ngắn rồi mới về Idle/cooldown.
                     Recover();
                 }
             }
+            else beamDamage.Reset();
         }
         private void OnDisable() => CancelAttack();
     }

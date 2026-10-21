@@ -7,12 +7,14 @@ for _,region in ipairs{'astra','crimson'}do
  for y=0,335 do for x=0,767 do
   local value=0
   for _,b in ipairs(blobs)do
-   local dx,dy=(x-b[1])/b[3],(y-b[2])/b[4]
-   local noise=math.sin(x*.031+y*.017)*.12+math.sin(x*.061-y*.047)*.08+math.sin(x*.13+y*.093)*.025
+   local ax,ay=math.abs(x-b[1]),math.abs(y-b[2])
+   local dx,dy=math.min(ax,768-ax)/b[3],math.min(ay,336-ay)/b[4]
+   -- Tần số nguyên và khoảng cách tuần hoàn giúp nebula nối liền qua mép tile.
+   local u,v=x/768*math.pi*2,y/336*math.pi*2
+   local noise=math.sin(u*4+v)*.12+math.sin(u*8-v*3)*.08+math.sin(u*16+v*5)*.025
    value=math.max(value,1-math.sqrt(dx*dx+dy*dy)+noise)
   end
-  local edge=math.min(x/20,(767-x)/20,y/20,(335-y)/20,1)
-  local index=1+math.max(0,math.min(4,math.floor(value*edge*5)))
+  local index=1+math.max(0,math.min(4,math.floor(value*5)))
   im:putPixel(x,y,color(palette[index]))
  end end
  -- Bụi xa mờ, không dùng chấm trắng sáng trông như projectile.

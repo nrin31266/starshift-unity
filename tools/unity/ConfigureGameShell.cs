@@ -72,7 +72,8 @@ public static class ConfigureGameShell
         view.Sfx=Slider(settings,ShellCopy.Sfx,.51f);
         view.Vibration=Toggle(settings,ShellCopy.Vibration,.35f);
         view.Shake=Toggle(settings,ShellCopy.Shake,.23f);
-        view.SaveSettings=Button("SaveSettings",settings,ShellCopy.SaveSettings,0);Place((RectTransform)view.SaveSettings.transform,.5f,.10f,0,0,590,72);
+        view.SaveSettings=Button("SaveSettings",settings,ShellCopy.SaveSettings,0);Place((RectTransform)view.SaveSettings.transform,.5f,.10f,-190,0,380,72);
+        view.ResetAll=Button("ResetAll",settings,ShellCopy.ResetAll,0);Place((RectTransform)view.ResetAll.transform,.5f,.10f,225,0,350,72);
         Info(view.Screens[(int)ShellScreen.Help].transform,ShellCopy.Help,string.Join("\n\n", ShellCopy.HelpBlocks),27);
         Info(view.Screens[(int)ShellScreen.Credits].transform,ShellCopy.Credits,ShellCopy.CreditsText,30);
 

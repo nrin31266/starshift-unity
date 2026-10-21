@@ -39,8 +39,9 @@ chặn fire. Release trước MAX không lock: sau cooling delay heat giảm và
 bắn ngay. Đây là burst management, không có reload, input mới hoặc timing minigame.
 
 Khi Overheated, chỉ primary fire bị chặn; movement và các gameplay permissions khác
-không đổi. Heat giảm bằng overheat cool rate; tới recovery threshold thì mở fire,
-không cần về zero. Held intent còn hợp lệ tự bắn tiếp, không yêu cầu release/press.
+không đổi. Heat giảm bằng overheat cool rate; chỉ khi về **zero** mới mở fire.
+Nhấp/nhả hoặc đổi branch không phá latch. Held intent còn hợp lệ tự bắn tiếp,
+không yêu cầu release/press.
 State/time/reset semantics thuộc [player combat](../gameplay/player-combat.md#thermal-lifecycle).
 
 Thermal profile thuộc **weapon type**, tách khỏi progression level. Các Pulse Lv
@@ -55,17 +56,17 @@ Pulse seed `[TUNABLE]`, không là balance cuối:
 | Capacity | 100 |
 | Heat per second | Pulse 9; Plasma 11; Homing 8.5 |
 | Cooling delay sau release | 0.30 s |
-| Normal cool rate | 30/s |
-| Overheat cool rate | 50/s |
-| Recovery threshold | 40% capacity |
+| Normal cool rate | 18/s |
+| Overheat cool rate | 65/s |
+| Recovery threshold | 0% capacity |
 
 Target từ cold: Pulse 11.11 s, Plasma 9.09 s, Homing 11.76 s sustained tới MAX;
-overheat recovery khoảng 1.2 s,
+overheat recovery khoảng 1.54 s,
 sai số một physics step. Burst/tap dưới MAX không có lockout. Config asset
 `app/Assets/StarShift/Data/Weapons/PulseLaserThermal.asset` được tham chiếu từ Pulse
 definition; asset không giữ current heat, overheat latch hoặc cooling timer.
 Nhả bắn rất ngắn (dưới cooling delay) chưa xả nhiệt; nhả .5 s từ trạng thái chưa
-overheat chỉ xả khoảng 6 heat. Tuning này giảm lợi thế tap/release liên tục nhưng
+overheat chỉ xả khoảng 3.6 heat. Tuning này giảm lợi thế tap/release liên tục nhưng
 không rút ngắn cửa sổ sustained fire ở trên.
 
 ### Weapon count `[LOCKED]`
@@ -258,9 +259,7 @@ Overheated. Drone bắn phụ độc lập primary thermal, không mở khóa pr
 | Weapon Core | Typed qua `PickupDefinition.Branch` cho test; code `T1+`/`T2+`/`T3+`. Maxed branch không collect/không conversion; random selection filter branch max. Generic-vs-typed và maxed fallback vẫn TBD. |
 | Stellar Shard | Amount 1 `[TUNABLE]`, resource ghi Profile qua [economy owner](../gameplay/progression-economy.md); không là Score. |
 
-Temporary effects giữ state/timer qua Spawn Group và ordinary Encounter handoff;
-Pause freeze. Dying/death, Game Over, Clear, root disable và mission reset xóa Shield,
-Overdrive, Drone. Respawn không restore buffs. Hit được shield absorb không chạy death
+Temporary effects giữ state/timer qua Spawn Group, ordinary Encounter handoff và chuyển Mission/Region liên tục trong cùng lượt chơi. Shield giữ một charge; Overdrive/Drone giữ thời gian còn lại, không refresh. Timer chỉ giảm khi gate cho gameplay và đứng yên trong cinematic/Pause. Dying/death, Game Over, final Clear, root disable, New Game, Retry/Continue từ checkpoint và mission reset xóa Shield, Overdrive, Drone. Buff không được thêm vào snapshot/save giữa wave. Respawn không restore buffs. Hit được shield absorb không chạy death
 hoặc downgrade. Drone visual tắt khi gate không cho control; pending shot đã launch
 vẫn theo projectile lifecycle, terminal session release friendly shots.
 
@@ -268,8 +267,8 @@ Pickup là pooled runtime participant trong reward scope của EncounterCleanup.
 Collection dùng swept contact với đường di chuyển Player, bán kính .6 world units
 `[TUNABLE]`; không magnetism. Chỉ collect khi gameplay input gate mở, kể cả khi held fire.
 Pickup trôi ngược hướng combat: Up xuống dưới, Right sang trái. Power-up/crate drift
-seed .8 world units/s và release khi qua local depth -.06; không đọng thành hàng
-ở mép thoát. Shard bắt đầu fall speed 3.2, gravity 11, terminal speed 6.4; nảy hai lần
+seed 1 world unit/s và release khi qua local depth -.06; không đọng thành hàng
+ở mép thoát. Coin bắt đầu fall speed 3.5, gravity 12.1, terminal speed 7; nảy hai lần
 tại local depth .06 với bounce height .06 × độ dài trục combat rồi .35 × lần đầu,
 sau đó rơi ra và recycle, kể cả trong reward grace. Speed/acceleration seeds tính theo
 chiều cao viewport; khi Right, displacement theo trục combat nhân camera aspect để giữ

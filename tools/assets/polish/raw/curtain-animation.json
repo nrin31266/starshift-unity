@@ -1,0 +1,46 @@
+{
+  "object": {
+    "id": "c45f5b77-001b-4e63-bc57-aed8a8c59cd8",
+    "name": "base",
+    "prompt": "Vanguard Projectile Curtain: broad coral orange segmented energy gate crest, five glowing short vertical ammo tips surrounding an open square gap, thick symmetric beveled corners, ivory gold highlights, transparent center",
+    "size": {
+      "width": 64,
+      "height": 64
+    },
+    "directions": 1,
+    "view": "low top-down"
+  },
+  "spritesheet": {
+    "path": "Vanguard_Projectile_Curtain_b.png",
+    "cell_size": {
+      "width": 64,
+      "height": 64
+    },
+    "sheet_size": {
+      "width": 576,
+      "height": 128
+    },
+    "columns": 9,
+    "pivot": "cell-center",
+    "rows": [
+      {
+        "row": 0,
+        "type": "rotations",
+        "frame_count": 1,
+        "directions": [
+          "unknown"
+        ]
+      },
+      {
+        "row": 1,
+        "type": "animation",
+        "frame_count": 9,
+        "animation": "Curtain charge release",
+        "animation_group_id": "c7cf44a5-62af-4839-acd6-e9c94f43c79e",
+        "direction": "unknown"
+      }
+    ]
+  },
+  "export_version": "1.0",
+  "export_date": "2026-10-21T05:18:24.711306+00:00"
+}

@@ -6,6 +6,7 @@ using UnityEngine.Pool;
 
 namespace StarShift.Enemies
 {
+    [DefaultExecutionOrder(40)]
     public sealed class BossAttackModule : MonoBehaviour
     {
         [SerializeField] private SingleFireDefinition definition;
@@ -20,8 +21,8 @@ namespace StarShift.Enemies
         [SerializeField] private AttackBeamPresentation beam;
         [SerializeField, Min(.1f)] private float beamSeconds = 1.5f;
         [SerializeField, Range(.03f,.2f)] private float beamViewportWidth = .10f;
-        private readonly Collider2D[] beamHits = new Collider2D[8];
-        private ContactFilter2D beamFilter;
+        [SerializeField, Range(.05f, .4f)] private float beamTrackingSpeed = .18f;
+        private BeamDamageQuery beamDamage;
         private Camera gameplayCamera;
         private EntryHoldFlight flight;
         private float beamX;
@@ -60,8 +61,7 @@ namespace StarShift.Enemies
             idleColor = telegraph.color;
             extraIdleColors = System.Array.ConvertAll(extraTelegraphs, cue => cue.color);
             gameplayCamera = Camera.main;
-            beamFilter.SetLayerMask(1 << player.GetComponentInChildren<Collider2D>().gameObject.layer);
-            beamFilter.useTriggers = true;
+            beamDamage = new BeamDamageQuery(player);
             if (barrage != null || directed != null || escorts != null) return;
             if (beam != null) { beam.Hide(); return; }
             projectileRoot = new GameObject("BossProjectilePool").transform;
@@ -89,6 +89,7 @@ namespace StarShift.Enemies
         }
         public void CancelAttack()
         {
+            beamDamage?.Reset();
             barrage?.CancelAttack();
             directed?.CancelAttack();
             busy = IsBeamActive = false;
@@ -108,16 +109,20 @@ namespace StarShift.Enemies
             for (int i = 0; i < extraTelegraphs.Length; i++) extraTelegraphs[i].color = Color.Lerp(extraIdleColors[i], Color.white, .5f + .5f * Mathf.Sin(remaining * 24));
             if (beam != null)
             {
+                if (IsBeamActive || remaining > definition.TelegraphDuration * .45f)
+                    beamX = Mathf.MoveTowards(beamX, Mathf.Clamp(gameplayCamera.WorldToViewportPoint(player.transform.position).x, .08f, .92f), beamTrackingSpeed * Time.fixedDeltaTime);
                 var top = muzzles[0].position;
                 var bottom = gameplayCamera.ViewportToWorldPoint(new Vector3(beamX, -.02f, -gameplayCamera.transform.position.z));
                 float width = beamViewportWidth * gameplayCamera.orthographicSize * 2 * gameplayCamera.aspect;
-                BeamBounds = new Bounds(new Vector3(bottom.x,(top.y+bottom.y)*.5f,0),new Vector3(width,top.y-bottom.y,1));
-                beam.Show(BeamBounds, IsBeamActive);
+                var delta = bottom - top;
+                var center = (top + bottom) * .5f;
+                BeamBounds = new Bounds(center,new Vector3(Mathf.Abs(delta.x)+width,Mathf.Abs(delta.y)+width,1));
+                beam.ShowSegment(top, bottom, width, IsBeamActive);
                 if (IsBeamActive)
                 {
-                    int count = Physics2D.OverlapBox(BeamBounds.center, BeamBounds.size, 0, beamFilter, beamHits);
-                    for (int i = 0; i < count; i++) beamHits[i].GetComponentInParent<PlayerContactReceiver>()?.ReceiveEnemyHit(health.gameObject);
+                    beamDamage.Apply(center,new Vector2(delta.magnitude,width),Mathf.Atan2(delta.y,delta.x)*Mathf.Rad2Deg,health.gameObject);
                 }
+                else beamDamage.Reset();
                 if (remaining > 0) return;
                 if (!IsBeamActive) { IsBeamActive = true; remaining = beamSeconds; ShotsFired++; SetPhase(AttackPhase.Attack); }
                 else CancelAttack();

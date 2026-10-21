@@ -71,6 +71,7 @@ namespace StarShift.UI
             for (int i = 0; i < view.MissionCards.Length; i++) { int index = i; Bind(view.MissionCards[i], () => SelectMission(index)); }
             Bind(view.LaunchReplay, () => StartGame(() => save.BeginReplay(region.Missions[selectedMission].Id)));
             Bind(view.SaveSettings, ApplySettings);
+            Bind(view.ResetAll, () => Confirm(ShellCopy.ConfirmResetAll, ResetAll));
             view.Vibration.onValueChanged.AddListener(RefreshSettingStates);
             view.Shake.onValueChanged.AddListener(RefreshSettingStates);
             Bind(view.Resume, Resume); Bind(view.Retry, RequestRetry);
@@ -123,6 +124,7 @@ namespace StarShift.UI
             view.ReloadSave.gameObject.SetActive(snapshot == null);
             view.RecoverSave.gameObject.SetActive(snapshot == null && save.LoadStatus == SaveLoadStatus.Invalid);
             view.Wallet.gameObject.SetActive(snapshot != null);
+            if (view.WalletIcon != null) view.WalletIcon.gameObject.SetActive(snapshot != null);
             view.Store.interactable = snapshot != null;
             view.MenuShip.transform.parent.gameObject.SetActive(snapshot != null);
             view.MenuShipName.gameObject.SetActive(snapshot != null); view.MenuEquipped.gameObject.SetActive(snapshot != null);
@@ -134,7 +136,7 @@ namespace StarShift.UI
             statusRect.anchorMin = statusRect.anchorMax = new Vector2(.28f, snapshot == null ? .53f : .20f);
             view.Missions.interactable = snapshot != null;
             view.Settings.interactable = snapshot != null;
-            view.Wallet.text = ShellCopy.Wallet(snapshot?.Profile.StellarShardBalance ?? 0);
+            RefreshWallet(snapshot?.Profile.StellarShardBalance ?? 0);
             view.MenuStatus.text = snapshot == null ? (save.LoadStatus == SaveLoadStatus.UnsupportedVersion ? ShellCopy.UnsupportedSave : ShellCopy.ReadFailed) :
                 !snapshot.HasCampaign ? ShellCopy.NoCampaign : snapshot.Campaign.Status == CampaignStatus.CampaignCompleted ? ShellCopy.ReleaseComplete :
                 CampaignLabel(snapshot.Campaign.MissionId);
@@ -191,7 +193,7 @@ namespace StarShift.UI
             view.MenuEquipped.text = equipped ? ShellCopy.Equipped : "XEM TRƯỚC";
             view.MenuStatus.text = cosmeticSlot == CosmeticSlot.Chassis ? "Chọn tàu, rồi tùy chỉnh sơn và vệt di chuyển." :
                 ShellCopy.CosmeticTabs[(int)cosmeticSlot] + " · " + cosmetics.Equipped(profile, CosmeticSlot.Chassis).DisplayName;
-            view.Wallet.text = ShellCopy.Wallet(profile.StellarShardBalance);
+            RefreshWallet(profile.StellarShardBalance);
             view.HangarMode.interactable = inStore;
             view.StoreMode.interactable = !inStore;
             view.CosmeticContext.text = cosmeticSlot == CosmeticSlot.Chassis ? (inStore ? "KHÁM PHÁ TÀU" : "TÀU CỦA BẠN") :
@@ -211,7 +213,7 @@ namespace StarShift.UI
                 if (i >= options.Length) continue;
                 var option = options[i];
                 bool wearing = cosmetics.Equipped(profile, cosmeticSlot).Id == option.Id;
-                view.CosmeticLabels[i].text = option.DisplayName + "\n" + (wearing ? "✓ " + ShellCopy.Equipped : cosmetics.Owns(profile, option) ? ShellCopy.Owned : option.ShardCost + " Stellar Shard");
+                view.CosmeticLabels[i].text = option.DisplayName + "\n" + (wearing ? "✓ " + ShellCopy.Equipped : cosmetics.Owns(profile, option) ? ShellCopy.Owned : option.ShardCost + " Coin");
                 view.CosmeticCards[i].GetComponent<Outline>().enabled = i == selectedCosmetic;
                 var swatch = view.CosmeticSwatches[i];
                 swatch.GetComponent<ShipPreview>().Apply(cosmetics,
@@ -219,7 +221,7 @@ namespace StarShift.UI
                     cosmeticSlot == CosmeticSlot.Skin ? option : cosmetics.Equipped(profile, CosmeticSlot.Skin),
                     cosmeticSlot == CosmeticSlot.Trail ? option : cosmetics.Equipped(profile, CosmeticSlot.Trail));
             }
-            view.CosmeticDetail.text = selected.DisplayName + "\n" + (inStore ? "Mua và trang bị bằng Stellar Shard." : "Đã sở hữu · thay đổi miễn phí.") + " Chỉ thay đổi ngoại hình.";
+            view.CosmeticDetail.text = selected.DisplayName + "\n" + (inStore ? "Mua và trang bị bằng Coin." : "Đã sở hữu · thay đổi miễn phí.") + " Chỉ thay đổi ngoại hình.";
             view.CosmeticAction.GetComponentInChildren<Text>().text = inStore ? (owned ? ShellCopy.Owned : profile.StellarShardBalance >= selected.ShardCost ? ShellCopy.Purchase(selected.ShardCost) : ShellCopy.NeedShards(selected.ShardCost - profile.StellarShardBalance)) : equipped ? ShellCopy.Equipped : ShellCopy.Equip;
             view.CosmeticAction.interactable = inStore ? !owned && profile.StellarShardBalance >= selected.ShardCost : !equipped;
         }
@@ -272,7 +274,20 @@ namespace StarShift.UI
             view.Vibration.SetIsOnWithoutNotify(settings.VibrationEnabled);
             view.Shake.SetIsOnWithoutNotify(settings.ScreenShakeEnabled);
             RefreshSettingStates(false);
+            if (view.ResetAll != null) view.ResetAll.interactable = save.CanResetAll;
             Navigate(ShellScreen.Settings);
+        }
+        private void RefreshWallet(int balance)
+        {
+            view.Wallet.text = ShellCopy.Wallet(balance);
+            if (view.WalletIcon != null)
+                view.WalletIcon.rectTransform.anchoredPosition = new Vector2(-view.Wallet.preferredWidth / 2 - 28, 0);
+        }
+        private void ResetAll()
+        {
+            if (!save.ResetAll()) { ShowError(ShellCopy.ResetFailed, ResetAll); return; }
+            settingsOrigin = ShellScreen.Menu;
+            Boot();
         }
         private void RefreshSettingStates(bool _)
         {
@@ -312,7 +327,7 @@ namespace StarShift.UI
             var record = Array.Find(save.PersistentSnapshot?.Profile.Records ?? Array.Empty<MissionRecord>(), r => r.MissionId == session.Flow.Level.Id);
             bool committed = !save.HasPendingClear && !save.Dirty;
             view.ResultRecord.text = ShellCopy.Best(record) + (clear && !replay && committed && (save.NewBestScore || save.NewBestTime) ? "\nKỶ LỤC MỚI" : "");
-            view.ResultStatus.text = save.HasPendingClear ? ShellCopy.SaveFailed : replay ? "Kết quả chơi lại không thay đổi chiến dịch hoặc ví Shard." : "";
+            view.ResultStatus.text = save.HasPendingClear ? ShellCopy.SaveFailed : replay ? "Kết quả chơi lại không thay đổi chiến dịch hoặc ví Coin." : "";
             view.Next.gameObject.SetActive(false);
             view.ResultReplay.gameObject.SetActive(clear && replay);
             view.ResultMissions.gameObject.SetActive(clear && (replay || victory));

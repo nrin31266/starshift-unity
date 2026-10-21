@@ -24,11 +24,7 @@ namespace StarShift.Combat
         private Color launchColor;
         private Vector3 launchScale;
         private Sprite launchSprite;
-        private bool cleaningUp;
-        private bool fading;
-        private float cleanupRemaining;
-        private float fadeSeconds;
-        private float fadeRemaining;
+        private bool enteredView;
 
         public GameObject Owner { get; private set; }
         public float VisibleFlightTimeLimit
@@ -37,10 +33,16 @@ namespace StarShift.Combat
             {
                 if (gameplayCamera == null || !gameplayCamera.isActiveAndEnabled || !gameplayCamera.orthographic || speed <= 0) return 0;
                 var point = gameplayCamera.WorldToViewportPoint(new Vector3(body.position.x, body.position.y, transform.position.z));
-                if (point.x < 0 || point.x > 1 || point.y < 0 || point.y > 1 ||
+                if (point.x < -.03f || point.x > 1.03f || point.y < -.03f || point.y > 1.03f ||
                     point.z < gameplayCamera.nearClipPlane || point.z > gameplayCamera.farClipPlane) return 0;
-                // Đường chéo view là upper bound thời gian bay ra ngoài theo đường thẳng.
-                return 2 * gameplayCamera.orthographicSize * Mathf.Sqrt(1 + gameplayCamera.aspect * gameplayCamera.aspect) / speed;
+                var next = gameplayCamera.WorldToViewportPoint(new Vector3(body.position.x + direction.x * speed,
+                    body.position.y + direction.y * speed, transform.position.z));
+                var velocity = next - point;
+                float x = Mathf.Abs(velocity.x) < .000001f ? float.PositiveInfinity
+                    : ((velocity.x > 0 ? 1.03f : -.03f) - point.x) / velocity.x;
+                float y = Mathf.Abs(velocity.y) < .000001f ? float.PositiveInfinity
+                    : ((velocity.y > 0 ? 1.03f : -.03f) - point.y) / velocity.y;
+                return Mathf.Max(0, Mathf.Min(x, y));
             }
         }
 
@@ -65,8 +67,6 @@ namespace StarShift.Combat
             speed = definition.ProjectileSpeed;
             remainingLifetime = definition.ProjectileLifetime;
             gameplayCamera = Camera.main;
-            cleaningUp = fading = false;
-            cleanupRemaining = fadeRemaining = fadeSeconds = 0;
             // Visual theo definition: coral/lemon normal, magenta special; prefab fallback giữ cũ.
             visual.color = definition.HasProjectileVisual ? definition.ProjectileColor : launchColor;
             visual.sprite = definition.HasProjectileVisual ? definition.ProjectileSprite : launchSprite;
@@ -77,6 +77,7 @@ namespace StarShift.Combat
             var rotation = Quaternion.FromToRotation(Vector3.up, direction);
             transform.SetPositionAndRotation(muzzle.position, rotation);
             body.position = muzzle.position;
+            enteredView = VisibleFlightTimeLimit > 0;
             body.linearVelocity = Vector2.zero;
             body.angularVelocity = 0;
             body.simulated = true;
@@ -88,23 +89,6 @@ namespace StarShift.Combat
         private void FixedUpdate()
         {
             if (!flying || Time.timeScale <= 0) return;
-            if (cleaningUp)
-            {
-                if (VisibleFlightTimeLimit <= 0) { FinishFlight(); return; }
-                if (!fading)
-                {
-                    cleanupRemaining -= Time.fixedDeltaTime;
-                    if (cleanupRemaining <= 0) BeginFade();
-                }
-                else
-                {
-                    fadeRemaining = Mathf.Max(0, fadeRemaining - Time.fixedDeltaTime);
-                    var color = visual.color;
-                    color.a *= fadeRemaining / fadeSeconds;
-                    visual.color = color;
-                    if (fadeRemaining <= 0) { FinishFlight(); return; }
-                }
-            }
             var step = remainingLifetime > 0 ? Mathf.Min(Time.fixedDeltaTime, remainingLifetime) : Time.fixedDeltaTime;
             var distance = speed * step;
             body.Cast(direction, new ContactFilter2D { useTriggers = true }, sweepHits, distance);
@@ -123,12 +107,13 @@ namespace StarShift.Combat
             }
             body.position += direction * distance;
             remainingLifetime = Mathf.Max(0, remainingLifetime - step);
-            // Lifetime không được cắt viên đạn còn visible giữa đường.
-            if (remainingLifetime <= 0 && VisibleFlightTimeLimit <= 0) FinishFlight();
+            // Hết lifetime vẫn bay nếu còn trong view; qua mép thì recycle ngay, không fade.
+            if (VisibleFlightTimeLimit > 0) enteredView = true;
+            else if (enteredView || remainingLifetime <= 0) FinishFlight();
         }
 
         private bool IsTarget(Collider2D other)
-            => !fading && other != null && target != null && other.transform.IsChildOf(target.transform) &&
+            => other != null && target != null && other.transform.IsChildOf(target.transform) &&
                 (Owner == null || !other.transform.IsChildOf(Owner.transform));
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -155,23 +140,6 @@ namespace StarShift.Combat
 
         public void Release() => FinishFlight();
 
-        public void BeginCleanup(float graceSeconds, float duration)
-        {
-            if (!flying || cleaningUp) return;
-            cleaningUp = true;
-            cleanupRemaining = Mathf.Max(0, graceSeconds);
-            fadeSeconds = Mathf.Max(.01f, duration);
-            if (cleanupRemaining <= 0) BeginFade();
-        }
-
-        private void BeginFade()
-        {
-            fading = true;
-            fadeRemaining = fadeSeconds;
-            // Khóa cả trigger lẫn sweep trước khi visual bắt đầu fade.
-            hitbox.enabled = false;
-        }
-
         public void ResetForPool()
         {
             flying = false;
@@ -180,8 +148,7 @@ namespace StarShift.Combat
             gameplayCamera = null;
             direction = Vector2.zero;
             speed = remainingLifetime = 0;
-            cleaningUp = fading = false;
-            cleanupRemaining = fadeRemaining = fadeSeconds = 0;
+            enteredView = false;
             visual.color = launchColor;
             visual.sprite = launchSprite;
             visual.transform.localScale = launchScale;

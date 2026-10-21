@@ -10,6 +10,7 @@ namespace StarShift.UI
         [SerializeField] private CanvasGroup group;
         [SerializeField] private Text label;
         [SerializeField] private Image fill;
+        [SerializeField] private Text percentage;
         private BossPhaseRunner boss;
         private int generation = -1;
         private void Update()
@@ -28,6 +29,7 @@ namespace StarShift.UI
             label.text = boss.Definition.DisplayName + phase;
             fill.fillAmount = shielded ? shields.CurrentShieldHp / (float)Mathf.Max(1, shields.MaximumShieldHp) : health.CurrentHp / (float)health.MaxHp;
             fill.color = shielded ? new Color(.2f, .8f, 1) : new Color(1, .35f, .2f);
+            if (percentage != null) percentage.text = Mathf.CeilToInt(100f * fill.fillAmount) + "%";
         }
     }
 }

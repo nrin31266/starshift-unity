@@ -80,17 +80,17 @@ public static class ConfigureGameplayFeel
         var table = AssetDatabase.LoadAssetAtPath<StarShift.Rewards.RewardDropTable>(rewards+"TestMissileAmmo.asset");
         table.name="TestMissileAmmo";EditorUtility.SetDirty(table);
         var shard = AssetDatabase.LoadAssetAtPath<StarShift.Rewards.PickupDefinition>(rewards+"StellarShard.asset");
-        shard.DriftSpeed=3.2f;shard.FallAcceleration=11;shard.MaximumFallSpeed=6.4f;shard.Lifetime=5;EditorUtility.SetDirty(shard);
+        shard.DriftSpeed=3.5f;shard.FallAcceleration=12.1f;shard.MaximumFallSpeed=7;shard.Lifetime=5;EditorUtility.SetDirty(shard);
         foreach (var id in new[]{"ShieldCell","Overdrive","SupportDrone","ExtraLife","PulseCore","PlasmaCore","HomingCore","MissileAmmo"})
         {
-            var item=AssetDatabase.LoadAssetAtPath<StarShift.Rewards.PickupDefinition>(rewards+id+".asset");item.DriftSpeed=.8f;EditorUtility.SetDirty(item);
+            var item=AssetDatabase.LoadAssetAtPath<StarShift.Rewards.PickupDefinition>(rewards+id+".asset");item.DriftSpeed=1;EditorUtility.SetDirty(item);
         }
         var thermalNames = new[]{"PulseLaserThermal","PlasmaThermal","HomingThermal"};
         for(int i=0;i<thermalNames.Length;i++)
         {
             var thermal=AssetDatabase.LoadAssetAtPath<StarShift.Combat.WeaponThermalProfile>(dataRoot+"Weapons/"+thermalNames[i]+".asset");
             Number(thermal,"heatPerSecond",i==0?9:i==1?11:8.5f);Number(thermal,"coolingDelay",.3f);
-            Number(thermal,"coolRate",30);Number(thermal,"overheatCoolRate",50);Number(thermal,"recoveryFraction",.4f);
+            Number(thermal,"coolRate",18);Number(thermal,"overheatCoolRate",65);
         }
         var weaponNames=new[]{"PulseLaserLv1","PlasmaSpread","HomingMissile"};
         for(int i=0;i<weaponNames.Length;i++)
@@ -269,7 +269,7 @@ public static class ConfigureGameplayFeel
     {
         if(Application.isPlaying)throw new InvalidOperationException("Edit Mode required.");
         var shard=AssetDatabase.LoadAssetAtPath<StarShift.Rewards.PickupDefinition>(Root+"Rewards/StellarShard.asset");
-        shard.DriftSpeed=3.2f;shard.FallAcceleration=11;shard.MaximumFallSpeed=6.4f;EditorUtility.SetDirty(shard);
+        shard.DriftSpeed=3.5f;shard.FallAcceleration=12.1f;shard.MaximumFallSpeed=7;EditorUtility.SetDirty(shard);
         foreach(var id in new[]{"M4TopRetreat","M4TopDive","M4RightSweep","M4DiagonalPass"})
         {
             var sequence=AssetDatabase.LoadAssetAtPath<FlightSequence>(Root+"Flights/"+id+".asset");
@@ -279,10 +279,10 @@ public static class ConfigureGameplayFeel
         foreach(var id in new[]{"PulseLaserThermal","PlasmaThermal","HomingThermal"})
         {
             var profile=AssetDatabase.LoadAssetAtPath<StarShift.Combat.WeaponThermalProfile>(Root+"Weapons/"+id+".asset");
-            Number(profile,"coolingDelay",.3f);Number(profile,"coolRate",30);Number(profile,"overheatCoolRate",50);
+            Number(profile,"coolingDelay",.3f);Number(profile,"coolRate",18);Number(profile,"overheatCoolRate",65);
         }
         var encounter=AssetDatabase.LoadAssetAtPath<EncounterDefinition>(Root+"Fixtures/Encounters/L1EncounterD.asset");
         encounter.Duration=21;EditorUtility.SetDirty(encounter);
-        AssetDatabase.SaveAssets();return new{pass=true,fallSpeed=3.2f,terminalSpeed=6.4f,exitSeconds=3,coolingDelay=.3f,coolRate=30,overheatCoolRate=50};
+        AssetDatabase.SaveAssets();return new{pass=true,fallSpeed=3.5f,terminalSpeed=7,exitSeconds=3,coolingDelay=.3f,coolRate=18,overheatCoolRate=65};
     }
 }

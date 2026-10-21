@@ -1,0 +1,120 @@
+{
+  "starting_generations": 35,
+  "jobs": [
+    {
+      "id": "coin",
+      "job_id": "beee2ef4-6eba-45d5-a7be-ffbc15d12550",
+      "model": "pixen",
+      "cost": 1,
+      "status": "completed",
+      "seed": 8120,
+      "raw": "raw/coin.png",
+      "usage": "UI/ui-shard.png; technical ID retained"
+    },
+    {
+      "id": "focus-target",
+      "job_id": "ff56bf79-acfd-46b8-870e-aafb21815f53",
+      "model": "pixen",
+      "cost": 1,
+      "status": "completed",
+      "seed": 8121,
+      "raw": "raw/focus-target.png",
+      "usage": "Rejected after gameplay-scale comparison; accepted atlas focus bank replaces this proposal."
+    },
+    {
+      "id": "focus-lock",
+      "job_id": "f917af66-33f0-47f3-ae50-eea8d6c1dabe",
+      "model": "pixen",
+      "cost": 1,
+      "status": "completed",
+      "seed": 8122,
+      "raw": "raw/focus-lock.png",
+      "usage": "Rejected after gameplay-scale comparison; accepted atlas focus bank replaces this proposal."
+    },
+    {
+      "id": "generic-armor-fragment",
+      "job_id": "ce9bac37-5922-43f8-a3c4-b951a1d1f6c7",
+      "model": "pixen",
+      "cost": 1,
+      "status": "completed",
+      "seed": 8123,
+      "raw": "raw/generic-armor-fragment.png",
+      "usage": "material reference; four original plates drawn in rebuild/player.lua"
+    },
+    {
+      "id": "boss-signatures-impact-atlas",
+      "object_id": "ee9fc062-b375-418a-8fe0-a4442573507c",
+      "model": "object-1-direction",
+      "cost": 10,
+      "status": "completed",
+      "selected_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "objects": [
+        "c45f5b77-001b-4e63-bc57-aed8a8c59cd8",
+        "c6b2c091-ec65-455b-9e1b-32fc4c7d66a5",
+        "2444472e-4e1c-489c-a533-6916c10b66be",
+        "2e2de626-d227-4b26-928c-e6b49965ce4b",
+        "376bc307-0f05-4052-aef6-c22902b91c0e",
+        "19cd51c0-79ae-4b03-a6d9-2985b3d43e24",
+        "ba25f459-a209-4e2e-bd67-90d02f1d5a80",
+        "051a594e-4362-4955-838d-228d72ffa6b5",
+        "f0350e0b-1d81-4807-9d95-6aafa467be03",
+        "667b7d50-9f0b-480e-b912-e101d0b6468a",
+        "f184bac8-e845-495e-9241-55ed79770df6",
+        "2f56bbea-21c1-43da-ae8d-2d20f10d5e59",
+        "755bfd79-f779-40bf-aa54-2ea80a5132c4",
+        "995a6d71-a2c5-4214-8efc-5537cf01a82c",
+        "73cce87e-c18e-4ce8-8416-9de4ec8daebd",
+        "a7ba4a4b-bbf8-4a09-81f8-22d0d9762692"
+      ]
+    }
+  ],
+  "animations": [
+    {
+      "id": "curtain-charge-release",
+      "object_id": "c45f5b77-001b-4e63-bc57-aed8a8c59cd8",
+      "animation_group_id": "c7cf44a5-62af-4839-acd6-e9c94f43c79e",
+      "mode": "v3",
+      "cost": 1,
+      "status": "completed",
+      "raw": "raw/curtain-animation.png"
+    },
+    {
+      "id": "ion-shelter-pulse",
+      "object_id": "2444472e-4e1c-489c-a533-6916c10b66be",
+      "animation_group_id": "3e4e6f79-5e49-4396-84c8-aa4e3eb5bbc6",
+      "mode": "pro",
+      "cost": 10,
+      "status": "completed",
+      "raw": "raw/shelter-animation.png"
+    },
+    {
+      "id": "sweep-focus-discharge",
+      "object_id": "2e2de626-d227-4b26-928c-e6b49965ce4b",
+      "animation_group_id": "8d6cb5e3-22c8-496a-9138-da52833bdea1",
+      "mode": "pro",
+      "cost": 10,
+      "status": "completed",
+      "raw": "raw/sweep-animation.png",
+      "note": "Transient PixelLab database errors resolved; original job completed without restart."
+    }
+  ],
+  "verified_remaining": 0,
+  "note": "Original account: all 35 remaining generations spent and balance verified zero. Rejected concurrent/invalid requests were not charged. Replacement account verified 34 remaining on 2026-10-21; no charge from that account in this follow-up."
+}

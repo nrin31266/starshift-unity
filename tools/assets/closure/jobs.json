@@ -1,0 +1,68 @@
+{
+  "account": "replacement token",
+  "starting_generations": 34,
+  "jobs": [
+    {
+      "id": "combat-pickup-atlas",
+      "object_id": "60751769-a56d-40a3-aaf7-5709952ea2a7",
+      "cost": 10,
+      "status": "completed"
+    },
+    {
+      "id": "ui-shield",
+      "job_id": "a811195e-c139-4b74-bc52-d0013382d710",
+      "model": "pixen",
+      "cost": 1,
+      "status": "completed",
+      "seed": 9141
+    },
+    {
+      "id": "ui-overdrive",
+      "job_id": "c7713ae0-5484-41b2-9b32-3531f3484d05",
+      "model": "pixen",
+      "cost": 1,
+      "status": "completed",
+      "seed": 9142
+    },
+    {
+      "id": "ui-support",
+      "job_id": "2049d3b0-582a-47a6-80de-3c3184256c92",
+      "model": "pixen",
+      "cost": 1,
+      "status": "completed",
+      "seed": 9143
+    }
+  ],
+  "animations": [
+    {
+      "id": "enemy-death",
+      "object_id": "34ed7b01-0461-417e-a8aa-a7dfee1bd3a7",
+      "animation_group_id": "a1b4ffea-cf49-4a75-afb9-aa220cc27ac1",
+      "mode": "pro",
+      "frame_count": 16,
+      "cost": 10,
+      "status": "completed"
+    },
+    {
+      "id": "boss-death",
+      "object_id": "2477e198-5a73-493c-94fd-8cf1a31d2578",
+      "animation_group_id": "f34fff89-6cd3-405c-beac-2c4e9ef6a0e8",
+      "cost": 10,
+      "mode": "pro",
+      "frame_count": 16,
+      "status": "completed"
+    },
+    {
+      "id": "strike-lock",
+      "object_id": "a4dc6527-c525-4a7e-897f-86fb048c369b",
+      "animation_group_id": "eb515c8d-633b-4ac1-b85e-8d6758513673",
+      "cost": 1,
+      "mode": "v3",
+      "frame_count": 8,
+      "status": "completed"
+    }
+  ],
+  "verified_remaining": 0,
+  "charged": 34,
+  "notes": "Replacement account only. All 34 generations completed, actual balance verified zero. Atlas 10 + two Pro animations 20 + one v3 animation 1 + three Pixen icons 3."
+}

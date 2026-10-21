@@ -1,0 +1,82 @@
+[
+  {
+    "id": "strike-lock",
+    "object_id": "a4dc6527-c525-4a7e-897f-86fb048c369b",
+    "download": "https://api.pixellab.ai/mcp/objects/a4dc6527-c525-4a7e-897f-86fb048c369b/download"
+  },
+  {
+    "id": "strike-launch",
+    "object_id": "aa90d5b2-2a2e-44bc-9128-58ef322f4584",
+    "download": "https://api.pixellab.ai/mcp/objects/aa90d5b2-2a2e-44bc-9128-58ef322f4584/download"
+  },
+  {
+    "id": "sweep-arrow",
+    "object_id": "5c5c25e8-b9ec-4955-9466-f12532fac154",
+    "download": "https://api.pixellab.ai/mcp/objects/5c5c25e8-b9ec-4955-9466-f12532fac154/download"
+  },
+  {
+    "id": "curtain-bolt",
+    "object_id": "43577ba2-1119-4b41-a33d-5e749010426a",
+    "download": "https://api.pixellab.ai/mcp/objects/43577ba2-1119-4b41-a33d-5e749010426a/download"
+  },
+  {
+    "id": "shield-glint",
+    "object_id": "3d67706a-2bad-43c7-b341-5da55f1792a0",
+    "download": "https://api.pixellab.ai/mcp/objects/3d67706a-2bad-43c7-b341-5da55f1792a0/download"
+  },
+  {
+    "id": "upgrade",
+    "object_id": "df955603-b138-4b36-acc4-896ae091ee9a",
+    "download": "https://api.pixellab.ai/mcp/objects/df955603-b138-4b36-acc4-896ae091ee9a/download"
+  },
+  {
+    "id": "coin-collect",
+    "object_id": "2bbdb7fd-cad3-44c0-92fd-5cb63be0f1e8",
+    "download": "https://api.pixellab.ai/mcp/objects/2bbdb7fd-cad3-44c0-92fd-5cb63be0f1e8/download"
+  },
+  {
+    "id": "supply-burst",
+    "object_id": "3d0e9a70-3ba5-4c5a-ac46-82fc7f3a82ef",
+    "download": "https://api.pixellab.ai/mcp/objects/3d0e9a70-3ba5-4c5a-ac46-82fc7f3a82ef/download"
+  },
+  {
+    "id": "enemy-death",
+    "object_id": "34ed7b01-0461-417e-a8aa-a7dfee1bd3a7",
+    "download": "https://api.pixellab.ai/mcp/objects/34ed7b01-0461-417e-a8aa-a7dfee1bd3a7/download"
+  },
+  {
+    "id": "heavy-death",
+    "object_id": "6a980d35-17fb-4ee0-a898-2c55e397f833",
+    "download": "https://api.pixellab.ai/mcp/objects/6a980d35-17fb-4ee0-a898-2c55e397f833/download"
+  },
+  {
+    "id": "boss-death",
+    "object_id": "2477e198-5a73-493c-94fd-8cf1a31d2578",
+    "download": "https://api.pixellab.ai/mcp/objects/2477e198-5a73-493c-94fd-8cf1a31d2578/download"
+  },
+  {
+    "id": "missile-blast",
+    "object_id": "ee2c6b5e-31e7-40b5-ad60-a8746f411933",
+    "download": "https://api.pixellab.ai/mcp/objects/ee2c6b5e-31e7-40b5-ad60-a8746f411933/download"
+  },
+  {
+    "id": "hit-plasma",
+    "object_id": "042658e9-4ec9-47e3-abfb-916b9e5f2253",
+    "download": "https://api.pixellab.ai/mcp/objects/042658e9-4ec9-47e3-abfb-916b9e5f2253/download"
+  },
+  {
+    "id": "hit-pulse",
+    "object_id": "b398e9a6-8666-4d73-b3ee-8fe822cb4b0b",
+    "download": "https://api.pixellab.ai/mcp/objects/b398e9a6-8666-4d73-b3ee-8fe822cb4b0b/download"
+  },
+  {
+    "id": "hit-homing",
+    "object_id": "182ad724-0da0-4af4-9e16-dda705f0f8e4",
+    "download": "https://api.pixellab.ai/mcp/objects/182ad724-0da0-4af4-9e16-dda705f0f8e4/download"
+  },
+  {
+    "id": "hit-rock",
+    "object_id": "313920c6-a886-4128-b44b-bad5abe45404",
+    "download": "https://api.pixellab.ai/mcp/objects/313920c6-a886-4128-b44b-bad5abe45404/download"
+  }
+]

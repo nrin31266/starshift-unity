@@ -25,7 +25,8 @@ namespace StarShift.UI
         public Text MenuStatus, Wallet, MissionDetail, MenuNotice;
         public Slider Music, Sfx;
         public Toggle Vibration, Shake;
-        public Button SaveSettings;
+        public Button SaveSettings, ResetAll;
+        public Image WalletIcon;
         public Button Resume, Retry, PauseSettings, PauseMenu;
         public Text PauseDetail;
         public Text ResultTitle, ResultMission, ResultStats, ResultRecord, ResultStatus;

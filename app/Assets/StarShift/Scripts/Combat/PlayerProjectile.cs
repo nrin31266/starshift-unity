@@ -19,6 +19,7 @@ namespace StarShift.Combat
         private float speed;
         private float remainingLifetime;
         private int damage;
+        private WeaponBranch branch;
         private bool flying;
         private EnemyHealth trackingTarget;
         private float turnRate;
@@ -74,6 +75,7 @@ namespace StarShift.Combat
             direction = forward.normalized;
             speed = definition.ProjectileSpeed;
             damage = hitDamage;
+            branch = definition.Branch;
             splashRadius = splash;
             turnRate = definition.TrackingDegreesPerSecond;
             trackingTarget = turnRate > 0 && preferredTarget != null && preferredTarget.CanReceiveDamage &&
@@ -188,7 +190,8 @@ namespace StarShift.Combat
                 if (target is EnemyHealth enemyTarget)
                     enemyTarget.ReceivePlayerHit(damage, Owner, ImpactInfo(enemyTarget, impactPosition));
                 else target?.ReceivePlayerHit(damage, Owner);
-                foreach (var enemy in splashTargets) if (enemy != null && enemy.IsAlive) enemy.ReceivePlayerHit(damage, Owner);
+                foreach (var enemy in splashTargets) if (enemy != null && enemy.IsAlive)
+                    enemy.ReceivePlayerHit(damage, Owner, EnemyHitInfo.AtCenter(enemy.transform, EnemyHitKind.Hull, damage, branch));
             }
             finally
             {
@@ -204,7 +207,7 @@ namespace StarShift.Combat
             var normal = delta.sqrMagnitude > .000001f ? -delta.normalized : Vector2.up;
             // Shield block đã resolve ở nhánh BlockedHit; ở đây module node khác hull core.
             var kind = enemy.GetComponent<BossAttackModule>() != null ? EnemyHitKind.Module : EnemyHitKind.Hull;
-            return new EnemyHitInfo(kind, point, normal, damage);
+            return new EnemyHitInfo(kind, point, normal, damage, branch);
         }
 
         public void Release() => FinishFlight();

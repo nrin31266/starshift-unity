@@ -1,13 +1,289 @@
 {
-  "phase": "READY FOR OWNER VISUAL REVIEW",
+  "phase": "ART CLOSURE VERIFIED",
   "verification_scope": "Representative flows and art fixtures; no device FPS, Android build or full-campaign completion claim",
   "quota": {
-    "starting": 40,
-    "charged": 5,
-    "inferred_remaining": 35,
-    "pro_used": false
+    "original_account": {
+      "starting": 40,
+      "charged": 40,
+      "verified_remaining": 0,
+      "pro_used": true
+    },
+    "replacement_account": {
+      "starting": 34,
+      "verified_remaining": 0,
+      "charged_this_followup": 34
+    }
+  },
+  "closure_checks": {
+    "carry": {
+      "status": "PASS",
+      "samePlanet": true,
+      "regionTravel": true,
+      "shieldOverdriveDronePreserved": true,
+      "loadoutAndAmmoPreserved": true,
+      "shieldAbsorbs": true,
+      "deathAndNewRunClear": true
+    },
+    "strike": {
+      "status": "PASS",
+      "singleCue": true,
+      "freshAim": true,
+      "noReturnGhost": true,
+      "poolReuse": true
+    },
+    "beams": {
+      "status": "PASS",
+      "fastDragAcrossLaser": true,
+      "bothDragDirections": true,
+      "aspects": [
+        1600,
+        2000
+      ],
+      "actualRelativeMovement": true
+    },
+    "boss": {
+      "status": "PASS",
+      "noStationarySafeColumn": true,
+      "boundedTrackingBothDirections": true,
+      "cancelReleasesMotion": true,
+      "curtainLanes": [
+        0.75,
+        0.47,
+        0.75
+      ],
+      "noDebugBorders": true
+    },
+    "dev-editor": {
+      "status": "PASS",
+      "missions": 8,
+      "validDropdownRoutes": 48,
+      "debugFlags": {
+        "showBounds": false,
+        "showPaths": false,
+        "showSpawnPoints": false,
+        "showHitboxes": false,
+        "showFps": false,
+        "showContentLabels": false
+      }
+    },
+    "dev-runtime": {
+      "status": "PASS",
+      "samePlanetTransition": true,
+      "regionTransition": true,
+      "bossPhaseB": true,
+      "devTestMode": true
+    },
+    "art": {
+      "status": "PASS",
+      "distinctCoinCoreShieldCollection": true,
+      "bossFinalTimedToCompletion": true,
+      "deathPause": true,
+      "missileAnimationAndPause": true,
+      "onceOnlyCompletion": true
+    },
+    "e2e": {
+      "pass": true,
+      "width": 1600,
+      "height": 900,
+      "withDeath": true,
+      "death": true,
+      "paused": true,
+      "missileUsed": true,
+      "missileDetonations": 1,
+      "completed": [
+        "ENCOUNTER_1",
+        "ENCOUNTER_2",
+        "ENCOUNTER_3",
+        "ENCOUNTER_4",
+        "ENCOUNTER_5"
+      ],
+      "peakVisible": 12,
+      "Score": 4300,
+      "Shards": 9,
+      "CoresCollected": 6,
+      "SupplyCaptured": 1,
+      "PickupsCollected": 20,
+      "upgrades": 4,
+      "frames": 1290,
+      "screenshots": [
+        "/home/nguyenvanrin/PersonalProjects/starshift/.design/m4-a/screenshots/full-effects-1600.png",
+        "/home/nguyenvanrin/PersonalProjects/starshift/.design/m4-a/screenshots/mission-clear-1600.png"
+      ]
+    },
+    "final-state": {
+      "status": "PASS",
+      "devModeOff": true,
+      "debugFlagsOff": true,
+      "sceneDirty": false
+    }
   },
   "checks": {
+    "travel_blend_pause": {
+      "status": "PASS",
+      "nativeTileSize": true,
+      "navyCorners": true,
+      "movingIntroBackground": true,
+      "movingMissionBackground": true,
+      "regionBlendSamples": 8,
+      "destinationRetainedOnApproach": true,
+      "aspects": [
+        1600,
+        2000
+      ],
+      "zooms": [
+        8,
+        12,
+        20
+      ]
+    },
+    "factory_reset_coin_menu": {
+      "status": "PASS",
+      "cancelPreserves": true,
+      "confirmationDefaultsCancel": true,
+      "resetProfileCampaignAndSettings": true,
+      "resetFromPause": true,
+      "reloadPersists": true,
+      "historyCleared": true,
+      "ioFailurePreserves": true,
+      "unsupportedPreserved": true,
+      "coinWallet": true,
+      "productionSaveGuard": true
+    },
+    "thermal_profiles": {
+      "status": "PASS",
+      "maxLocksUntilZero": true,
+      "releaseCannotBypass": true,
+      "zeroDeltaFrozen": true,
+      "results": [
+        {
+          "profile": "HomingThermal",
+          "normal": 18.0,
+          "vent": 65.0,
+          "recoverySeconds": 1.53846157
+        },
+        {
+          "profile": "PlasmaThermal",
+          "normal": 18.0,
+          "vent": 65.0,
+          "recoverySeconds": 1.53846157
+        },
+        {
+          "profile": "PulseLaserThermal",
+          "normal": 18.0,
+          "vent": 65.0,
+          "recoverySeconds": 1.53846157
+        }
+      ]
+    },
+    "weapon_heat_player_death_boss_hud": {
+      "status": "PASS",
+      "actualWeaponMaxLock": true,
+      "zeroRecovery": true,
+      "heldAutoResume": true,
+      "pauseFrozen": true,
+      "actualBossPercentage": true,
+      "renderedPercentage": true,
+      "actualLifeLossFourFragments": true,
+      "productionSaveGuard": true
+    },
+    "natural_projectile_drain": {
+      "passed": true,
+      "flightElapsed": 1.999999,
+      "handoffDuration": 1.5,
+      "naturalExitNoFade": true,
+      "poolReuseRestoredDamage": true,
+      "pauseFrozen": true,
+      "viewportExitRecyclesEarly": true,
+      "movementAndHudActive": true,
+      "noOldShotInNextEncounter": true,
+      "screenshot": "/home/nguyenvanrin/PersonalProjects/starshift/app/Temp/StarShiftClosure/minor-handoff-cleanup.png"
+    },
+    "vfx_1600": {
+      "status": "PASS",
+      "width": 1600,
+      "actualProjectileFamilies": 3,
+      "asteroidImpactAndPool": true,
+      "bossSpecialSkills": 4,
+      "alternatingCurtainRows": true,
+      "twoVanguardArmorBreaks": true,
+      "wardenShieldPercentage": true,
+      "productionSaveGuard": true
+    },
+    "vfx_2000": {
+      "status": "PASS",
+      "width": 2000,
+      "actualProjectileFamilies": 3,
+      "asteroidImpactAndPool": true,
+      "bossSpecialSkills": 4,
+      "alternatingCurtainRows": true,
+      "twoVanguardArmorBreaks": true,
+      "wardenShieldPercentage": true,
+      "productionSaveGuard": true
+    },
+    "enemy_deaths_supply": {
+      "status": "PASS",
+      "oneShotSurvivesHullDisable": true,
+      "noRewardEnemyExplodes": true,
+      "poolReuse": true,
+      "pause": true,
+      "supplySixHits": true,
+      "asteroidBurst": true,
+      "bothAsteroidCriticalSprites": true,
+      "rewardEligibilityPreserved": true,
+      "productionSaveGuard": true
+    },
+    "bulwark_fire": {
+      "status": "PASS",
+      "singleShot": true,
+      "warningBeforeShot": true,
+      "pause": true,
+      "cooldownFiveSeconds": true,
+      "sharedFiringCap": true
+    },
+    "full_mission": {
+      "status": "PASS",
+      "scope": "Five-encounter M4 fixture; actual input, weapons, pickups, Pause, life loss/respawn, reserve and terminal cleanup",
+      "completionCount": 5,
+      "score": 4500,
+      "coins": 10,
+      "cores": 6,
+      "supply": 1,
+      "pickups": 21,
+      "terminal_capture": ".design/m4-a/screenshots/mission-clear-1600.png",
+      "terminal_capture_sha256": "a92ebd3ce17f8a0b78fcac1160b7d8e021162d03e0fc4e0cf50303624397b2b6",
+      "evidence": "Fresh terminal capture is reached only after all FullMission assertions. Native Task completed and Rig restored to Idle. Transport timed out before returning the result payload; no third mission run was needed.",
+      "transport_payload_available": false
+    },
+    "native_importers": {
+      "status": "PASS",
+      "nativeTextures": 183,
+      "criticalEnemyPrefabs": 13
+    },
+    "requested_contracts_only": {
+      "status": "PASS",
+      "collidersUnchanged": true,
+      "onlyRequestedDataChanges": true,
+      "differences": "contract-differences.json"
+    },
+    "final_editor_state": {
+      "status": "PASS",
+      "editor": "Edit Mode",
+      "savedDevMode": false,
+      "preparedDevRoute": "L4 TRANSITION",
+      "quickRouteStartedDevTest": true,
+      "startupMenu": true,
+      "consoleErrors": 0,
+      "consoleWarnings": 0,
+      "productionSaveBytesMatchPostRecoverySnapshot": true
+    },
+    "serialized_references": {
+      "status": "PASS",
+      "owners": 3061,
+      "issues": [],
+      "sceneDirty": false
+    }
+  },
+  "baseline_checks": {
     "player_trails_store_save": {
       "status": "PASS",
       "configuredChassis": 2,
@@ -35,8 +311,11 @@
     },
     "glass_cases_ui_pause": {
       "status": "PASS",
-      "chassis": 2,
-      "trails": 3,
+      "configuredChassis": 2,
+      "configuredTrails": 3,
+      "movementCombinations": 0,
+      "rosterDamageAndPool": false,
+      "uiLayouts": true,
       "actualStorePurchaseAndReload": true,
       "price": 8,
       "singlePlumePerNozzle": true,
@@ -98,7 +377,7 @@
     },
     "native_importers_and_prefabs": {
       "status": "PASS",
-      "nativeTextures": 172,
+      "nativeTextures": 186,
       "criticalEnemyPrefabs": 13
     },
     "gameplay_collider_contracts": {
@@ -109,10 +388,10 @@
   "category_counts": {
     "Ships": 35,
     "Bosses": 23,
-    "Projectiles": 10,
+    "Projectiles": 11,
     "Pickups": 18,
     "UI": 20,
-    "VFX": 46,
+    "VFX": 59,
     "Environments": 20
   },
   "assets": [
@@ -700,16 +979,6 @@
       ]
     },
     {
-      "id": "boss-curtain",
-      "output": "app/Assets/StarShift/Art/Projectiles/boss-curtain.png",
-      "source": "tools/assets/m8/cleaned/boss-curtain.aseprite",
-      "guid": "2ebe4ee3b92261ff0819f0bbeb23a0a5",
-      "sha256": "0b826695f8b2cee2b066a08439739a9ba52e4b601106562b4b809c38042a8d2c",
-      "serialized_references": [
-        "app/Assets/StarShift/Prefabs/Projectiles/VanguardCurtainProjectile.prefab"
-      ]
-    },
-    {
       "id": "enemy-bolt",
       "output": "app/Assets/StarShift/Art/Projectiles/enemy-bolt.png",
       "source": "tools/assets/m8/cleaned/enemy-bolt.aseprite",
@@ -728,7 +997,6 @@
       "serialized_references": [
         "app/Assets/StarShift/Data/Enemies/ScoutSingleFire.asset",
         "app/Assets/StarShift/Data/RegionA/Boss/VanguardCannon.asset",
-        "app/Assets/StarShift/Data/RegionA/Boss/VanguardCurtainProjectile.asset",
         "app/Assets/StarShift/Data/RegionA/Boss/VanguardMissiles.asset",
         "app/Assets/StarShift/Data/RegionA/Boss/VanguardSweep.asset",
         "app/Assets/StarShift/Data/RegionA/Weapons/RaiderFire.asset",
@@ -744,6 +1012,7 @@
       "guid": "9af81ce4e99d81249bb4914cc398683e",
       "sha256": "1619d993452059953cfe207c9d9fd2b59b56a2b651392b946c560bc9ab14edfb",
       "serialized_references": [
+        "app/Assets/StarShift/Data/Enemies/BulwarkSingleFire.asset",
         "app/Assets/StarShift/Data/RegionA/Weapons/BomberSpread.asset"
       ]
     },
@@ -805,6 +1074,26 @@
       "sha256": "1e525a5ccb01e45f6d634cfd15fd263b51fdc4ba458c2f84dcf4bfd84ccff2a9",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
+      ]
+    },
+    {
+      "id": "vanguard-curtain-bolt-sheet",
+      "output": "app/Assets/StarShift/Art/Projectiles/vanguard-curtain-bolt-sheet.png",
+      "source": "tools/assets/closure/vanguard-curtain-bolt.aseprite",
+      "guid": "25a0ab503bc538da091b20bcb2d63536",
+      "sha256": "4c94a29d0b8b108802f956d79240a9126b8bc8ca55d45f0786db6d6cf0309438",
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Projectiles/VanguardCurtainProjectile.prefab"
+      ]
+    },
+    {
+      "id": "vanguard-curtain-bolt",
+      "output": "app/Assets/StarShift/Art/Projectiles/vanguard-curtain-bolt.png",
+      "source": "tools/assets/closure/vanguard-curtain-bolt.aseprite",
+      "guid": "8affc6f2286746d49abd818ac1a09d09",
+      "sha256": "11e072d58c37cb94d558d6bd53bccd713f9b693a1359ee3b750d260db61a12f5",
+      "serialized_references": [
+        "app/Assets/StarShift/Data/RegionA/Boss/VanguardCurtainProjectile.asset"
       ]
     },
     {
@@ -872,7 +1161,7 @@
       "output": "app/Assets/StarShift/Art/Pickups/overdrive-sheet.png",
       "source": "tools/assets/m8/rebuild/overdrive.aseprite",
       "guid": "fd3c617f406c8bcb19648f7f0e3a79dd",
-      "sha256": "f97573c16e29c35f551887a46304e0a8ceb4a1da8e9214bee19cb9f9364d2614",
+      "sha256": "9ff47220cb7ed1f6c1079d1effd6bc06a88fc228e94c98bed98fb4935c8fed94",
       "serialized_references": [
         "app/Assets/StarShift/Data/Rewards/Overdrive.asset"
       ]
@@ -882,7 +1171,7 @@
       "output": "app/Assets/StarShift/Art/Pickups/overdrive.png",
       "source": "tools/assets/m8/rebuild/overdrive.aseprite",
       "guid": "6bb8edc9fc6fc26e59ee3d3dcafdb33b",
-      "sha256": "b448505ae8903ca7208362888751497c567e4762c4ee334c94c09385820b6e96",
+      "sha256": "55c7754e78b53bb2bdaf916dd00856291402abf89972b0cb8fb0d26b57b805fd",
       "serialized_references": [
         "app/Assets/StarShift/Data/Rewards/Overdrive.asset"
       ]
@@ -932,7 +1221,7 @@
       "output": "app/Assets/StarShift/Art/Pickups/shield-cell-sheet.png",
       "source": "tools/assets/m8/rebuild/shield-cell.aseprite",
       "guid": "19d808d38dabf07e896e350f6d8e2c85",
-      "sha256": "2f1b779c57c67c5ba0c8e0bb1841e9477d8f5d231d316bcdfdb8e6708576322b",
+      "sha256": "800fc42b57628c7b9dc1d53e12bcc55c49ac60482146186c33b1c4bfd3daaed4",
       "serialized_references": [
         "app/Assets/StarShift/Data/Rewards/ShieldCell.asset"
       ]
@@ -942,7 +1231,7 @@
       "output": "app/Assets/StarShift/Art/Pickups/shield-cell.png",
       "source": "tools/assets/m8/rebuild/shield-cell.aseprite",
       "guid": "a5a07116ad5a45bfe8ff8549b81339bd",
-      "sha256": "dfecd446ca6e4cfb4ccb5876815bbafd9e253d34986bfea08de83d0b733bd070",
+      "sha256": "21ad20ebfdb9214cbff29a620064305cd917dcc6d08a5c73eb23c5b935069504",
       "serialized_references": [
         "app/Assets/StarShift/Data/Rewards/ShieldCell.asset"
       ]
@@ -952,7 +1241,7 @@
       "output": "app/Assets/StarShift/Art/Pickups/stellar-shard-sheet.png",
       "source": "tools/assets/m8/rebuild/stellar-shard.aseprite",
       "guid": "a9a0ce0d33c81a3e2bb988465c6ff937",
-      "sha256": "57d915cb178799666b8be99af3b34b6dc3ef5965393b9bda01e028f27e3436b1",
+      "sha256": "809683596e1a7bdd976fb1eaf26dec77454c20b9de2acb8819a0b654d65eb149",
       "serialized_references": [
         "app/Assets/StarShift/Data/RegionA/Boss/BossGold.asset",
         "app/Assets/StarShift/Data/RegionB/Rewards/WardenGold.asset",
@@ -964,7 +1253,7 @@
       "output": "app/Assets/StarShift/Art/Pickups/stellar-shard.png",
       "source": "tools/assets/m8/rebuild/stellar-shard.aseprite",
       "guid": "1bdbeb5344a099beaa2fbaaa77367316",
-      "sha256": "6e461af769a4520637473e26b047ba2e5c6863d6c56e2520788835ceb4b4a701",
+      "sha256": "c6146f08d7387ce35edb2c8af0f00cf8e699975879e407c89294e679c878a545",
       "serialized_references": [
         "app/Assets/StarShift/Data/RegionA/Boss/BossGold.asset",
         "app/Assets/StarShift/Data/RegionB/Rewards/WardenGold.asset",
@@ -976,7 +1265,7 @@
       "output": "app/Assets/StarShift/Art/Pickups/support-drone-sheet.png",
       "source": "tools/assets/m8/rebuild/support-drone.aseprite",
       "guid": "cce2a11c5ef47f6499b442ab6b560a90",
-      "sha256": "3112bb8ede779331d325c0f87bbced0532c817fbf4869e845ce75bb78d7d7d1e",
+      "sha256": "a90f67d3aa01ba1892ef1c903f4a2168580a95625af0490bc85b86f80e03ea34",
       "serialized_references": [
         "app/Assets/StarShift/Data/Rewards/SupportDrone.asset"
       ]
@@ -986,7 +1275,7 @@
       "output": "app/Assets/StarShift/Art/Pickups/support-drone.png",
       "source": "tools/assets/m8/rebuild/support-drone.aseprite",
       "guid": "0064cd919baa8a5e6994c4d7c5e1bc77",
-      "sha256": "b3e86f53a83f44fb204f73b247e4c0caa55b72a8c7f54f26e660c5f50be275ef",
+      "sha256": "4da0afe85261b29d2e234778e559438b8b43b07f6c42c40ee2d186818df9d7fa",
       "serialized_references": [
         "app/Assets/StarShift/Data/Rewards/SupportDrone.asset"
       ]
@@ -1029,7 +1318,8 @@
       "guid": "5d904a1af8cfc428e867187725f877da",
       "sha256": "75f64db99ff1663349fb446fbf470b2fe67d973bc92f6fcc2292d940d55b649d",
       "serialized_references": [
-        "app/Assets/StarShift/Prefabs/UI/GameShellUI.prefab"
+        "app/Assets/StarShift/Prefabs/UI/GameShellUI.prefab",
+        "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ]
     },
     {
@@ -1047,7 +1337,7 @@
       "output": "app/Assets/StarShift/Art/UI/ui-heat-fill.png",
       "source": "tools/assets/m8/rebuild/ui-heat-fill.aseprite",
       "guid": "a4309da69d419511cb8fad8af93ff71a",
-      "sha256": "12304b0cd32ce8f15705d61244f6cf84ead7fbc6f8a0f101d475ccdceda7632e",
+      "sha256": "4955c3f1b05a22d57df6831d847a8c5bc0f2d5934ee82f5f2fb3b9360870a824",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ]
@@ -1057,7 +1347,7 @@
       "output": "app/Assets/StarShift/Art/UI/ui-heat-housing.png",
       "source": "tools/assets/m8/rebuild/ui-heat-housing.aseprite",
       "guid": "9a77e130fc4583adcac4c55a390b1ebf",
-      "sha256": "c237348a594ea546ffef9f8c5d518c9589ea078ec8e1984bf576f99ad99cc5cd",
+      "sha256": "6a3f2ec9e79954551f0d303e4464c4a5179d24a378672a5b776728f30e3527ae",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ]
@@ -1105,9 +1395,9 @@
     {
       "id": "ui-overdrive",
       "output": "app/Assets/StarShift/Art/UI/ui-overdrive.png",
-      "source": "tools/assets/m8/rebuild/ui-overdrive.aseprite",
+      "source": "tools/assets/closure/ui-overdrive.aseprite",
       "guid": "43cb52a27f913d9ea8aee2643a241dde",
-      "sha256": "51cab9b82a232557f7fa891af870080719ab4549b0bc4e1f60176d9a88531e2d",
+      "sha256": "f7cfe59c9f91b155c4bb6bf041b06559914d7783bf1b2b835ef1067c8e687c61",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ]
@@ -1128,7 +1418,7 @@
       "output": "app/Assets/StarShift/Art/UI/ui-shard.png",
       "source": "tools/assets/m8/rebuild/ui-shard.aseprite",
       "guid": "137821ae5272f7b9ab2f23aa509719dc",
-      "sha256": "6c6e1e0fc6b33fab05d4a60f618bbdd45a8e3ad23b5a763205b4dd79a8948504",
+      "sha256": "7e5fca5cf65de2e09d1673b29fcd1f5e225c1d68ea3fea3d45e5ea8cd16054a4",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ]
@@ -1136,9 +1426,9 @@
     {
       "id": "ui-shield",
       "output": "app/Assets/StarShift/Art/UI/ui-shield.png",
-      "source": "tools/assets/m8/rebuild/ui-shield.aseprite",
+      "source": "tools/assets/closure/ui-shield.aseprite",
       "guid": "98444c3bbdb10e1dfb48a7ce4a1956aa",
-      "sha256": "d05a2c1799fa84eb3d4ad2b3d93f2beaf09c18ec18ca15c89d7f803c7ccd992e",
+      "sha256": "58742dcfb92b0daf4cfd8a9b4e16cec04001afd8d0d1fbbd5dc0d7ceca1c157c",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ]
@@ -1146,9 +1436,9 @@
     {
       "id": "ui-support",
       "output": "app/Assets/StarShift/Art/UI/ui-support.png",
-      "source": "tools/assets/m8/rebuild/ui-support.aseprite",
+      "source": "tools/assets/closure/ui-support.aseprite",
       "guid": "d68641b37129bfaeb8aaa92dd09e4f45",
-      "sha256": "af5702f74df7695d852e33a79889b707a9fe4270ec2500a54a7d730791bc08c3",
+      "sha256": "e9518ee5e480713f0daa095abd318e702038e052d66cbef5244466dc1a2ae5cd",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ]
@@ -1194,17 +1484,6 @@
       ]
     },
     {
-      "id": "attack-telegraphs-sheet",
-      "output": "app/Assets/StarShift/Art/VFX/attack-telegraphs-sheet.png",
-      "source": "tools/assets/m8/rebuild/attack-telegraphs.aseprite",
-      "guid": "a1b1247bb4e37e698bc4ef27de87fb13",
-      "sha256": "9b0ed3a11dabe5b7d56578db9d9abc63c4ae566fab5b96c6511dafd7119b8cde",
-      "serialized_references": [
-        "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
-      ]
-    },
-    {
       "id": "attack-telegraphs",
       "output": "app/Assets/StarShift/Art/VFX/attack-telegraphs.png",
       "source": "tools/assets/m8/rebuild/attack-telegraphs.aseprite",
@@ -1216,77 +1495,54 @@
       ]
     },
     {
+      "id": "beam-energy",
+      "output": "app/Assets/StarShift/Art/VFX/beam-energy.png",
+      "source": "tools/assets/polish/beam-energy.aseprite",
+      "guid": "b5f3564be8fb0a98ba48c9b37519e51a",
+      "sha256": "1cb1ea52c10d24de28e1333c9e54e6e36ddce20440dfe268b716833944e20eb2",
+      "serialized_references": [
+        "app/Assets/StarShift/Data/RegionA/Boss/BeamMaterial.mat"
+      ]
+    },
+    {
+      "id": "boss-armor-fragment-0",
+      "output": "app/Assets/StarShift/Art/VFX/boss-armor-fragment-0.png",
+      "source": "tools/assets/polish/boss-armor-fragment-0.aseprite",
+      "guid": "9a132dc3a888f7e8d8390fadc0fa4cd2",
+      "sha256": "717e579466b98b49b407d335126af67e215828f779ceb6bc114fd556f3735dd8",
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
+      ]
+    },
+    {
+      "id": "boss-armor-fragment-1",
+      "output": "app/Assets/StarShift/Art/VFX/boss-armor-fragment-1.png",
+      "source": "tools/assets/polish/boss-armor-fragment-1.aseprite",
+      "guid": "46c8630803f7f72f980fb4ca3869ff4a",
+      "sha256": "fb680b2a4a40bff6882c37ad0a6f74838138539579052f6db3d543ad5f63ac33",
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
+      ]
+    },
+    {
+      "id": "boss-armor-rupture-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/boss-armor-rupture-sheet.png",
+      "source": "tools/assets/polish/boss-armor-rupture.aseprite",
+      "guid": "4db7e90980011199b967f2a631ebc323",
+      "sha256": "d5ba3206ffbaa85a26e7c6c4b0f2bf02e831d3543e11bf2fd7965b82f642ade2",
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
+      ]
+    },
+    {
       "id": "boss-blast-sheet",
       "output": "app/Assets/StarShift/Art/VFX/boss-blast-sheet.png",
-      "source": "tools/assets/m8/rebuild/boss-blast.aseprite",
+      "source": "tools/assets/closure/boss-blast.aseprite",
       "guid": "9a9382dc8a9f7ebdc9089f6ceea492db",
-      "sha256": "ed7d130f9da424f332c50aa9db299a7a1969c15000f441dba910e7660b85e52f",
+      "sha256": "64dd92ae02d7db307c25e4fc60aacd2d729202777d51b6635bace8b75bd09053",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
-      ]
-    },
-    {
-      "id": "boss-blast",
-      "output": "app/Assets/StarShift/Art/VFX/boss-blast.png",
-      "source": "tools/assets/m8/rebuild/boss-blast.aseprite",
-      "guid": "399c0413aac5e85d7addf7fdc1286f82",
-      "sha256": "acc5bda13a4b7fcdab0e213320417fb1e8c85244a4ebbeea08faad00cf7b9a96",
-      "serialized_references": [
-        "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
-      ]
-    },
-    {
-      "id": "charge-beam-sheet",
-      "output": "app/Assets/StarShift/Art/VFX/charge-beam-sheet.png",
-      "source": "tools/assets/m8/rebuild/charge-beam.aseprite",
-      "guid": "2234894dc2522ab6a9bbb7a0b2043825",
-      "sha256": "c3ede2d5cd92fd9b761f562432b599f28a9d833b9e0754f8d052a1c9840c7d49",
-      "serialized_references": [
-        "app/Assets/StarShift/Prefabs/Enemies/Interceptor.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Sniper.prefab"
-      ]
-    },
-    {
-      "id": "charge-beam",
-      "output": "app/Assets/StarShift/Art/VFX/charge-beam.png",
-      "source": "tools/assets/m8/rebuild/charge-beam.aseprite",
-      "guid": "a08941441ee55ee3c879799ed801d51a",
-      "sha256": "3e1879d2071348c76423389b2a31e1d3f4e8043c6538626f1b00ea6e3d2a66c2",
-      "serialized_references": [
-        "app/Assets/StarShift/Prefabs/Enemies/Interceptor.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Sniper.prefab"
-      ]
-    },
-    {
-      "id": "charge-hostile-sheet",
-      "output": "app/Assets/StarShift/Art/VFX/charge-hostile-sheet.png",
-      "source": "tools/assets/m8/rebuild/charge-hostile.aseprite",
-      "guid": "dc8586631ea1e76fab1768c408ba1207",
-      "sha256": "955e2f473c4bd7257b8192015f5506a6aed7d14abb0f5be338b3c12f19b90721",
-      "serialized_references": [
-        "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Carrier.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Raider.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Scout.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/SupplyDrone.prefab"
-      ]
-    },
-    {
-      "id": "charge-hostile",
-      "output": "app/Assets/StarShift/Art/VFX/charge-hostile.png",
-      "source": "tools/assets/m8/rebuild/charge-hostile.aseprite",
-      "guid": "97b3bf4051084520488222d7b81f2200",
-      "sha256": "c2977080a7fc1f1709dbd2636699929d40aa5ed6efe1e569c039a943e49a8d33",
-      "serialized_references": [
-        "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Carrier.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Raider.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Scout.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/SupplyDrone.prefab"
       ]
     },
     {
@@ -1387,20 +1643,79 @@
     {
       "id": "explosion-sheet",
       "output": "app/Assets/StarShift/Art/VFX/explosion-sheet.png",
-      "source": "tools/assets/m8/cleaned/explosion.aseprite",
+      "source": "tools/assets/closure/explosion.aseprite",
       "guid": "0dd80c5515edd7b198a1a9308bdb9a98",
-      "sha256": "695e55e66a7c3f966d208cdeeb3083d6cd3a366ad57b5023e00d7c15ebb90438",
+      "sha256": "4150785f320edd44dabf00ca1ca3ade95177acac1feb3dc1edc80cc5b75509ba",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Player/Player.prefab",
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ]
     },
     {
-      "id": "hit-sparks-sheet",
-      "output": "app/Assets/StarShift/Art/VFX/hit-sparks-sheet.png",
-      "source": "tools/assets/m8/cleaned/hit-sparks.aseprite",
-      "guid": "13d1484c6597e4216b0d196495cb61f6",
-      "sha256": "6b01d721026c02d6f0cbb63649517eb419b0760118a9016baf39f83c8b3c0441",
+      "id": "focus-gun-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/focus-gun-sheet.png",
+      "source": "tools/assets/polish/focus-gun.aseprite",
+      "guid": "6d2d500631669f093aaa0f5de8b2695d",
+      "sha256": "83a4830063f6b418cea2ce707d7146d9a2f7205bc882545827f6e8663cc1791b",
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/Carrier.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/Raider.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/ResourceAsteroid.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/Scout.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/StormAsteroid.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/SupplyDrone.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/WardenDrone.prefab"
+      ]
+    },
+    {
+      "id": "focus-missile-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/focus-missile-sheet.png",
+      "source": "tools/assets/polish/focus-missile.aseprite",
+      "guid": "880cb4b9c04e9d0c68fe820965c6684f",
+      "sha256": "910064e8c654d0c6274fba2bfe1bc1963639c19fc5e2ad06b9da2af0e289c058",
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
+      ]
+    },
+    {
+      "id": "focus-sniper-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/focus-sniper-sheet.png",
+      "source": "tools/assets/polish/focus-sniper.aseprite",
+      "guid": "ecdbc013766cafe31aa4979e44f6a5e2",
+      "sha256": "d3a20fe28e60f47154b534c4e64076f80b998d2a5a4833f877a7632ed3423017",
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/Sniper.prefab"
+      ]
+    },
+    {
+      "id": "focus-strike-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/focus-strike-sheet.png",
+      "source": "tools/assets/closure/focus-strike.aseprite",
+      "guid": "c854cea784d7dc292b300c1b18a7d1c4",
+      "sha256": "a2695ea797ebb6a09109125855bc2e37447e8d17abb174edba5e01f8ba2a4974",
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/Interceptor.prefab"
+      ]
+    },
+    {
+      "id": "heavy-burst-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/heavy-burst-sheet.png",
+      "source": "tools/assets/closure/heavy-burst.aseprite",
+      "guid": "9831e66b337afb105ac1befd6c809272",
+      "sha256": "dd2a841dacf886bc701311712637016bdafd6e1663510bfe8e366eb5c90ec49d",
+      "serialized_references": [
+        "app/Assets/StarShift/Scenes/02_Gameplay.unity"
+      ]
+    },
+    {
+      "id": "hit-homing-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/hit-homing-sheet.png",
+      "source": "tools/assets/closure/hit-homing.aseprite",
+      "guid": "ba695c456468b1da48dd77c19b5691bb",
+      "sha256": "933acb613cccb4d58f9f6caaef483ce136a99252929f64dcc062e6366bcb0d7c",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab",
@@ -1408,18 +1723,21 @@
         "app/Assets/StarShift/Prefabs/Enemies/Interceptor.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Raider.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/ResourceAsteroid.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Scout.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Sniper.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/StormAsteroid.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/SupplyDrone.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/WardenDrone.prefab"
       ]
     },
     {
-      "id": "hit-sparks",
-      "output": "app/Assets/StarShift/Art/VFX/hit-sparks.png",
-      "source": "tools/assets/m8/cleaned/hit-sparks.aseprite",
-      "guid": "f194f9b83f51a7aeaa872a2239cfc88f",
-      "sha256": "892348d55d9d92509251fecedc66b948f94da3316d923f0e7a70a94eedaf6cd4",
+      "id": "hit-plasma-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/hit-plasma-sheet.png",
+      "source": "tools/assets/closure/hit-plasma.aseprite",
+      "guid": "fbcc113cd2b4942bd9932701742a6306",
+      "sha256": "cadc6e44a54cb9e279604188f5b7729d8f39b5ffed08f2e49a6b90377aad825d",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab",
@@ -1427,18 +1745,21 @@
         "app/Assets/StarShift/Prefabs/Enemies/Interceptor.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Raider.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/ResourceAsteroid.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Scout.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Sniper.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/StormAsteroid.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/SupplyDrone.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/WardenDrone.prefab"
       ]
     },
     {
-      "id": "impact-hull-sheet",
-      "output": "app/Assets/StarShift/Art/VFX/impact-hull-sheet.png",
-      "source": "tools/assets/m8/rebuild/impact-hull.aseprite",
-      "guid": "dba680b182aa0d80ab7fba8c60f7a25b",
-      "sha256": "87182fbdebe9ed757baea90786d0a454826f6eed373d72516a7a4ea97c6515e2",
+      "id": "hit-pulse-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/hit-pulse-sheet.png",
+      "source": "tools/assets/closure/hit-pulse.aseprite",
+      "guid": "aceef0d2568d7e5d59baed4531f1f218",
+      "sha256": "cc4e981044bfaf10506c61ca4579f5431b32c0018617c61d11f774e17689ad86",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab",
@@ -1446,18 +1767,21 @@
         "app/Assets/StarShift/Prefabs/Enemies/Interceptor.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Raider.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/ResourceAsteroid.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Scout.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Sniper.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/StormAsteroid.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/SupplyDrone.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/WardenDrone.prefab"
       ]
     },
     {
-      "id": "impact-hull",
-      "output": "app/Assets/StarShift/Art/VFX/impact-hull.png",
-      "source": "tools/assets/m8/rebuild/impact-hull.aseprite",
-      "guid": "c96bf2debf0c32062abf4a7ff1870911",
-      "sha256": "9c153661639d51be16bae65ad90aaeaea8f1636b5cfb2a08a6a32b0abcab8af3",
+      "id": "hit-rock-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/hit-rock-sheet.png",
+      "source": "tools/assets/closure/hit-rock.aseprite",
+      "guid": "248c403d7b60bc838b68ee99155c0c06",
+      "sha256": "d62eb93448d677cc074994873951bbc0b7dfa14d709c9471aac9f441d1a59509",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab",
@@ -1465,18 +1789,21 @@
         "app/Assets/StarShift/Prefabs/Enemies/Interceptor.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Raider.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/ResourceAsteroid.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Scout.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Sniper.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/StormAsteroid.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/SupplyDrone.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/WardenDrone.prefab"
       ]
     },
     {
-      "id": "impact-module-sheet",
-      "output": "app/Assets/StarShift/Art/VFX/impact-module-sheet.png",
-      "source": "tools/assets/m8/rebuild/impact-module.aseprite",
-      "guid": "7e7bb91873b91cff686186f24f3caadb",
-      "sha256": "682df6ad07e56114254ac7497e14d2a623a7d0750f90c9d76a71a8b0b17f908e",
+      "id": "hit-shield-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/hit-shield-sheet.png",
+      "source": "tools/assets/polish/hit-shield.aseprite",
+      "guid": "3d7537594750de5f7b489d81070255e7",
+      "sha256": "3367a3a8b620edd72d0828ff86870b76f91cdfa87380f05d9663b95669bfa830",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab",
@@ -1484,29 +1811,23 @@
         "app/Assets/StarShift/Prefabs/Enemies/Interceptor.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Raider.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/ResourceAsteroid.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Scout.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/Sniper.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/StormAsteroid.prefab",
+        "app/Assets/StarShift/Prefabs/Enemies/SupplyDrone.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab",
         "app/Assets/StarShift/Prefabs/Enemies/WardenDrone.prefab"
       ]
     },
     {
-      "id": "impact-shield-sheet",
-      "output": "app/Assets/StarShift/Art/VFX/impact-shield-sheet.png",
-      "source": "tools/assets/m8/rebuild/impact-shield.aseprite",
-      "guid": "2077d84e4f2fcac31a8d9041f2986212",
-      "sha256": "03e918f4208c51d4521e8713ae46990e711feb65bcbed2607e9e6fd6a6048af5",
+      "id": "ion-curtain",
+      "output": "app/Assets/StarShift/Art/VFX/ion-curtain.png",
+      "source": "tools/assets/polish/ion-curtain.aseprite",
+      "guid": "0163008d4fb9eb6b99fd118dd67a0c08",
+      "sha256": "bfec664c6c8672e23da5d0ca11a42f5ea6bcb037370034cbc902f54e90d9458f",
       "serialized_references": [
-        "app/Assets/StarShift/Prefabs/Enemies/Bomber.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Bulwark.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Carrier.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Interceptor.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Raider.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Scout.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/Sniper.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/WardenDrone.prefab"
+        "app/Assets/StarShift/Data/RegionB/Boss/IonFieldMaterial.mat"
       ]
     },
     {
@@ -1522,23 +1843,10 @@
     {
       "id": "missile-splash-sheet",
       "output": "app/Assets/StarShift/Art/VFX/missile-splash-sheet.png",
-      "source": "tools/assets/m8/rebuild/missile-splash.aseprite",
+      "source": "tools/assets/closure/missile-splash.aseprite",
       "guid": "249d0b438dbb2c29abb88bf4f1b9853c",
-      "sha256": "ed7d130f9da424f332c50aa9db299a7a1969c15000f441dba910e7660b85e52f",
+      "sha256": "caec526b0fea794fd8a0f2094addb51682ba1700a23fa9905ffe2749ee81e090",
       "serialized_references": [
-        "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
-      ]
-    },
-    {
-      "id": "missile-splash",
-      "output": "app/Assets/StarShift/Art/VFX/missile-splash.png",
-      "source": "tools/assets/m8/rebuild/missile-splash.aseprite",
-      "guid": "ff030917e695b06fe8df16d7e1116ea7",
-      "sha256": "acc5bda13a4b7fcdab0e213320417fb1e8c85244a4ebbeea08faad00cf7b9a96",
-      "serialized_references": [
-        "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab",
-        "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab",
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ]
     },
@@ -1573,21 +1881,31 @@
       ]
     },
     {
-      "id": "pickup-collect-upgrade-sheet",
-      "output": "app/Assets/StarShift/Art/VFX/pickup-collect-upgrade-sheet.png",
-      "source": "tools/assets/m8/rebuild/pickup-collect-upgrade.aseprite",
-      "guid": "65bf9832cc150b2218ef5203a85e3f41",
-      "sha256": "3d7f1cdde77b7b0adc0cb4f6b710cceb47f62438626d332f146b9763473d322a",
+      "id": "pickup-coin-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/pickup-coin-sheet.png",
+      "source": "tools/assets/closure/pickup-coin.aseprite",
+      "guid": "1f5ad11eed0076d13ad3aea90c97ae5f",
+      "sha256": "c7b62f872fe6ebcf430519d50fdf046ff952bcce187a30de40e73b1a0e0003c5",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Player/Player.prefab"
       ]
     },
     {
-      "id": "pickup-collect-upgrade",
-      "output": "app/Assets/StarShift/Art/VFX/pickup-collect-upgrade.png",
-      "source": "tools/assets/m8/rebuild/pickup-collect-upgrade.aseprite",
-      "guid": "90ffcc87deff258d095ca97cc97becc4",
-      "sha256": "db16395901b51972c21c025196dfdfe40f13a7a1c8d2afb77b86982f385ee88a",
+      "id": "pickup-collect-upgrade-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/pickup-collect-upgrade-sheet.png",
+      "source": "tools/assets/closure/pickup-collect-upgrade.aseprite",
+      "guid": "65bf9832cc150b2218ef5203a85e3f41",
+      "sha256": "3395836f79b3493f61e3e1ba44778472dfc2ebcd045366d229eb9b330fa72c64",
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Player/Player.prefab"
+      ]
+    },
+    {
+      "id": "pickup-shield-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/pickup-shield-sheet.png",
+      "source": "tools/assets/closure/pickup-shield.aseprite",
+      "guid": "1a874d9f5b6f09cd1a9ca57133698d1b",
+      "sha256": "caf489274b8beda4e3bc6659795a0816d54a08344839648ebbfd7e6806bee478",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Player/Player.prefab"
       ]
@@ -1597,7 +1915,7 @@
       "output": "app/Assets/StarShift/Art/VFX/player-fragment-0.png",
       "source": "tools/assets/m8/rebuild/player-fragment-0.aseprite",
       "guid": "3403bcf3c2818ae92a8f637e19de97f2",
-      "sha256": "0394358dbb7233f6218be61a399e17708b0db5b7229dc6fcc931edd03f20b980",
+      "sha256": "93e7d8bcb1033d5f1de210307d189af7988a1aab0a3345e4757515b912dbd339",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Player/Player.prefab",
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
@@ -1608,7 +1926,7 @@
       "output": "app/Assets/StarShift/Art/VFX/player-fragment-1.png",
       "source": "tools/assets/m8/rebuild/player-fragment-1.aseprite",
       "guid": "51986594b6191e79d9a9047c182f5b72",
-      "sha256": "ff15e153567f13293bfcddb40b458277b37227869b2b0085593dc4bbd8726b2d",
+      "sha256": "dc6986159571b8e68b2c59a7c621b4bba9ab56ca03d187024203c3a299ce245f",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Player/Player.prefab",
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
@@ -1619,7 +1937,7 @@
       "output": "app/Assets/StarShift/Art/VFX/player-fragment-2.png",
       "source": "tools/assets/m8/rebuild/player-fragment-2.aseprite",
       "guid": "349c65adba177a140bf90f28554595a0",
-      "sha256": "7f3e6a032cbb888f0c24182a9a84a67b14cafe68bb503402b2d9ae8f473f5473",
+      "sha256": "817a5ca5be6effffbd6d89a0567c947cedabda316865eb7a9bc8a174a1a43cd2",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Player/Player.prefab",
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
@@ -1630,7 +1948,7 @@
       "output": "app/Assets/StarShift/Art/VFX/player-fragment-3.png",
       "source": "tools/assets/m8/rebuild/player-fragment-3.aseprite",
       "guid": "c8899266bc7997c1ba0847a1cc48f4ad",
-      "sha256": "1c5284c914fcc0e03732ce589020ed4a2f8ac621b4ebc6f644f6756c68fea402",
+      "sha256": "3a4874e30b6c4a666896bb65e91c6ce52b1f62e866abb199f15d09c491d7df03",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Player/Player.prefab",
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
@@ -1717,11 +2035,31 @@
       ]
     },
     {
-      "id": "supply-burst-sheet",
-      "output": "app/Assets/StarShift/Art/VFX/supply-burst-sheet.png",
-      "source": "tools/assets/m8/rebuild/supply-burst.aseprite",
-      "guid": "ddfe893bb301c3b5386d592375f3c510",
-      "sha256": "3ef68f32e8931376532a880421a69687f64818e7c69521d58ec1277c9bfe9517",
+      "id": "strike-launch-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/strike-launch-sheet.png",
+      "source": "tools/assets/closure/strike-launch.aseprite",
+      "guid": "9d1e39be0478de0bdb14d3177e821240",
+      "sha256": "fffc3f0bf06c1e45042df2abe2b24312af3315274f87178b026a1952b709afb5",
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/Interceptor.prefab"
+      ]
+    },
+    {
+      "id": "supply-burst-polished-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/supply-burst-polished-sheet.png",
+      "source": "tools/assets/closure/supply-burst-polished.aseprite",
+      "guid": "3d1b9a95920ea8b1699113d42d42f48c",
+      "sha256": "c8b1d2950d42cd2ca918ec126df8f0456b28a2a4e8e23eedc0b6690c9f833c65",
+      "serialized_references": [
+        "app/Assets/StarShift/Scenes/02_Gameplay.unity"
+      ]
+    },
+    {
+      "id": "thermal-vent-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/thermal-vent-sheet.png",
+      "source": "tools/assets/polish/thermal-vent.aseprite",
+      "guid": "1233c7cdf2b0bb0978f418551989954e",
+      "sha256": "47252057fc03903c7603b610a9d5b5c93b628f13c8f9e705505142f4c66bded9",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ]
@@ -1749,6 +2087,46 @@
       ]
     },
     {
+      "id": "vanguard-curtain-cue-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/vanguard-curtain-cue-sheet.png",
+      "source": "tools/assets/polish/vanguard-curtain-cue.aseprite",
+      "guid": "6ad279175404ccce79b92e83b5a636fe",
+      "sha256": "76b8752fdb37717d39777459d2d6114b8c46166f65fd5f55ac1e798cdeaeae81",
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
+      ]
+    },
+    {
+      "id": "vanguard-curtain-pulse-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/vanguard-curtain-pulse-sheet.png",
+      "source": "tools/assets/polish/vanguard-curtain-pulse.aseprite",
+      "guid": "4d9d42ff8d988f34fa0748858152fb04",
+      "sha256": "f15d300de5654e27deaaf1e7fe4e8cf17003a8c62c486a31cec582d9d8c1025d",
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
+      ]
+    },
+    {
+      "id": "vanguard-lane-beam-cue-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/vanguard-lane-beam-cue-sheet.png",
+      "source": "tools/assets/polish/vanguard-lane-beam-cue.aseprite",
+      "guid": "c0091572bc23119ad9a33058419a6c17",
+      "sha256": "eaf2da4bd7602a4d302b6bf4bc172f1e9eddb73ec26b63dd6f83742c2d406e14",
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/VanguardFrigate.prefab"
+      ]
+    },
+    {
+      "id": "warden-beam-sweep-cue-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/warden-beam-sweep-cue-sheet.png",
+      "source": "tools/assets/polish/warden-beam-sweep-cue.aseprite",
+      "guid": "0d68cbad6207b1afaac66566d37ec922",
+      "sha256": "c1ea3785ce12c285a196d2c7fa329e7b154e2d80b48eb38ebe35cfaec0c8dc3f",
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab"
+      ]
+    },
+    {
       "id": "warden-core-loop-sheet",
       "output": "app/Assets/StarShift/Art/VFX/warden-core-loop-sheet.png",
       "source": "tools/assets/m8/rebuild/warden-core-loop.aseprite",
@@ -1760,11 +2138,51 @@
       ]
     },
     {
+      "id": "warden-ion-shelter-cue-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/warden-ion-shelter-cue-sheet.png",
+      "source": "tools/assets/polish/warden-ion-shelter-cue.aseprite",
+      "guid": "8bf682c1b56b39d3fbcb778e30b071d2",
+      "sha256": "536a931fca7f3e03ab221e199408b6dcf40c1061e329e28f390897f777a081d6",
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab"
+      ]
+    },
+    {
+      "id": "warden-shelter-pulse-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/warden-shelter-pulse-sheet.png",
+      "source": "tools/assets/polish/warden-shelter-pulse.aseprite",
+      "guid": "b532f115028ef904683d31151d338068",
+      "sha256": "9d272f6f50da5fbd23f4b4da2f6c155a12d3c4e2f6f08bc3d712fe414737ec1e",
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab"
+      ]
+    },
+    {
       "id": "warden-shield-phase",
       "output": "app/Assets/StarShift/Art/VFX/warden-shield-phase.png",
       "source": "tools/assets/m8/rebuild/shield-activate-break.aseprite",
       "guid": "aae82078d74f4c05a8da307a9f0e429b",
       "sha256": "c798adf1a6017716591b444b2dc18cac884a5aae9821787cd966eec9584c1ecb",
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab"
+      ]
+    },
+    {
+      "id": "warden-sweep-arrow",
+      "output": "app/Assets/StarShift/Art/VFX/warden-sweep-arrow.png",
+      "source": "tools/assets/closure/warden-sweep-arrow.aseprite",
+      "guid": "39c98c07d42c3cca18c4a673b9c310a3",
+      "sha256": "1ef878069de311e45eeef0b810f9cedf17fc37f3b8b9a8bea6317da3bbee7c8f",
+      "serialized_references": [
+        "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab"
+      ]
+    },
+    {
+      "id": "warden-sweep-pulse-sheet",
+      "output": "app/Assets/StarShift/Art/VFX/warden-sweep-pulse-sheet.png",
+      "source": "tools/assets/polish/warden-sweep-pulse.aseprite",
+      "guid": "9e15b42a2862af629a7a584feadd7ea1",
+      "sha256": "f8b6507d2d7600cfd11524a4f1cb802167dec8cef20e95ddf83e21903a65e0e1",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/Enemies/NebulaWarden.prefab"
       ]
@@ -1904,7 +2322,7 @@
       "output": "app/Assets/StarShift/Art/Environments/background.png",
       "source": "tools/assets/m8/rebuild/background.aseprite",
       "guid": "b9d1febfb8019c37796b148b9d87178c",
-      "sha256": "8aaca8a5b377a83d5b9e381f5318d94d6a2995610ab9c06933d2ca352dd644e8",
+      "sha256": "dc03e8b39d6c40a5d6eb4a0025421b0f509075af755a56cfdd5c4975df92b0b1",
       "serialized_references": [
         "app/Assets/StarShift/Prefabs/UI/GameShellUI.prefab",
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
@@ -1915,7 +2333,7 @@
       "output": "app/Assets/StarShift/Art/Environments/crimson-background.png",
       "source": "tools/assets/m8/rebuild/crimson-background.aseprite",
       "guid": "80aea7fd1ba62849cb9dd99a4502f1b3",
-      "sha256": "7c687c1966a9a164caa2eef5a022443b7823d8f23244852505fda015412864d9",
+      "sha256": "a54819338a25aab3ee3637fe23ca4ea5f9674bdaa52d093e6e1fec55a128928b",
       "serialized_references": [
         "app/Assets/StarShift/Scenes/02_Gameplay.unity"
       ]

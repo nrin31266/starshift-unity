@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5eee0f3f37638c094ac6b5844244f7bb, type: 3}
   m_Name: SupplyDrone
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EnemyDefinition
-  maxHp: 3
+  maxHp: 6
   score: 0
   bodyDamagesPlayer: 0
+  missileTier: 0

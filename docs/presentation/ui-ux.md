@@ -87,7 +87,7 @@ Pulse, `T2` Plasma, `T3` Homing; đây là presentation code, không phải save
 thể xuất hiện ở Pause/loadout/pickup/upgrade UI khi những consumer đó được làm.
 
 Compact không đồng nghĩa thu nhỏ thông tin gameplay quan trọng. Heat có cụm riêng
-ở top-left, nhãn `H` và notch ở recovery threshold; phải đọc được bằng
+ở top-left, nhãn `NHIỆT` và notch chia mức; phải đọc được bằng
 mắt liếc trong combat. Lives ở bottom-left, weapon ở bottom-right, counter ở top
 center và Pause ở top-right. Placeholder dùng khối chữ nhật vuông góc, nền dark
 translucent đơn giản; chưa đến phase thiết kế visual nên không cắt góc, viền accent
@@ -100,7 +100,8 @@ reference 1600×900 `[TUNABLE]`. Caption/state ngắn dùng 22–24. Pause có g
 art/shader/VFX framework.
 
 Heat bar đọc trực tiếp weapon runtime: cyan ở normal, amber khi near-hot và
-orange-red + cue ngắn `NÓNG` khi Overheated. Bar tiếp tục cho thấy recovery, cue không chỉ
+orange-red + cue `XẢ NHIỆT` khi Overheated. Vỏ rail vát cạnh, sliced border giữ đầu rail;
+không còn marker 40% cũ vì fire chỉ mở lại ở zero. Bar tiếp tục cho thấy recovery, cue không chỉ
 dựa vào hue; không spam warning giữa combat hoặc thêm Continue. Warning threshold
 chỉ là visual `[TUNABLE]`, không thay [weapon fire rules](../content/weapons-items-drops.md#primary-weapon-heat--m35).
 Major/minor cinematic visibility vẫn theo contract phía dưới; ordinary Encounter
@@ -115,6 +116,8 @@ combat, không panel riêng cho từng buff hoặc fake icon. Shield còn có te
 Player; presentation chỉ đọc state của effect owner.
 
 Boss/hazard warning ngắn, chỉ dùng khi có thông tin cần báo; không spam WARNING.
+Boss bar dùng rail có chiều sâu và số phần trăm tại cuối thanh; khi còn shield
+nodes, số phần trăm phản ánh cùng shield pool đang hiển thị, sau expose phản ánh HP core.
 [Player combat](../gameplay/player-combat.md) sở hữu touch exclusion và weapon switch;
 UI không tự tính lives hoặc chọn reward.
 

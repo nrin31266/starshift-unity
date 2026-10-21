@@ -21,6 +21,7 @@ namespace StarShift.UI
         [SerializeField, Min(.01f)] private float planetEndScale = 4.1f;
         [SerializeField, Min(1)] private float streakWidthAt900 = 3;
         [SerializeField, Min(1)] private float streakLengthPerSpeedAt900 = 70;
+        [SerializeField, Min(1)] private float warpBackdropMultiplier = 1.8f;
         private SpriteRenderer[] starRenderers;
         private SpriteRenderer[] backdropRenderers;
         private Color[] backdropColors;
@@ -47,6 +48,10 @@ namespace StarShift.UI
         private Vector3[] environmentPositions;
         private StarShift.Player.RelativeDragMovement movement;
         private float approachStart = .17f;
+        private TravelBackdrop travelBackdrop;
+        private bool destinationPalette;
+        private float environmentSpeed = .035f;
+        private Vector2 environmentDirection = Vector2.up;
 
         private void Awake()
         {
@@ -57,11 +62,13 @@ namespace StarShift.UI
             planetColor = planet.color;
             environmentTints = new Color[backdropRenderers.Length]; environmentPositions = new Vector3[backdropRenderers.Length];
             for(int i=0;i<backdropRenderers.Length;i++){environmentTints[i]=backdropRenderers[i].color;environmentPositions[i]=backdropRenderers[i].transform.position;}
+            if (farBackground != null) travelBackdrop = new TravelBackdrop(farBackground);
         }
         public void Present(MissionIntroPhase nextPhase, float normalized, PlayDirection playDirection)
         {
             if (journeyVisible && nextPhase == MissionIntroPhase.Approach)
             {
+                destinationPalette = true;
                 var viewport = gameplayCamera.WorldToViewportPoint(playerRoot.position);
                 approachStart = playDirection == PlayDirection.Right ? viewport.x : viewport.y;
             }
@@ -89,7 +96,7 @@ namespace StarShift.UI
         }
         public void PresentHandoff(float normalized, PlayDirection playDirection)
         {
-            journeyVisible = false; cueSpeed = .28f;
+            journeyVisible = false; cueSpeed = .08f + .95f * Mathf.Sin(Mathf.Clamp01(normalized) * Mathf.PI);
             cueVisible = true;
             progress = normalized;
             direction = playDirection;
@@ -97,7 +104,7 @@ namespace StarShift.UI
         }
         private void LateUpdate()
         {
-            if (!journeyVisible && farBackground != null && session != null && session.Flow?.Level != null)
+            if (!journeyVisible && !destinationPalette && farBackground != null && session != null && session.Flow?.Level != null)
             {
                 var region = session.Flow.Level.RegionId;
                 if (region == "astra-frontier" && astraBackground != null) farBackground.sprite = astraBackground;
@@ -105,6 +112,22 @@ namespace StarShift.UI
             }
             if (journeyVisible) ApplyJourneyVisuals(Time.deltaTime);
             else if (introVisible || cueVisible) ApplyVisuals(Time.deltaTime);
+            else
+            {
+                environmentSpeed = .035f;
+                environmentDirection = session != null && session.Flow != null
+                    ? (Vector2)(Quaternion.Euler(0, 0, PlayDirectionSpace.Rotation(session.Flow.Direction)) * Vector3.up)
+                    : Vector2.up;
+            }
+            if (travelBackdrop != null)
+            {
+                bool blending = journeyVisible || destinationPalette;
+                bool warp = journeyVisible || introVisible && (phase == MissionIntroPhase.Travel || phase == MissionIntroPhase.Brake);
+                travelBackdrop.Tick(blending ? astraBackground : farBackground.sprite,
+                    blending ? crimsonBackground : farBackground.sprite,
+                    journeyVisible ? journeyPalette : destinationPalette ? 1 : 0,
+                    -environmentDirection * environmentSpeed * 3 * (warp ? warpBackdropMultiplier : 1), Time.deltaTime);
+            }
         }
         private void ApplyVisuals(float delta)
         {
@@ -118,6 +141,8 @@ namespace StarShift.UI
                 _ => 0
             };
             starDistance += speed * delta;
+            environmentSpeed = speed;
+            environmentDirection = Quaternion.Euler(0, 0, PlayDirectionSpace.Rotation(direction)) * Vector3.up;
             var opacity = cueVisible ? Mathf.Sin(progress * Mathf.PI) : 1f;
             if (!cueVisible && phase == MissionIntroPhase.Brake) opacity = 1-t;
             stars.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
@@ -172,6 +197,7 @@ namespace StarShift.UI
         {
             starDistance += journeySpeed*delta;
             var vector=(Vector2)(Quaternion.Euler(0,0,journeyHeading)*Vector3.up);
+            environmentSpeed = journeySpeed; environmentDirection = vector;
             for(int i=0;i<starRenderers.Length;i++)
             {
                 float depth=.45f+Mathf.Repeat(i*.371f,.55f);
@@ -209,14 +235,15 @@ namespace StarShift.UI
         }
         private void ApplyEnvironmentPalette(float amount)
         {
-            if (farBackground != null && astraBackground != null && crimsonBackground != null)
-                farBackground.sprite = amount < .5f ? astraBackground : crimsonBackground;
+            if (farBackground != null && crimsonBackground != null && amount >= 1)
+                farBackground.sprite = crimsonBackground;
             for(int i=0;i<backdropRenderers.Length;i++)backdropRenderers[i].color=Color.Lerp(environmentTints[i],new Color(.45f,.2f,.32f,environmentTints[i].a),amount);
         }
-        public void SetDestinationPalette() => ApplyEnvironmentPalette(1);
+        public void SetDestinationPalette() { destinationPalette = true; ApplyEnvironmentPalette(1); }
         public void ResetEnvironment()
         {
-            ApplyEnvironmentPalette(0);planet.color=planetColor;
+            destinationPalette = false; travelBackdrop?.Reset();
+            ApplyEnvironmentPalette(session != null && session.Flow?.Level?.RegionId == "crimson-nebula" ? 1 : 0);planet.color=planetColor;
             for(int i=0;i<backdropRenderers.Length;i++)backdropRenderers[i].transform.position=environmentPositions[i];
         }
         private Vector3 World(Vector2 viewport)
@@ -240,5 +267,6 @@ namespace StarShift.UI
                 if (backdropRenderers[i] != null) backdropRenderers[i].color = backdropColors[i];
         }
         private void OnDisable() => Hide();
+        private void OnDestroy() => travelBackdrop?.Dispose();
     }
 }

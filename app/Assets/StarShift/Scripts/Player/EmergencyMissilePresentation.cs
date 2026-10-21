@@ -12,6 +12,7 @@ namespace StarShift.Player
         [SerializeField] private SpriteRenderer rocket;
         [SerializeField] private TrailRenderer trail;
         [SerializeField] private SpriteRenderer flash;
+        [SerializeField] private Sprite[] flashFrames;
         [SerializeField, Min(.05f)] private float duration = .45f;
         private float remaining;
         private void OnEnable() { reserve.Fired += OnFired; reserve.Detonated += OnDetonated; ResetForSession(); }
@@ -70,8 +71,10 @@ namespace StarShift.Player
             {
                 flash.transform.position = centerPosition;
                 flash.transform.localScale = Vector3.one * Mathf.Lerp(.5f, 2.4f, t);
-                flash.color = new Color(1, .85f, .45f, Mathf.Clamp01(1 - t * 4) * .75f);
-                flash.enabled = flash.color.a > 0;
+                if (flashFrames != null && flashFrames.Length > 0)
+                    flash.sprite = flashFrames[Mathf.Min(flashFrames.Length - 1, (int)(t * flashFrames.Length))];
+                flash.color = new Color(1, 1, 1, 1 - t);
+                flash.enabled = remaining > 0;
             }
         }
         private void OnDisable() { reserve.Fired -= OnFired; reserve.Detonated -= OnDetonated; ResetForSession(); }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using StarShift.Combat;
 
 namespace StarShift.Enemies
 {
@@ -16,6 +17,10 @@ namespace StarShift.Enemies
         [SerializeField] private Sprite[] hullImpactFrames;
         [SerializeField] private Sprite[] shieldImpactFrames;
         [SerializeField] private Sprite[] moduleImpactFrames;
+        [SerializeField] private Sprite[] pulseImpactFrames;
+        [SerializeField] private Sprite[] plasmaImpactFrames;
+        [SerializeField] private Sprite[] homingImpactFrames;
+        [SerializeField] private Sprite[] rockImpactFrames;
         [SerializeField, Min(.02f)] private float impactSeconds = .22f;
         private EnemyHealth health;
         private EnemyDamagePresentation damage;
@@ -24,11 +29,14 @@ namespace StarShift.Enemies
         private float age;
         private Sprite[] activeFrames;
         private bool impactFlipX;
+        private bool asteroid;
+        private float impactScale;
 
         private void Awake()
         {
             health = GetComponent<EnemyHealth>();
             damage = GetComponent<EnemyDamagePresentation>();
+            asteroid = GetComponent<AsteroidVisualMotion>() != null;
         }
 
         private void OnEnable()
@@ -44,6 +52,7 @@ namespace StarShift.Enemies
         private void OnHit(EnemyHitInfo hit)
         {
             remaining = .2f;
+            impactScale = .5f;
             // Shield block có cue riêng, không dùng spark hull.
             if (hit.Kind == EnemyHitKind.ShieldBlock)
             {
@@ -52,7 +61,11 @@ namespace StarShift.Enemies
                 PlaceImpact(hit);
                 return;
             }
-            activeFrames = hit.Kind == EnemyHitKind.Module ? moduleImpactFrames : hullImpactFrames;
+            activeFrames = asteroid ? rockImpactFrames : hit.Branch == WeaponBranch.Plasma ? plasmaImpactFrames
+                : hit.Branch == WeaponBranch.Homing ? homingImpactFrames : pulseImpactFrames;
+            impactScale = asteroid ? .65f : hit.Branch == WeaponBranch.Plasma ? .8f : hit.Branch == WeaponBranch.Homing ? 1.05f : .55f;
+            if (activeFrames == null || activeFrames.Length == 0)
+                activeFrames = hit.Kind == EnemyHitKind.Module ? moduleImpactFrames : hullImpactFrames;
             PlaceImpact(hit);
         }
 
@@ -64,7 +77,9 @@ namespace StarShift.Enemies
             var local = transform.InverseTransformPoint(hit.Point);
             impact.transform.localPosition = new Vector3(local.x, local.y, 0);
             impactFlipX = local.x < 0;
-            impact.transform.localScale = Vector3.one / Mathf.Max(.01f, transform.lossyScale.x);
+            var parentScale = transform.lossyScale;
+            impact.transform.localScale = new Vector3(impactScale / Mathf.Max(.01f, Mathf.Abs(parentScale.x)),
+                impactScale / Mathf.Max(.01f, Mathf.Abs(parentScale.y)), 1);
         }
 
         private void OnDamaged()

@@ -9,6 +9,11 @@ UI chỉ trình bày các giá trị domain cung cấp.
 
 ## Stellar Shard `[LOCKED]`
 
+Tên hiển thị đổi thành **Coin** theo yêu cầu presentation hiện tại; icon đồng vàng
+sáng thay tinh thể ở wallet. Save/API IDs (`StellarShardBalance`, `Shard`) giữ nguyên,
+không đổi balance, drop policy hoặc giá. Khôi phục gốc là explicit action riêng theo
+[save owner](../systems/save-profile.md#khôi-phục-gốc-theo-yêu-cầu-người-chơi).
+
 **Stellar Shard** là persistent resource trong `PlayerProfile`; balance còn nguyên
 khi đóng và mở lại app. Scope hiện tại là collect, display, persist và đưa vào
 result/statistics. Visual identity nằm tại [art direction](../presentation/art-direction.md).

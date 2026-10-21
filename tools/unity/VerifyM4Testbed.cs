@@ -347,7 +347,7 @@ public static class VerifyM4Testbed
                         var point=RectTransformUtility.WorldToScreenPoint(null,Ui<Button>("Pause").transform.position);
                         var pos=rig.Player.transform.position;await rig.MouseEvent(point,true);await rig.MouseEvent(point,false);Require(Session.IsPaused && rig.Player.transform.position==pos && !rig.Input.FireHeld,"Pause leaked input");
                         var elapsed=Runner.Elapsed;await Task.Delay(180);Require(Runner.Elapsed==elapsed,"Pause advanced encounter");
-                        point=RectTransformUtility.WorldToScreenPoint(null,Ui<Button>("Resume").transform.position);await rig.MouseEvent(point,true);await rig.MouseEvent(point,false);Require(!Session.IsPaused,"Resume failed");paused=true;
+                        point=RectTransformUtility.WorldToScreenPoint(null,UnityEngine.Object.FindAnyObjectByType<StarShift.UI.ShellView>().Resume.transform.position);await rig.MouseEvent(point,true);await rig.MouseEvent(point,false);Require(!Session.IsPaused,"Resume failed");paused=true;
                     }
                     // Đợi formation density đủ trước khi pilot bắn trong stress encounter.
                     if(Runner.CurrentIndex==1 && Runner.Elapsed<2.4f) {await Task.Delay(80);continue;}

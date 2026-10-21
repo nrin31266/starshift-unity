@@ -7,7 +7,8 @@ This directory contains editable Aseprite sources and the scripts that export th
 `approved/` retains the selected player pair A. `player.lua` repaints only the two
 stacked nozzle regions; it preserves plume and the remaining hull/skin pixels.
 The rejected player pair B is archived in commit `be108628`. `jobs.json` records
-the five charged generations, including rejected outputs; inferred remainder is 35.
+the first five charged generations. The remaining 35 were subsequently spent;
+current quota and follow-up sources belong to [polish](../../polish/README.md).
 
 Run Aseprite from the repository root, providing absolute source/output paths:
 

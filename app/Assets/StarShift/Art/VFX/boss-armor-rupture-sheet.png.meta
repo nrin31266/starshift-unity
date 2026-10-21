@@ -1,0 +1,435 @@
+fileFormatVersion: 2
+guid: 4db7e90980011199b967f2a631ebc323
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -515182689842802792
+    second: boss-armor-rupture-sheet_0
+  - first:
+      213: 5638124565760404581
+    second: boss-armor-rupture-sheet_1
+  - first:
+      213: -6309292758181429881
+    second: boss-armor-rupture-sheet_2
+  - first:
+      213: -5939049122902249070
+    second: boss-armor-rupture-sheet_3
+  - first:
+      213: -1918604539332238003
+    second: boss-armor-rupture-sheet_4
+  - first:
+      213: 2941990741096616751
+    second: boss-armor-rupture-sheet_5
+  - first:
+      213: -4130844523196111102
+    second: boss-armor-rupture-sheet_6
+  - first:
+      213: -5798980435574228930
+    second: boss-armor-rupture-sheet_7
+  - first:
+      213: -2598606304163556628
+    second: boss-armor-rupture-sheet_8
+  - first:
+      213: 8255106333503047656
+    second: boss-armor-rupture-sheet_9
+  - first:
+      213: -907958668619514032
+    second: boss-armor-rupture-sheet_10
+  - first:
+      213: -9076888583709071522
+    second: boss-armor-rupture-sheet_11
+  - first:
+      213: -6838281752704234128
+    second: boss-armor-rupture-sheet_12
+  - first:
+      213: 5348825996764444061
+    second: boss-armor-rupture-sheet_13
+  - first:
+      213: 7450374867507551393
+    second: boss-armor-rupture-sheet_14
+  - first:
+      213: 7912702200425096211
+    second: boss-armor-rupture-sheet_15
+  - first:
+      213: -5812962479252090439
+    second: boss-armor-rupture-sheet_16
+  - first:
+      213: 3673398119066130411
+    second: boss-armor-rupture-sheet_17
+  - first:
+      213: 6904715124964473340
+    second: boss-armor-rupture-sheet_18
+  - first:
+      213: 119368325941900855
+    second: boss-armor-rupture-sheet_19
+  - first:
+      213: -7270771312507601292
+    second: boss-armor-rupture-sheet_20
+  - first:
+      213: 7033156461098468797
+    second: boss-armor-rupture-sheet_21
+  - first:
+      213: 975605565299524475
+    second: boss-armor-rupture-sheet_22
+  - first:
+      213: -1252021001939764189
+    second: boss-armor-rupture-sheet_23
+  - first:
+      213: -2806680940446605274
+    second: boss-armor-rupture-sheet_24
+  - first:
+      213: 8286671998083885647
+    second: boss-armor-rupture-sheet_25
+  - first:
+      213: 3784991368008545371
+    second: boss-armor-rupture-sheet_26
+  - first:
+      213: -7417591883834285074
+    second: boss-armor-rupture-sheet_27
+  - first:
+      213: 3861692358512551506
+    second: boss-armor-rupture-sheet_28
+  - first:
+      213: 610164694063326736
+    second: boss-armor-rupture-sheet_29
+  - first:
+      213: -5780271687358125447
+    second: boss-armor-rupture-sheet_30
+  - first:
+      213: 7121773901439608461
+    second: boss-armor-rupture-sheet_31
+  - first:
+      213: -440499712644704235
+    second: boss-armor-rupture-sheet_32
+  - first:
+      213: 6339862087106152990
+    second: boss-armor-rupture-sheet_33
+  - first:
+      213: 1109054662062994636
+    second: boss-armor-rupture-sheet_34
+  - first:
+      213: -4238923475816399131
+    second: boss-armor-rupture-sheet_35
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 56.25
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: boss-armor-rupture_00
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 81b3ac0ac0b1b2b20a91d52aee085630
+      internalID: 1946704090
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss-armor-rupture_01
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1696682f64ff6018f966cdbcabde194e
+      internalID: -1507489846
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss-armor-rupture_02
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 82d5d95221a67d399ac051bbccad280d
+      internalID: -2013817613
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss-armor-rupture_03
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9e9a93f16e7d69739b1e1f4219b0362e
+      internalID: 696262087
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss-armor-rupture_04
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5d087c03cc84f61b1bd8e3a14e23bf0e
+      internalID: -1223621428
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss-armor-rupture_05
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 607c63ce46bd4d72aa98969c1feec30f
+      internalID: 1711998233
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss-armor-rupture_06
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 709086aa5d8e6eb2a94134ea50c2f19b
+      internalID: -479124423
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss-armor-rupture_07
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 01a25d35ff0c96f4c8cee39faa88109b
+      internalID: 2129609353
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    outline: []
+    customData:
+    physicsShape: []
+    bones: []
+    spriteID: 1747e9345443ad55a9086d8bc3ce38ad
+    internalID: 0
+    vertices: []
+    indices:
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      boss-armor-rupture_00: 1946704090
+      boss-armor-rupture_01: -1507489846
+      boss-armor-rupture_02: -2013817613
+      boss-armor-rupture_03: 696262087
+      boss-armor-rupture_04: -1223621428
+      boss-armor-rupture_05: 1711998233
+      boss-armor-rupture_06: -479124423
+      boss-armor-rupture_07: 2129609353
+  mipmapLimitGroupName:
+  pSDRemoveMatte: 0
+  userData:
+  assetBundleName:
+  assetBundleVariant:

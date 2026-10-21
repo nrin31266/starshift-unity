@@ -62,11 +62,11 @@ public static class VerifyGameplayFeel
             var state=new WeaponHeatState();float firing=0,recovery=0;
             while(!state.IsOverheated && firing<20){state.Tick(profile,true,.01f);firing+=.01f;}
             while(state.IsOverheated && recovery<3){state.Tick(profile,true,.01f);recovery+=.01f;}
-            Require(firing>=9 && firing<=12 && recovery>=1.15f && recovery<=1.3f,"Thermal target: "+branch+" "+firing+"/"+recovery);
+            Require(firing>=9 && firing<=12 && recovery>=1.53f && recovery<=1.56f && state.Heat==0,"Thermal target: "+branch+" "+firing+"/"+recovery);
             state.Reset();state.Tick(profile,true,4);var warm=state.Heat;
             state.Tick(profile,false,.2f);Require(Mathf.Approximately(state.Heat,warm),"Quick release cooled too freely: "+branch);
             state.Tick(profile,false,.3f);var releasedHeat=warm-state.Heat;
-            Require(Mathf.Abs(releasedHeat-6)<.02f,"Cooling after delay changed: "+branch+" "+releasedHeat);
+            Require(Mathf.Abs(releasedHeat-3.6f)<.02f,"Cooling after delay changed: "+branch+" "+releasedHeat);
             results.Add(new{branch=branch.ToString(),firing,recovery,halfSecondReleaseHeatLost=releasedHeat});
         }
         var result=new{pass=true,results};Evidence("thermal",result);return result;

@@ -263,13 +263,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EnemyFirePresentation
   core: {fileID: 8740881288380497585}
   chargeFrames:
-  - {fileID: 824800693, guid: dc8586631ea1e76fab1768c408ba1207, type: 3}
-  - {fileID: -1795178861, guid: dc8586631ea1e76fab1768c408ba1207, type: 3}
-  - {fileID: -549097171, guid: dc8586631ea1e76fab1768c408ba1207, type: 3}
-  - {fileID: -580461162, guid: dc8586631ea1e76fab1768c408ba1207, type: 3}
+  - {fileID: 633233637, guid: 6d2d500631669f093aaa0f5de8b2695d, type: 3}
+  - {fileID: 1441961673, guid: 6d2d500631669f093aaa0f5de8b2695d, type: 3}
+  - {fileID: -1752013043, guid: 6d2d500631669f093aaa0f5de8b2695d, type: 3}
+  - {fileID: -1603120679, guid: 6d2d500631669f093aaa0f5de8b2695d, type: 3}
   chargedTint: {r: 1, g: 1, b: 1, a: 1}
   chargeCue: {fileID: 807371711361264186}
   specialDanger: 0
+  cueSizeAt900: 44
 --- !u!114 &3523246300979530492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -285,10 +286,14 @@ MonoBehaviour:
   sparks: {fileID: 6232957817512260151}
   smoke: {fileID: 5699063819334385682}
   hitFrames:
-  - {fileID: 353331781, guid: 13d1484c6597e4216b0d196495cb61f6, type: 3}
-  - {fileID: 375190038, guid: 13d1484c6597e4216b0d196495cb61f6, type: 3}
-  - {fileID: 153060930, guid: 13d1484c6597e4216b0d196495cb61f6, type: 3}
-  - {fileID: 980220738, guid: 13d1484c6597e4216b0d196495cb61f6, type: 3}
+  - {fileID: -451092743, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
+  - {fileID: -1630702912, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
+  - {fileID: -1653866440, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
+  - {fileID: -203624121, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
+  - {fileID: 865059075, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
+  - {fileID: -1360959939, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
+  - {fileID: 569201388, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
+  - {fileID: -1129210685, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
   smokeFrames:
   - {fileID: -129386422, guid: 975bf02079abb2c539a9cdf0a0de18d4, type: 3}
   - {fileID: -1682623580, guid: 975bf02079abb2c539a9cdf0a0de18d4, type: 3}
@@ -296,20 +301,68 @@ MonoBehaviour:
   - {fileID: -1876704034, guid: 975bf02079abb2c539a9cdf0a0de18d4, type: 3}
   impact: {fileID: 3951496344899335763}
   hullImpactFrames:
-  - {fileID: -1685319947, guid: dba680b182aa0d80ab7fba8c60f7a25b, type: 3}
-  - {fileID: -1700346857, guid: dba680b182aa0d80ab7fba8c60f7a25b, type: 3}
-  - {fileID: -838043035, guid: dba680b182aa0d80ab7fba8c60f7a25b, type: 3}
-  - {fileID: 959082346, guid: dba680b182aa0d80ab7fba8c60f7a25b, type: 3}
+  - {fileID: -451092743, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
+  - {fileID: -1630702912, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
+  - {fileID: -1653866440, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
+  - {fileID: -203624121, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
+  - {fileID: 865059075, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
+  - {fileID: -1360959939, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
+  - {fileID: 569201388, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
+  - {fileID: -1129210685, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
   shieldImpactFrames:
-  - {fileID: 92188901, guid: 2077d84e4f2fcac31a8d9041f2986212, type: 3}
-  - {fileID: 359823733, guid: 2077d84e4f2fcac31a8d9041f2986212, type: 3}
-  - {fileID: -156916797, guid: 2077d84e4f2fcac31a8d9041f2986212, type: 3}
-  - {fileID: -1243053173, guid: 2077d84e4f2fcac31a8d9041f2986212, type: 3}
+  - {fileID: 266010879, guid: 3d7537594750de5f7b489d81070255e7, type: 3}
+  - {fileID: 566896813, guid: 3d7537594750de5f7b489d81070255e7, type: 3}
+  - {fileID: 457312019, guid: 3d7537594750de5f7b489d81070255e7, type: 3}
+  - {fileID: 698097615, guid: 3d7537594750de5f7b489d81070255e7, type: 3}
+  - {fileID: -57819870, guid: 3d7537594750de5f7b489d81070255e7, type: 3}
+  - {fileID: -1575635405, guid: 3d7537594750de5f7b489d81070255e7, type: 3}
+  - {fileID: 1728538500, guid: 3d7537594750de5f7b489d81070255e7, type: 3}
+  - {fileID: 2126715507, guid: 3d7537594750de5f7b489d81070255e7, type: 3}
   moduleImpactFrames:
-  - {fileID: 362250434, guid: 7e7bb91873b91cff686186f24f3caadb, type: 3}
-  - {fileID: 603531848, guid: 7e7bb91873b91cff686186f24f3caadb, type: 3}
-  - {fileID: 2002023988, guid: 7e7bb91873b91cff686186f24f3caadb, type: 3}
-  - {fileID: -888961962, guid: 7e7bb91873b91cff686186f24f3caadb, type: 3}
+  - {fileID: -342078379, guid: ba695c456468b1da48dd77c19b5691bb, type: 3}
+  - {fileID: -1902445408, guid: ba695c456468b1da48dd77c19b5691bb, type: 3}
+  - {fileID: 176462099, guid: ba695c456468b1da48dd77c19b5691bb, type: 3}
+  - {fileID: -1991316663, guid: ba695c456468b1da48dd77c19b5691bb, type: 3}
+  - {fileID: 803425869, guid: ba695c456468b1da48dd77c19b5691bb, type: 3}
+  - {fileID: 292319930, guid: ba695c456468b1da48dd77c19b5691bb, type: 3}
+  - {fileID: 1901649713, guid: ba695c456468b1da48dd77c19b5691bb, type: 3}
+  - {fileID: 211530067, guid: ba695c456468b1da48dd77c19b5691bb, type: 3}
+  pulseImpactFrames:
+  - {fileID: -451092743, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
+  - {fileID: -1630702912, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
+  - {fileID: -1653866440, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
+  - {fileID: -203624121, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
+  - {fileID: 865059075, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
+  - {fileID: -1360959939, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
+  - {fileID: 569201388, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
+  - {fileID: -1129210685, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
+  plasmaImpactFrames:
+  - {fileID: -999719319, guid: fbcc113cd2b4942bd9932701742a6306, type: 3}
+  - {fileID: 1118868740, guid: fbcc113cd2b4942bd9932701742a6306, type: 3}
+  - {fileID: 1555479489, guid: fbcc113cd2b4942bd9932701742a6306, type: 3}
+  - {fileID: 726110344, guid: fbcc113cd2b4942bd9932701742a6306, type: 3}
+  - {fileID: -2132658816, guid: fbcc113cd2b4942bd9932701742a6306, type: 3}
+  - {fileID: 657486606, guid: fbcc113cd2b4942bd9932701742a6306, type: 3}
+  - {fileID: -499981259, guid: fbcc113cd2b4942bd9932701742a6306, type: 3}
+  - {fileID: -1836255846, guid: fbcc113cd2b4942bd9932701742a6306, type: 3}
+  homingImpactFrames:
+  - {fileID: -342078379, guid: ba695c456468b1da48dd77c19b5691bb, type: 3}
+  - {fileID: -1902445408, guid: ba695c456468b1da48dd77c19b5691bb, type: 3}
+  - {fileID: 176462099, guid: ba695c456468b1da48dd77c19b5691bb, type: 3}
+  - {fileID: -1991316663, guid: ba695c456468b1da48dd77c19b5691bb, type: 3}
+  - {fileID: 803425869, guid: ba695c456468b1da48dd77c19b5691bb, type: 3}
+  - {fileID: 292319930, guid: ba695c456468b1da48dd77c19b5691bb, type: 3}
+  - {fileID: 1901649713, guid: ba695c456468b1da48dd77c19b5691bb, type: 3}
+  - {fileID: 211530067, guid: ba695c456468b1da48dd77c19b5691bb, type: 3}
+  rockImpactFrames:
+  - {fileID: 2144015495, guid: 248c403d7b60bc838b68ee99155c0c06, type: 3}
+  - {fileID: 935533813, guid: 248c403d7b60bc838b68ee99155c0c06, type: 3}
+  - {fileID: -106639400, guid: 248c403d7b60bc838b68ee99155c0c06, type: 3}
+  - {fileID: 1533386070, guid: 248c403d7b60bc838b68ee99155c0c06, type: 3}
+  - {fileID: -1150372149, guid: 248c403d7b60bc838b68ee99155c0c06, type: 3}
+  - {fileID: 1426080277, guid: 248c403d7b60bc838b68ee99155c0c06, type: 3}
+  - {fileID: -1979729686, guid: 248c403d7b60bc838b68ee99155c0c06, type: 3}
+  - {fileID: -457886048, guid: 248c403d7b60bc838b68ee99155c0c06, type: 3}
   impactSeconds: 0.22
 --- !u!1 &4472059676281565890
 GameObject:
@@ -576,7 +629,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 14
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: c96bf2debf0c32062abf4a7ff1870911, type: 3}
+  m_Sprite: {fileID: -451092743, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -699,7 +752,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 12
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: f194f9b83f51a7aeaa872a2239cfc88f, type: 3}
+  m_Sprite: {fileID: -451092743, guid: aceef0d2568d7e5d59baed4531f1f218, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -883,7 +936,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 13
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 97b3bf4051084520488222d7b81f2200, type: 3}
+  m_Sprite: {fileID: 633233637, guid: 6d2d500631669f093aaa0f5de8b2695d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

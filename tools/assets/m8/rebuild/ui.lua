@@ -22,10 +22,13 @@ for _,spec in ipairs{{'ui-panel','15263a'},{'ui-card','172c40'},{'ui-modal','172
  rect(im,3,29,26,1,'101e30')
  save(im,spec[1])
 end
--- Nhiệt là một rail mảnh, không phải một hộp HUD thứ hai.
-local heat=image(64,12)
-rect(heat,1,4,62,6,'192c3e');rect(heat,1,10,62,1,'638292');rect(heat,0,3,2,8,'a6c5cc');rect(heat,62,3,2,8,'a6c5cc');save(heat,'ui-heat-housing')
-local fill=image(4,4);rect(fill,0,0,4,4,'ffffff');save(fill,'ui-heat-fill')
+-- Vỏ rail có độ dày và cạnh vát; border slicing giữ đầu rail khi đổi chiều rộng.
+local heat=image(64,16)
+poly(heat,{{4,0},{59,0},{63,4},{63,11},{59,15},{4,15},{0,11},{0,4}},'91bac6')
+poly(heat,{{4,1},{59,1},{62,4},{62,11},{59,14},{4,14},{1,11},{1,4}},'294455')
+poly(heat,{{5,3},{58,3},{60,5},{60,10},{58,12},{5,12},{3,10},{3,5}},'101e30')
+rect(heat,6,1,52,1,'d0edf0');rect(heat,6,14,52,1,'14283a');save(heat,'ui-heat-housing')
+local fill=image(8,8);rect(fill,0,0,8,8,'d3e5ee');rect(fill,0,0,8,2,'ffffff');rect(fill,0,7,8,1,'8caebd');save(fill,'ui-heat-fill')
 local notch=image(2,6);rect(notch,0,0,1,6,'bed2d5');save(notch,'ui-heat-notch')
 local function polishedIcon(src)
  local im=image(56,56)
@@ -73,5 +76,6 @@ for _,kind in ipairs{'pulse','plasma','homing','life','shard','shield','overdriv
  elseif kind=='support' then
   poly(im,{{24,5},{30,19},{41,26},{41,34},{28,29},{24,39},{20,29},{7,34},{7,26},{18,19}},'82d2de');poly(im,{{24,8},{27,20},{24,32},{21,20}},'ebfffa');rect(im,10,17,4,10,'bdd8dd');rect(im,34,17,4,10,'bdd8dd')
  end
- save(polishedIcon(im),(kind=='pulse' or kind=='plasma' or kind=='homing') and 'ui-weapon-'..kind or 'ui-'..kind)
+ if kind=='shard' then save(Image{fromFile=root..'/../../polish/raw/coin.png'},'ui-shard')
+ else save(polishedIcon(im),(kind=='pulse' or kind=='plasma' or kind=='homing') and 'ui-weapon-'..kind or 'ui-'..kind) end
 end

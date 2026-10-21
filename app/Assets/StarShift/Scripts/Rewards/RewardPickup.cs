@@ -57,7 +57,7 @@ namespace StarShift.Rewards
             animationAge = 0;
             previousPlayerPosition = player.transform.position;
             previousPickupPosition = position;
-            fallVelocity = -(item != null ? item.DriftSpeed : .8f);
+            fallVelocity = -(item != null ? item.DriftSpeed : 1);
             bounceCount = 0;
             ejectionVelocity = Vector2.zero; ejectionRemaining = 0;
             Collected = null;
@@ -111,7 +111,7 @@ namespace StarShift.Rewards
                     bounceCount++;
                 }
             }
-            else position -= forward * ((Item != null ? Item.DriftSpeed : .8f) * DriftScale * Time.fixedDeltaTime);
+            else position -= forward * ((Item != null ? Item.DriftSpeed : 1) * DriftScale * Time.fixedDeltaTime);
             if (graceRemaining >= 0)
             {
                 var viewport = gameplayCamera.WorldToViewportPoint(position);

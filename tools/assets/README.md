@@ -46,7 +46,8 @@ fixture; không thay đổi import settings hoặc scene production.
 
 ## M8 presentation sources
 
-[Rebuild sources](m8/rebuild/README.md) giữ các Lua và editable art đang dùng.
+[Closure sources](closure/README.md), [polish sources](polish/README.md) và
+[rebuild sources](m8/rebuild/README.md) giữ các Lua và editable art đang dùng.
 [Production manifest](m8/production-manifest.json) ghi runtime path, source, GUID,
 hash, serialized owners và scope evidence. Provenance cũ chỉ là lịch sử; smoke,
 intermediate frame exports và whole-project authoring passes cũ đã retire.

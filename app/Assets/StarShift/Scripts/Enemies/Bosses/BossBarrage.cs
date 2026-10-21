@@ -7,7 +7,7 @@ using UnityEngine.Serialization;
 
 namespace StarShift.Enemies
 {
-    [DisallowMultipleComponent]
+    [DisallowMultipleComponent, DefaultExecutionOrder(40)]
     public sealed class BossBarrage : MonoBehaviour
     {
         [SerializeField] private BossBarrageDefinition definition;
@@ -18,8 +18,7 @@ namespace StarShift.Enemies
         private EnemyFireGate fireGate;
         private PlayerGameplayGate playerGate;
         private Camera gameplayCamera;
-        private ContactFilter2D filter;
-        private readonly Collider2D[] hits = new Collider2D[8];
+        private BeamDamageQuery lowerDamage, upperDamage;
         private ObjectPool<EnemyProjectile> projectilePool;
         private Transform projectileRoot, emitter;
         private bool shuttingDown;
@@ -27,6 +26,7 @@ namespace StarShift.Enemies
         private float originForward;
         private float projectileHalfWidth;
         private int pulseIndex;
+        private float initialSafeLane;
         public bool IsBusy { get; private set; }
         public bool IsActive { get; private set; }
         // Phase đọc bởi presentation; charge/pulse/active timing không đổi.
@@ -46,7 +46,7 @@ namespace StarShift.Enemies
             fireGate = FindAnyObjectByType<EnemyFireGate>(); playerGate = FindAnyObjectByType<PlayerGameplayGate>(); gameplayCamera = Camera.main;
             if (definition == null || !definition.IsValid || lowerBandPresentation == null || upperBandPresentation == null || bossFlight == null || fireGate == null || playerGate == null || gameplayCamera == null)
                 throw new System.InvalidOperationException("Invalid boss barrage composition: " + name);
-            filter.SetLayerMask(1 << playerGate.GetComponentInChildren<Collider2D>().gameObject.layer); filter.useTriggers = true;
+            lowerDamage = new BeamDamageQuery(playerGate); upperDamage = new BeamDamageQuery(playerGate);
             if (definition.Kind != BossBarrageKind.ProjectileCurtain) return;
             var projectilePrefab = definition.Projectile.ProjectilePrefab;
             projectileHalfWidth = projectilePrefab.GetComponent<BoxCollider2D>().size.x * projectilePrefab.transform.lossyScale.x * .5f;
@@ -63,6 +63,7 @@ namespace StarShift.Enemies
             if (!isActiveAndEnabled || IsBusy || !bossHealth.IsAlive || !fireGate.CanFire || !bossFlight.IsHolding) return false;
             var position = PlayDirectionSpace.LocalPoint(gameplayCamera.WorldToViewportPoint(playerGate.transform.position), bossFlight.Direction);
             SafeLane = position.x < .5f ? .75f : .25f;
+            initialSafeLane = SafeLane;
             var bossPosition = PlayDirectionSpace.LocalPoint(gameplayCamera.WorldToViewportPoint(bossHealth.transform.position), bossFlight.Direction);
             originForward = Mathf.Clamp(bossPosition.y - .10f, .60f, .86f);
             pulseIndex = 0; phaseRemaining = definition.ChargeSeconds; IsBusy = true; IsActive = false;
@@ -71,6 +72,7 @@ namespace StarShift.Enemies
         }
         public void CancelAttack()
         {
+            lowerDamage?.Reset(); upperDamage?.Reset();
             IsBusy = IsActive = false; phaseRemaining = 0; pulseIndex = 0;
             SetPhase(AttackPhase.Idle);
             if (lowerBandPresentation != null) lowerBandPresentation.Hide(); if (upperBandPresentation != null) upperBandPresentation.Hide();
@@ -91,26 +93,32 @@ namespace StarShift.Enemies
             var along = right ? Vector3.right : Vector3.up;
             float length = right ? bounds.size.x : bounds.size.y;
             visual.ShowCurtain(bounds.center - along * length * .5f, bounds.center + along * length * .5f,
-                right ? bounds.size.y : bounds.size.x, IsActive, tint, visual == upperBandPresentation);
-        }
-        private void ApplyBandDamage(Bounds bounds)
-        {
-            int count = Physics2D.OverlapBox(bounds.center, bounds.size, 0, filter, hits);
-            for (int i = 0; i < count; i++) hits[i].GetComponentInParent<PlayerContactReceiver>()?.ReceiveEnemyHit(bossHealth.gameObject);
+                right ? bounds.size.y : bounds.size.x, IsActive, tint);
         }
         private void FixedUpdate()
         {
             if (!IsBusy || Time.timeScale <= 0) return;
             if (!bossHealth.IsAlive || !fireGate.CanFire || bossFlight.IsExiting) { CancelAttack(); return; }
+            bool laser = definition.Kind == BossBarrageKind.IonShelter;
+            if (!laser && IsActive && pulseIndex < definition.PulseCount && phaseRemaining <= definition.PulseInterval - .28f)
+            {
+                IsActive = false;
+                SafeLane = initialSafeLane + (pulseIndex % 2 == 1 ? (initialSafeLane < .5f ? .28f : -.28f) : 0);
+                SetPhase(AttackPhase.Prepare);
+            }
             LowerBounds = GetBandBounds(0, SafeLane - definition.OpeningWidth * .5f);
             UpperBounds = GetBandBounds(SafeLane + definition.OpeningWidth * .5f, 1);
-            bool laser = definition.Kind == BossBarrageKind.IonShelter;
             if (laser || !IsActive)
             {
                 var tint = laser ? new Color(1, .12f, .45f) : new Color(1, .65f, .18f);
                 DrawBand(lowerBandPresentation, LowerBounds, tint); DrawBand(upperBandPresentation, UpperBounds, tint);
             }
-            if (laser && IsActive) { ApplyBandDamage(LowerBounds); ApplyBandDamage(UpperBounds); }
+            if (laser && IsActive)
+            {
+                lowerDamage.Apply(LowerBounds.center, LowerBounds.size, 0, bossHealth.gameObject);
+                upperDamage.Apply(UpperBounds.center, UpperBounds.size, 0, bossHealth.gameObject);
+            }
+            else { lowerDamage.Reset(); upperDamage.Reset(); }
             phaseRemaining -= Time.fixedDeltaTime;
             // LOCK ở nửa sau charge: người chơi thấy khe an toàn đã chốt.
             if (!IsActive && Phase == AttackPhase.Prepare && phaseRemaining <= definition.ChargeSeconds * .45f) SetPhase(AttackPhase.Lock);
@@ -123,6 +131,7 @@ namespace StarShift.Enemies
                 {
                     // Đổi hành lang chỉ trong khoảng báo trước; không dời vùng damage đang bật.
                     IsActive = false; SafeLane = 1 - SafeLane; phaseRemaining = definition.ChargeSeconds + definition.PulseInterval;
+                    SetPhase(AttackPhase.Prepare);
                 }
             }
             else if (pulseIndex < definition.PulseCount)
@@ -137,9 +146,12 @@ namespace StarShift.Enemies
         {
             var forward = PlayDirectionSpace.Offset(Vector2.down, bossFlight.Direction);
             float edgeMargin = projectileHalfWidth / Vector3.Distance(GetWorldPoint(0, originForward), GetWorldPoint(1, originForward));
+            float rowOffset = pulseIndex % 2 == 0 ? 0 : .5f;
             for (int i = 0; i < definition.ProjectilesPerRow; i++)
             {
-                float lane = .02f + .96f * i / (definition.ProjectilesPerRow - 1);
+                // Hàng lẻ lệch nửa slot để tạo nhịp xen kẽ; khe đã báo trước vẫn giữ nguyên.
+                float lane = .02f + .96f * (i + rowOffset) / (definition.ProjectilesPerRow - 1);
+                if (lane > .98f) continue;
                 if (Mathf.Abs(lane - SafeLane) <= definition.OpeningWidth * .5f + edgeMargin) continue;
                 emitter.position = GetWorldPoint(lane, originForward);
                 projectilePool.Get().Launch(definition.Projectile, emitter, bossHealth.gameObject, playerGate.gameObject, Release, 0, forward); ShotsFired++;

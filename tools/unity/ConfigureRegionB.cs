@@ -394,7 +394,8 @@ public static class ConfigureRegionB
     {
         if(Application.isPlaying)throw new InvalidOperationException("Edit mode required");
         var tank=NewEnemy("Bulwark",28,180,new Vector2(1.65f,1.45f),new Color(.45f,.32f,.34f),g=>{
-            g.GetComponent<SingleFireAttack>().enabled=false;
+            g.GetComponent<SingleFireAttack>().enabled=true;
+            SetSerializedField(g.GetComponent<SingleFireAttack>(),"definition",Load<SingleFireDefinition>(DataFolder+"Enemies/BulwarkSingleFire.asset"));
             SetSerializedField(g.GetComponent<EnemyHealth>().Definition,"missileTier",MissileDamageTier.Large);
         });
         var forms=new Dictionary<EncounterDefinition,Placement[]>();

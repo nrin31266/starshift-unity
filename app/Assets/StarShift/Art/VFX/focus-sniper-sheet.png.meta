@@ -1,0 +1,355 @@
+fileFormatVersion: 2
+guid: ecdbc013766cafe31aa4979e44f6a5e2
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 254872399843022807
+    second: focus-sniper-sheet_0
+  - first:
+      213: 9198934657783746743
+    second: focus-sniper-sheet_1
+  - first:
+      213: 6351979617031033951
+    second: focus-sniper-sheet_2
+  - first:
+      213: -2886105350706198881
+    second: focus-sniper-sheet_3
+  - first:
+      213: -3614305726708955203
+    second: focus-sniper-sheet_4
+  - first:
+      213: 6192969425149524097
+    second: focus-sniper-sheet_5
+  - first:
+      213: 4847116041553325780
+    second: focus-sniper-sheet_6
+  - first:
+      213: -4086305954355328702
+    second: focus-sniper-sheet_7
+  - first:
+      213: 7285972816117756168
+    second: focus-sniper-sheet_8
+  - first:
+      213: -5146944499915016979
+    second: focus-sniper-sheet_9
+  - first:
+      213: -668653257647085508
+    second: focus-sniper-sheet_10
+  - first:
+      213: -6521679466576952045
+    second: focus-sniper-sheet_11
+  - first:
+      213: -8650178031914202154
+    second: focus-sniper-sheet_12
+  - first:
+      213: 5047486563072536177
+    second: focus-sniper-sheet_13
+  - first:
+      213: 386060373690711967
+    second: focus-sniper-sheet_14
+  - first:
+      213: 8072401961388210013
+    second: focus-sniper-sheet_15
+  - first:
+      213: 2448062867614677189
+    second: focus-sniper-sheet_16
+  - first:
+      213: -3693977258634854194
+    second: focus-sniper-sheet_17
+  - first:
+      213: 3851221838873230081
+    second: focus-sniper-sheet_18
+  - first:
+      213: 5377788553047460501
+    second: focus-sniper-sheet_19
+  - first:
+      213: 6266284142473528031
+    second: focus-sniper-sheet_20
+  - first:
+      213: -7989075597468248685
+    second: focus-sniper-sheet_21
+  - first:
+      213: -3876887831955122785
+    second: focus-sniper-sheet_22
+  - first:
+      213: -6542456561858276786
+    second: focus-sniper-sheet_23
+  - first:
+      213: -2096914622368732456
+    second: focus-sniper-sheet_24
+  - first:
+      213: -6348302226097730533
+    second: focus-sniper-sheet_25
+  - first:
+      213: -4387977217026129304
+    second: focus-sniper-sheet_26
+  - first:
+      213: -1338332199715564909
+    second: focus-sniper-sheet_27
+  - first:
+      213: -5569912526742984679
+    second: focus-sniper-sheet_28
+  - first:
+      213: 1456608717977708495
+    second: focus-sniper-sheet_29
+  - first:
+      213: 2121769874671525894
+    second: focus-sniper-sheet_30
+  - first:
+      213: -2212934313316896497
+    second: focus-sniper-sheet_31
+  - first:
+      213: -7894074048710617109
+    second: focus-sniper-sheet_32
+  - first:
+      213: -7853907123903114312
+    second: focus-sniper-sheet_33
+  - first:
+      213: 5111911298182151067
+    second: focus-sniper-sheet_34
+  - first:
+      213: 4732738225012991254
+    second: focus-sniper-sheet_35
+  - first:
+      213: 7732033427833490983
+    second: focus-sniper-sheet_36
+  - first:
+      213: -4767797921591677495
+    second: focus-sniper-sheet_37
+  - first:
+      213: -7214726389257263563
+    second: focus-sniper-sheet_38
+  - first:
+      213: 7035465044788280913
+    second: focus-sniper-sheet_39
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 56.25
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: focus-sniper_00
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1f63c394f8823181a96d3553f6f13704
+      internalID: 521000383
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: focus-sniper_01
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e222058ebf836896796d8c2c641289a1
+      internalID: 619999744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: focus-sniper_02
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 96130b3740e99ab288d855fa5bb1c147
+      internalID: -1375631196
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: focus-sniper_03
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 62755d68640abe1eebc45d2e2e220867
+      internalID: -1683658148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 134ade9825b53f8ec9e7f496295b2eba
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      focus-sniper_00: 521000383
+      focus-sniper_01: 619999744
+      focus-sniper_02: -1375631196
+      focus-sniper_03: -1683658148
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

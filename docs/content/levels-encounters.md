@@ -132,8 +132,8 @@ có giới hạn sau completion, không phải điều kiện phải nhặt hế
 | Mode | Điều kiện completion và xử lý enemy còn sống |
 |---|---|
 | Eliminate | Required enemies phải chết trước khi complete; không despawn chúng để giả hoàn thành. Non-required enemy còn sống đi qua cleanup chung. |
-| Timeline | Enemy đã exit được despawn. `CompleteWhenScheduleExhausted` opt-in cho phép kết thúc sớm khi đã spawn hết mọi scheduled group, mọi optional event đã resolve và không còn live enemy; không áp cho Survive/Boss. Khi timeline kết thúc, đóng spawn/attack/collision enemy và release chúng. Minor handoff dùng projectile grace/fade dưới đây; encounter cuối cũng dùng bounded grace/fade trước completion. Không handoff threat active sang encounter sau. |
-| Survive | Timer kết thúc đóng spawn/attack và vô hiệu hóa hazard cũ; enemy còn sống đi qua cleanup chung. Dùng bounded projectile grace/fade dưới đây trước completion ở cả minor và terminal boundary; không mang threat sang world mới. |
+| Timeline | Enemy đã exit được despawn. `CompleteWhenScheduleExhausted` opt-in cho phép kết thúc sớm khi đã spawn hết mọi scheduled group, mọi optional event đã resolve và không còn live enemy; không áp cho Survive/Boss. Khi timeline kết thúc, đóng spawn/attack/collision enemy và release chúng. Minor handoff dùng natural projectile drain dưới đây; encounter cuối cũng đợi shot ra view trước completion. Không handoff threat active sang encounter sau. |
+| Survive | Timer kết thúc đóng spawn/attack và vô hiệu hóa hazard cũ; enemy còn sống đi qua cleanup chung. Dùng natural projectile drain dưới đây trước completion ở cả minor và terminal boundary; không mang threat sang world mới. |
 | Boss | Ngay khi boss defeat, dừng hostile producers và clear hostile projectiles/hazards trước post-boss/result/region transition. Giữ staged death/presentation và reward flow; completion vẫn cần post-death sequence hoàn tất. |
 
 ### Cleanup chung
@@ -146,7 +146,7 @@ final kill/boss death vẫn được resolve đúng một lần theo reward flow
 | Object thuộc encounter cũ | Contract tại boundary |
 |---|---|
 | Enemy còn sống, không còn là required target | Ngừng attack và collision gây damage ngay; exit không gây damage với timeout [TUNABLE] hoặc despawn. Cleanup không tính kill và không roll death drop. |
-| Hostile projectile | Minor handoff giữ flight/damage trong grace ngắn, sau đó tắt damage trước fade/release theo policy dưới đây. Boundary khác theo completion mode; không để callback cũ gây damage ở encounter mới. |
+| Hostile projectile | Minor handoff giữ flight/damage đến khi contact hoặc ra viewport theo policy dưới đây. Boundary khác theo completion mode; không để callback cũ gây damage ở encounter mới. |
 | Hostile beam | Tắt damage ngay và clear/release trước reward grace hoặc handoff. |
 | Hazard | Tắt damaging collision/timed damage ngay rồi release; visual kết thúc ngắn có thể chạy nhưng không còn gây damage. |
 | Pickup có giá trị | Giữ cho player có cơ hội nhặt trong reward grace; không xóa cùng hostile cleanup hoặc tự grant khi chưa pickup. |
@@ -162,28 +162,23 @@ hazard chỉ vì còn hiển thị; ownership phải rõ khi implementation.
 Ordinary non-boss Encounter chuyển sang Encounter tiếp trong cùng Mission không
 hard-clear shot còn visible tại objective/timeline cutoff. Dừng spawn, fire và
 telegraph mới ngay; existing valid projectile tiếp tục movement/contact/damage bình
-thường trong `ProjectileGraceSeconds`. Ra khỏi viewport thì recycle ngay. Shot vẫn
-còn visible khi grace hết phải **tắt damage ở đầu fade**, gồm trigger và swept hit,
-tiếp tục bay và giảm alpha trong `ProjectileFadeSeconds`, rồi trả về pool.
-
-| Cleanup config trên outgoing Encounter | Seed `[TUNABLE]` |
-|---|---|
-| `ProjectileGraceSeconds` | .65 s; hướng tuning .5–.8 s |
-| `ProjectileFadeSeconds` | .3 s; hướng tuning .25–.4 s |
+thường đến khi contact hoặc bay khỏi viewport có padding .03 `[TUNABLE]`, rồi recycle.
+Không fade hoặc tắt damage giữa màn. `ProjectileGraceSeconds`/`ProjectileFadeSeconds`
+được giữ trong serialized definitions cũ để tương thích authoring; không còn quyết
+định ordinary drain. Runner lấy thời gian còn lại dài nhất tới mép theo velocity
+thực của các shot đang visible, cộng hai physics ticks làm safety bound.
 
 Không carry shot cũ qua encounter mới. `Completed`, reward grace và handoff chỉ
-tiến sau khi shot đã contact/ra view/fade xong; có upper bound bằng grace + fade
+tiến sau khi shot đã contact/ra view; có upper bound bằng remaining visible flight
 và sai số physics tick. HUD, movement, hold-to-fire và Pause giữ permissions theo
-player lifecycle. Cleanup flight/timers/alpha dùng scaled simulation, Pause freeze
+player lifecycle. Cleanup flight/timers dùng scaled simulation, Pause freeze
 cùng nhau. Standalone test Encounter dùng cùng policy khi definition có successor
 trong Mission, dù không thực sự start successor.
 
-Đây là gameplay cleanup policy do runner chọn; projectile thực thi flight, damage
-lock, fade và pool reset. Announcement/VFX không quyết damage hoặc completion.
-Reuse phải restore alpha, collider và cleanup timers. Explicit reset, death và
-terminal teardown vẫn có thể clear ngay. Major cinematic/boss boundary được dùng
-safe fade nhanh hơn (damage tắt ngay) nếu choreography cần; boss stub hiện tại
-vẫn clear an toàn theo completion mode, không tự đổi thành minor grace.
+Đây là gameplay cleanup policy do runner chọn; projectile thực thi flight, contact
+và pool reset. Announcement/VFX không quyết damage hoặc completion.
+Reuse phải restore alpha, collider và entered-view state. Explicit reset, boss death
+và terminal teardown vẫn clear an toàn theo completion mode.
 
 ### Reward grace và chuyển encounter
 
@@ -1045,14 +1040,14 @@ luân phiên; mỗi enemy giữ telegraph/cooldown riêng, visible enemies > act
  Timeline
 opt-in schedule exhaustion chỉ sau mọi scheduled group/optional event resolve.
 Pincer giữ combat phía trên, exit hướng lên; không chạy qua safe start phía dưới.
-Production minor handoff `[TUNABLE]`: rest .7 s chồng projectile grace .45 s + fade .25 s,
+Production minor handoff `[TUNABLE]`: rest .7 s chồng natural projectile drain,
 rồi travel .85 s; Đợt kế hiển thị 1.3 s, entry lead .5 s nằm trong thời gian chữ hiện.
 Warning Boss 1.4 s. Thời gian tới first spawn còn có fixed-step rounding; không cộng
 cleanup thành một khoảng nghỉ nối tiếp. Fixture M4 giữ seed riêng ở section lịch sử.
 Hết Timeline/Survive thì dừng spawn/fire mới, sang ExitDrain: asteroid tiếp tục
 đúng transit tới khi ra khỏi viewport; quái còn sót rút lên/ra khỏi màn trong 1.1 s.
 Sau 8 s chỉ ép retreat cho đối tượng chưa vào Exit, không release giữa viewport.
-Kill/reward còn hợp lệ trong ExitDrain; sau đó mới projectile grace và handoff.
+Kill/reward còn hợp lệ trong ExitDrain; sau đó mới natural projectile drain và handoff.
 Reward giữ qua minor handoff; cuối Mission có grace tối đa 2.5 s nếu còn đồ, Boss
 12 s cho Vanguard / 14 s cho Warden `[TUNABLE]`. Trong grace, Core/support giữ theo
 combat-space floor của [pickup owner](weapons-items-drops.md#pickup-và-effect-test-policy)
