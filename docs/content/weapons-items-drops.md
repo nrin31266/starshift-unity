@@ -438,7 +438,7 @@ phải đảm bảo major reward có ý nghĩa. Normal Shard drop chỉ vài ph�
 [TUNABLE], chưa có số cố định. Major weights là relative weights, không phải % drop.
 Eligible random supply levels/conditions ngoài L1 còn [TBD] khi tune content.
 
-[TBD] Shield stacking/refresh, Weapon Core generic hay typed, maxed core fallback,
+[TBD] Shield stacking/refresh, Weapon Core generic hay typed ngoài current prototype, maxed core conversion ngoài authored floor/Supply,
 Extra Life overflow, pickup magnet, pickup lifetime ngoài crate, active pickup cap,
 final boss-phase interaction của reserve missile, drone stats và buff stacking/refresh. Không tự chọn một phương án
 vì dễ implement. Các giá trị duration/crate/drop/pity đã nêu giữ [TUNABLE].
@@ -513,11 +513,21 @@ khi Player đang respawn vẫn eject đồ; collection chờ gate mở như bìn
 ## Encounter reward floor `[PROVISIONAL]`
 
 `EncounterDefinition.GuaranteedMajorCount` và `GuaranteeTable` author minimum drop
-opportunity. Production M1 Foundation floor **1**, Formation **2**; M2 Raider/Bomber
-và M3 Sine/Pincer floor **1**; M3 Elite **2**. Tổng authored combat floor là 9. Foundation guarantee TYPE là Pulse Core;
-các encounter còn lại draw từ ProgressionDrops (existing major weights, riêng Core
-weight 90 mỗi branch `[TUNABLE]`, giữ state filters/locked-branch bias). Storm/Boss có floor 0;
-Supply, resource và Boss defeat pair là reward paths độc lập.
+opportunity. `GuaranteedMajorByKill` là deadline cho floor đầu tiên tính theo số kill
+eligible của encounter, không phải spawn index hoặc vị trí con tàu. Giá trị 0 giữ
+seeded selection cũ. Nếu matching natural major đã ra trước mốc thì credit quota,
+không thêm item thứ hai. Escape không tính là kill; khi số target còn lại ít hơn
+quota, seeded remaining-population rule vẫn bảo vệ floor như trước.
+
+Current content có 15 opportunities, mỗi encounter author đúng 1 preferred item;
+7 ở Astra và 8 ở Crimson `[TUNABLE]`. Loại item, deadline và lý do placement thuộc
+[bảng reward pacing](levels-encounters.md#authored-reward-pacing-tunable).
+Storm/Boss vẫn floor 0; Supply/resource/Boss pair là paths độc lập.
+Các table trong `Data/Rewards/Authored` dùng typed preferred pickup và cùng weighted
+fallback của ProgressionDrops. Nếu preferred Core/ammo/life không còn dùng được,
+`SelectMajor` lọc capacity rồi chọn reward còn hữu dụng; không eject item không thể
+nhặt, không conversion thành currency và không auto-grant. Đây là policy authored
+floor `[PROVISIONAL]`; không quyết global overflow/conversion còn TBD.
 
 Runtime `RewardDirector` đếm eligible normal/Elite enemies, không gồm Boss,
 Supply/resource/normal asteroids. Seed dùng stable Mission ID + Encounter ID + base
@@ -525,8 +535,8 @@ seed 410; không dùng frame clock hoặc process-random string hash. Dev reward
 chỉ thay runtime base seed. Cùng checkpoint/seed/player actions tái tạo normal roll,
 major selection và kill ordinal; enemy source không được author cố định.
 
-Sau mỗi eligible kill: normal roll trước; major phù hợp đã ra thì credit floor.
-Nếu chưa đạt, seeded remaining-kill selection chọn xác suất `remaining quota /
+Sau mỗi eligible kill: normal roll trước; major phù hợp đã ra thì credit floor. Nếu chưa đạt ở authored deadline, force một
+preferred/fallback item; trước deadline hoặc khi không có deadline, seeded remaining-kill selection chọn xác suất `remaining quota /
 remaining eligible population`, bắt buộc ở các kill cuối. Mỗi kill emit tối đa một
 selected direct item; quota không cộng thêm một major cạnh normal major vừa credit.
 Normal random drops sau khi đạt floor vẫn giữ odds đã author. Normal 1.8% major,
@@ -540,7 +550,7 @@ phải auto collection hoặc bảo đảm đủ upgrade sau một run.
 
 Normal pickup clutter cap giữ 6 `[TUNABLE]`; authored floor và guaranteed Supply/Boss
 pair được cấp reserved overflow slot khi cap đã đầy để không mất guaranteed item. Không force thêm theo
-mỗi enemy; production combat floor 1–2 theo bảng trên. Các pickup còn lại vẫn chịu normal
+mỗi enemy; production combat floor 1 theo bảng placement được link ở trên. Các pickup còn lại vẫn chịu normal
 cap/lifetime/scope; kiểm tra actual density trước khi tăng quota. Đây là thay đổi
 prototype có chủ ý, không khóa final economy hoặc maxed-core conversion.
 
@@ -553,11 +563,12 @@ còn TBD. Evidence và giới hạn test ở [dev/debug](../systems/dev-debug.md
 
 ## M6 population và reward density `[TUNABLE]`
 
-Formation population tăng để đọc silhouette, không tăng authored floor của Region A.
+Formation population tăng để đọc silhouette; quota hiện tại được phân bố lại theo
+reward pacing thay vì nhân theo population.
 NormalDrops giảm major 2.5%→1.8%, Shard 25%→18% để hạn chế tăng rolls do population.
-Elite odds giữ nguyên. Region B có năm floor opportunities: L5 E1/E3, L6 E1,
-L7 E2/E3, mỗi nơi 1 major. Các encounter B còn lại floor 0; Supply/resource/Boss
-pair dùng paths riêng. Không nhân floor theo population hoặc đặt guarantee trên mọi beat. Cap normal pickups
+Elite odds giữ nguyên. Authored floors hiện tại theo reward pacing được link ở trên;
+Supply/resource/Boss pair dùng paths riêng. Không nhân floor theo population hoặc
+đặt guarantee trên mọi beat. Cap normal pickups
 vẫn 6; guaranteed overflow/filtering/seed/Retry-safe quota giữ nguyên.
 
 Carrier/Warden drones không phát EnemyDefeated/EnemyEscaped reward events, không

@@ -50,6 +50,8 @@ namespace StarShift.Encounters
         public OptionalEvent[] OptionalEvents = Array.Empty<OptionalEvent>();
         public CameraProfile CameraOverride;
         [Min(0)] public int GuaranteedMajorCount;
+        [Min(0), Tooltip("Mốc kill eligible muộn nhất cho floor đầu tiên; 0 giữ lựa chọn seeded thông thường.")]
+        public int GuaranteedMajorByKill;
         public RewardDropTable GuaranteeTable;
         [Range(1, 4)] public int ActiveShooterLimit = 1;
         [Min(.02f)] public float ShotSpacing = 1f;
@@ -99,7 +101,8 @@ namespace StarShift.Encounters
                 if (g.GrantsRewards && health.Definition.BodyDamagesPlayer && health.Definition.MissileTier != StarShift.Enemies.MissileDamageTier.Boss &&
                     prefab.GetComponent<StarShift.Enemies.AsteroidVisualMotion>() == null) rewardEligibleCount += g.Count;
             }
-            if (GuaranteedMajorCount < 0 || (GuaranteedMajorCount > 0 &&
+            if (GuaranteedMajorByKill < 0 || GuaranteedMajorByKill > rewardEligibleCount ||
+                (GuaranteedMajorByKill > 0 && GuaranteedMajorCount == 0) || GuaranteedMajorCount < 0 || (GuaranteedMajorCount > 0 &&
                 (GuaranteeTable == null || GuaranteedMajorCount > rewardEligibleCount || Completion == EncounterCompletion.Boss ||
                 (GuaranteeTable.Source != RewardSource.Normal && GuaranteeTable.Source != RewardSource.Elite) ||
                 (GuaranteeTable.GuaranteedPickup != null ? GuaranteeTable.GuaranteedPickup.Kind == PickupKind.Shard :

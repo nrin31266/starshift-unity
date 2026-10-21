@@ -120,3 +120,13 @@ kiểm bindings; `Begin` kiểm shell/death/pause/retry; `BeginCombat(scope)` h�
 không chạy probes đồng thời hoặc can thiệp phiên Campaign user đang chơi.
 Clip/event/mix/license và giới hạn listening thuộc
 [Audio Final](../../docs/presentation/audio-final.md).
+
+## Authored rewards
+
+`VerifyAuthoredRewards.Pure` kiểm deadline, default seeded mode và native content.
+`VerifyAuthoredRewards.Begin` chạy async từ idle Menu trong Play Mode, chỉ dùng test
+storage; đọc `.design/content-rewards/runtime.json` và `save-guard.json` sau terminal.
+Probe dùng real enemy deaths/pickup collection, kiểm deadline cho mỗi authored
+encounter và fallback khi preferred item đầy/max; thêm NewGame/intro → hai
+encounter đầu → Pause/Retry để kiểm Core rollback và reward deadline reset. Không chạy cùng probe khác hoặc
+khi user đang chơi Campaign. Schedule thuộc [content owner](../../docs/content/levels-encounters.md#authored-reward-pacing-tunable).

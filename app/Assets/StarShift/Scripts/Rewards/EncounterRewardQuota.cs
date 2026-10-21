@@ -5,23 +5,26 @@ namespace StarShift.Rewards
     public sealed class EncounterRewardQuota
     {
         private Random random;
-        private int remainingEnemies;
+        private int remainingEnemies, kills, firstDeadline;
         public int Remaining { get; private set; }
 
-        public void Reset(int seed, int enemies, int quota)
+        public void Reset(int seed, int enemies, int quota, int firstByKill = 0)
         {
-            if (enemies < 0 || quota < 0 || quota > enemies) throw new ArgumentOutOfRangeException(nameof(quota));
+            if (enemies < 0 || quota < 0 || quota > enemies || firstByKill < 0 ||
+                firstByKill > enemies || (firstByKill > 0 && quota == 0)) throw new ArgumentOutOfRangeException(nameof(quota));
             random = new Random(seed);
             remainingEnemies = enemies;
-            Remaining = quota;
+            Remaining = quota; kills = 0; firstDeadline = firstByKill;
         }
 
         public bool ResolveKill(bool satisfiesFloor)
         {
             if (remainingEnemies <= 0) return false;
-            bool force = !satisfiesFloor && Remaining > 0 && random.Next(remainingEnemies) < Remaining;
+            kills++;
+            bool deadline = firstDeadline > 0 && kills >= firstDeadline;
+            bool force = !satisfiesFloor && Remaining > 0 && (deadline || random.Next(remainingEnemies) < Remaining);
             remainingEnemies--;
-            if (satisfiesFloor || force) Remaining = Math.Max(0, Remaining - 1);
+            if (satisfiesFloor || force) { Remaining = Math.Max(0, Remaining - 1); firstDeadline = 0; }
             return force;
         }
 

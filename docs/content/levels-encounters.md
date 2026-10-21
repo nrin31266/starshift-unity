@@ -938,6 +938,39 @@ Enemy stats/behavior ở [enemies/bosses](enemies-bosses.md);
 weapon, core và supply/drop contract ở [weapons/items/drops](weapons-items-drops.md).
 
 
+## Authored reward pacing `[TUNABLE]`
+
+L1–L8 dùng existing enemy-drop quota, không tạo thêm enemy/supply hoặc thay combat
+formation. Mỗi dòng có một major opportunity, cần bắn hạ eligible enemy và tự nhặt.
+Mốc là **chậm nhất ở kill N trong encounter**; matching random drop có thể ra sớm hơn.
+Không phải kill N của cả mission, không gắn reward lên mọi enemy. Policy capacity,
+seed/Retry, fallback và clutter thuộc [item owner](weapons-items-drops.md#encounter-reward-floor-provisional).
+
+| Mission / encounter | Preferred item | By eligible kill | Mục đích |
+|---|---|---:|---|
+| L1 Foundation | Pulse Core | 2 | Cảm nhận upgrade ngay trong onboarding |
+| L1 Formation | Plasma Core | 4 | Mở coverage khi đội hình rộng còn nhiều mục tiêu |
+| L2 Raider Arcs | Homing Core | 3 | Giới thiệu tracking cho Interceptor và heavy guard |
+| L2 Bomber | Shield Cell | 2 | Có phòng thủ sớm trước bomber pressure |
+| L3 Sine | Overdrive | 2 | Cảm nhận buff khi ribbon còn đông |
+| L3 Pincer | Missile Ammo | 3 | Có reserve cho pincer và Elite kế tiếp |
+| L3 Elite | Homing Core | 8 | Upgrade ở nửa sau, chuẩn bị Vanguard |
+| L5 Arrowhead | Plasma Core | 3 | Coverage đầu vùng Right với đội hình trải rộng |
+| L5 Ribbons | Support Drone | 2 | Trải nghiệm trợ bắn khi hai ribbon còn đông |
+| L5 Bomber Lanes | Homing Core | 9 | Upgrade nửa sau cho Sniper/guard của L6 |
+| L6 Sniper | Shield Cell | 1 | Phòng thủ ngay sau target đầu của màn hẹp |
+| L6 Lane Lock | Pulse Core | 4 | Chuẩn bị sustained focus cho L7 |
+| L7 Carrier Wings | Overdrive | 2 | Thêm lực sớm để xử lý carrier/escorts |
+| L7 Twin Towers | Homing Core | 5 | Chuẩn bị tracking cho fortress/Warden |
+| L8 Fortress Convoy | Extra Life | 2 | Cơ hội hồi phục trước boss cuối vùng |
+
+L4 giữ resource storm và guaranteed pre-boss Supply Core/support pair, không thêm
+quota lên asteroid hoặc boss. Các Supply/Boss moments khác giữ lịch và pair hiện có.
+Tổng combat floor 15 so với 14 trước revision; giảm quota lặp hai item ở L1 Formation/
+L3 Elite, chuyển cơ hội sang đúng loại và đoạn cần dùng. Random odds, Shard density,
+normal cap 6, enemy count/HP, damage/cadence và pickup physics giữ nguyên.
+Đây là authored opportunity, không bảo đảm Player nhặt đủ hoặc dùng đúng nhánh.
+
 ## Testbed flight và pacing follow-up `[PROVISIONAL]`
 
 Fixture M4 vẫn giữ system testbed. Encounter 2 dùng top retreat/right sweep xen kẽ;
@@ -962,7 +995,8 @@ Survive giữ timer đầy đủ. Early exhaustion không tính escaped enemy l�
 
 Production definitions nằm trong `Data/RegionA/Missions/Mission01–04.asset`, dùng scene
 Gameplay chung. Fixture M4 giữ nguyên encounter/reward coverage riêng; không đưa
-SYSTEM_* aliases hoặc guaranteed effect drops vào campaign. Định hướng L1–L4 ở trên
+SYSTEM_* aliases hoặc lịch reward của fixture vào campaign; production dùng
+[reward pacing riêng](#authored-reward-pacing-tunable). Định hướng L1–L4 ở trên
 là target; bảng dưới là authored runtime seed `[TUNABLE]` hiện tại.
 
 | Encounter | Composition / silhouette | Role placement |

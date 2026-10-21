@@ -368,8 +368,9 @@ MonoBehaviour:
       ExitAnchor: {x: 1.18, y: 0.3}
       ExitDuration: 3
   CameraOverride: {fileID: 11400000, guid: dd2dfde59934e3ebb988cd2a03ec0953, type: 2}
-  GuaranteedMajorCount: 0
-  GuaranteeTable: {fileID: 11400000, guid: 3f21893fa1f0805d69ff96a39947511f, type: 2}
+  GuaranteedMajorCount: 1
+  GuaranteedMajorByKill: 2
+  GuaranteeTable: {fileID: 11400000, guid: 7c73d9d4d118ece44b574c61be17385c, type: 2}
   ActiveShooterLimit: 3
   ShotSpacing: 0.5
   ShotsPerVolley: 4

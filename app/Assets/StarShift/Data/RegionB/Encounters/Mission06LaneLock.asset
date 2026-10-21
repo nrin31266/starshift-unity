@@ -192,8 +192,9 @@ MonoBehaviour:
     ExitDuration: 3
   OptionalEvents: []
   CameraOverride: {fileID: 11400000, guid: e0b46a85fbbca1955b479a3cc4b9775a, type: 2}
-  GuaranteedMajorCount: 0
-  GuaranteeTable: {fileID: 11400000, guid: 3f21893fa1f0805d69ff96a39947511f, type: 2}
+  GuaranteedMajorCount: 1
+  GuaranteedMajorByKill: 4
+  GuaranteeTable: {fileID: 11400000, guid: ab20a26cc3307874a90d7e745e040438, type: 2}
   ActiveShooterLimit: 1
   ShotSpacing: 0.5
   ShotsPerVolley: 2

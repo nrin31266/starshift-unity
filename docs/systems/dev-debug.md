@@ -5,6 +5,18 @@ migration một lần và ba probe dư; lệnh hiện dùng theo
 [Unity tools](../../tools/unity/README.md). Không chạy lại builder từ Git history
 lên tuning hiện tại.
 
+## Authored reward pacing verification — 2026-10-21
+
+`VerifyAuthoredRewards.Pure/Begin` kiểm quota deadline/legacy mode, seed/reset,
+actual enemy deaths và pickup collection trên cả 15 authored combat encounters.
+Coverage gồm đủ 8 item families, reserved pickup overflow, maxed Core/ammo/life
+fallback và production save byte guard đều PASS. NewGame → intro → Pulse upgrade →
+Formation/Plasma → Pause/Retry → Plasma lại cùng ordinal PASS; checkpoint rollback
+Core đúng, không đổi production save bytes. Native validation, persistence Core và
+Console 0 errors/0 warnings PASS. Schedule ở
+[content owner](../content/levels-encounters.md#authored-reward-pacing-tunable), không
+lặp bảng ở đây. Evidence ignored: `.design/content-rewards/`.
+
 ## Content filename cleanup — 2026-10-21
 
 100 content assets được rename qua Unity, giữ GUID và serialized data ngoài object
@@ -12,7 +24,8 @@ name. Production Mission 01–08, shared flights và encounter fixture theo
 [naming policy](../production/asset-pipeline.md#content-asset-filenames).
 Native validation toàn bộ LevelDefinitions PASS, compile và persistence Core PASS;
 không đổi mission/encounter IDs, seed, gameplay values hoặc save schema.
-Migration script một lần đã bỏ; paths trong probes/docs đang dùng được cập nhật.
+8 reward tables chỉ được fixture tham chiếu đã chuyển vào `Data/Fixtures/Rewards`;
+production không dùng bảng `Test*`. Migration script một lần đã bỏ; paths trong probes/docs đang dùng được cập nhật.
 
 ## Fixed clear pause grouped verification — 2026-10-19
 

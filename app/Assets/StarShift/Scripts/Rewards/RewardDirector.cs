@@ -59,12 +59,12 @@ namespace StarShift.Rewards
                 if (group.GrantsRewards && Eligible(prefab.GetComponent<EnemyHealth>())) enemies += group.Count;
             }
             roller.Reseed(seed);
-            quota.Reset(seed ^ 0x51f15e, enemies, encounter.GuaranteedMajorCount);
+            quota.Reset(seed ^ 0x51f15e, enemies, encounter.GuaranteedMajorCount, encounter.GuaranteedMajorByKill);
             hasKilledCandidate = false;
         }
         // Floor không bị mất khi normal pickup cap đã đầy; chỉ quota đã author được dùng slot này.
         private void DeliverFloor(PickupDefinition item, Vector3 position) => Spawn(item, null, position, true);
-        private PickupDefinition SelectGuarantee(RewardDropTable table) => table.GuaranteedPickup != null ? table.GuaranteedPickup : roller.SelectMajor(table, receiver, lives, loadout, false);
+        private PickupDefinition SelectGuarantee(RewardDropTable table) => roller.SelectMajor(table, receiver, lives, loadout, false);
         private void CompleteQuota(EncounterDefinition encounter)
         {
             // Timeline có thể hết giờ trước kill cuối; chỉ dùng candidate đã bị hạ, không thưởng cho escape.
@@ -108,7 +108,7 @@ namespace StarShift.Rewards
                     hasKilledCandidate = true; lastKilledPosition = position;
                     var guarantee = runner.Current.GuaranteeTable;
                     bool satisfies = item != null && item.Kind != PickupKind.Shard &&
-                        (guarantee == null || guarantee.GuaranteedPickup == null || item == guarantee.GuaranteedPickup);
+                        (guarantee == null || guarantee.GuaranteedPickup == null || !receiver.CanUse(guarantee.GuaranteedPickup) || item == guarantee.GuaranteedPickup);
                     deliverFloor = satisfies && quota.Remaining > 0;
                     if (quota.ResolveKill(satisfies))
                     {

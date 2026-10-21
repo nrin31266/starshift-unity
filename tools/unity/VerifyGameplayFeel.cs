@@ -437,7 +437,7 @@ public static class VerifyGameplayFeel
             Vector3 At(float x)=>Camera.main.ViewportToWorldPoint(new Vector3(x,.85f,-Camera.main.transform.position.z));
             var item=director.Spawn(Item("Overdrive"),null,At(.1f));
             var shard=director.Spawn(Item("StellarShard"),null,At(.3f));
-            var crate=director.Spawn(null,AssetDatabase.LoadAssetAtPath<RewardDropTable>("Assets/StarShift/Data/Rewards/TestMissileAmmo.asset"),At(.9f));
+            var crate=director.Spawn(null,AssetDatabase.LoadAssetAtPath<RewardDropTable>("Assets/StarShift/Data/Fixtures/Rewards/MissileAmmoDrop.asset"),At(.9f));
             Require(item!=null && shard!=null && crate!=null,"Carry spawn");
             var token=cleanup.Token;var rewardToken=cleanup.RewardToken;
             await Until(()=>Runner.Stage==EncounterStage.Handoff,.6f,"Pickup delayed minor handoff with reward grace");

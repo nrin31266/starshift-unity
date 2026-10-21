@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1118c710ce289527acf9dff8006adbc, type: 3}
+  m_Name: MissileAmmoOpportunity
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Rewards.RewardDropTable
+  Source: 0
+  MajorChance: 0.0075
+  ShardChance: 0.035
+  Shard: {fileID: 0}
+  BossShardCount: 0
+  GuaranteedPickup: {fileID: 11400000, guid: a35f9e6fb30bba787ac5c742ba5129ed, type: 2}
+  MajorItems:
+  - Item: {fileID: 11400000, guid: 61dc5e8a5c6a167268972dc97f30c4bf, type: 2}
+    Weight: 90
+  - Item: {fileID: 11400000, guid: 42f828de135191c78bb824e5ec9e98e9, type: 2}
+    Weight: 90
+  - Item: {fileID: 11400000, guid: 52279b7e5eb0bf970827a9f04ce52921, type: 2}
+    Weight: 90
+  - Item: {fileID: 11400000, guid: a352b8ae1e0ad9583beee5d845461ffb, type: 2}
+    Weight: 25
+  - Item: {fileID: 11400000, guid: ed78a615609a925e1ba5b129ac38a891, type: 2}
+    Weight: 18
+  - Item: {fileID: 11400000, guid: a38f447571bec1e25ba701d80d21c437, type: 2}
+    Weight: 14
+  - Item: {fileID: 11400000, guid: a35f9e6fb30bba787ac5c742ba5129ed, type: 2}
+    Weight: 9
+  - Item: {fileID: 11400000, guid: 1147246fa5c68f5ba9bba00d024a3b99, type: 2}
+    Weight: 4
