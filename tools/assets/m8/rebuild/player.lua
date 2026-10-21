@@ -42,7 +42,7 @@ for f=0,3 do
  frames[#frames+1]=im
 end
 sheet('engine-loop',32,40,frames,.075)
-for _,id in ipairs{'trail-standard','trail-ion','trail-rainbow'} do
+for _,id in ipairs{'trail-ion','trail-rainbow'} do
  local frames={}
  for f=0,3 do
   local im=Image(16,64,ColorMode.RGB)

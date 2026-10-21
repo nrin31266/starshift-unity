@@ -189,7 +189,7 @@ namespace StarShift.UI
             view.MenuShipName.text = cosmetics.Equipped(preview, CosmeticSlot.Chassis).DisplayName;
             bool owned = cosmetics.Owns(profile, selected), equipped = cosmetics.Equipped(profile, cosmeticSlot).Id == selected.Id;
             view.MenuEquipped.text = equipped ? ShellCopy.Equipped : "XEM TRƯỚC";
-            view.MenuStatus.text = cosmeticSlot == CosmeticSlot.Chassis ? "Chọn tàu, rồi tùy chỉnh sơn và vệt động cơ." :
+            view.MenuStatus.text = cosmeticSlot == CosmeticSlot.Chassis ? "Chọn tàu, rồi tùy chỉnh sơn và vệt di chuyển." :
                 ShellCopy.CosmeticTabs[(int)cosmeticSlot] + " · " + cosmetics.Equipped(profile, CosmeticSlot.Chassis).DisplayName;
             view.Wallet.text = ShellCopy.Wallet(profile.StellarShardBalance);
             view.HangarMode.interactable = inStore;
@@ -198,6 +198,7 @@ namespace StarShift.UI
                 "NGOẠI HÌNH CỦA " + cosmetics.Equipped(profile, CosmeticSlot.Chassis).DisplayName;
             for (int i = 0; i < view.CosmeticTabs.Length; i++)
             {
+                view.CosmeticTabs[i].GetComponentInChildren<Text>().text = ShellCopy.CosmeticTabs[i];
                 view.CosmeticTabs[i].interactable = i != (int)cosmeticSlot;
                 view.CosmeticTabs[i].GetComponent<Outline>().enabled = i == (int)cosmeticSlot;
             }

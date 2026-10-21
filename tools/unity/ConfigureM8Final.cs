@@ -16,9 +16,11 @@ using UnityEditor.U2D.Sprites;
 
 public static class ConfigureM8Final
 {
-    const string Art = "Assets/StarShift/Art/M8/";
-    static Sprite S(string id) => AssetDatabase.LoadAssetAtPath<Sprite>(Art + id + ".png") ?? throw new InvalidOperationException("Missing " + id);
-    static Sprite[] Frames(string id) => AssetDatabase.LoadAllAssetsAtPath(Art + id + "-sheet.png").OfType<Sprite>().OrderBy(s => s.name, StringComparer.Ordinal).ToArray();
+    const string Art = "Assets/StarShift/Art/";
+    static string ArtPath(string id) => AssetDatabase.FindAssets(id + " t:Texture2D", new[]{Art.TrimEnd('/')})
+        .Select(AssetDatabase.GUIDToAssetPath).Single(path => System.IO.Path.GetFileNameWithoutExtension(path) == id);
+    static Sprite S(string id) => AssetDatabase.LoadAssetAtPath<Sprite>(ArtPath(id)) ?? throw new InvalidOperationException("Missing " + id);
+    static Sprite[] Frames(string id) => AssetDatabase.LoadAllAssetsAtPath(ArtPath(id + "-sheet")).OfType<Sprite>().OrderBy(s => s.name, StringComparer.Ordinal).ToArray();
     static void Set(UnityEngine.Object o, string field, UnityEngine.Object value)
     { var so = new SerializedObject(o); var p = so.FindProperty(field) ?? throw new Exception(o.name + ":" + field); p.objectReferenceValue = value; so.ApplyModifiedPropertiesWithoutUndo(); }
     static void Array(UnityEngine.Object o, string field, Sprite[] values)
@@ -49,6 +51,12 @@ public static class ConfigureM8Final
         {
             var plume=Visual(hull.gameObject,"M8Engine"+i,"engine-loop",Vector3.zero,hull.sortingOrder-1,.32f);
             plume.transform.localRotation=Quaternion.identity;plumes.Add(plume);
+            if(appearance==null)
+            {
+                var chassis=AssetDatabase.LoadAssetAtPath<CosmeticCatalog>("Assets/StarShift/Data/Cosmetics/ShipCosmetics.asset").Default(CosmeticSlot.Chassis);
+                plume.transform.localPosition=chassis.EngineSockets[i]+Vector2.down*(.35555f*chassis.PlumeScale);
+                Loop(plume,"engine-loop");
+            }
         }
         if(appearance!=null)Objects(appearance,approach?"approachPlumes":"enginePlumes",plumes);
     }
@@ -72,7 +80,9 @@ public static class ConfigureM8Final
         for(int i=0;i<2;i++){engines[i]=PreviewImage(image.transform,"Engine"+i);engines[i].sprite=S("engine-loop");}
         Set(preview,"Hull",image);
         Objects(preview,"Engines",engines);
-        Objects(preview,"Ribbons",System.Array.Empty<Image>());
+        var ribbon=PreviewImage(image.transform,"MovementRibbon");
+        ribbon.sprite=Frames("trail-ion")[0];
+        Objects(preview,"Ribbons",new[]{ribbon});
     }
     static void PlayerRoot(GameObject root)
     {
@@ -113,7 +123,7 @@ public static class ConfigureM8Final
     {
         if(EditorApplication.isPlayingOrWillChangePlaymode)throw new Exception("Edit Mode required");
         AssetDatabase.Refresh();
-        foreach(var id in new[]{"player","player-swept","player-amber","player-swept-amber"})AssetDatabase.ImportAsset(Art+id+".png",ImportAssetOptions.ForceUpdate);
+        foreach(var id in new[]{"player","player-swept","player-amber","player-swept-amber"})AssetDatabase.ImportAsset(ArtPath(id),ImportAssetOptions.ForceUpdate);
         var catalog=AssetDatabase.LoadAssetAtPath<CosmeticCatalog>("Assets/StarShift/Data/Cosmetics/ShipCosmetics.asset");
         catalog.EngineFrames=Frames("engine-loop");
         foreach(var spec in new[]{new[]{"chassis-arrow","MŨI GIÁO","player"},new[]{"chassis-swept","ƯNG KÍCH","player-swept"}})
@@ -122,12 +132,18 @@ public static class ConfigureM8Final
             c.EngineSockets=spec[0]=="chassis-arrow"
                 ?new[]{new Vector2(-10/56.25f,-28/56.25f),new Vector2(9/56.25f,-28/56.25f)}
                 :new[]{new Vector2(-9/56.25f,-32/56.25f),new Vector2(9/56.25f,-32/56.25f)};
-            c.MovementTrailSocket=new Vector2(0,-.3f);c.MuzzleSocket=new Vector2(0,.75f);c.PlumeScale=.32f;
+            c.MovementTrailSocket=new Vector2(0,c.EngineSockets.Min(socket=>socket.y)-.025f);c.MuzzleSocket=new Vector2(0,.75f);c.PlumeScale=.32f;
         }
         catalog.Find("skin-amber").Tint=Color.white;
         var rainbow=catalog.Find("trail-rainbow");if(rainbow==null){rainbow=new CosmeticOption{Id="trail-rainbow",DisplayName="CẦU VỒNG",Slot=CosmeticSlot.Trail,ShardCost=8};catalog.Options=catalog.Options.Concat(new[]{rainbow}).ToArray();}
         foreach(var id in new[]{"trail-none","trail-ion","trail-rainbow"})
-        {var c=catalog.Find(id);c.AnimationFrames=Frames(id=="trail-none"?"trail-standard":id);c.Sprite=c.AnimationFrames[0];c.Tint=id=="trail-rainbow"?new Color(.85f,.65f,1,.5f):new Color(.25f,.85f,1,.6f);c.TrailSeconds=id=="trail-none"?.12f:.22f;}
+        {
+            var c=catalog.Find(id);
+            c.AnimationFrames=id=="trail-none"?System.Array.Empty<Sprite>():Frames(id);
+            c.Sprite=c.AnimationFrames.FirstOrDefault();c.Tint=Color.white;
+            c.TrailSeconds=id=="trail-none"?0:id=="trail-ion"?.16f:.14f;
+            if(id=="trail-none")c.DisplayName="KHÔNG VỆT";
+        }
         EditorUtility.SetDirty(catalog);
         Prefab("Player/Player",PlayerRoot);PlayerRoot(GameObject.Find("Player"));
         Prefab("UI/GameShellUI",PlayerUi);
@@ -220,7 +236,7 @@ public static class ConfigureM8Final
     {
         if(EditorApplication.isPlayingOrWillChangePlaymode)throw new Exception("Edit Mode required");
         foreach(var id in new[]{"ui-panel","ui-button","ui-button-secondary","ui-tab","ui-card","ui-modal","ui-heat-housing"})
-        {var importer=(TextureImporter)AssetImporter.GetAtPath(Art+id+".png");importer.spriteBorder=id=="ui-heat-housing"?new Vector4(6,4,6,4):new Vector4(6,6,6,6);importer.SaveAndReimport();}
+        {var importer=(TextureImporter)AssetImporter.GetAtPath(ArtPath(id));importer.spriteBorder=id=="ui-heat-housing"?new Vector4(6,4,6,4):new Vector4(6,6,6,6);importer.SaveAndReimport();}
         foreach(var guid in AssetDatabase.FindAssets("t:PickupDefinition",new[]{"Assets/StarShift/Data"}))
         {var item=AssetDatabase.LoadAssetAtPath<PickupDefinition>(AssetDatabase.GUIDToAssetPath(guid));if(item.Kind==PickupKind.Shard)continue;item.VisualScale=1.2f;EditorUtility.SetDirty(item);}
         Prefab("UI/GameShellUI",SkinUi);

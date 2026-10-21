@@ -32,7 +32,7 @@ namespace StarShift.UI
         public const string Equip = "TRANG BỊ";
         public const string Owned = "ĐÃ SỞ HỮU";
         public const string CosmeticFailed = "Chưa lưu được lựa chọn. Shard và trang bị trước đó vẫn được giữ. Hãy thử lại.";
-        public static readonly string[] CosmeticTabs = { "TÀU", "SƠN TÀU", "VỆT ĐỘNG CƠ" };
+        public static readonly string[] CosmeticTabs = { "TÀU", "SƠN TÀU", "VỆT DI CHUYỂN" };
         public static string Purchase(int cost) => $"MUA & TRANG BỊ · {cost} Stellar Shard";
         public static string ConfirmPurchase(string name, int cost) => $"Mua {name} với {cost} Stellar Shard?\nChỉ thay đổi ngoại hình; không thay đổi chỉ số chiến đấu.";
         public static string NeedShards(int cost) => $"CẦN THÊM {cost} Stellar Shard";

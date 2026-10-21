@@ -36,15 +36,6 @@ namespace StarShift.UI
         public CanvasGroup Fade;
         public ShellScreen Screen { get; private set; }
         private Button previousSelection;
-        private Vector2 shipRestPosition;
-        private float idleAge;
-        private void Awake() => shipRestPosition = MenuShip.rectTransform.anchoredPosition;
-        private void LateUpdate()
-        {
-            if (!ShipStage.activeInHierarchy) return;
-            idleAge += Time.unscaledDeltaTime;
-            MenuShip.rectTransform.anchoredPosition = shipRestPosition + new Vector2(0, Mathf.Sin(idleAge * 1.3f) * 3);
-        }
 
         public void Show(ShellScreen screen)
         {

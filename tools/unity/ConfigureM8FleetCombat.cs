@@ -6,16 +6,17 @@ using StarShift.Player;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
-using UnityEditor.U2D.Sprites;
 
 // Batch 3 authoring: bind armor-family sprites, damage states, projectile visual,
 // impact presentation và staged destruction vào prefab/data hiện có.
 // Không đổi collider, HP, scale, formation hoặc timing gameplay.
 public static class ConfigureM8FleetCombat
 {
-    const string Art = "Assets/StarShift/Art/M8/";
-    static Sprite S(string id) => AssetDatabase.LoadAssetAtPath<Sprite>(Art + id + ".png") ?? throw new InvalidOperationException("Missing " + id);
-    static Sprite[] Frames(string id) => AssetDatabase.LoadAllAssetsAtPath(Art + id + "-sheet.png").OfType<Sprite>().OrderBy(s => s.name, StringComparer.Ordinal).ToArray();
+    const string Art = "Assets/StarShift/Art/";
+    static string ArtPath(string id) => AssetDatabase.FindAssets(id + " t:Texture2D", new[]{Art.TrimEnd('/')})
+        .Select(AssetDatabase.GUIDToAssetPath).Single(path => System.IO.Path.GetFileNameWithoutExtension(path) == id);
+    static Sprite S(string id) => AssetDatabase.LoadAssetAtPath<Sprite>(ArtPath(id)) ?? throw new InvalidOperationException("Missing " + id);
+    static Sprite[] Frames(string id) => AssetDatabase.LoadAllAssetsAtPath(ArtPath(id + "-sheet")).OfType<Sprite>().OrderBy(s => s.name, StringComparer.Ordinal).ToArray();
 
     static void Set(UnityEngine.Object o, string field, UnityEngine.Object value)
     { var so = new SerializedObject(o); var p = so.FindProperty(field) ?? throw new Exception(o.name + ":" + field); p.objectReferenceValue = value; so.ApplyModifiedPropertiesWithoutUndo(); }
@@ -110,71 +111,6 @@ public static class ConfigureM8FleetCombat
         Set(fire, "chargeCue", cue);
         Array(fire, "chargeFrames", Frames(chargeId));
         Bool(fire, "specialDanger", special);
-    }
-
-    // Import Batch 3: sprite đơn Point/uncompressed 56.25 PPU; sheet slice 4 cột như M8 cũ.
-    public static object Import()
-    {
-        EditMode();
-        AssetDatabase.Refresh();
-        int count = 0;
-        foreach (var file in System.IO.Directory.GetFiles(Art, "*.png"))
-        {
-            var path = file.Replace('\\', '/');
-            var id = System.IO.Path.GetFileNameWithoutExtension(path);
-            bool batch = id.Contains("impact-") || id.Contains("hit-") || id.Contains("charge-") || id.Contains("muzzle-")
-                || id.Contains("telegraph-") || id.Contains("trail-dot-") || id.Contains("hostile-") || id.Contains("pulse-bolt")
-                || id.Contains("plasma-orb") || id.Contains("beam-warning") || id.Contains("debris-") || id.Contains("boss-blast")
-                || id.Contains("module-collapse") || id.Contains("supply-burst") || id.Contains("-damaged") || id.Contains("-critical") || id.Contains("charge-hostile");
-            if (!batch) continue;
-            var importer = (TextureImporter)AssetImporter.GetAtPath(path);
-            if (importer == null) continue;
-            bool sheet = id.EndsWith("-sheet");
-            importer.textureType = TextureImporterType.Sprite;
-            importer.spriteImportMode = sheet ? SpriteImportMode.Multiple : SpriteImportMode.Single;
-            importer.spritePixelsPerUnit = 56.25f;
-            importer.filterMode = FilterMode.Point;
-            importer.textureCompression = TextureImporterCompression.Uncompressed;
-            importer.mipmapEnabled = false;
-            importer.alphaIsTransparency = true;
-            importer.npotScale = TextureImporterNPOTScale.None;
-            importer.wrapMode = TextureWrapMode.Clamp;
-            var settings = new TextureImporterSettings(); importer.ReadTextureSettings(settings);
-            settings.spriteMeshType = SpriteMeshType.FullRect;
-            settings.spriteAlignment = (int)SpriteAlignment.Center;
-            settings.spritePivot = Vector2.one * .5f;
-            importer.SetTextureSettings(settings);
-            importer.SaveAndReimport();
-            if (sheet)
-            {
-                var factory = new SpriteDataProviderFactories(); factory.Init();
-                var provider = factory.GetSpriteEditorDataProviderFromObject(importer);
-                provider.InitSpriteEditorDataProvider();
-                var ids = provider.GetDataProvider<ISpriteNameFileIdDataProvider>();
-                var old = provider.GetSpriteRects().ToDictionary(r => r.name);
-                importer.GetSourceTextureWidthAndHeight(out var width, out var height);
-                int columns = 4; int w = width / columns; int h = height;
-                var rects = Enumerable.Range(0, columns).Select(i =>
-                {
-                    var name = id.Replace("-sheet", "") + "_" + i.ToString("D2");
-                    return new SpriteRect
-                    {
-                        name = name,
-                        rect = new Rect(i * w, 0, w, h),
-                        alignment = SpriteAlignment.Center,
-                        pivot = Vector2.one * .5f,
-                        spriteID = old.TryGetValue(name, out var previous) ? previous.spriteID : GUID.Generate()
-                    };
-                }).ToArray();
-                provider.SetSpriteRects(rects);
-                ids.SetNameFileIdPairs(rects.Select(r => new SpriteNameFileIdPair(r.name, r.spriteID)));
-                provider.Apply();
-                importer.SaveAndReimport();
-            }
-            count++;
-        }
-        AssetDatabase.SaveAssets();
-        return new { imported = count };
     }
 
     public static object Fleet()

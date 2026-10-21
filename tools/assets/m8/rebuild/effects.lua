@@ -81,6 +81,48 @@ for f=0,3 do
  module[#module+1]=m
 end
 save('impact-shield',shield);save('impact-module',module)
+-- Vòng năng lượng có bề dày và cạnh sáng; glint chạy nhẹ, không nháy thân tàu.
+for _,id in ipairs{'death-respawn','shield-activate-break','attack-telegraphs','pickup-collect-upgrade'}do
+ local frames={}
+ local warning=id=='attack-telegraphs';local reward=id=='pickup-collect-upgrade'
+ local edge=warning and '68558f' or reward and '9c713d' or '23576d'
+ local mid=warning and 'bd8fdc' or reward and 'edbd69' or '65cddc'
+ local light=warning and 'ffe0f8' or reward and 'fff0c5' or 'd2fff3'
+ for f=0,3 do
+  local a=image(64,64);local radius=reward and (12+f*4) or 25
+  for y=1,62 do for x=1,62 do
+   local dx,dy=math.abs(x-31.5),math.abs(y-31.5)
+   local d=math.max(dx,dy, (dx+dy)*.7)
+   if d<=radius and d>=radius-3 then
+    local hx=(y<30 and x<43)and light or d>radius-1 and edge or mid
+    rect(a,x,y,1,1,hx)
+   end
+  end end
+  local gx=({16,26,37,47})[f+1]
+  rect(a,gx,7,4,2,light);rect(a,6,18+f*7,2,4,light)
+  if warning then
+   for _,x in ipairs{9,49}do for _,y in ipairs{9,49}do rect(a,x,y,6,6,mid);rect(a,x,y,4,2,light)end end
+  elseif reward then
+   poly(a,{{32,23},{38,32},{32,41},{26,32}},mid);poly(a,{{32,25},{32,36},{28,32}},light)
+  end
+  frames[#frames+1]=a
+ end
+ save(id,frames,.1)
+ if id=='shield-activate-break' then frames[1]:saveAs(out..'/warden-shield-phase.png')end
+end
+for _,id in ipairs{'charge-hostile','charge-beam'}do
+ local frames={};local special=id=='charge-beam'
+ for f=0,3 do
+  local a=image(32,32);local r=4+f*2
+  disc(a,16,16,r,special and '693f80' or 'a9683e');disc(a,15,15,r-2,special and 'd58fdf' or 'efb978');disc(a,14,14,math.max(1,r-4),'fff5db')
+  for _,sign in ipairs{-1,1}do rect(a,16+sign*(r+2)-1,15,3,2,special and 'e9b5ef' or 'ffd19d')end
+  frames[#frames+1]=a
+ end
+ save(id,frames,.08)
+end
+local core=Image{fromFile=out..'/warden-core.png'};local cores={}
+for f=0,3 do local a=Image(core);rect(a,44+f*2,40,3,3,'f4fff5');cores[#cores+1]=a end
+save('warden-core-loop',cores,.12)
 local crate=Image{fromFile=out..'/legacy-crate.png'};local cargo={}
 for f=0,3 do local a=image(96,96);local d=f*7
  for iy=0,1 do for ix=0,1 do
@@ -95,3 +137,13 @@ local raw=Image{fromFile=root..'/raw/rock-shatter.png'};local rock={}
 for f=0,11 do local a=image(47,43);a:drawImage(raw,Point(-(f%4)*47,-math.floor(f/4)*43));rock[#rock+1]=a end
 save('rock-shatter',rock,.071)
 print('Coherent projectile, muzzle, impact, cargo and rock effect families authored')
+local streak=image(4,48)
+for y=1,45 do
+ local half=y>34 and 2 or 1
+ for x=2-half,1+half do
+  local core=x==1 or x==2
+  local alpha=math.floor(35+220*(y/45)^.7)
+  streak:putPixel(x,y,app.pixelColor.rgba(core and 231 or 96,core and 255 or 207,255,alpha))
+ end
+end
+local s=Sprite(4,48,ColorMode.RGB);s:newCel(s.layers[1],1,streak,Point(0,0));s:saveAs(root..'/speed-streak.aseprite');s:saveAs(out..'/speed-streak.png');s:close()

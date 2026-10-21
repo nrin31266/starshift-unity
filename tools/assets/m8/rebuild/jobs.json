@@ -6,14 +6,14 @@
       "job_id": "2dc8aca4-ed21-4025-b671-b08767b190fc",
       "model": "pixen",
       "charged": 1,
-      "raw": "raw/player.png"
+      "decision": "RETIRED B reference: owner selected A; archived in be108628"
     },
     {
       "id": "player-swept",
       "job_id": "9a919ca7-996a-42e4-88d9-286e702ff246",
       "model": "pixen",
       "charged": 1,
-      "raw": "raw/player-swept.png"
+      "decision": "RETIRED B reference: owner selected A; archived in be108628"
     },
     {
       "id": "scout",

@@ -301,11 +301,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EnemyDamagePresentation
   hull: {fileID: 6314957006533597239}
-  damagedTint: {r: 0.7, g: 0.4, b: 0.24, a: 1}
+  damagedTint: {r: 1, g: 1, b: 1, a: 1}
   damagedHealthFraction: 0.66
   flashDuration: 0.08
   criticalHealthFraction: 0.33
-  criticalTint: {r: 1, g: 0.25, b: 0.08, a: 1}
+  criticalTint: {r: 1, g: 1, b: 1, a: 1}
   damagedSprite: {fileID: 9124134895336659724, guid: e42a8e198275fa6c3b36e15943542f13, type: 3}
   criticalSprite: {fileID: 2635039069418421317, guid: 10a2271fca79dab308ec695e85cbaa1f, type: 3}
 --- !u!114 &3849970000624986415

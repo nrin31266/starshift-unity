@@ -1,6 +1,6 @@
 {
   "date": "2026-10-20",
-  "scope": "M8 vertical slice only; selected by agent after Unity review; owner aesthetic acceptance not claimed",
+  "scope": "Historical provenance only; some retired raw sources are archived in Git. Current asset paths, sources and checks belong to ../production-manifest.json.",
   "generated": [
     {
       "name": "player",
@@ -182,5 +182,6 @@
         "reason": "Free tier high demand; no output or charge"
       }
     ]
-  }
+  },
+  "historical_source_archive_commit": "4219c667"
 }

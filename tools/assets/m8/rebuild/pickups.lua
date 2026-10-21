@@ -1,5 +1,5 @@
 local root=assert(app.params.root);local out=assert(app.params.out)
-local function c(h)return app.pixelColor.rgba(tonumber(h:sub(1,2),16),tonumber(h:sub(3,4),16),tonumber(h:sub(5,6),16),255)end
+local function c(h)return app.pixelColor.rgba(tonumber(h:sub(1,2),16),tonumber(h:sub(3,4),16),tonumber(h:sub(5,6),16),#h==8 and tonumber(h:sub(7,8),16) or 255)end
 local function image(w,h)return Image(w,h,ColorMode.RGB)end
 local function rect(im,x,y,w,h,hx)for yy=y,y+h-1 do for xx=x,x+w-1 do if xx>=0 and yy>=0 and xx<im.width and yy<im.height then im:putPixel(xx,yy,c(hx))end end end end
 local function poly(im,p,hx)
@@ -18,20 +18,19 @@ local function saveFrames(id,frames)
  s:saveAs(root..'/'..id..'.aseprite');s:close();frames[1]:saveAs(out..'/'..id..'.png');strip:saveAs(out..'/'..id..'-sheet.png')
 end
 for _,spec in ipairs(specs)do
- local im=image(64,80);local accent=spec[3]
- -- Nắp kim loại, cổ lọ và thân kính chung; icon lớn là thông tin chính.
- rect(im,22,4,20,10,'20374a');rect(im,24,4,16,3,'9db7bf');rect(im,25,8,2,4,'6f899a');rect(im,31,8,2,4,'6f899a');rect(im,37,8,2,4,'6f899a')
- rect(im,25,14,14,8,'325166');rect(im,26,15,3,6,'91b9c2')
- poly(im,{{24,20},{39,20},{50,30},{50,66},{43,74},{20,74},{13,66},{13,30}},'122538')
- poly(im,{{24,22},{39,22},{47,31},{47,64},{41,71},{22,71},{16,64},{16,31}},'658a9b')
- poly(im,{{25,24},{38,24},{44,32},{44,62},{40,67},{24,67},{19,62},{19,32}},'203e54')
- poly(im,{{19,54},{44,54},{44,62},{40,67},{24,67},{19,62}},accent)
- rect(im,16,34,2,24,'a8d4d6');rect(im,19,29,2,5,'cfe9e6');rect(im,23,69,17,2,'87aab0')
- local symbol=Image{fromFile=out..'/'..spec[2]..'.png'};symbol:resize(28,28);im:drawImage(symbol,Point(18,31))
+ local im=image(64,64);local accent=spec[3]
+ -- Hộp kính vuông bo góc; lòng trong suốt để icon có nhiều diện tích hơn.
+ poly(im,{{10,4},{53,4},{59,10},{59,53},{53,59},{10,59},{4,53},{4,10}},'28465aa8')
+ poly(im,{{11,6},{52,6},{56,11},{56,51},{51,56},{11,56},{7,51},{7,11}},accent..'80')
+ poly(im,{{12,9},{51,9},{54,12},{54,50},{50,53},{12,53},{10,50},{10,12}},'84c4dc25')
+ rect(im,12,6,39,2,'d6fff2d8');rect(im,7,12,2,36,'a8e8ecc8')
+ rect(im,13,56,37,2,accent..'b0');rect(im,56,13,2,36,'25435da8')
+ rect(im,11,11,10,2,'effff878');rect(im,11,13,2,8,'effff858')
+ local symbol=Image{fromFile=out..'/'..spec[2]..'.png'};symbol:resize(42,42);im:drawImage(symbol,Point(11,11))
  local frames={}
- for f=0,3 do local a=Image(im);local y=27+f*8
-  rect(a,16,y,2,5,'d8efeb');rect(a,15,y+2,4,1,'effaf2')
-  if f%2==0 then rect(a,43,62-f*4,2,2,'b4d5d5')end
+ for f=0,3 do local a=Image(im);local x=14+f*9
+  rect(a,x,5,5,2,'effff8');rect(a,x+2,4,1,4,'effff8')
+  if f%2==0 then rect(a,55,43-f*7,2,3,'c3f4ec')end
   frames[#frames+1]=a
  end
  saveFrames(spec[1],frames)
@@ -40,4 +39,4 @@ end
 local shard=Image{fromFile=root..'/salvage/stellar-shard.png'};local frames={}
 for f=0,3 do local a=Image(shard);local x=10+f*3;local y=8+f*4;rect(a,x,y,2,3,'fff0c5');frames[#frames+1]=a end
 saveFrames('stellar-shard',frames)
-print('PASS: eight capsule+icon sheets and Shard, four subtle glint frames each')
+print('PASS: eight transparent square cases with large icons; four subtle glint frames each')

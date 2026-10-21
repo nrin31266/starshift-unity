@@ -229,7 +229,7 @@ hoặc advance Campaign. Explicit Settings action là user preference exception 
 ## M7 cosmetic Hangar `[PROVISIONAL]`
 
 Stellar Shard là currency duy nhất. Frontend cho mua và trang bị Chassis, Skin,
-Engine Trail; không có damage/HP/speed/weapon bonus, random box hoặc upgrade tree.
+Movement Trail; không có damage/HP/speed/weapon bonus, random box hoặc upgrade tree.
 Ownership và equipped selection thuộc Profile, giữ qua New Game và relaunch.
 Mua thành công trừ Shard, thêm ownership và trang bị trong cùng transaction. Món
 đã sở hữu/default được đổi miễn phí; không trả tiền lần hai. Insufficient funds
@@ -241,10 +241,12 @@ phí được resolve cả khi save M6 chưa có cosmetic fields. Seed pricing `
 
 | Slot | Default | Lựa chọn mở khóa | Giá Shard |
 |---|---|---|---:|
-| Chassis | chassis-arrow / Mũi Tên | chassis-swept / Cánh Quét | 12 |
+| Chassis | chassis-arrow / Mũi Giáo | chassis-swept / Ưng Kích | 12 |
 | Skin | skin-cyan / Lam Băng | skin-amber / Hổ Phách | 6 |
-| Trail | trail-none / Động Cơ Tiêu Chuẩn | trail-ion / Vệt Ion | 8 |
+| Trail | trail-none / Không Vệt | trail-ion / Vệt Ion; trail-rainbow / Cầu Vồng | 8 mỗi loại |
 
-Đây là placeholder catalog để đóng functional UI, không khóa art family hoặc giá
-final. Chassis reuse sprite tạm hiện có, Skin đổi tint, Trail là presentation.
+Các ID vẫn giữ để tương thích ownership/save. Default Trail không phát movement
+trail; engine plume thuộc chassis luôn còn. Ion và Rainbow là lựa chọn presentation
+riêng, cùng có trong Store và xuất hiện ở Hangar sau khi sở hữu. Art và vật liệu thuộc
+[art direction](../presentation/art-direction.md); không khóa giá final.
 Không đổi reward drops, score, checkpoint high-water hoặc combat balance.

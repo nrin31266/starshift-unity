@@ -6,7 +6,7 @@ This directory contains editable Aseprite sources and the scripts that export th
 
 `approved/` retains the selected player pair A. `player.lua` repaints only the two
 stacked nozzle regions; it preserves plume and the remaining hull/skin pixels.
-The unused PixelLab player pair B in `raw/` is reference only. `jobs.json` records
+The rejected player pair B is archived in commit `be108628`. `jobs.json` records
 the five charged generations, including rejected outputs; inferred remainder is 35.
 
 Run Aseprite from the repository root, providing absolute source/output paths:
@@ -18,18 +18,26 @@ aseprite --batch --script-param root=/absolute/repo/tools/assets/m8/rebuild \
 ```
 
 Use the same command for `fleet.lua`, `ui.lua`, `pickups.lua`, `modules.lua`,
-`environment.lua`, then `effects.lua`. Order matters: capsules read UI icons and
+`environment.lua`, then `effects.lua`. Order matters: glass cases read UI icons and
 cargo VFX reads the crate export. Exports are staging files; review them before import.
 Keep existing Unity metadata alongside any recreated bound PNG before refreshing.
 
 Native import/slicing uses `ConfigureM8Production.Import(ids, frameCount)` with four
 frames, except explosion (eight) and rock shatter (twelve). Rock uses its workbench
 anchor. `ConfigureM8Final.Player` binds the selected hulls and exactly two plumes;
-`RebuildM8Presentation` binds the movement trail, death fragments, capsules and rock
+`RebuildM8Presentation` binds the movement trail, death fragments, glass cases and rock
 bursts. Do not rerun old whole-project configuration passes over this wiring.
 
 `python3 tools/assets/m8/rebuild/self_check.py` checks the approved hull boundary,
-pickup identities, glint uniqueness and exact first-frame exports. Native checks:
+glass-case identities, glint uniqueness and exact first-frame exports. Native checks:
 `VerifyM8Final.Ui`, `VerifyM8Final.Survival`, `VerifyM8ProductionLayout.Edit/Run`
 and `ConfigureM8Art.VerifyContracts`. Runtime checks require idle Menu and use
 separate save storage. Evidence is local under `.design/m8/`; it is not shipped art.
+
+Runtime exports are organized by category under `app/Assets/StarShift/Art/`;
+active import/binding tools resolve asset names there and preserve GUIDs.
+
+`python3 tools/assets/m8/rebuild/inventory.py` refreshes the manifest from current
+files and recorded evidence. Copy only reviewed exports with a runtime owner, not
+the whole staging directory. Retained sources in `../cleaned/` export directly from
+Aseprite; discarded variants remain reproducible from Lua and Git history.

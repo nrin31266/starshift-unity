@@ -164,8 +164,8 @@ M8 rebuild: Hull flash ngắn trong Dying rồi ẩn, explosion/debris độc l�
 ease giữ cũ. Post-entry/shield-break invincibility chỉ nhấp nháy vòng bảo vệ teal,
 không blink/tint hull. Ring cycle 0.3 s, visible 2/3 `[TUNABLE]`, dùng
 scaled time nên pause giữ cue hiện tại. Disable presentation/root restore authored
-tint/enabled state. Đây là placeholder, chưa có explosion particles, audio, final
-VFX hoặc shield-item system. Gameplay phase/timing thuộc
+tint/enabled state. Explosion và bốn mảnh giáp là sprite presentation độc lập với
+hull; chưa kiểm tra full audio/device performance. Gameplay phase/timing thuộc
 [player owner](../gameplay/player-combat.md#player-survival); tắt cue không đổi lives,
 cleanup, entrance hoặc protection permission.
 
@@ -398,3 +398,11 @@ Shared frame sheets và procedural trails/rings cùng tồn tại; không ép mo
 spritesheet. Buff-expiry/boost sheets đã author nhưng chưa bind riêng; existing timer,
 star travel và warp choreography tiếp tục hoạt động. Chi tiết nguồn/import ở
 [production checkpoint](../production/asset-pipeline.md#m8-l1l8-production-checkpoint).
+
+### Rebuild speed streaks
+
+Intro, same-planet handoff và region journey dùng cùng texture streak có lõi sáng,
+đuôi alpha và scale theo chiều cao view 900px. Độ dài/độ sáng tăng theo tốc độ;
+heading theo hướng bay/turn. Chỉ thay presentation speed và opacity, không đổi
+phase durations, gameplay movement, collider hoặc save. Streak thu ngắn và fade
+khi Brake; Pause giữ scaled motion. Các giá trị visual là `[TUNABLE]`.

@@ -53,9 +53,10 @@ namespace StarShift.Player
         private void ConfigureTrails()
         {
             if (movementTrail == null) return;
+            movementTrail.enabled = trail.TrailSeconds > 0;
             movementTrail.colorGradient = CreateTrailGradient(trail.Id);
-            movementTrail.time = Mathf.Min(trail.TrailSeconds > 0 ? trail.TrailSeconds : .12f, .16f);
-            movementTrail.startWidth = trail.Id == "trail-ion" ? .09f : .07f;
+            movementTrail.time = Mathf.Min(trail.TrailSeconds, .16f);
+            movementTrail.startWidth = trail.Id == "trail-rainbow" ? .10f : .09f;
             movementTrail.endWidth = 0;
         }
         private static Gradient CreateTrailGradient(string trailId)
@@ -63,20 +64,21 @@ namespace StarShift.Player
             var g = new Gradient();
             if (trailId == "trail-rainbow")
             {
+                g.mode = GradientMode.Fixed;
                 g.SetKeys(
                     new[]
                     {
-                        new GradientColorKey(new Color(1f, 0.35f, 0.4f), 0.0f),
-                        new GradientColorKey(new Color(1f, 0.75f, 0.25f), 0.2f),
-                        new GradientColorKey(new Color(0.95f, 0.93f, 0.55f), 0.4f),
-                        new GradientColorKey(new Color(0.25f, 0.85f, 0.87f), 0.6f),
-                        new GradientColorKey(new Color(0.45f, 0.55f, 1f), 0.8f),
-                        new GradientColorKey(new Color(0.75f, 0.5f, 0.95f), 1.0f)
+                        new GradientColorKey(new Color(1f, .2f, .32f), 0.0f),
+                        new GradientColorKey(new Color(1f, .62f, .12f), .16f),
+                        new GradientColorKey(new Color(1f, .92f, .18f), .32f),
+                        new GradientColorKey(new Color(.2f, 1f, .45f), .48f),
+                        new GradientColorKey(new Color(.15f, .85f, 1f), .64f),
+                        new GradientColorKey(new Color(.75f, .35f, 1f), .8f)
                     },
                     new[]
                     {
-                        new GradientAlphaKey(0.85f, 0.0f),
-                        new GradientAlphaKey(0.65f, 0.6f),
+                        new GradientAlphaKey(.95f, 0.0f),
+                        new GradientAlphaKey(.8f, .7f),
                         new GradientAlphaKey(0.0f, 1.0f)
                     }
                 );
@@ -147,7 +149,7 @@ namespace StarShift.Player
             UpdateTrailPositions();
             if (movementTrail != null)
             {
-                movementTrail.emitting = gate.CanInput && alive && hull.enabled && moved && Time.deltaTime > 0;
+                movementTrail.emitting = movementTrail.enabled && gate.CanInput && alive && hull.enabled && moved && Time.deltaTime > 0;
                 if (!gate.CanInput || !alive || !hull.enabled) movementTrail.Clear();
             }
         }

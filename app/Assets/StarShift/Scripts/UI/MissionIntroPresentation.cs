@@ -19,6 +19,8 @@ namespace StarShift.UI
         [SerializeField] private GameObject gameplayBackdrop;
         [SerializeField, Min(.01f)] private float planetStartScale = 3.2f;
         [SerializeField, Min(.01f)] private float planetEndScale = 4.1f;
+        [SerializeField, Min(1)] private float streakWidthAt900 = 3;
+        [SerializeField, Min(1)] private float streakLengthPerSpeedAt900 = 70;
         private SpriteRenderer[] starRenderers;
         private SpriteRenderer[] backdropRenderers;
         private Color[] backdropColors;
@@ -87,7 +89,7 @@ namespace StarShift.UI
         }
         public void PresentHandoff(float normalized, PlayDirection playDirection)
         {
-            journeyVisible = false; cueSpeed = .07f;
+            journeyVisible = false; cueSpeed = .28f;
             cueVisible = true;
             progress = normalized;
             direction = playDirection;
@@ -110,13 +112,13 @@ namespace StarShift.UI
             float speed = cueVisible ? cueSpeed : phase switch
             {
                 MissionIntroPhase.Briefing => .015f,
-                MissionIntroPhase.Approach => Mathf.Lerp(.015f,.12f,t),
-                MissionIntroPhase.Travel => Mathf.Lerp(.12f,1.5f,t),
-                MissionIntroPhase.Brake => 1.5f * (1-t),
+                MissionIntroPhase.Approach => Mathf.Lerp(.015f,.22f,t),
+                MissionIntroPhase.Travel => Mathf.Lerp(.22f,2.8f,t),
+                MissionIntroPhase.Brake => 2.8f * (1-t),
                 _ => 0
             };
             starDistance += speed * delta;
-            var opacity = cueVisible ? Mathf.Sin(progress * Mathf.PI) * .45f : 1f;
+            var opacity = cueVisible ? Mathf.Sin(progress * Mathf.PI) : 1f;
             if (!cueVisible && phase == MissionIntroPhase.Brake) opacity = 1-t;
             stars.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
             stars.localScale = Vector3.one;
@@ -128,10 +130,7 @@ namespace StarShift.UI
                 var star = starRenderers[i];
                 star.transform.position = World(viewport);
                 star.transform.rotation = Quaternion.Euler(0,0,PlayDirectionSpace.Rotation(direction));
-                star.transform.localScale = star.sprite.name == "star"
-                    ? new Vector3(.35f+.25f*depth,.45f+speed*6*depth,1)
-                    : new Vector3(.012f+.012f*depth,.02f+speed*.32f*depth,1);
-                star.color = new Color(.4f,.65f,.85f,opacity*(.3f+depth*.4f));
+                StyleStreak(star,depth,speed,opacity,0);
             }
             if (cueVisible) return;
             bool showPlanet = phase == MissionIntroPhase.Briefing || phase == MissionIntroPhase.Approach || phase == MissionIntroPhase.Travel;
@@ -161,7 +160,7 @@ namespace StarShift.UI
         public void PresentMissionTravel(float normalized, PlayDirection playDirection)
         {
             PresentHandoff(normalized,playDirection);
-            cueSpeed = .1f + .55f * Mathf.Sin(Mathf.Clamp01(normalized)*Mathf.PI);
+            cueSpeed = .25f + 1.5f * Mathf.Sin(Mathf.Clamp01(normalized)*Mathf.PI);
         }
         public void PresentPlanetJourney(float heading, float speed, float palette, float reveal)
         {
@@ -180,10 +179,7 @@ namespace StarShift.UI
                 var offset=seed-vector*starDistance*depth;
                 var star=starRenderers[i];star.transform.position=World(new Vector2(Mathf.Repeat(offset.x+.15f,1.3f)-.15f,Mathf.Repeat(offset.y+.15f,1.3f)-.15f));
                 star.transform.rotation=Quaternion.Euler(0,0,journeyHeading);
-                star.transform.localScale=star.sprite.name == "star"
-                    ? new Vector3(.35f+.25f*depth,.5f+journeySpeed*6*depth,1)
-                    : new Vector3(.012f+.012f*depth,.025f+journeySpeed*.3f*depth,1);
-                star.color=Color.Lerp(new Color(.4f,.65f,.85f,.65f),new Color(.85f,.3f,.48f,.65f),journeyPalette);
+                StyleStreak(star,depth,journeySpeed,1,journeyPalette);
             }
             ApplyEnvironmentPalette(journeyPalette);
             for(int i=0;i<backdropRenderers.Length;i++)backdropRenderers[i].transform.position-=new Vector3(vector.x,vector.y,0)*journeySpeed*delta*2;
@@ -197,6 +193,19 @@ namespace StarShift.UI
                 planet.transform.Rotate(0, 0, -10f * delta);
                 planet.color=new Color(1,1,1,Mathf.Clamp01(journeyReveal*4));
             }
+        }
+        private void StyleStreak(SpriteRenderer star,float depth,float speed,float opacity,float palette)
+        {
+            if(star.sprite==null)return;
+            // Kích thước theo view, không phụ thuộc tên sprite hoặc PPU của source.
+            float unit=gameplayCamera.orthographicSize*2/900;
+            var size=star.sprite.bounds.size;
+            float width=streakWidthAt900*Mathf.Lerp(.55f,1,depth);
+            float length=width+speed*streakLengthPerSpeedAt900*depth;
+            star.transform.localScale=new Vector3(width*unit/Mathf.Max(.001f,size.x),length*unit/Mathf.Max(.001f,size.y),1);
+            var color=Color.Lerp(new Color(.72f,.91f,1),new Color(1,.68f,.76f),palette);
+            color.a=opacity*Mathf.Lerp(.45f,.95f,depth);
+            star.color=color;
         }
         private void ApplyEnvironmentPalette(float amount)
         {

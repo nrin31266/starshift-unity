@@ -32,10 +32,12 @@ namespace StarShift.UI
                 for (int i = 0; i < Ribbons.Length; i++)
                     if (Ribbons[i] != null)
                     {
-                        Ribbons[i].gameObject.SetActive(i == 0);
-                        Ribbons[i].rectTransform.anchoredPosition = ship.MovementTrailSocket * (56.25f * fit) + Vector2.down * (10 * fit);
-                        Ribbons[i].rectTransform.sizeDelta = new Vector2(5, 20) * fit;
-                        Ribbons[i].color = new Color(1, 1, 1, .35f);
+                        Ribbons[i].gameObject.SetActive(i == 0 && exhaust.TrailSeconds > 0);
+                        float tail=ship.EngineSockets[0].y;
+                        foreach(var engine in ship.EngineSockets) tail=Mathf.Min(tail,engine.y);
+                        Ribbons[i].rectTransform.anchoredPosition = new Vector2(ship.MovementTrailSocket.x*56.25f,tail*56.25f-16)*fit;
+                        Ribbons[i].rectTransform.sizeDelta = new Vector2(5, 28) * fit;
+                        Ribbons[i].color = new Color(1, 1, 1, .9f);
                     }
             }
         }

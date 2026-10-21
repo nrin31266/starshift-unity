@@ -14,7 +14,8 @@ Không cần photorealism để thể hiện mass hoặc vật liệu.
 
 Owner clarification 2026-10-21: icon, pickup và VFX ưu tiên màu sáng bóng,
 khối đủ dày, vuông bo tròn; dùng mặt sáng/cạnh tối để đọc thể tích, tránh hình dẹp.
-Pickup là lọ/capsule có icon rõ bên trong và glint nhẹ. Áp dụng cho các nhóm này,
+Pickup là hộp kính trong suốt hình vuông bo góc, icon lớn bên trong và glint nhẹ
+ở mép; không dùng hình lọ có cổ/nắp (owner correction). Áp dụng cho các nhóm này,
 không đổi silhouette của cặp tàu A đã được chọn.
 
 ### Không được trông như
@@ -157,8 +158,8 @@ Quyết định Batch 3: bỏ baseline crimson chung cho mọi enemy. Mỗi fami
 riêng, accent emissive riêng; cohesion giữ bằng construction, 1px navy contour,
 3–4 value bands, light upper-left và chuyển động. Không family nào được trôi về
 gray/red đơn điệu. Ramp/accent/glow của từng family nằm trong
-[author script](../../tools/assets/m8/fleet-combat.lua); runtime sprite ở
-`app/Assets/StarShift/Art/M8/`.
+[author script](../../tools/assets/m8/rebuild/fleet.lua); runtime sprite ở
+các folder theo loại trong `app/Assets/StarShift/Art/`.
 
 | Family | Armor ramp | Accent / emissive | Native canvas |
 |---|---|---|---|
@@ -233,7 +234,7 @@ với cyan cockpit, hostile gunmetal/crimson, nền navy thoáng. Đây là styl
 batch tiếp theo, không phải owner acceptance cho toàn roster hoặc full game polish.
 Selected anchors/source provenance ở
 [manifest](../../tools/assets/m8/sources/manifest.json); cleaned `.aseprite` nằm trong
-`tools/assets/m8/cleaned/`, exports runtime trong `app/Assets/StarShift/Art/M8/`.
+`tools/assets/m8/cleaned/`, exports runtime trong các folder theo loại trong `app/Assets/StarShift/Art/`.
 
 ### Pixel density và native canvas
 
@@ -361,8 +362,9 @@ Mũi Giáo (default) và Ưng Kích (broad swept armor). Mỗi chassis có engin
 sockets riêng; plume thuộc chassis, movement trail là cosmetic riêng. Vệt nhỏ,
 chỉ phát khi player di chuyển, không tạo thêm lửa ở engine socket. Gameplay,
 approach và UI preview/card dùng cùng selected hull/skin và plume family. Amber là repaint vùng giáp, không tint toàn hull.
-Default propulsion luôn hiện; Ion giữ 8 Shards, Rainbow mới 8 Shards qua catalog
-hiện có. Banking chỉ đổi visual child. Source và evidence status ở
+Default là Không Vệt (`trail-none`): tắt movement trail, giữ hai engine plumes.
+Ion dùng cyan/white; Rainbow dùng sáu dải màu sáng và preview riêng trong Store/Hangar.
+Pricing thuộc [progression/economy](../gameplay/progression-economy.md#m7-cosmetic-hangar-provisional). Banking chỉ đổi visual child. Source và evidence status ở
 [production manifest](../../tools/assets/m8/production-manifest.json).
 
 Batch 3 hoàn thiện fleet/combat visual: 7 armor family + Supply Drone crate +

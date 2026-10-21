@@ -26,7 +26,7 @@ MonoBehaviour:
     - {x: -0.17777778, y: -0.4977778}
     - {x: 0.16, y: -0.4977778}
     MuzzleSocket: {x: 0, y: 0.75}
-    MovementTrailSocket: {x: 0, y: -0.3}
+    MovementTrailSocket: {x: 0, y: -0.5227778}
     PlumeScale: 0.32
     AnimationFrames: []
     TrailSeconds: 0.16
@@ -43,7 +43,7 @@ MonoBehaviour:
     - {x: -0.16, y: -0.5688889}
     - {x: 0.16, y: -0.5688889}
     MuzzleSocket: {x: 0, y: 0.75}
-    MovementTrailSocket: {x: 0, y: -0.3}
+    MovementTrailSocket: {x: 0, y: -0.5938889}
     PlumeScale: 0.32
     AnimationFrames: []
     TrailSeconds: 0.16
@@ -78,24 +78,20 @@ MonoBehaviour:
     AnimationFrames: []
     TrailSeconds: 0.16
   - Id: trail-none
-    DisplayName: "\u0110\u1ED8NG C\u01A0 TI\xCAU CHU\u1EA8N"
+    DisplayName: "KH\xD4NG V\u1EC6T"
     Slot: 2
     ShardCost: 0
     IsDefault: 1
-    Sprite: {fileID: 1005583916, guid: 4be1f4f8d851524a4bdfc9f4e41e65ec, type: 3}
+    Sprite: {fileID: 0}
     AmberSprite: {fileID: 0}
     FlipY: 0
-    Tint: {r: 0.25, g: 0.85, b: 1, a: 0.6}
+    Tint: {r: 1, g: 1, b: 1, a: 1}
     EngineSockets: []
     MuzzleSocket: {x: 0, y: 0}
     MovementTrailSocket: {x: 0, y: 0}
     PlumeScale: 0.6
-    AnimationFrames:
-    - {fileID: 1005583916, guid: 4be1f4f8d851524a4bdfc9f4e41e65ec, type: 3}
-    - {fileID: 1322478142, guid: 4be1f4f8d851524a4bdfc9f4e41e65ec, type: 3}
-    - {fileID: 1025400279, guid: 4be1f4f8d851524a4bdfc9f4e41e65ec, type: 3}
-    - {fileID: -725796584, guid: 4be1f4f8d851524a4bdfc9f4e41e65ec, type: 3}
-    TrailSeconds: 0.12
+    AnimationFrames: []
+    TrailSeconds: 0
   - Id: trail-ion
     DisplayName: "V\u1EC6T ION"
     Slot: 2
@@ -104,7 +100,7 @@ MonoBehaviour:
     Sprite: {fileID: 382445309, guid: 04e5942898c3271cc9e2fa77c5e72f19, type: 3}
     AmberSprite: {fileID: 0}
     FlipY: 0
-    Tint: {r: 0.25, g: 0.85, b: 1, a: 0.6}
+    Tint: {r: 1, g: 1, b: 1, a: 1}
     EngineSockets: []
     MuzzleSocket: {x: 0, y: 0}
     MovementTrailSocket: {x: 0, y: 0}
@@ -114,7 +110,7 @@ MonoBehaviour:
     - {fileID: -638593788, guid: 04e5942898c3271cc9e2fa77c5e72f19, type: 3}
     - {fileID: 162885289, guid: 04e5942898c3271cc9e2fa77c5e72f19, type: 3}
     - {fileID: -61503506, guid: 04e5942898c3271cc9e2fa77c5e72f19, type: 3}
-    TrailSeconds: 0.22
+    TrailSeconds: 0.16
   - Id: trail-rainbow
     DisplayName: "C\u1EA6U V\u1ED2NG"
     Slot: 2
@@ -123,7 +119,7 @@ MonoBehaviour:
     Sprite: {fileID: -1871182279, guid: c1b4d00544bed726eadedd6eef618947, type: 3}
     AmberSprite: {fileID: 0}
     FlipY: 0
-    Tint: {r: 0.85, g: 0.65, b: 1, a: 0.5}
+    Tint: {r: 1, g: 1, b: 1, a: 1}
     EngineSockets: []
     MuzzleSocket: {x: 0, y: 0}
     MovementTrailSocket: {x: 0, y: 0}
@@ -133,7 +129,7 @@ MonoBehaviour:
     - {fileID: 1770011562, guid: c1b4d00544bed726eadedd6eef618947, type: 3}
     - {fileID: -1677953675, guid: c1b4d00544bed726eadedd6eef618947, type: 3}
     - {fileID: 895109416, guid: c1b4d00544bed726eadedd6eef618947, type: 3}
-    TrailSeconds: 0.22
+    TrailSeconds: 0.14
   EngineFrames:
   - {fileID: 451907225, guid: 2544e564cc4dea76b99c75312fd6fd20, type: 3}
   - {fileID: -503982825, guid: 2544e564cc4dea76b99c75312fd6fd20, type: 3}

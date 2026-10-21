@@ -47,7 +47,7 @@ public static class VerifyM8ProductionLayout
     public static object Edit()
     {
         Check(!EditorApplication.isPlayingOrWillChangePlaymode,"Edit Mode required");int textures=0;
-        foreach(var path in Directory.GetFiles("Assets/StarShift/Art/M8","*.png"))
+        foreach(var path in Directory.GetFiles("Assets/StarShift/Art","*.png",SearchOption.AllDirectories).Where(path=>!path.Contains("/Placeholders/")&&!path.Contains("/Smoke/")))
         {
             var importer=(TextureImporter)AssetImporter.GetAtPath(path);
             Check(importer.filterMode==FilterMode.Point&&!importer.mipmapEnabled&&importer.textureCompression==TextureImporterCompression.Uncompressed&&importer.npotScale==TextureImporterNPOTScale.None,"Importer mismatch "+path);
@@ -65,7 +65,10 @@ public static class VerifyM8ProductionLayout
             foreach(var r in root.GetComponentsInChildren<SpriteRenderer>(true))
                 Check(!r.enabled||r.sprite==null||!AssetDatabase.GetAssetPath(r.sprite).Contains("Placeholders"),"Critical proxy remains "+name+"/"+r.name);
         }
-        return new{status="PASS",nativeTextures=textures,criticalEnemyPrefabs=13};
+        var result=new{status="PASS",nativeTextures=textures,criticalEnemyPrefabs=13};
+        Directory.CreateDirectory("../.design/m8/final");
+        File.WriteAllText("../.design/m8/final/import.json",Newtonsoft.Json.JsonConvert.SerializeObject(result,Newtonsoft.Json.Formatting.Indented));
+        return result;
     }
     public static async Task<object> Run(int width)
     {
@@ -108,7 +111,19 @@ public static class VerifyM8ProductionLayout
                 var boss=EnemyHealth.Active.First(e=>e.IsAlive&&e.GetComponent<BossPhaseRunner>()!=null);
                 if(mission=="L4") await CheckRecovery(boss);
                 var shield=boss.GetComponent<BossShieldNetwork>();
-                if(shield!=null){foreach(var node in boss.GetComponentsInChildren<EnemyHealth>().Where(e=>e!=boss).ToArray())node.ReceivePlayerHit(node.CurrentHp,player);await Until(()=>shield.IsExposed,4000,"shield expose");}
+                if(shield!=null)
+                {
+                    var nodes=boss.GetComponentsInChildren<EnemyHealth>().Where(e=>e!=boss).ToArray();
+                    foreach(var node in nodes)
+                    {
+                        node.ReceivePlayerHit(node.CurrentHp-Mathf.Max(1,Mathf.FloorToInt(node.MaxHp*.2f)),player);
+                        Check(node.GetComponent<EnemyDamagePresentation>().DamageStage==2,"Node critical state "+node.name);
+                        Check(node.transform.Find("M8Art").GetComponent<SpriteRenderer>().sprite.name.EndsWith("-critical"),"Node damage art missing");
+                    }
+                    await Capture("warden-nodes-critical");
+                    foreach(var node in nodes)node.ReceivePlayerHit(node.CurrentHp,player);
+                    await Until(()=>shield.IsExposed,4000,"shield expose");
+                }
                 boss.ReceivePlayerHit(boss.CurrentHp-Mathf.Max(1,Mathf.FloorToInt(boss.MaxHp*.2f)),player);await Task.Delay(160);
                 Check(boss.GetComponent<EnemyDamagePresentation>().DamageStage==2,"Critical state "+mission);
                 Check(boss.GetComponentsInChildren<SpriteRenderer>().Any(r=>r.name=="M8Smoke"&&r.enabled),"Critical smoke "+mission);

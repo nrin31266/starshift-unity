@@ -445,7 +445,7 @@ Unity tự tạo `.meta`; commit cùng asset và giữ nguyên khi move/rename.
 
 Offline source/scripts/prompts hữu ích ở `tools/assets/` hoặc `tools/audio/`;
 Unity chỉ nhận output cần runtime trong `app/Assets/StarShift/Art/`, `Audio/`, `VFX/`,
-UI hoặc folder phù hợp. M8 archive dùng `tools/assets/m8/{sources,cleaned,frames}`;
+UI hoặc folder phù hợp. M8 source dùng manifest và recipe rebuild bên dưới;
 không commit mọi intermediate lớn. Không đổi file user hiện có để ép namespace.
 Technical asset filenames English; các ví dụ ở trên là convention baseline.
 Scene naming/topology thuộc [architecture](../systems/architecture.md), không sở hữu ở đây.
@@ -549,211 +549,76 @@ hoặc công cụ regression chỉ vì production không load trực tiếp.
 
 ## M8 selected sources và production recipe
 
-M8 slice đã chọn PixelLab Pixen player/Scout/heavy anchors, native Aseprite-derived
-Raider và boss module, original background/UI/projectiles/Shard/VFX. Không dùng
-Comfy hosted ($0), local SD1.5 hoặc thêm tools/model để làm quality target.
-[Manifest](../../tools/assets/m8/sources/manifest.json) giữ prompt, model route,
-seed, job/asset IDs, accepted/rejected decision, raw PNG SHA-256 và font source/OFL.
-AI provenance không phải cam kết độc quyền copyright; distribution review giữ điều
-khoản tài khoản/service áp dụng. Không lưu token/raw auth response vào source archive.
-
-### Reproduce và import
-
-1. Đọc [M8 art bible](../presentation/art-direction.md#m8-vertical-art-slice-locked),
-   mở cleaned `.aseprite` của family gần nhất. Chọn một silhouette/role cụ thể;
-   generation request lấy cùng view/material/palette/light anchor trong manifest.
-   Kiểm tra balance; free tier chỉ một active job. Không dùng Pro auto-candidate
-   batch khi hạn mức không đủ; failed Pro request ở M8 không tạo asset/không charge.
-2. Lưu immutable raw PNG + manifest trước cleanup. Rejected variants giữ ở sources,
-   không import runtime. Pixel conversion nếu cần, rồi Aseprite sửa palette, contour,
-   frame canvas và alignment; không smooth resize/trim/auto-center từng frame.
-3. Reproduce toàn bộ selected cleaned/native exports trên máy hiện tại:
-
-   ```sh
-   aseprite --batch \
-     --script-param root="$PWD/tools/assets/m8" \
-     --script-param out="$PWD/app/Assets/StarShift/Art/M8" \
-     --script tools/assets/m8/author.lua
-   python3 tools/assets/m8/validate.py
-   python3 tools/assets/spritesheet.py check \
-     app/Assets/StarShift/Art/M8/explosion-sheet.png --cell 64 64 --frames 8
-   ```
-
-   Author script ghi đè **chỉ selected generated exports/cleaned sources**; nếu artist
-   chỉnh tay, giữ source đó và export asset đang sửa riêng, không rerun đè thủ công.
-   Nó xuất explosion frames; sheet hiện có giữ nguyên. Khi tạo sheet mới: existing
-   `spritesheet.py pack` với explicit `explosion_00.png` … `explosion_07.png`,
-   `--columns 4 --output NEW.png`. Tool từ chối overwrite, không xóa source để ép chạy.
-4. Unity Edit Mode, saved `02_Gameplay`, MCP `run_script` file
-   `../tools/unity/ConfigureM8Art.cs`, entry `ConfigureM8Art.Configure`.
-   Đây là authoring migration M8 đã áp dụng, không chạy lại để reset art tuning.
-   Nó reuse GUID, kiểm Sprite Editor capabilities/name-file-ID pairs và gameplay
-   contract snapshot. Không chỉnh prefab/scene YAML hoặc `.meta` bằng tay.
-5. Import: Sprite/FullRect, Point, Uncompressed, no mipmaps, NPOT None, Clamp,
-   alpha transparency, sRGB; max texture 2048. World/UI/background density theo art
-   owner. Explosion Multiple, 8×64×64 rects, grid 4×2, top-left row-major names
-   `explosion_00` … `07`; Unity rect Y đổi từ top-left. Center pivot (0.5,0.5),
-   không trim; panel/button border 6. Existing sheet frame IDs được giữ khi rerun.
-6. Fresh Play Mode cho mỗi width, bắt đầu từ Menu không có active user run. MCP `run_script`
-   `../tools/unity/VerifyM8Art.cs`, entry `VerifyM8Art.Begin`, args `[1600]` rồi
-   sau PASS stop/start Play Mode rồi args `[2000]`. Không chạy đồng thời. Test chuyển storage trước frame
-   wait, disable native pointer/keyboard/gamepad, dùng virtual mouse; actual drag,
-   hold fire, moving formation, hostile cue/shot, shard/pool reset, explosion frames
-   và release, Pause, L2 heavy, L4 boss module. Player được bảo vệ **chỉ trong QA**.
-7. Đọc `.design/m8/runtime-WIDTH.json` và screenshots, inspect ở native Game View.
-   Cleanup restore input/damage, production storage và Menu; asserts primary/.bak/
-   .invalid save bytes không đổi. Không thao tác Unity giữa pass; nếu user đang chơi
-   phải đợi, không dừng/rollback campaign. Lần check trước bị save-byte mismatch khi
-   owner đang chơi; tiến trình L4→L5 được giữ nguyên, không reset profile.
-8. Review source → real motion/gameplay scale → wide aspect; sửa cùng source, import
-   lại phần cần thiết rồi lặp affected review. Có code compile/Console errors thì
-   chưa chốt. Không dùng isolated source screenshot để claim complete gameplay QA.
-
-Evidence local `.design/m8/`: `pixel-validation.json`, `font-validation.json`,
-`contracts-before/after.json`, `runtime-1600/2000.json`, `screenshots/`,
-`DESIGN_REVIEW.md`. Evidence folder ignored như các phase trước; không cần evidence
-ngoài repo để reproduce bằng tools/source đã lưu. No Android/release/device claim.
-
-Runtime integration nhỏ: PickupDefinition optional Sprite + pooled pickup reset,
-existing death-burst pool nhận 8 frames; không thêm animation/persistence framework.
-Enemy/weapon/collider/reward contracts được kiểm equality trước/sau authoring.
-Legacy Tank/full boss/other weapons và environment vẫn có proxy ngoài scope;
-không coi screenshot heavy/boss module là full roster đã art-complete.
-
-Font OFL/copyright texts đi cùng source; khi phân phối binary phải đóng gói notices
-phù hợp, không giả định Unity tự include mọi unreferenced text asset. Chưa tạo release.
-
-Follow-up camera coverage: M8Environment giữ local scale (1,1,1), PPU 21 và world
-size cố định; camera Solid Color navy #080f20 lấp phần ngoài patch khi zoom/aspect
-mở rộng. Không auto-cover scale, đổi camera framing/playable bounds hoặc generate
-background mới; existing starfield/parallax và journey palette vẫn hoạt động.
-
+Nguồn hiện tại nằm ở [rebuild sources](../../tools/assets/m8/rebuild/README.md).
+[Production manifest](../../tools/assets/m8/production-manifest.json) ghi path, source,
+GUID, hash và serialized owners của runtime exports. Các generation cũ trong
+[source manifest](../../tools/assets/m8/sources/manifest.json) là provenance lịch sử,
+không phải bảng acceptance hiện tại.
 
 ## M8 preparation checkpoint
 
-Ngày 2026-10-21: giữ selected vertical slice, chưa bulk production.
-[Remaining production manifest](../../tools/assets/m8/production-manifest.json) chỉ
-bao gồm release L1–L8; kích thước mới là proposed canvas cần gameplay-scale review,
-không đổi collider/root scale/balance để vừa ảnh. Region C/Rift không nằm trong batch.
-
-Một animate-from-existing smoke: Stellar Shard 32×40 → PixelLab PixMiniMax 4 frames,
-`enhance_prompt=false`, confirmed/charged **1 generation**. API trả input + 4 generated
-frames; giữ raw 0–4, cleanup generated 1–4 bằng Aseprite, fixed source silhouette,
-binary alpha và shared palette. Seed/job/hash trong
-[provenance](../../tools/assets/m8/animation-smoke/provenance.json).
-Không tạo candidate/job thứ hai. Balance sau smoke: **34/40**, 6 used, trial, $0 credit.
-
-Reproduce cleanup: `aseprite --batch --script-param root=ABSOLUTE_SMOKE_FOLDER
---script tools/assets/m8/animation-smoke/cleanup.lua`. Giữ editable
-`shard-shimmer.aseprite`; export explicit `frames/shimmer_00.png` … `03.png`,
-pack 4 columns bằng existing spritesheet tool và check `--cell 32 40 --frames 4`.
-Không overwrite sheet đang tồn tại; export phiên bản mới khi artist chỉnh source.
-
-Unity Edit Mode `VerifyM8Animation.Import` dùng native Sprite Editor capability/name-ID
-checks, Point/uncompressed, no mipmaps, center pivot, 56.25 PPU; sheet/clip ở
-`Assets/StarShift/Art/M8/Smoke/`. Play Mode `VerifyM8Animation.Begin` gắn clip lên
-visual của pooled Shard trong isolated real gameplay bằng native Animator/clip, kiểm frame advance và Pause.
-Definition fixture được clone, đứng yên để quan sát đủ vòng; không mutate production definition.
-Không persist smoke binding hoặc đổi production pickup. Evidence local ở
-`.design/m8/animation-smoke/`; preparation summary giữ trong
-[checkpoint record](../../tools/assets/m8/preparation-checkpoint.json).
-
-Score carry verification thuộc `VerifyCampaignScore.Core/Begin`; background probe
-`VerifyM8Background.Run` kiểm intro parallax, fixed extents và navy rendered corners.
-Dùng test storage riêng; restore Menu/input/damage/storage và assert production
-primary/backup/invalid bytes không đổi. Không broad regression, Android hoặc build.
+Setup/quota smoke là lịch sử công cụ. Không ship smoke scene/animation hoặc dùng
+status cũ làm bằng chứng art hiện tại đã đạt. Baseline trước rebuild là `4219c667`;
+[rebuild audit](../../tools/assets/m8/rebuild-audit.json) giữ inventory tại thời điểm đó.
 
 ## M8 L1–L8 production checkpoint
 
-Production ngày 2026-10-21 dùng **9 Pixen generations**, từ 34 xuống 25/40; không Pro,
-không paid credit và không thêm animation jobs. Các motion ngắn được author bằng
-Aseprite. [Production jobs](../../tools/assets/m8/sources/production-jobs.json) giữ
-request/seed/job/asset IDs và SHA-256 originals; source manifest cũ trỏ tới archive này.
-Đây là text-guided generation theo approved anchors, không claim image conditioning.
-
-109 cleaned source/export pairs, gồm baseline được reuse; importer audit có 131 native
-textures sau khi bỏ module draft không dùng. [Production manifest](../../tools/assets/m8/production-manifest.json)
-là record lifecycle/binding hiện tại; asset IMPORTED có thể còn playback/review debt.
-Không đánh dấu toàn roster DONE hoặc fabricated owner acceptance.
-
-Reproduce trên máy đã READY:
-
-```sh
-aseprite --batch \
-  --script-param root="$PWD/tools/assets/m8" \
-  --script-param out="$PWD/app/Assets/StarShift/Art/M8" \
-  --script tools/assets/m8/production.lua
-python3 tools/assets/m8/validate_production.py
-```
-
-Script trên ghi đè production exports/cleaned sources; không rerun trên artist edits
-về sau. Export source đã chỉnh riêng. Chờ Aseprite xong trước AssetDatabase refresh
-hoặc recompile; refresh chồng export từng gây SourceAssetDB modification-time warnings.
-Final synchronous import/read-back và runtime review dùng output đã ổn định.
-
-Unity Edit Mode: `ConfigureM8Production.Import`, rồi các entry `Fleet`, `BossesWorld`,
-`CombatRewards`, `FrontendEnvironment` trong
-[production authoring script](../../tools/unity/ConfigureM8Production.cs).
-Chỉ chạy entry cần author; giữ GUID/name-file IDs, dùng Sprite Editor capability checks.
-Không rerun migration slice ConfigureM8Art.Configure để reset tuning.
-
-[Production verifier](../../tools/unity/VerifyM8Production.cs) `Begin(1600)` dùng fresh
-Play Mode/Menu, isolated save/input, actual formation/drag/fire, pickup/pool, frame/Pause,
-damage, Carrier launch và Warden node/death checks. Không chạy khi owner đang chơi.
-[Layout verifier](../../tools/unity/VerifyM8ProductionLayout.cs) `Run(width)` kiểm các
-checkpoint 1600 hoặc 2000, effect/reserve và boss layouts; `Edit` kiểm importer/pivot
-và critical enemy prefab proxy references. Screenshot capture đợi file mới được ghi
-trước khi đổi state. Result screenshot của production verifier là presentation fixture,
-không thay cho kiểm tra mọi terminal/save-failure flow.
-
-Evidence local `.design/m8/`: `production-runtime-1600.json`,
-`production-layout-1600.json`, `production-layout-2000.json`, `production-pixel-validation.json`, production contract
-snapshots và `screenshots/production-*`. Game View smoke/save-byte guards và score-core
-regression đã pass; collider/balance snapshot khớp baseline. Final primary recapture đã pass sau khi owner về Menu; các QA passes bảo vệ bytes
-của save đang có tại đầu mỗi pass, không rollback tiến trình owner chơi giữa các pass.
-Không Android/build/release hoặc full historical suite.
+Các whole-project authoring/verification passes cũ đã retire; không chạy lại lên
+presentation hiện tại. Native checks đang dùng là `VerifyM8Final`,
+`VerifyM8ProductionLayout`, `VerifyM8Background` và contract snapshot trong
+`ConfigureM8Art`. Chúng kiểm các scope đại diện, không thay device profiling.
 
 ## M8 clean rebuild — 2026-10-21
 
-Owner yêu cầu rebuild presentation L1–L8 từ working tree hiện tại. Các checkpoint
-M8 ở trên là lịch sử, không còn chứng minh binding/readiness/visual acceptance hiện tại.
-[Rebuild audit](../../tools/assets/m8/rebuild-audit.json) ghi file, GUID và serialized
-references; [production manifest](../../tools/assets/m8/production-manifest.json) bắt đầu
-lại với runtime verification false. KEEP chỉ là ứng viên salvage, phải review trong Unity.
-Không khôi phục art đã xóa hàng loạt; chỉ giữ lại metadata cho asset cùng path cần
-tái tạo và vẫn còn references. Baseline chứa cả thay đổi còn dở của pass trước để
-giữ lịch sử, không coi chúng đã được review hoặc đạt yêu cầu.
+### Sources và export
 
-PixelLab là công cụ pixel-art chính; Aseprite cho repaint/cleanup/derivatives và
-spritesheet. AI local chỉ tùy việc phù hợp. Fresh trial được xác thực 40/40, $0 credit;
-mục tiêu 12–18 fast generations, dừng đánh giá lại ở 20. Không dùng Pro multi-candidate
-trừ lý do ngoại lệ. Quota còn lại được suy ra từ jobs/charges, không poll balance liên tục.
+PixelLab là công cụ pixel-art chính, Aseprite cho vẽ/repaint/cleanup và sheet.
+AI local chỉ dùng khi phù hợp; đợt này không dùng. Fresh trial bắt đầu 40 lượt;
+[jobs ledger](../../tools/assets/m8/rebuild/jobs.json) ghi năm generation đã charge,
+còn 35 suy ra từ ledger, không poll balance. Hai mẫu player B và các output bị
+reject không dùng trong runtime. Player A giữ immutable reference; chỉ repaint
+hai vùng nozzle bị chồng, giữ lại một plume cho mỗi cửa xả.
 
-Mọi batch dùng isolated save/input, gameplay contract snapshot và Unity motion review
-1600×900; kiểm tra quan trọng thêm 2000×900/farthest zoom. Không thay balance, collider,
-progression hoặc save semantics. Reorganize final runtime art bằng AssetDatabase sau
-integration; migration/tooling cũ chỉ retire khi replacement đã đủ để reproduce.
+Chạy các Lua trong `tools/assets/m8/rebuild/` theo README, xuất vào staging ngoài
+Assets. Glass cases đọc UI icons; cargo VFX đọc crate nên giữ đúng thứ tự. Những
+`.aseprite` retained được manifest trỏ tới có thể export trực tiếp bằng Aseprite.
+Không đưa source, probes hoặc intermediate sheets chưa bind vào Unity.
 
-### Current rebuild checkpoint
+### Native import và binding
 
-Baseline cleanup commit: `4219c667`. Editable sources và thứ tự export nằm ở
-[rebuild sources](../../tools/assets/m8/rebuild/README.md). Cặp player A được giữ;
-chỉ hai vùng nozzle được repaint để bỏ cửa xả chồng. Mỗi cửa có một plume,
-movement trail tách riêng, nhỏ và chỉ phát khi di chuyển.
+Runtime art ở các folder `Ships`, `Bosses`, `Projectiles`, `Pickups`, `UI`, `VFX`,
+`Environments` dưới `app/Assets/StarShift/Art/`. Move bằng AssetDatabase, giữ GUID;
+không tạo lại metadata cho asset đang có references. Không còn runtime `Art/M8`.
 
-Tám capsule có icon riêng, kính có cạnh sáng/tối và bốn frame glint nhẹ; Shard giữ
-crystal identity. Native slicing đã kiểm tra frame size/order và tham chiếu của 11
-PickupDefinition. Explosion player và mảnh giáp độc lập với hull; bảo vệ nhấp nháy
-ở ring. Recovery cue của boss là presentation tail, không đổi damage window.
+`ConfigureM8Production.Import(ids, frameCount)` dùng Sprite Editor Data Provider,
+kiểm capabilities và giữ Sprite ID/name-file-ID pairs khi reslice. Default bốn
+frame; explosion tám; rock shatter mười hai với anchor workbench `(19,31)` trong
+cell 47×43. Glass cases 64×64, bốn cột; nội thất bán trong suốt có chủ đích. Point,
+no mipmaps, uncompressed; world 56.25 PPU, UI 100, environment 21.
 
-Evidence hiện tại: player survival/protection và UI checks bằng save riêng PASS;
-Menu/Hangar/approach/combat/Pause/Vanguard/Warden tại 1600×900 và 2000×900 PASS;
-boss Prepare/Lock/Attack/Recovery và freeze khi Pause PASS tại 2000×900. Native
-import check: 247 root textures và 13 enemy prefabs PASS. Gameplay/collider snapshot
-không đổi; Console không có compile/runtime error ở checkpoint này. Đây là các
-check đại diện, không phải bằng chứng mọi asset hoặc mọi encounter đã được duyệt.
+`ConfigureM8Final.Player` bind hai chassis A/Amber, sockets, hai plume và các lựa
+chọn trail. `RebuildM8Presentation` bind death fragments, asteroid size states,
+node damage, glass cases, heat rail và speed streaks. `ConfigureM8FleetCombat`
+giữ các entry Fleet/Projectiles/Feedback/Telegraphs cho authored composition.
+Không dùng import hoặc authoring pass để thay gameplay definition, collider,
+balance, progression hay save semantics.
 
-Rebuild chưa đóng: còn motion/damage review toàn roster và các VFX còn giữ lại,
-review Results/Victory/error states, rồi chuyển runtime art khỏi `Art/M8` bằng
-AssetDatabase và retire tooling/source probe không dùng. Không thực hiện cleanup
-cuối trước các bước đó. Chưa kiểm tra Android/device performance.
+### Verification và cleanup
+
+`python3 tools/assets/m8/rebuild/self_check.py` kiểm giới hạn pixel repaint của A,
+identity từng hộp kính, alpha kính, bốn frame glint khác nhau và first-frame export.
+Native edit check kiểm importer/slicing và enemy prefab proxies; contract snapshot
+kiểm collider và gameplay data trước/sau. Runtime checks dùng idle Menu, test storage,
+input riêng và so byte production save sau cleanup.
+
+Scope đại diện: player drag/trails, death/respawn/ring; purchase/reload/equip và
+preview; toàn roster trong fixture damage/pool reset; các size asteroid; real
+Vanguard/Warden và node collapse; UI screens gồm Results/Victory/error; intro,
+mission handoff và region journey. Game View 1600×900 và 2000×900, zoom 8/12/20
+cho background. Terminal layouts là composition fixtures, không chứng minh full
+campaign completion. Evidence ở `.design/m8/` (ignored); trạng thái từng check ở
+production manifest. Không claim Android, device FPS hoặc full audio verification.
+
+Cleanup cuối chỉ giữ runtime PNG có owner, editable sources/provenance cần reproduce
+và các native tools đang dùng. Art không phù hợp được retire thay vì ép bind chỉ để
+đủ số lượng. Không giữ các status PASS cũ sau thay đổi có thể ảnh hưởng chúng.

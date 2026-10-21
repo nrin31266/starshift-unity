@@ -27,9 +27,9 @@ public static class VerifyM8Final
     static void Check(bool value,string message){if(!value)throw new Exception(message);}
     static async Task Until(Func<bool> condition,int ms,string message)
     {float end=Time.realtimeSinceStartup+ms/1000f;while(!condition()&&Time.realtimeSinceStartup<end)await Task.Delay(30);Check(condition(),message);}
-    static async Task Capture(string name)
+    static async Task Capture(string name, int settleMs = 120)
     {
-        await Task.Delay(120);Canvas.ForceUpdateCanvases();
+        if(settleMs>0)await Task.Delay(settleMs);Canvas.ForceUpdateCanvases();
         var path=Path.GetFullPath(Evidence+name+".png");if(File.Exists(path))File.Delete(path);ScreenCapture.CaptureScreenshot(path);
         await Until(()=>File.Exists(path),4000,"Screenshot "+name);
     }
@@ -42,8 +42,81 @@ public static class VerifyM8Final
     public static object Survival()
     {
         Check(Application.isPlaying&&!Runner.HasActiveRun,"Idle Play Mode required");
-        Directory.CreateDirectory(Evidence);File.WriteAllText(Evidence+"player.json","{\"status\":\"RUNNING\"}");
+        Directory.CreateDirectory(Evidence);File.WriteAllText(Evidence+"survival.json","{\"status\":\"RUNNING\"}");
         _=PlayerRun(false,true);return "Survival and protection checks started";
+    }
+    public static object Roster()
+    {
+        Check(Application.isPlaying&&!Runner.HasActiveRun,"Idle Play Mode required");
+        Directory.CreateDirectory(Evidence);File.WriteAllText(Evidence+"roster.json","{\"status\":\"RUNNING\"}");
+        _=PlayerRun(false,false,true);return "Roster and terminal layout checks started";
+    }
+    static async Task RosterGameplay()
+    {
+        Runner.StopRun();
+        var names=new[]{"Scout","Raider","Bomber","Bulwark","Sniper","Interceptor","Carrier","WardenDrone","StormAsteroid","ResourceAsteroid","SupplyDrone"};
+        for(int batch=0;batch<names.Length;batch+=4)
+        {
+            var fixture=new GameObject("ArtReviewFixture");fixture.SetActive(false);
+            var roots=new List<GameObject>();
+            try
+            {
+                for(int i=batch;i<Mathf.Min(batch+4,names.Length);i++)
+                {
+                    var prefab=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/StarShift/Prefabs/Enemies/"+names[i]+".prefab");
+                    var root=UnityEngine.Object.Instantiate(prefab,fixture.transform);roots.Add(root);
+                    foreach(var component in root.GetComponentsInChildren<MonoBehaviour>(true))
+                        component.enabled=component is EnemyHealth||component is EnemyDamagePresentation||component is EnemyHitPresentation||component is AsteroidVisualMotion||component is EntryHoldFlight;
+                    // HP fixture cho art review; definition asset và balance thật không đổi.
+                    root.GetComponent<EnemyHealth>().ConfigureModifier(null,100);
+                    var damage=root.GetComponent<EnemyDamagePresentation>();var so=new SerializedObject(damage);
+                    so.FindProperty("damagedHealthFraction").floatValue=.6f;so.FindProperty("criticalHealthFraction").floatValue=.25f;so.ApplyModifiedPropertiesWithoutUndo();
+                    var point=new Vector2(.2f+(i-batch)*.2f,.58f);
+                    root.GetComponent<EntryHoldFlight>().Configure(point,point,Vector2.zero,.01f,point,30,0);
+                }
+                fixture.SetActive(true);Time.timeScale=1;
+                await Task.Delay(300);
+                foreach(var root in roots)root.GetComponent<AsteroidVisualMotion>()?.Configure(18);
+                await Capture("roster-"+batch+"-intact");
+                foreach(var root in roots)root.GetComponent<EnemyHealth>().ReceivePlayerHit(45,GameObject.Find("Player"));
+                await Task.Delay(100);
+                foreach(var root in roots)Check(root.GetComponent<EnemyDamagePresentation>().DamageStage==1,"Damaged state "+root.name);
+                await Capture("roster-"+batch+"-damaged");
+                foreach(var root in roots)root.GetComponent<EnemyHealth>().ReceivePlayerHit(35,GameObject.Find("Player"));
+                await Task.Delay(100);
+                foreach(var root in roots)Check(root.GetComponent<EnemyDamagePresentation>().DamageStage==2,"Critical state "+root.name);
+                await Capture("roster-"+batch+"-critical");
+                foreach(var root in roots)
+                {
+                    root.SetActive(false);root.SetActive(true);root.GetComponent<AsteroidVisualMotion>()?.Configure(18);
+                    Check(root.GetComponent<EnemyDamagePresentation>().DamageStage==0,"Pooled stage leaked "+root.name);
+                    var hull=root.transform.Find("Visual/HullPlaceholder").GetComponent<SpriteRenderer>();
+                    Check(!hull.sprite.name.Contains("damaged")&&!hull.sprite.name.Contains("critical"),"Pooled sprite leaked "+root.name);
+                    if(root.name.StartsWith("ResourceAsteroid"))Check(hull.sprite.name=="resource-asteroid","Resource crystal replaced by storm rock");
+                    if(root.name.StartsWith("StormAsteroid"))
+                    {
+                        var scales=new[]{.75f,1f,1.5f,2.1f};var sizes=new[]{"small","medium","large","huge"};
+                        for(int size=0;size<4;size++)
+                        {
+                            root.SetActive(false);root.transform.localScale=Vector3.one*scales[size];root.SetActive(true);
+                            root.GetComponent<AsteroidVisualMotion>().Configure(18);
+                            Check(hull.sprite.name=="asteroid-"+sizes[size],"Pooled asteroid size leaked");
+                            root.GetComponent<EnemyHealth>().ReceivePlayerHit(80,GameObject.Find("Player"));
+                            Check(hull.sprite.name=="asteroid-"+sizes[size]+"-critical","Asteroid critical size mismatch");
+                        }
+                    }
+                }
+            }
+            finally {UnityEngine.Object.DestroyImmediate(fixture);}
+        }
+        Session.ShowRegionComplete();await Until(()=>Shell.Screen==ShellScreen.Results,2000,"Results screen");await Capture("results-clear");
+        Runner.Flow.LoadLevel(Runner.GetComponent<RegionCampaignFlow>().FindMission("L8"));
+        var refresh=typeof(GameShell).GetMethod("RefreshResults",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
+        refresh.Invoke(Shell,null);await Capture("results-victory");
+        GameObject.Find("Player").GetComponent<PlayerGameplayGate>().SetState(PlayerGameplayState.GameOver);
+        refresh.Invoke(Shell,null);await Capture("results-game-over");
+        typeof(GameShell).GetMethod("ShowError",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic).Invoke(Shell,new object[]{"Không thể lưu tiến độ. Hãy thử lại.",null});
+        await Capture("error-layout");View.ErrorBack.onClick.Invoke();
     }
     static async Task SurvivalGameplay()
     {
@@ -80,7 +153,7 @@ public static class VerifyM8Final
         Check(!trail.emitting,"Stationary ship emits movement trail");
         Check(trail.startWidth<=.1f&&trail.time<=.16f,"Movement trail is oversized");
     }
-    static async Task PlayerRun(bool ui = false, bool survival = false)
+    static async Task PlayerRun(bool ui = false, bool survival = false, bool roster = false)
     {
         var original=Save.SavePath;var hashes=new Dictionary<string,byte[]>();
         foreach(var suffix in new[]{"",".bak",".invalid"})hashes[suffix]=File.Exists(original+suffix)?File.ReadAllBytes(original+suffix):null;
@@ -112,6 +185,15 @@ public static class VerifyM8Final
             Check(Save.PersistentSnapshot.Profile.StellarShardBalance==92,"Rainbow price was not 8");
             Check(Save.ReloadStorage(),"Reload cosmetic save");
             Check(catalog.Equipped(Save.PersistentSnapshot.Profile,CosmeticSlot.Trail).Id=="trail-rainbow","Rainbow equip did not persist");
+            View.HangarMode.onClick.Invoke();View.CosmeticTabs[2].onClick.Invoke();
+            Check(View.CosmeticLabels.Any(label=>label.gameObject.activeInHierarchy&&label.text.Contains("CẦU VỒNG")),"Rainbow missing from Hangar");
+            await Capture("hangar-rainbow");
+            Check(preview.Ribbons.Length==1&&preview.Ribbons[0].gameObject.activeSelf&&preview.Ribbons[0].sprite.name.StartsWith("trail-rainbow"),"Rainbow preview invisible");
+            View.CosmeticCards[0].onClick.Invoke();View.CosmeticAction.onClick.Invoke();
+            Check(catalog.Equipped(Save.PersistentSnapshot.Profile,CosmeticSlot.Trail).Id=="trail-none","No-trail equip failed");
+            Check(!preview.Ribbons[0].gameObject.activeSelf&&preview.Engines.All(engine=>engine.enabled),"No-trail hid engine plumes");
+            View.CosmeticCards[1].onClick.Invoke();View.CosmeticAction.onClick.Invoke();
+            View.StoreMode.onClick.Invoke();
             View.CosmeticTabs[0].onClick.Invoke();View.CosmeticCards[1].onClick.Invoke();await Capture("store-raptor");
             View.CosmeticAction.onClick.Invoke();if(View.Confirmation.activeSelf)View.Confirm.onClick.Invoke();await Task.Delay(100);
             Check(catalog.Owns(Save.PersistentSnapshot.Profile,catalog.Find("chassis-swept")),"Existing chassis purchase failed");
@@ -123,6 +205,7 @@ public static class VerifyM8Final
             await Until(()=>Runner.Stage==EncounterStage.Running,15000,"Real combat");
             damage.enabled=false;player.GetComponent<PlayerGameplayGate>().SetState(PlayerGameplayState.Active);
             if (survival) await SurvivalGameplay();
+            else if (roster) await RosterGameplay();
             else if (ui) await UiGameplay();
             else foreach(var chassis in new[]{"chassis-arrow","chassis-swept"})
             foreach(var trail in new[]{"trail-none","trail-ion","trail-rainbow"})
@@ -133,11 +216,14 @@ public static class VerifyM8Final
                 player.GetComponent<ShipAppearance>().Apply(visualProfile);
                 var point=new Vector2(Screen.width*.5f,Screen.height*.2f);
                 InputSystem.QueueStateEvent(mouse,new MouseState{position=point}.WithButton(MouseButton.Left));await Task.Delay(80);
-                InputSystem.QueueStateEvent(mouse,new MouseState{position=point+new Vector2(80,15)}.WithButton(MouseButton.Left));await Task.Delay(130);
-                await Capture(chassis+"-"+trail);
+                for(int step=1;step<=8;step++)
+                {InputSystem.QueueStateEvent(mouse,new MouseState{position=point+new Vector2(step*15,step*6)}.WithButton(MouseButton.Left));await Task.Delay(20);}
+                var ribbon=player.GetComponentsInChildren<TrailRenderer>(true).Single(t=>t.name=="MovementTrail");
+                Check(trail=="trail-none"?!ribbon.enabled&&!ribbon.emitting:ribbon.enabled&&ribbon.positionCount>1,"Trail movement rendering "+trail);
+                await Capture(chassis+"-"+trail,0);
                 InputSystem.QueueStateEvent(mouse,new MouseState{position=point+new Vector2(80,15)});
             }
-            result=new{status="PASS",chassis=2,trails=3,actualStorePurchaseAndReload=true,price=8,singlePlumePerNozzle=true,realGameplay=true,survivalAndRing=survival,saveGuard=true};
+            result=new{status="PASS",configuredChassis=2,configuredTrails=3,movementCombinations=!ui&&!survival&&!roster?6:0,rosterDamageAndPool=roster,uiLayouts=ui,actualStorePurchaseAndReload=true,price=8,singlePlumePerNozzle=true,realGameplay=true,survivalAndRing=survival,saveGuard=true};
         }
         catch(Exception e){result=new{status="FAILED",error=e.ToString()};}
         finally
@@ -152,7 +238,7 @@ public static class VerifyM8Final
                 foreach(var pair in hashes){var after=File.Exists(original+pair.Key)?File.ReadAllBytes(original+pair.Key):null;Check(pair.Value==null?after==null:after!=null&&after.SequenceEqual(pair.Value),"Production save changed: "+pair.Key);}
             }
             catch(Exception e){result=new{status="FAILED",cleanupError=e.ToString()};}
-            finally{EditorApplication.UnlockReloadAssemblies();File.WriteAllText(Evidence+(ui?"ui.json":"player.json"),Newtonsoft.Json.JsonConvert.SerializeObject(result,Newtonsoft.Json.Formatting.Indented));}
+            finally{EditorApplication.UnlockReloadAssemblies();File.WriteAllText(Evidence+(ui?"ui.json":roster?"roster.json":survival?"survival.json":"player.json"),Newtonsoft.Json.JsonConvert.SerializeObject(result,Newtonsoft.Json.Formatting.Indented));}
         }
     }
 
