@@ -189,8 +189,15 @@ Automated check không thay listening.
   tap tiếp cận → L5 chỉ một ignition cho cả lượt bay. Production save guard PASS.
 - Hierarchy cleanup: 96 GameObjects trong 13 prefabs + scene đổi sang role names,
   không còn prefix `M8*` trong authored hoặc runtime hierarchy. Prefab data ngoài
-  `m_Name`, file IDs và references giữ nguyên. Scene giữ riêng local DevFastStart
-  selections của user ngoài commit; không đưa chúng vào production defaults.
+  `m_Name`, file IDs và references giữ nguyên. Scene giữ DevFastStart selections
+  của user (Mission02/ENCOUNTER_1, intro bật); Dev Mode OFF nên vẫn boot Menu.
+- Follow-up closure 2026-10-22: rerun riêng boss PASS cho Vanguard/Warden, staged
+  final và Victory khi bỏ frame cuối; production save byte guard PASS. 44 exports/
+  41 bindings PASS, Console 0 errors/0 warnings. Receipt tổng hiện hành là
+  `.design/audio-followup/final.json`; `audio-final/final.json` là lượt fail lịch sử
+  trước follow-up, không phải kết quả closure. Editor trả về Edit Mode, giữ local
+  DevFastStart selections và khôi phục `runInBackground` sau probe. Theo yêu cầu
+  commit toàn bộ khi đóng tạm, các selections này được lưu cùng checkpoint.
 - Edit checks: 41 cue bindings, warning priority/variation, prefab coverage, mixer groups.
 - Runtime flow: Menu → Hangar/Shop/Settings → New Game → combat → Pause/Resume →
   death/respawn → Game Over → Retry → Menu; test storage và production byte guard.

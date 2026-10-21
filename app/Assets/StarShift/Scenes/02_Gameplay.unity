@@ -10035,10 +10035,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Dev.DevFastStart
   devModeEnabled: 0
-  startPoint: TRANSITION
+  startPoint: ENCOUNTER_1
   standalone: 0
-  startLevel: {fileID: 11400000, guid: 5f971138825cc7e818687ade679f32fd, type: 2}
-  skipIntro: 1
+  startLevel: {fileID: 11400000, guid: 657a5f1cd89d938b98a7ff2c194a6b85, type: 2}
+  skipIntro: 0
   overrideDirection: 0
   direction: 0
   cameraOverride: {fileID: 0}
