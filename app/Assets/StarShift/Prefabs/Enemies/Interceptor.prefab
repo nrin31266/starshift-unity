@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 3256204256767072950}
   - component: {fileID: 5342997008377451989}
   - component: {fileID: 6813525507633580288}
+  - component: {fileID: 970039450674118737}
   m_Layer: 9
   m_Name: Interceptor
   m_TagString: Untagged
@@ -286,6 +287,20 @@ MonoBehaviour:
   strike: 1
   strikeCueSizeAt900: 96
   frameSeconds: 0.07
+--- !u!114 &970039450674118737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 512193136586943245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 955c60f460625f7f184f256d6638255f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Audio.EnemyAudioPresentation
+  warning: 11
+  attackCue: 12
 --- !u!1 &1557465056666476300
 GameObject:
   m_ObjectHideFlags: 0

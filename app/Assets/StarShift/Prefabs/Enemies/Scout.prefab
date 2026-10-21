@@ -127,6 +127,7 @@ GameObject:
   - component: {fileID: 3644258359053562883}
   - component: {fileID: 3048334041424835111}
   - component: {fileID: 3523246300979530492}
+  - component: {fileID: 8260206196878753792}
   m_Layer: 9
   m_Name: Scout
   m_TagString: Untagged
@@ -364,6 +365,20 @@ MonoBehaviour:
   - {fileID: -1979729686, guid: 248c403d7b60bc838b68ee99155c0c06, type: 3}
   - {fileID: -457886048, guid: 248c403d7b60bc838b68ee99155c0c06, type: 3}
   impactSeconds: 0.22
+--- !u!114 &8260206196878753792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2966396641657307375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 955c60f460625f7f184f256d6638255f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Audio.EnemyAudioPresentation
+  warning: 10
+  attackCue: 10
 --- !u!1 &4472059676281565890
 GameObject:
   m_ObjectHideFlags: 0

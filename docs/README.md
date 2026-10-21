@@ -40,6 +40,7 @@ Chỉ dùng các từ khóa này ở nơi cần phân biệt mức yêu cầu.
 | Screens/navigation, HUD, pause/game-over/results/settings UX | [UI/UX](presentation/ui-ux.md) |
 | Visual identity, palette/color semantics, silhouettes, region look | [Art direction](presentation/art-direction.md) |
 | Feedback, particles, animation, cinematic/audio choreography, shake, haptic | [Audio/VFX](presentation/audio-vfx.md) |
+| Audio integration: selected clips, event bindings, mixing values, licensing evidence, Editor audio QA | [Audio Final](presentation/audio-final.md) |
 | Asset generation/import/slicing/naming/licensing/tooling | [Asset pipeline](production/asset-pipeline.md) |
 
 ## Folder responsibilities

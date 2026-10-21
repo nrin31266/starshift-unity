@@ -125,9 +125,10 @@ chúng trong editorial pass.
 
 ### Transition audio và pause
 
-Transition dùng music duck, engine pitch ramp, warp whoosh và fade-in nhạc region mới.
-Khi gameplay pause, UI audio vẫn chạy; music có thể duck nhưng loop state phải resume
-đúng. Exact mixer/pause mechanism vẫn [TBD]; simulation dừng theo
+Audio phase 2026-10-21 dùng Hub/Combat/Boss: Mission/region travel giữ Combat,
+duck nhẹ + warp; không có travel song hoặc continuous engine loop. Pause duck music
+và giữ loop cursor; UI audio vẫn chạy. Concrete event/clip/mixer/crossfade values ở
+[Audio Final](audio-final.md); simulation dừng theo
 [architecture](../systems/architecture.md#pause-và-time-management-locked).
 
 ## Presentation event matrix
@@ -136,7 +137,7 @@ Baseline presentation matrix:
 
 | Event | Animation | VFX | Audio | Camera |
 |---|---|---|---|---|
-| Player enter | move/ease | engine trail | engine ramp | none/light |
+| Player enter | move/ease | engine trail | warp cue | none/light |
 | Enemy hit | flash | small spark | throttled hit | none |
 | Enemy death | scale/fade | explosion/debris | small explosion | none/tiny heavy only |
 | Player death | disable/rotate | staged explosion | player death | medium |
@@ -151,7 +152,8 @@ Exact timing chưa có seed giữ [TBD]; khi tune sẽ cập nhật tại owner 
 
 ## Event coverage cho player và firing
 
-Player entrance dùng transform/ease + engine trail + engine ramp; firing cue riêng
+Player entrance dùng transform/ease + engine trail và warp cue theo
+[Audio Final](audio-final.md); không có continuous engine audio. Firing cue riêng
 cho Pulse/Plasma/Missile, muzzle/shot rõ nhưng không phủ vùng né.
 Player death dùng staged explosion, player-death SFX và medium shake;
 respawn entry có cue riêng, vòng teal nhấp nháy cho invincibility, hull giữ hiển thị ổn định, tránh nhầm hit flash.
@@ -281,8 +283,8 @@ bắt đầu cue khi còn shot cũ cần
 resolve. UI/control rules thuộc [UI/UX](ui-ux.md#vocabulary-và-announcement).
 
 Level intro/sector title gọn, boss/hazard warning ngắn và không spam WARNING.
-Audio categories [PROVISIONAL]: Music, player/enemy weapons, hits/explosions,
-pickup/supply, engine/transition và UI. Mixer group implementation chưa khóa.
+Audio family priorities và mixer implementation ở [Audio Final](audio-final.md);
+visual/audio choreography không quyết gameplay timing.
 Dynamic audio có intensity/duck/stinger ở boss phase và transition khi cần;
 không cần adaptive-music framework phức tạp.
 

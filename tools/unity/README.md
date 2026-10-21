@@ -107,3 +107,16 @@ Contract thuộc [weapons/items owner](../../docs/content/weapons-items-drops.md
 
 `VerifyFrameRateLimit.Measure(60)` đo Editor trong ba giây; không thay device profile.
 Không claim Android/FPS/final audio hoặc full Campaign từ các fixture trên.
+
+
+## Audio integration
+
+`ConfigureAudioFinal.Apply` chạy Edit Mode để import selected library WAV, bind palette,
+routing Music/SFX/UI và audio-only components/credits. Không tạo mixer structure bằng
+reflection hoặc edit YAML. Không rerun để reset mix sau listening. `VerifyAudioFinal.Edit`
+kiểm bindings; `Begin` kiểm shell/death/pause/retry; `BeginCombat(scope)` hỗ trợ
+`player`, `enemies`, `travel`, `boss`, `all` trên test storage và production byte guard.
+`BeginFinal` gom flow và bốn combat scopes. Chờ JSON terminal trong `.design/audio-final/`,
+không chạy probes đồng thời hoặc can thiệp phiên Campaign user đang chơi.
+Clip/event/mix/license và giới hạn listening thuộc
+[Audio Final](../../docs/presentation/audio-final.md).

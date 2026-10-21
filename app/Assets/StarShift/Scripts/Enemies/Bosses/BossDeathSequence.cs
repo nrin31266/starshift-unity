@@ -14,6 +14,7 @@ namespace StarShift.Enemies
         private Action completed;
         private GameplayViewController view;
         public bool IsPlaying { get; private set; }
+        public float Progress => IsPlaying ? Mathf.Clamp01(elapsed / duration) : 0;
         public void Begin(Action onCompleted)
         {
             if (IsPlaying) return;

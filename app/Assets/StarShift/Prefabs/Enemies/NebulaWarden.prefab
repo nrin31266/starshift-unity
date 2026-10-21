@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3023651282094047683}
   - component: {fileID: 1616058522249258062}
   - component: {fileID: 4633498513382865890}
+  - component: {fileID: 3270526128711112918}
   m_Layer: 0
   m_Name: PlasmaNodeAttack
   m_TagString: Untagged
@@ -152,6 +153,20 @@ MonoBehaviour:
   frameSeconds: 0.055
   cueScale: 1.4
   cueSizeAt900: 52
+--- !u!114 &3270526128711112918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 238046746188928753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 955c60f460625f7f184f256d6638255f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Audio.EnemyAudioPresentation
+  warning: 18
+  attackCue: 16
 --- !u!1 &636163388352957518
 GameObject:
   m_ObjectHideFlags: 0
@@ -166,6 +181,7 @@ GameObject:
   - component: {fileID: 7949261102967262018}
   - component: {fileID: 7247198656593381357}
   - component: {fileID: 9100646687420273539}
+  - component: {fileID: 8866799951272872973}
   m_Layer: 9
   m_Name: PlasmaNode
   m_TagString: Untagged
@@ -340,7 +356,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6c1554c9bb72ebf9c99a9d53beaf50e9, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EnemyHitPresentation
   sparks: {fileID: 0}
   smoke: {fileID: 0}
@@ -419,6 +435,20 @@ MonoBehaviour:
   - {fileID: -1979729686, guid: 248c403d7b60bc838b68ee99155c0c06, type: 3}
   - {fileID: -457886048, guid: 248c403d7b60bc838b68ee99155c0c06, type: 3}
   impactSeconds: 0.22
+--- !u!114 &8866799951272872973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 636163388352957518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 955c60f460625f7f184f256d6638255f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Audio.EnemyAudioPresentation
+  warning: 15
+  attackCue: 16
 --- !u!1 &1081351555153540892
 GameObject:
   m_ObjectHideFlags: 0
@@ -524,6 +554,7 @@ GameObject:
   - component: {fileID: 8291896121443468410}
   - component: {fileID: 4934417465390238935}
   - component: {fileID: 7315479900829299708}
+  - component: {fileID: 6011783558921375533}
   m_Layer: 0
   m_Name: ShelterBarrage
   m_TagString: Untagged
@@ -697,6 +728,20 @@ MonoBehaviour:
   frameSeconds: 0.035
   cueScale: 1.4
   cueSizeAt900: 52
+--- !u!114 &6011783558921375533
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1142166988483445523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 955c60f460625f7f184f256d6638255f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Audio.EnemyAudioPresentation
+  warning: 21
+  attackCue: 16
 --- !u!1 &1269573560600744681
 GameObject:
   m_ObjectHideFlags: 0
@@ -712,6 +757,7 @@ GameObject:
   - component: {fileID: 4988354363257063462}
   - component: {fileID: 2520419654163938344}
   - component: {fileID: 3349459301435047082}
+  - component: {fileID: 5295665293429678837}
   m_Layer: 9
   m_Name: DroneNode
   m_TagString: Untagged
@@ -903,7 +949,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6c1554c9bb72ebf9c99a9d53beaf50e9, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EnemyHitPresentation
   sparks: {fileID: 0}
   smoke: {fileID: 0}
@@ -982,6 +1028,20 @@ MonoBehaviour:
   - {fileID: -1979729686, guid: 248c403d7b60bc838b68ee99155c0c06, type: 3}
   - {fileID: -457886048, guid: 248c403d7b60bc838b68ee99155c0c06, type: 3}
   impactSeconds: 0.22
+--- !u!114 &5295665293429678837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1269573560600744681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 955c60f460625f7f184f256d6638255f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Audio.EnemyAudioPresentation
+  warning: 15
+  attackCue: 16
 --- !u!1 &1392760794080737883
 GameObject:
   m_ObjectHideFlags: 0
@@ -1708,6 +1768,7 @@ GameObject:
   - component: {fileID: 1006668999416979366}
   - component: {fileID: 60144903212101727}
   - component: {fileID: 5027288422609096126}
+  - component: {fileID: 5838794159922640931}
   m_Layer: 0
   m_Name: ExposedDrones
   m_TagString: Untagged
@@ -1848,6 +1909,20 @@ MonoBehaviour:
   frameSeconds: 0.055
   cueScale: 1.4
   cueSizeAt900: 52
+--- !u!114 &5838794159922640931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2225913496872485412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 955c60f460625f7f184f256d6638255f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Audio.EnemyAudioPresentation
+  warning: 22
+  attackCue: 16
 --- !u!1 &2521948589631020625
 GameObject:
   m_ObjectHideFlags: 0
@@ -3935,6 +4010,7 @@ GameObject:
   - component: {fileID: 8912206650242513412}
   - component: {fileID: 4290539346215379615}
   - component: {fileID: 801293951769233078}
+  - component: {fileID: 6556255230726631364}
   m_Layer: 0
   m_Name: ExposedSweep
   m_TagString: Untagged
@@ -4108,6 +4184,20 @@ MonoBehaviour:
   frameSeconds: 0.035
   cueScale: 1.4
   cueSizeAt900: 52
+--- !u!114 &6556255230726631364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4900670927484337513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 955c60f460625f7f184f256d6638255f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Audio.EnemyAudioPresentation
+  warning: 19
+  attackCue: 14
 --- !u!1 &4986271710487376333
 GameObject:
   m_ObjectHideFlags: 0
@@ -4954,6 +5044,7 @@ GameObject:
   - component: {fileID: 3107771909689134331}
   - component: {fileID: 2239889036877937143}
   - component: {fileID: 4894906941326246587}
+  - component: {fileID: 2312723039437603439}
   m_Layer: 0
   m_Name: DroneNodeAttack
   m_TagString: Untagged
@@ -5094,6 +5185,20 @@ MonoBehaviour:
   frameSeconds: 0.055
   cueScale: 1.4
   cueSizeAt900: 52
+--- !u!114 &2312723039437603439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5763158675083304870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 955c60f460625f7f184f256d6638255f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Audio.EnemyAudioPresentation
+  warning: 22
+  attackCue: 16
 --- !u!1 &5862269851939780760
 GameObject:
   m_ObjectHideFlags: 0
@@ -5111,6 +5216,7 @@ GameObject:
   - component: {fileID: 3264151203702432108}
   - component: {fileID: 8019075379467703282}
   - component: {fileID: 1490769009478510261}
+  - component: {fileID: 9219121044066676845}
   m_Layer: 9
   m_Name: BeamNodeAttack
   m_TagString: Untagged
@@ -5375,7 +5481,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6c1554c9bb72ebf9c99a9d53beaf50e9, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EnemyHitPresentation
   sparks: {fileID: 0}
   smoke: {fileID: 0}
@@ -5454,6 +5560,20 @@ MonoBehaviour:
   - {fileID: -1979729686, guid: 248c403d7b60bc838b68ee99155c0c06, type: 3}
   - {fileID: -457886048, guid: 248c403d7b60bc838b68ee99155c0c06, type: 3}
   impactSeconds: 0.22
+--- !u!114 &9219121044066676845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5862269851939780760}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 955c60f460625f7f184f256d6638255f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Audio.EnemyAudioPresentation
+  warning: 19
+  attackCue: 14
 --- !u!1 &6129955814925881158
 GameObject:
   m_ObjectHideFlags: 0
@@ -5658,6 +5778,7 @@ GameObject:
   - component: {fileID: 4326184294520606136}
   - component: {fileID: 1501502014449792020}
   - component: {fileID: 6061394235460764217}
+  - component: {fileID: 8045483280870111565}
   m_Layer: 9
   m_Name: NebulaWarden
   m_TagString: Untagged
@@ -6072,6 +6193,20 @@ MonoBehaviour:
   - {fileID: 7245671584251659160}
   fragmentFrames: []
   totalSeconds: 2.4
+--- !u!114 &8045483280870111565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6430369222520202953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 955c60f460625f7f184f256d6638255f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Audio.EnemyAudioPresentation
+  warning: 10
+  attackCue: 10
 --- !u!1 &6460097353196476958
 GameObject:
   m_ObjectHideFlags: 0
@@ -7051,6 +7186,7 @@ GameObject:
   - component: {fileID: 1201103410255357218}
   - component: {fileID: 5105114790293524482}
   - component: {fileID: 7859213850949273160}
+  - component: {fileID: 3492179361234855623}
   m_Layer: 0
   m_Name: ExposedPlasma
   m_TagString: Untagged
@@ -7191,6 +7327,20 @@ MonoBehaviour:
   frameSeconds: 0.055
   cueScale: 1.4
   cueSizeAt900: 52
+--- !u!114 &3492179361234855623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8273362635949859899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 955c60f460625f7f184f256d6638255f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Audio.EnemyAudioPresentation
+  warning: 18
+  attackCue: 16
 --- !u!1 &8614428809916690926
 GameObject:
   m_ObjectHideFlags: 0

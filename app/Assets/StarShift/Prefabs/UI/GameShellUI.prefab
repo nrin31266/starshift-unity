@@ -201,6 +201,8 @@ MonoBehaviour:
   Vibration: {fileID: 2661751618415300849}
   Shake: {fileID: 9026312963519625226}
   SaveSettings: {fileID: 6046192839439856628}
+  ResetAll: {fileID: 0}
+  WalletIcon: {fileID: 0}
   Resume: {fileID: 3397458535900436059}
   Retry: {fileID: 7123185697996863096}
   PauseSettings: {fileID: 7908364778828914516}
@@ -12827,12 +12829,10 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "STARSHIFT\n\nB\u1EA3n ch\u01A1i hi\u1EC7n t\u1EA1i: 8 nhi\u1EC7m v\u1EE5
-    \xB7 Region A + Region B.\n\u0110\u01B0\u1EE3c x\xE2y d\u1EF1ng b\u1EB1ng Unity.\n\nH\xECnh
-    \u1EA3nh v\xE0 giao di\u1EC7n hi\u1EC7n t\u1EA1i l\xE0 b\u1EA3n t\u1EA1m ph\u1EE5c
-    v\u1EE5 gameplay.\nTh\xF4ng tin t\xE1c gi\u1EA3, gi\u1EA5y ph\xE9p v\xE0 ngu\u1ED3n
-    t\xE0i s\u1EA3n s\u1EBD \u0111\u01B0\u1EE3c b\u1ED5 sung khi t\xE0i s\u1EA3n
-    ph\xE1t h\xE0nh \u0111\u01B0\u1EE3c ch\u1ECDn."
+  m_Text: "STARSHIFT\n\n8 nhi\u1EC7m v\u1EE5 \xB7 Region A + Region B.\n\u0110\u01B0\u1EE3c
+    x\xE2y d\u1EF1ng b\u1EB1ng Unity.\n\nAUDIO\nMusic: Andrew Sitkov \xB7 Royalty-free\nSFX:
+    Kenney \xB7 CC0\nSFX: Little Robot Sound Factory \xB7 CC BY 3.0\nlittlerobotsoundfactory.com\ncreativecommons.org/licenses/by/3.0\nSFX
+    \u0111\u01B0\u1EE3c c\u1EAFt g\u1ECDn, EQ v\xE0 c\xE2n \xE2m l\u01B0\u1EE3ng."
 --- !u!1 &4948139785337824507
 GameObject:
   m_ObjectHideFlags: 0

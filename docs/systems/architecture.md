@@ -90,8 +90,10 @@ production content tắt Dev mode, đi qua `CampaignLifecycle.TryBoot` tới she
 
 `GameShell` sở hữu navigation/actions và transition blocker; `ShellView` giữ authored
 uGUI references, `ShellCopy` giữ frontend copy, `GameplayHud` tiếp tục đọc runtime
-state. `SettingsFeedback` giữ hai AudioSource Music/SFX cho content về sau và haptic
-adapter; không có audio framework. Các màn hình và Back semantics thuộc
+state. `SettingsFeedback` áp persisted volume qua `AudioDirector` và giữ haptic adapter.
+AudioDirector sở hữu music crossfade và bounded SFX voices; các audio presentation
+components chỉ quan sát gameplay, không ghi clock/damage/save. Wiring và mixer ở
+[Audio Final](../presentation/audio-final.md). Các màn hình và Back semantics thuộc
 [UI owner](../presentation/ui-ux.md#m7-functional-shell-provisional).
 
 `GameplaySession` tiếp tục là owner duy nhất của Time.timeScale/AudioListener.pause.

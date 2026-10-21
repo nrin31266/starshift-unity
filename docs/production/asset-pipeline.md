@@ -452,6 +452,10 @@ Scene naming/topology thuộc [architecture](../systems/architecture.md), không
 
 ## Python SFX và BGM import
 
+Audio phase 2026-10-21: selected source records, licenses và reproduction ở
+[offline audio tools](../../tools/audio/README.md); event/mix/acceptance ở
+[Audio Final](../presentation/audio-final.md). Không import whole library pack.
+
 Python synth trong `tools/audio/`, giữ script/parameter/seed khi cần reproduce;
 export file như ví dụ WAV rồi import Audio folder. Danh mục sound ở audio/VFX owner.
 BGM có thể free licensed/original, không bắt buộc synth Python.

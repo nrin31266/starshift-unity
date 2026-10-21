@@ -57,7 +57,7 @@ namespace StarShift.UI
             "Chạm ô vũ khí để đổi nhánh đã mở. Các nhánh dùng chung nhiệt. Khi quá nóng, chờ hạ nhiệt để bắn lại.",
             "Mất mạng làm giảm cấp vũ khí đang dùng. Sau hồi sinh có bảo vệ ngắn. Nhặt Core và hỗ trợ; dùng nút Tên lửa khi cần.",
             "Chạm Ⅱ để tạm dừng. Bạn có thể đổi cài đặt hoặc chơi lại đợt đã lưu. Tiếp tục chiến dịch từ đầu đợt đã lưu." };
-        public const string CreditsText = "STARSHIFT\n\n8 nhiệm vụ qua hai khu vực.\nĐược xây dựng bằng Unity.\n\nHình ảnh và giao diện hiện tại là bản tạm phục vụ gameplay.\nThông tin tác giả, giấy phép và nguồn tài sản sẽ được bổ sung khi tài sản phát hành được chọn.";
+        public const string CreditsText = "STARSHIFT\n\n8 nhiệm vụ · Region A + Region B.\nĐược xây dựng bằng Unity.\n\nAUDIO\nMusic: Andrew Sitkov · Royalty-free\nSFX: Kenney · CC0\nSFX: Little Robot Sound Factory · CC BY 3.0\nlittlerobotsoundfactory.com\ncreativecommons.org/licenses/by/3.0\nSFX được cắt gọn, EQ và cân âm lượng.";
         public static string Mission(int index) => $"NHIỆM VỤ {index + 1:00}";
         public static string Time(float seconds)
         {

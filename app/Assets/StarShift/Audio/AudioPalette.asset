@@ -1,0 +1,299 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 757666dfe1153c2a3b2d31fb3e654918, type: 3}
+  m_Name: AudioPalette
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Audio.AudioPalette
+  Hub: {fileID: 8300000, guid: 0f7fb5ba941294391b3e57ad40e0a962, type: 3}
+  Combat: {fileID: 8300000, guid: 0f9002f8b3133a124b50c59ae151bb42, type: 3}
+  Boss: {fileID: 8300000, guid: 10523131b2c5cccccb7ac4dee6f11950, type: 3}
+  MusicLevel: 0.2
+  Cues:
+  - Id: 0
+    Clip: {fileID: 8300000, guid: 8b7e055735261330fbdc53cd0d05d929, type: 3}
+    Volume: 0.19
+    Tier: 2
+    MaxVoices: 2
+    Interval: 0.085
+    Variation: 0.035
+  - Id: 1
+    Clip: {fileID: 8300000, guid: 80a3f23753fef579d9840f3e388972dd, type: 3}
+    Volume: 0.19
+    Tier: 2
+    MaxVoices: 2
+    Interval: 0.12
+    Variation: 0.035
+  - Id: 2
+    Clip: {fileID: 8300000, guid: d3e31eb28213c2fad996b0212e4b1abb, type: 3}
+    Volume: 0.19
+    Tier: 2
+    MaxVoices: 2
+    Interval: 0.08
+    Variation: 0.035
+  - Id: 3
+    Clip: {fileID: 8300000, guid: 10af7cbaa2310d4078fe0eab22cc26fb, type: 3}
+    Volume: 0.19
+    Tier: 2
+    MaxVoices: 2
+    Interval: 0.08
+    Variation: 0.035
+  - Id: 4
+    Clip: {fileID: 8300000, guid: b8d4ee87ed5a0c421bcece1a99956f6d, type: 3}
+    Volume: 0.45
+    Tier: 1
+    MaxVoices: 1
+    Interval: 0.08
+    Variation: 0
+  - Id: 5
+    Clip: {fileID: 8300000, guid: c18020065bdd9a8eaada38a9a7570e2e, type: 3}
+    Volume: 0.45
+    Tier: 1
+    MaxVoices: 1
+    Interval: 0.08
+    Variation: 0
+  - Id: 6
+    Clip: {fileID: 8300000, guid: 2d3c2d29840e0343991fd53bda907f25, type: 3}
+    Volume: 0.45
+    Tier: 1
+    MaxVoices: 1
+    Interval: 0.08
+    Variation: 0
+  - Id: 7
+    Clip: {fileID: 8300000, guid: 702ebfa9717fc238da608e4350d01863, type: 3}
+    Volume: 0.48
+    Tier: 0
+    MaxVoices: 1
+    Interval: 0.15
+    Variation: 0
+  - Id: 8
+    Clip: {fileID: 8300000, guid: d5445b6ffaa286edbb15ad94b45a0b0d, type: 3}
+    Volume: 0.24
+    Tier: 3
+    MaxVoices: 2
+    Interval: 0.08
+    Variation: 0.035
+  - Id: 9
+    Clip: {fileID: 8300000, guid: 55602d7dddd7c9fb39c7b4ed994094f3, type: 3}
+    Volume: 0.45
+    Tier: 1
+    MaxVoices: 1
+    Interval: 0.08
+    Variation: 0
+  - Id: 10
+    Clip: {fileID: 8300000, guid: d7563999612a8f755b860fe1da9c048a, type: 3}
+    Volume: 0.065
+    Tier: 3
+    MaxVoices: 2
+    Interval: 0.16
+    Variation: 0.035
+  - Id: 11
+    Clip: {fileID: 8300000, guid: 559eafaae0600883ba07ca5a258cf0b0, type: 3}
+    Volume: 0.48
+    Tier: 0
+    MaxVoices: 1
+    Interval: 0.15
+    Variation: 0
+  - Id: 12
+    Clip: {fileID: 8300000, guid: 72832c67780fa4e4d8af7a8839eff9df, type: 3}
+    Volume: 0.24
+    Tier: 3
+    MaxVoices: 2
+    Interval: 0.08
+    Variation: 0.035
+  - Id: 13
+    Clip: {fileID: 8300000, guid: 27c9f365d540eb5ea84f739b02837635, type: 3}
+    Volume: 0.48
+    Tier: 0
+    MaxVoices: 1
+    Interval: 0.15
+    Variation: 0
+  - Id: 14
+    Clip: {fileID: 8300000, guid: 232e119f1ad889cec95af0ae50623c08, type: 3}
+    Volume: 0.24
+    Tier: 3
+    MaxVoices: 2
+    Interval: 0.08
+    Variation: 0.035
+  - Id: 15
+    Clip: {fileID: 8300000, guid: ba05fe06720f6900d9b23a9c06e94910, type: 3}
+    Volume: 0.24
+    Tier: 3
+    MaxVoices: 2
+    Interval: 0.08
+    Variation: 0.035
+  - Id: 16
+    Clip: {fileID: 8300000, guid: 7f79295e71cf858658a5a5c6a83eb9ad, type: 3}
+    Volume: 0.24
+    Tier: 3
+    MaxVoices: 2
+    Interval: 0.08
+    Variation: 0.035
+  - Id: 17
+    Clip: {fileID: 8300000, guid: de710a7126840a53cb2fb4e55281cb09, type: 3}
+    Volume: 0.24
+    Tier: 3
+    MaxVoices: 2
+    Interval: 0.08
+    Variation: 0.035
+  - Id: 18
+    Clip: {fileID: 8300000, guid: f0cbe1473e26b8bb1a066aca97399d19, type: 3}
+    Volume: 0.48
+    Tier: 0
+    MaxVoices: 1
+    Interval: 0.15
+    Variation: 0
+  - Id: 19
+    Clip: {fileID: 8300000, guid: 1171990c1321720539b7640a5c13ab2c, type: 3}
+    Volume: 0.48
+    Tier: 0
+    MaxVoices: 1
+    Interval: 0.15
+    Variation: 0
+  - Id: 20
+    Clip: {fileID: 8300000, guid: 98bb6a0140f5ad0f69c80ef68c89ff23, type: 3}
+    Volume: 0.48
+    Tier: 0
+    MaxVoices: 1
+    Interval: 0.15
+    Variation: 0
+  - Id: 21
+    Clip: {fileID: 8300000, guid: 25432d204aa305112b8077b184d97f66, type: 3}
+    Volume: 0.48
+    Tier: 0
+    MaxVoices: 1
+    Interval: 0.15
+    Variation: 0
+  - Id: 22
+    Clip: {fileID: 8300000, guid: 0aa64b78c61c060be891db1bca240b1c, type: 3}
+    Volume: 0.48
+    Tier: 0
+    MaxVoices: 1
+    Interval: 0.15
+    Variation: 0
+  - Id: 23
+    Clip: {fileID: 8300000, guid: 958a45d03f2cb181aa3724090601bc80, type: 3}
+    Volume: 0.24
+    Tier: 3
+    MaxVoices: 2
+    Interval: 0.08
+    Variation: 0.035
+  - Id: 24
+    Clip: {fileID: 8300000, guid: 589010154c4f087eeb57817227e3bda7, type: 3}
+    Volume: 0.13
+    Tier: 3
+    MaxVoices: 2
+    Interval: 0.08
+    Variation: 0.035
+  - Id: 25
+    Clip: {fileID: 8300000, guid: 1fcf4eb1260244ca4bd0f6c774bfda9d, type: 3}
+    Volume: 0.24
+    Tier: 3
+    MaxVoices: 2
+    Interval: 0.08
+    Variation: 0.035
+  - Id: 26
+    Clip: {fileID: 8300000, guid: 0476570a7e52fb669b3d5e5e5b79df5b, type: 3}
+    Volume: 0.1
+    Tier: 3
+    MaxVoices: 2
+    Interval: 0.08
+    Variation: 0.035
+  - Id: 27
+    Clip: {fileID: 8300000, guid: c17939ac5e2ad42ac9fc4413824e3622, type: 3}
+    Volume: 0.24
+    Tier: 3
+    MaxVoices: 2
+    Interval: 0.08
+    Variation: 0.035
+  - Id: 28
+    Clip: {fileID: 8300000, guid: 051d575e33708a351a5108a0f7396694, type: 3}
+    Volume: 0.45
+    Tier: 1
+    MaxVoices: 1
+    Interval: 0.08
+    Variation: 0
+  - Id: 29
+    Clip: {fileID: 8300000, guid: 0654415fc74c10566b66496c13eb35c1, type: 3}
+    Volume: 0.11
+    Tier: 4
+    MaxVoices: 2
+    Interval: 0.12
+    Variation: 0.035
+  - Id: 30
+    Clip: {fileID: 8300000, guid: 9d4de7cddd471bdfeb48cfb398822af5, type: 3}
+    Volume: 0.24
+    Tier: 4
+    MaxVoices: 2
+    Interval: 0.08
+    Variation: 0.035
+  - Id: 31
+    Clip: {fileID: 8300000, guid: be50badd133c373509de5d0a84d761ca, type: 3}
+    Volume: 0.24
+    Tier: 3
+    MaxVoices: 2
+    Interval: 0.08
+    Variation: 0.035
+  - Id: 32
+    Clip: {fileID: 8300000, guid: e97cb3b41a8c2702f8db0b54eb12394c, type: 3}
+    Volume: 0.22
+    Tier: 4
+    MaxVoices: 1
+    Interval: 0.08
+    Variation: 0.035
+  - Id: 33
+    Clip: {fileID: 8300000, guid: d29a9beb00336b12492530aee903a13b, type: 3}
+    Volume: 0.22
+    Tier: 4
+    MaxVoices: 1
+    Interval: 0.08
+    Variation: 0.035
+  - Id: 34
+    Clip: {fileID: 8300000, guid: d8d5fc324eba903ceb18a5729c301d48, type: 3}
+    Volume: 0.22
+    Tier: 4
+    MaxVoices: 1
+    Interval: 0.08
+    Variation: 0.035
+  - Id: 35
+    Clip: {fileID: 8300000, guid: 724315aef8102dbd08e6376d09a2e524, type: 3}
+    Volume: 0.24
+    Tier: 3
+    MaxVoices: 2
+    Interval: 0.08
+    Variation: 0.035
+  - Id: 36
+    Clip: {fileID: 8300000, guid: 1bf5525687a516b3da0bf2079ff26c5a, type: 3}
+    Volume: 0.24
+    Tier: 3
+    MaxVoices: 2
+    Interval: 0.08
+    Variation: 0.035
+  - Id: 37
+    Clip: {fileID: 8300000, guid: 017f2dd8e73e101519061004c3d455f7, type: 3}
+    Volume: 0.24
+    Tier: 3
+    MaxVoices: 2
+    Interval: 0.08
+    Variation: 0.035
+  - Id: 38
+    Clip: {fileID: 8300000, guid: ca48b7c8edaf9d31790231883e65cddd, type: 3}
+    Volume: 0.45
+    Tier: 1
+    MaxVoices: 1
+    Interval: 0.08
+    Variation: 0
+  - Id: 39
+    Clip: {fileID: 8300000, guid: c71b719242590b4ef8f540bea1387e4f, type: 3}
+    Volume: 0.45
+    Tier: 1
+    MaxVoices: 1
+    Interval: 0.08
+    Variation: 0

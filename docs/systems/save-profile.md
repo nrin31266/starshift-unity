@@ -109,7 +109,7 @@ cuối cùng và future records thuộc economy owner, không tự lock trong se
 
 [PROVISIONAL] Scalar musicVolume, sfxVolume, vibrationEnabled, screenShakeEnabled
 nằm trong envelope version 2; defaults là volume 1, vibration/shake true. Volume
-phải finite và thuộc [0,1]; invalid setting bị reject, giữ state trước. M7 có shared Settings menu. Screen Shake được reserve-missile presentation đọc khi activation; Vibration qua SettingsFeedback gọi Android haptic tại cùng impact. Music/SFX áp volume lên hai AudioSource channels, chưa có final audio content. UI theo [UI owner](../presentation/ui-ux.md#settings).
+phải finite và thuộc [0,1]; invalid setting bị reject, giữ state trước. M7 có shared Settings menu. Screen Shake được reserve-missile presentation đọc khi activation; Vibration qua SettingsFeedback gọi Android haptic tại cùng impact. Music/SFX áp volume qua AudioDirector; UI dùng SFX preference, không thêm field/schema. Wiring và mix ở [Audio Final](../presentation/audio-final.md). UI theo [UI owner](../presentation/ui-ux.md#settings).
 New Game không reset Settings. Backend `CampaignProgress.SetSettings` độc lập campaign data. M7 cho explicit user Settings action từ Menu/Pause, kể cả Replay; chỉ preferences thay đổi, không grant quyền ghi gameplay vào Campaign/Profile.
 
 ## New Game và Continue

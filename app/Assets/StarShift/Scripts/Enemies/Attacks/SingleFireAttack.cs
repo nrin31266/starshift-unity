@@ -28,6 +28,7 @@ namespace StarShift.Enemies
         private bool encounterControlled;
         private int shotsRemaining;
 
+        public event System.Action VolleyFired;
         private bool telegraphing;
         public bool AwaitingFirstDirectedAttack => directed != null && directed.AttacksFired == 0;
         public bool IsTelegraphing => directed != null ? directed.IsBusy : telegraphing;
@@ -111,6 +112,7 @@ namespace StarShift.Enemies
                 float offset = definition.ProjectileCount == 1 ? 0 : definition.SpreadDegrees * (i / (float)(definition.ProjectileCount - 1) - .5f);
                 projectiles.Get().Launch(definition, muzzle, gameObject, target.gameObject, ReleaseProjectile, offset);
             }
+            VolleyFired?.Invoke();
             if (--shotsRemaining > 0) { remaining = definition.BurstInterval; return; }
             telegraphing = false;
             // Không giữ backlog để resume hoặc frame chậm tạo burst.

@@ -1001,7 +1001,7 @@ AudioSource:
   m_GameObject: {fileID: 153277869}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -8507845367887269193, guid: acbd3c344cdfba96a8a973db33bdfce4, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
@@ -1505,7 +1505,7 @@ MonoBehaviour:
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 0.8, b: 0.45, a: 0.85}
@@ -1991,7 +1991,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -6481,7 +6481,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -10013,6 +10013,8 @@ GameObject:
   - component: {fileID: 1730183997}
   - component: {fileID: 1730183999}
   - component: {fileID: 1730183998}
+  - component: {fileID: 1730184001}
+  - component: {fileID: 1730184000}
   m_Layer: 0
   m_Name: L1Encounters
   m_TagString: Untagged
@@ -10347,6 +10349,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Gameplay.SettingsFeedback
   music: {fileID: 153277870}
   sfx: {fileID: 2036679501}
+--- !u!114 &1730184000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1730183981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 076587baa0561f4ebaf7b245b0654a3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Audio.GameAudioPresentation
+  shell: {fileID: 1730183998}
+--- !u!114 &1730184001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1730183981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25035a5863363e44fa228dcd89aede15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Audio.AudioDirector
+  palette: {fileID: 11400000, guid: f4cef8e04ef8680cebf3a7f84026f9a5, type: 2}
+  musicGroup: {fileID: -8507845367887269193, guid: acbd3c344cdfba96a8a973db33bdfce4, type: 2}
+  sfxGroup: {fileID: -4446099026191855775, guid: acbd3c344cdfba96a8a973db33bdfce4, type: 2}
+  uiGroup: {fileID: -3307607973218378215, guid: acbd3c344cdfba96a8a973db33bdfce4, type: 2}
 --- !u!1 &1737356114
 GameObject:
   m_ObjectHideFlags: 0
@@ -10718,7 +10749,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4cdd83fc8f0ce2cdf8cd13d9801cdf0e, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.UI.UiButtonMotion
 --- !u!114 &1773578514
 MonoBehaviour:
@@ -10730,7 +10761,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.65, g: 0.28, b: 0.2, a: 1}
@@ -10768,7 +10799,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
     m_Mode: 3
@@ -12600,7 +12631,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -12793,7 +12824,7 @@ AudioSource:
   m_GameObject: {fileID: 2036679500}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -4446099026191855775, guid: acbd3c344cdfba96a8a973db33bdfce4, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
@@ -14273,11 +14304,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7058732033464195763, guid: e3e0889e5e61a2b92b0ded1a3129642a, type: 3}
       propertyPath: ResetAll
-      value:
+      value: 
       objectReference: {fileID: 1773578516}
     - target: {fileID: 7058732033464195763, guid: e3e0889e5e61a2b92b0ded1a3129642a, type: 3}
       propertyPath: WalletIcon
-      value:
+      value: 
       objectReference: {fileID: 1053600771}
     - target: {fileID: 7091587975995637424, guid: e3e0889e5e61a2b92b0ded1a3129642a, type: 3}
       propertyPath: m_SizeDelta.x

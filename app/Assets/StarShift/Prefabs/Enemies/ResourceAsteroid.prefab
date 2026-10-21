@@ -49,6 +49,7 @@ GameObject:
   - component: {fileID: 3500947662388664365}
   - component: {fileID: 613533931797441682}
   - component: {fileID: 7317124709747534908}
+  - component: {fileID: 5566220477239394367}
   m_Layer: 9
   m_Name: ResourceAsteroid
   m_TagString: Untagged
@@ -208,7 +209,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6c1554c9bb72ebf9c99a9d53beaf50e9, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.EnemyHitPresentation
   sparks: {fileID: 0}
   smoke: {fileID: 0}
@@ -287,6 +288,20 @@ MonoBehaviour:
   - {fileID: -1979729686, guid: 248c403d7b60bc838b68ee99155c0c06, type: 3}
   - {fileID: -457886048, guid: 248c403d7b60bc838b68ee99155c0c06, type: 3}
   impactSeconds: 0.22
+--- !u!114 &5566220477239394367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1863935525804757048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 955c60f460625f7f184f256d6638255f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Audio.EnemyAudioPresentation
+  warning: 10
+  attackCue: 10
 --- !u!1 &2834276918074409433
 GameObject:
   m_ObjectHideFlags: 0

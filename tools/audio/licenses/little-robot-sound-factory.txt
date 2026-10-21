@@ -1,0 +1,13 @@
+Sci-Fi Sound Effects Library — Little Robot Sound Factory
+Source: https://opengameart.org/content/sci-fi-sound-effects-library
+Author URL: http://www.littlerobotsoundfactory.com/
+License: Creative Commons Attribution 3.0 Unported (CC BY 3.0)
+License URL: https://creativecommons.org/licenses/by/3.0/
+Acquired 2026-10-21 from original OpenGameArt download:
+https://opengameart.org/sites/default/files/Sci-Fi%20Sound%20Library.zip
+
+Required attribution: Little Robot Sound Factory, www.littlerobotsoundfactory.com
+StarShift modifications: selected excerpts, trim, fade, mono conversion,
+EQ/filtering, reverse for charge cues, static peak normalization.
+Individual source filenames and modifications are recorded in ../sources.json.
+The attribution is also displayed in the in-game Credits screen.

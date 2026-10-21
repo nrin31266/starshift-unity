@@ -94,7 +94,15 @@ namespace StarShift.UI
         {
             if (save.Mode == SessionMode.DevTest && !busy) { initialized = true; Navigate(ShellScreen.Playing); }
         }
-        private void Bind(Button button, UnityAction action) { button.onClick.AddListener(action); bindings.Add((button, action)); }
+        private void Bind(Button button, UnityAction action)
+        {
+            UnityAction withAudio = () => {
+                var audio = GetComponent<StarShift.Audio.AudioDirector>();
+                audio?.Play(button.name == "Back" || button.name == "Cancel" ? StarShift.Audio.AudioCue.Back : StarShift.Audio.AudioCue.Confirm);
+                action();
+            };
+            button.onClick.AddListener(withAudio); bindings.Add((button, withAudio));
+        }
         public void Boot()
         {
             initialized = true;
@@ -378,6 +386,7 @@ namespace StarShift.UI
         private void CancelConfirmation() { confirmed = null; view.CloseConfirmation(); pointer.CancelGesture(); }
         private void ShowError(string copy, Action retry)
         {
+            GetComponent<StarShift.Audio.AudioDirector>()?.Play(StarShift.Audio.AudioCue.Error);
             errorRetry = retry; view.ErrorText.text = copy; view.Error.SetActive(true);
             view.ErrorRetry.gameObject.SetActive(retry != null); ShellView.Focus(view.ErrorRetry);
         }

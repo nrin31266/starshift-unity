@@ -12,12 +12,13 @@ namespace StarShift.Enemies
         [SerializeField] private float[] healthFractions = { .5f, .25f };
         [SerializeField, Min(.1f)] private float seconds = .75f;
         private EnemyHealth health;
+        private StarShift.Audio.AudioDirector audio;
         private readonly bool[] emitted = new bool[2];
         private readonly bool[] playing = new bool[2];
         private readonly float[] elapsed = new float[2];
         private readonly Vector3[] origins = new Vector3[2];
 
-        private void Awake() => health = GetComponent<EnemyHealth>();
+        private void Awake() { health = GetComponent<EnemyHealth>(); audio = FindAnyObjectByType<StarShift.Audio.AudioDirector>(); }
         private void OnEnable() { Clear(); health.Damaged += OnDamaged; }
         private void OnDisable() { health.Damaged -= OnDamaged; Clear(); }
         private void OnDamaged()
@@ -26,6 +27,7 @@ namespace StarShift.Enemies
                 if (!emitted[i] && health.CurrentHp <= health.MaxHp * healthFractions[i])
                 {
                     emitted[i] = playing[i] = true; elapsed[i] = 0;
+                    audio?.Play(StarShift.Audio.AudioCue.ArmorBreak);
                     origins[i] = transform.TransformPoint(anchors[i]);
                 }
         }

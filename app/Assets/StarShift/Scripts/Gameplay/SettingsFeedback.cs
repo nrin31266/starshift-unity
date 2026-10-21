@@ -13,6 +13,7 @@ namespace StarShift.Gameplay
         {
             music.volume = value.MusicVolume;
             sfx.volume = value.SfxVolume;
+            GetComponent<StarShift.Audio.AudioDirector>()?.Apply(value);
             vibrationEnabled = value.VibrationEnabled;
         }
         public void PlayMusic(AudioClip clip) { music.clip = clip; music.Play(); }

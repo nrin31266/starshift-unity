@@ -337,6 +337,7 @@ GameObject:
   - component: {fileID: 8419884711558324296}
   - component: {fileID: 9019668843870035339}
   - component: {fileID: 601303156155551368}
+  - component: {fileID: 6354732443481700329}
   m_Layer: 0
   m_Name: WeaponModule0
   m_TagString: Untagged
@@ -419,6 +420,20 @@ MonoBehaviour:
   frameSeconds: 0.055
   cueScale: 1.4
   cueSizeAt900: 52
+--- !u!114 &6354732443481700329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 763686328188961588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 955c60f460625f7f184f256d6638255f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Audio.EnemyAudioPresentation
+  warning: 18
+  attackCue: 16
 --- !u!1 &875564435754992289
 GameObject:
   m_ObjectHideFlags: 0
@@ -1218,6 +1233,7 @@ GameObject:
   - component: {fileID: 5924941080682373969}
   - component: {fileID: 572562393980043002}
   - component: {fileID: 6049618405673605356}
+  - component: {fileID: 4166102210171390011}
   m_Layer: 0
   m_Name: ShelterBarrage
   m_TagString: Untagged
@@ -1383,6 +1399,20 @@ MonoBehaviour:
   frameSeconds: 0.055
   cueScale: 1.4
   cueSizeAt900: 52
+--- !u!114 &4166102210171390011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3417368910400253419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 955c60f460625f7f184f256d6638255f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Audio.EnemyAudioPresentation
+  warning: 20
+  attackCue: 16
 --- !u!1 &4022546516505969821
 GameObject:
   m_ObjectHideFlags: 0
@@ -2624,6 +2654,7 @@ GameObject:
   - component: {fileID: 606686831294941787}
   - component: {fileID: 6668339415682324038}
   - component: {fileID: 2463349899930730480}
+  - component: {fileID: 7515935475590947328}
   m_Layer: 0
   m_Name: WeaponModule1
   m_TagString: Untagged
@@ -2704,6 +2735,20 @@ MonoBehaviour:
   frameSeconds: 0.055
   cueScale: 1.4
   cueSizeAt900: 52
+--- !u!114 &7515935475590947328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5010859626675745782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 955c60f460625f7f184f256d6638255f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Audio.EnemyAudioPresentation
+  warning: 18
+  attackCue: 16
 --- !u!1 &5054636291649719735
 GameObject:
   m_ObjectHideFlags: 0
@@ -3318,6 +3363,7 @@ GameObject:
   - component: {fileID: 620056430189413653}
   - component: {fileID: 2510191285675556992}
   - component: {fileID: 2659799892943227181}
+  - component: {fileID: 3273523421503357262}
   m_Layer: 0
   m_Name: WeaponModule2
   m_TagString: Untagged
@@ -3421,6 +3467,20 @@ MonoBehaviour:
   frameSeconds: 0.055
   cueScale: 1.4
   cueSizeAt900: 52
+--- !u!114 &3273523421503357262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6042319442913905231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 955c60f460625f7f184f256d6638255f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Audio.EnemyAudioPresentation
+  warning: 19
+  attackCue: 14
 --- !u!1 &6233356924028132276
 GameObject:
   m_ObjectHideFlags: 0
@@ -4800,6 +4860,7 @@ GameObject:
   - component: {fileID: 6861999093492704851}
   - component: {fileID: 5064772872590102686}
   - component: {fileID: 2949561805829707237}
+  - component: {fileID: 2408079776447794929}
   m_Layer: 9
   m_Name: VanguardFrigate
   m_TagString: Untagged
@@ -5203,7 +5264,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0bdd5ae2caee4c191b2968e5b04b7d99, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarShift.Enemies.BossArmorBreakPresentation
   fragments:
   - {fileID: 162811465699478401}
@@ -5227,6 +5288,20 @@ MonoBehaviour:
   - 0.5
   - 0.25
   seconds: 0.75
+--- !u!114 &2408079776447794929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8548296509711498527}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 955c60f460625f7f184f256d6638255f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Audio.EnemyAudioPresentation
+  warning: 10
+  attackCue: 10
 --- !u!1 &9013798300221465142
 GameObject:
   m_ObjectHideFlags: 0
