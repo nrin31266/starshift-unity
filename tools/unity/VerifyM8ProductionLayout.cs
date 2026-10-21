@@ -121,7 +121,7 @@ public static class VerifyM8ProductionLayout
                     {
                         node.ReceivePlayerHit(node.CurrentHp-Mathf.Max(1,Mathf.FloorToInt(node.MaxHp*.2f)),player);
                         Check(node.GetComponent<EnemyDamagePresentation>().DamageStage==2,"Node critical state "+node.name);
-                        Check(node.transform.Find("M8Art").GetComponent<SpriteRenderer>().sprite.name.EndsWith("-critical"),"Node damage art missing");
+                        Check(node.transform.Find("Visual").GetComponent<SpriteRenderer>().sprite.name.EndsWith("-critical"),"Node damage art missing");
                     }
                     await Capture("warden-nodes-critical");
                     foreach(var node in nodes)node.ReceivePlayerHit(node.CurrentHp,player);
@@ -129,10 +129,10 @@ public static class VerifyM8ProductionLayout
                 }
                 boss.ReceivePlayerHit(boss.CurrentHp-Mathf.Max(1,Mathf.FloorToInt(boss.MaxHp*.2f)),player);await Task.Delay(160);
                 Check(boss.GetComponent<EnemyDamagePresentation>().DamageStage==2,"Critical state "+mission);
-                Check(boss.GetComponentsInChildren<SpriteRenderer>().Any(r=>r.name=="M8Smoke"&&r.enabled),"Critical smoke "+mission);
+                Check(boss.GetComponentsInChildren<SpriteRenderer>().Any(r=>r.name=="DamageSmoke"&&r.enabled),"Critical smoke "+mission);
                 await Capture(mission=="L4"?"vanguard-critical":"warden-critical");
             }
-            var bg=Camera.main.transform.Find("M8Environment");Check(bg.localScale==Vector3.one,"background scale changed");Check(Camera.main.backgroundColor==(Color)new Color32(8,15,32,255),"navy fill missing");
+            var bg=Camera.main.transform.Find("SpaceEnvironment");Check(bg.localScale==Vector3.one,"background scale changed");Check(Camera.main.backgroundColor==(Color)new Color32(8,15,32,255),"navy fill missing");
             result=new{status="PASS",resolution=width+"x900",menu=true,hangar=true,approach=true,gameplay=true,pause=true,vanguard=true,warden=true,fixedBackground=true};
         }
         finally

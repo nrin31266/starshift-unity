@@ -20,7 +20,7 @@ MonoBehaviour:
   Cues:
   - Id: 0
     Clip: {fileID: 8300000, guid: 8b7e055735261330fbdc53cd0d05d929, type: 3}
-    Volume: 0.4
+    Volume: 0.22
     Tier: 2
     MaxVoices: 2
     Interval: 0.085
@@ -34,7 +34,7 @@ MonoBehaviour:
     Variation: 0.035
   - Id: 2
     Clip: {fileID: 8300000, guid: d3e31eb28213c2fad996b0212e4b1abb, type: 3}
-    Volume: 0.48
+    Volume: 0.34
     Tier: 2
     MaxVoices: 2
     Interval: 0.08
@@ -188,21 +188,21 @@ MonoBehaviour:
     Variation: 0.035
   - Id: 24
     Clip: {fileID: 8300000, guid: 589010154c4f087eeb57817227e3bda7, type: 3}
-    Volume: 0.27
+    Volume: 0.42
     Tier: 3
     MaxVoices: 2
     Interval: 0.08
     Variation: 0.035
   - Id: 25
     Clip: {fileID: 8300000, guid: 1fcf4eb1260244ca4bd0f6c774bfda9d, type: 3}
-    Volume: 0.42
+    Volume: 0.5
     Tier: 3
     MaxVoices: 2
     Interval: 0.08
     Variation: 0.035
   - Id: 26
     Clip: {fileID: 8300000, guid: 0476570a7e52fb669b3d5e5e5b79df5b, type: 3}
-    Volume: 0.22
+    Volume: 0.38
     Tier: 3
     MaxVoices: 2
     Interval: 0.08
@@ -223,7 +223,7 @@ MonoBehaviour:
     Variation: 0
   - Id: 29
     Clip: {fileID: 8300000, guid: 0654415fc74c10566b66496c13eb35c1, type: 3}
-    Volume: 0.36
+    Volume: 0.48
     Tier: 4
     MaxVoices: 1
     Interval: 0.12
@@ -265,21 +265,21 @@ MonoBehaviour:
     Variation: 0.035
   - Id: 35
     Clip: {fileID: 8300000, guid: 724315aef8102dbd08e6376d09a2e524, type: 3}
-    Volume: 0.48
+    Volume: 0.42
     Tier: 3
     MaxVoices: 1
     Interval: 0.08
     Variation: 0
   - Id: 36
     Clip: {fileID: 8300000, guid: 1bf5525687a516b3da0bf2079ff26c5a, type: 3}
-    Volume: 0.48
+    Volume: 0.32
     Tier: 3
     MaxVoices: 1
     Interval: 0.08
     Variation: 0
   - Id: 37
     Clip: {fileID: 8300000, guid: 017f2dd8e73e101519061004c3d455f7, type: 3}
-    Volume: 0.48
+    Volume: 0.38
     Tier: 3
     MaxVoices: 1
     Interval: 0.08
@@ -297,4 +297,11 @@ MonoBehaviour:
     Tier: 1
     MaxVoices: 1
     Interval: 0.08
+    Variation: 0
+  - Id: 40
+    Clip: {fileID: 8300000, guid: b05e91ebe8ce4074dbb9dc0808baee84, type: 3}
+    Volume: 0.16
+    Tier: 3
+    MaxVoices: 1
+    Interval: 0.6
     Variation: 0

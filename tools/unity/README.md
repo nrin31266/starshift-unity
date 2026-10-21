@@ -130,3 +130,11 @@ Probe dùng real enemy deaths/pickup collection, kiểm deadline cho mỗi autho
 encounter và fallback khi preferred item đầy/max; thêm NewGame/intro → hai
 encounter đầu → Pause/Retry để kiểm Core rollback và reward deadline reset. Không chạy cùng probe khác hoặc
 khi user đang chơi Campaign. Schedule thuộc [content owner](../../docs/content/levels-encounters.md#authored-reward-pacing-tunable).
+
+## Audio transition regression
+
+`VerifyAudioTransitions.Begin` chạy async từ idle Menu trong Play Mode. Probe đếm
+actual non-loop source starts để kiểm pre-tap silence, một launch, Continue/Pause,
+minor handoff wind, same-region Start/Arrival và actual Vanguard death → region
+journey → tap → L5. Evidence ở `.design/audio-followup/`, gồm production save guard.
+Không bấm Play/Stop/Pause hoặc chạy probe khác khi probe đang hoạt động.

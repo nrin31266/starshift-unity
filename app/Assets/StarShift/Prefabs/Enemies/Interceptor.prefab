@@ -312,7 +312,7 @@ GameObject:
   - component: {fileID: 4810761198100976506}
   - component: {fileID: 4916341785555117434}
   m_Layer: 0
-  m_Name: M8Impact
+  m_Name: ImpactFeedback
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -822,7 +822,7 @@ GameObject:
   - component: {fileID: 999287086860678636}
   - component: {fileID: 4193165080439124434}
   m_Layer: 0
-  m_Name: M8Hit
+  m_Name: HitFlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -996,7 +996,7 @@ GameObject:
   - component: {fileID: 8636837902564487815}
   - component: {fileID: 902832297447629441}
   m_Layer: 0
-  m_Name: M8Smoke
+  m_Name: DamageSmoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1230,7 +1230,7 @@ GameObject:
   - component: {fileID: 1891219188250847130}
   - component: {fileID: 7076432227602791680}
   m_Layer: 0
-  m_Name: M8Warning
+  m_Name: AttackWarning
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

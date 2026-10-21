@@ -93,7 +93,7 @@ public static class VerifyCampaignScore
     static void CheckBackground()
     {
         var camera=Camera.main;
-        Check(camera.transform.Find("M8Environment").localScale==Vector3.one,"fixed background during intro/transition");
+        Check(camera.transform.Find("SpaceEnvironment").localScale==Vector3.one,"fixed background during intro/transition");
         var c=camera.backgroundColor; Check(c.b > .025f && c.a==1 && camera.clearFlags==CameraClearFlags.SolidColor,"nonblack journey fill");
     }
     static string ResultPath => "../.design/score-carry/runtime.json";
@@ -116,7 +116,7 @@ public static class VerifyCampaignScore
             foreach(var d in devices)InputSystem.DisableDevice(d);
             Save.UseTestStorage(path); Save.GetComponent<GameShell>().Boot();
             var camera=Camera.main; var view=camera.GetComponent<GameplayViewController>(); var oldView=view.TargetView;
-            var background=camera.transform.Find("M8Environment").GetComponent<SpriteRenderer>();
+            var background=camera.transform.Find("SpaceEnvironment").GetComponent<SpriteRenderer>();
             foreach(float aspect in new[]{1600f/900,2000f/900}) foreach(float size in new[]{8f,12f,20f})
             {
                 camera.aspect=aspect; view.RequestView(new GameplayViewSettings(size,new Rect(0,0,1,1)),0); await Task.Delay(100);

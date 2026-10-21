@@ -21,9 +21,10 @@ Không import whole pack hoặc audition intermediates vào Unity.
   và phân phối kèm project; không claim authorship, bán/register hoặc phân phối
   nhạc riêng. Kenney CC0. Little Robot Sound Factory CC BY 3.0: credit author,
   source/author URL, license và ghi modifications; Credits trong game chứa attribution.
-- Không giữ original procedural tone sweep/stinger sau user feedback. 39 cue chọn từ thư viện; trim/reverse/EQ/compression/fade và normalize bằng ffmpeg/Python.
-  Vent là original noise pressure release (ffmpeg white noise seed 745, EQ/decay),
-  không dùng engine hoặc tonal sweep. Không cần tải source cho vent; recipe trong exporter.
+- Không giữ original procedural tone sweep/stinger sau user feedback. 38 cue chọn từ thư viện; trim/reverse/EQ/compression/fade và normalize bằng ffmpeg/Python.
+  Vent (white noise), Homing launch và transition wind (pink noise) là ba original
+  air cues với seed cố định/EQ/envelope, không engine hoặc tonal sweep. Không cần
+  tải source cho chúng; recipe trong exporter. Bản xuất gồm 3 BGM + 41 SFX/stingers.
 
 Yêu cầu Python 3 và `ffmpeg`/`ffprobe`; không cần pip dependency:
 

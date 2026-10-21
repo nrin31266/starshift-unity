@@ -1604,7 +1604,7 @@ GameObject:
   - component: {fileID: 395858758}
   - component: {fileID: 395858759}
   m_Layer: 0
-  m_Name: M8Engine0
+  m_Name: EnginePlume0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2034,7 +2034,7 @@ GameObject:
   - component: {fileID: 449912596}
   - component: {fileID: 449912595}
   m_Layer: 0
-  m_Name: M8Engine1
+  m_Name: EnginePlume1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3844,7 +3844,7 @@ GameObject:
   - component: {fileID: 685925996}
   - component: {fileID: 685925997}
   m_Layer: 0
-  m_Name: M8HeatNotch0
+  m_Name: HeatNotch0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4926,7 +4926,7 @@ GameObject:
   - component: {fileID: 861991606}
   - component: {fileID: 861991607}
   m_Layer: 0
-  m_Name: M8Status2
+  m_Name: Status2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6204,7 +6204,7 @@ GameObject:
   - component: {fileID: 1020961768}
   - component: {fileID: 1020961769}
   m_Layer: 0
-  m_Name: M8HeatNotch1
+  m_Name: HeatNotch1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8416,7 +8416,7 @@ GameObject:
   - component: {fileID: 1394929218}
   - component: {fileID: 1394929219}
   m_Layer: 0
-  m_Name: M8HeatNotch2
+  m_Name: HeatNotch2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8761,7 +8761,7 @@ GameObject:
   - component: {fileID: 1518869556}
   - component: {fileID: 1518869557}
   m_Layer: 0
-  m_Name: M8HeatNotch3
+  m_Name: HeatNotch3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9174,7 +9174,7 @@ GameObject:
   - component: {fileID: 1597204168}
   - component: {fileID: 1597204169}
   m_Layer: 0
-  m_Name: M8Engine1
+  m_Name: EnginePlume1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10016,7 +10016,7 @@ GameObject:
   - component: {fileID: 1730184001}
   - component: {fileID: 1730184000}
   m_Layer: 0
-  m_Name: L1Encounters
+  m_Name: EncounterSystems
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10482,7 +10482,7 @@ GameObject:
   - component: {fileID: 1741369938}
   - component: {fileID: 1741369939}
   m_Layer: 0
-  m_Name: M8WeaponIcon
+  m_Name: WeaponIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10941,7 +10941,7 @@ GameObject:
   - component: {fileID: 1818633990}
   - component: {fileID: 1818633991}
   m_Layer: 0
-  m_Name: M8Engine0
+  m_Name: EnginePlume0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11072,7 +11072,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2966396641657307375, guid: 01a518f29274925a191b17ec41cf6a99, type: 3}
       propertyPath: m_Name
-      value: Scout_EntryHold
+      value: Scout
       objectReference: {fileID: 0}
     - target: {fileID: 2966396641657307375, guid: 01a518f29274925a191b17ec41cf6a99, type: 3}
       propertyPath: m_IsActive
@@ -11450,7 +11450,7 @@ GameObject:
   - component: {fileID: 1898561595}
   - component: {fileID: 1898561594}
   m_Layer: 0
-  m_Name: M8AmmoIcon
+  m_Name: AmmoIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11930,7 +11930,7 @@ GameObject:
   - component: {fileID: 1920878323}
   - component: {fileID: 1920878324}
   m_Layer: 0
-  m_Name: M8Environment
+  m_Name: SpaceEnvironment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12023,7 +12023,7 @@ GameObject:
   - component: {fileID: 1935974718}
   - component: {fileID: 1935974719}
   m_Layer: 0
-  m_Name: M8Status0
+  m_Name: Status0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12233,7 +12233,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1968250149}
   m_Layer: 0
-  m_Name: EnvironmentPlaceholders
+  m_Name: Environment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12939,7 +12939,7 @@ GameObject:
   - component: {fileID: 2041694228}
   - component: {fileID: 2041694229}
   m_Layer: 0
-  m_Name: M8Status1
+  m_Name: Status1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

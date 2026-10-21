@@ -48,7 +48,7 @@ public static class VerifyAudioFinal
         Check(palette.Cues.Select(c=>c.Id).Distinct().Count()==palette.Cues.Length,"Duplicate cue IDs");
         foreach(var id in new[]{AudioCue.InterceptorCharge,AudioCue.SniperCharge,AudioCue.Overheat,AudioCue.BossBeamWarning,AudioCue.BossCurtainWarning,AudioCue.BossShelterWarning,AudioCue.BossEscortWarning})
         {var cue=palette.Cues.Single(c=>c.Id==id);Check(cue.Tier==0&&cue.Variation==0,"Unstable warning "+id);}
-        var clips=AssetDatabase.FindAssets("t:AudioClip",new[]{"Assets/StarShift/Audio"});Check(clips.Length==43,"Unused/missing audio exports");
+        var clips=AssetDatabase.FindAssets("t:AudioClip",new[]{"Assets/StarShift/Audio"});Check(clips.Length==44,"Unused/missing audio exports");
         foreach(var guid in AssetDatabase.FindAssets("t:Prefab",new[]{"Assets/StarShift/Prefabs"}))
         {
             var root=AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GUIDToAssetPath(guid));
@@ -170,9 +170,9 @@ public static class VerifyAudioFinal
             var plasma=Voices.Single(v=>v.isPlaying&&v.clip.name=="plasma");
             var coin=Voices.Single(v=>v.isPlaying&&v.clip.name=="coin");
             float plasmaNormal=plasma.volume,coinNormal=coin.volume;
-            Check(plasmaNormal>=.48f&&coinNormal>=.34f,"Weapon/pickup gain collapsed under common pressure");
+            Check(plasmaNormal>=.48f&&coinNormal>=.46f,"Weapon/pickup gain collapsed under common pressure");
             Check(audio.Play(AudioCue.Overheat)&&audio.Play(AudioCue.Vent),"Heat cues starved");
-            Check(plasma.volume>=.26f&&coin.volume>=.22f,"Warning over-ducked weapon/pickup");
+            Check(plasma.volume>=.26f&&coin.volume>=.29f,"Warning over-ducked weapon/pickup");
             Check(Voices.Single(v=>v.isPlaying&&v.clip.name=="vent").volume>=.5f,"Vent lost under warning");
             var data=new float[1024];float peak=0;double energy=0;int samples=0;
             for(int i=0;i<40;i++)

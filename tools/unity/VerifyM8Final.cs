@@ -177,7 +177,7 @@ public static class VerifyM8Final
             await Capture("menu-player");
             var preview=View.MenuShip.GetComponent<ShipPreview>();
             Check(preview.Engines.Length==2,"Expected one plume for each of two corrected nozzles");
-            Check(player.GetComponentsInChildren<SpriteRenderer>(true).Count(r=>r.name.StartsWith("M8Engine"))==2,"Duplicate gameplay plume renderers");
+            Check(player.GetComponentsInChildren<SpriteRenderer>(true).Count(r=>r.name.StartsWith("EnginePlume"))==2,"Duplicate gameplay plume renderers");
             View.Store.onClick.Invoke();await Task.Delay(100);View.CosmeticTabs[2].onClick.Invoke();View.CosmeticCards[2].onClick.Invoke();
             await Capture("store-rainbow");
             View.CosmeticAction.onClick.Invoke();if(View.Confirmation.activeSelf)View.Confirm.onClick.Invoke();await Task.Delay(100);
@@ -297,7 +297,7 @@ public static class VerifyM8Final
             View.BackButtons.First(b=>b.gameObject.activeInHierarchy).onClick.Invoke();await Task.Delay(100);
         }
         View.NewGame.onClick.Invoke();Check(View.Confirmation.activeSelf,"Confirmation missing");await Capture("confirmation-final");View.Cancel.onClick.Invoke();
-        Check(Camera.main.transform.Find("M8Environment").localScale==Vector3.one,"Background world scale changed");
+        Check(Camera.main.transform.Find("SpaceEnvironment").localScale==Vector3.one,"Background world scale changed");
     }
 
 }

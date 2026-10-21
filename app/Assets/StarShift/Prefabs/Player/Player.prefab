@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4080299622831309518}
   - component: {fileID: 7861872195529839237}
   m_Layer: 0
-  m_Name: M8Engine0
+  m_Name: EnginePlume0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -155,7 +155,7 @@ GameObject:
   - component: {fileID: 102889064947957372}
   - component: {fileID: 6454527914266728322}
   m_Layer: 0
-  m_Name: M8Muzzle
+  m_Name: WeaponMuzzleFlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -248,7 +248,7 @@ GameObject:
   - component: {fileID: 329322283400649069}
   - component: {fileID: 8750106219221949425}
   m_Layer: 0
-  m_Name: M8Engine1
+  m_Name: EnginePlume1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -451,7 +451,7 @@ GameObject:
   - component: {fileID: 3194356327827421736}
   - component: {fileID: 527498728083941108}
   m_Layer: 0
-  m_Name: M8Collect
+  m_Name: PickupFeedback
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1491,7 +1491,7 @@ GameObject:
   - component: {fileID: 5173633835354550468}
   - component: {fileID: 2913957611997483281}
   m_Layer: 0
-  m_Name: M8Survival
+  m_Name: SurvivalFeedback
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

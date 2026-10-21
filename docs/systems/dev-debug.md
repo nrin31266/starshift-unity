@@ -5,6 +5,13 @@ migration một lần và ba probe dư; lệnh hiện dùng theo
 [Unity tools](../../tools/unity/README.md). Không chạy lại builder từ Git history
 lên tuning hiện tại.
 
+## Audio transition và hierarchy follow-up — 2026-10-22
+
+Targeted audio flow/weapon/heat/warning/mix regressions PASS, gồm Continue và actual
+Vanguard → L5 journey không lặp ignition. Native hierarchy audit không còn milestone
+prefix, serialized data ngoài names và references giữ nguyên. Console sạch, production
+save byte guards PASS. Details/evidence thuộc [audio owner](../presentation/audio-final.md#verification).
+
 ## Authored reward pacing verification — 2026-10-21
 
 `VerifyAuthoredRewards.Pure/Begin` kiểm quota deadline/legacy mode, seed/reset,

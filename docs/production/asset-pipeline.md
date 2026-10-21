@@ -10,8 +10,10 @@ Production data dùng `MissionNN` khi tên cần chỉ nhiệm vụ, ví dụ
 `Mission08Fortress.asset`; không dùng mã phase/task như `M8` trong filename.
 Shared flight assets dùng vai trò như `FormationHold`, `SupplyFlyby`; fixture nằm
 trong `Data/Fixtures` và có tên rõ như `EncounterSystemsFixture`. Đổi tên qua
-Unity AssetDatabase, giữ `.meta`/GUID và stable gameplay/save IDs. Historical phase
-labels trong docs và offline verification tools không là runtime content names.
+Unity AssetDatabase, giữ `.meta`/GUID và stable gameplay/save IDs. GameObject trong scene/prefab cũng dùng role rõ nghĩa (`SpaceEnvironment`,
+`WeaponMuzzleFlash`, `DamageSmoke`), không prefix milestone như `M8`. Đổi tên giữ
+file ID, references và visual/component data. Historical phase labels trong docs
+và offline verification tools không là runtime content names.
 
 ## Canonical production workflow
 

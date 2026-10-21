@@ -5818,7 +5818,7 @@ GameObject:
   - component: {fileID: 1061512773117887446}
   - component: {fileID: 5842630233966919425}
   m_Layer: 0
-  m_Name: M8Environment
+  m_Name: SpaceEnvironment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16188,7 +16188,7 @@ GameObject:
   - component: {fileID: 4592214366795342813}
   - component: {fileID: 2579764480945887388}
   m_Layer: 0
-  m_Name: M8Environment
+  m_Name: SpaceEnvironment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

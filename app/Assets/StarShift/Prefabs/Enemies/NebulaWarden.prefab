@@ -460,7 +460,7 @@ GameObject:
   - component: {fileID: 7249923692666280943}
   - component: {fileID: 5499093087843904582}
   m_Layer: 0
-  m_Name: M8Art
+  m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1644,7 +1644,7 @@ GameObject:
   - component: {fileID: 5122207046242135617}
   - component: {fileID: 7245671584251659160}
   m_Layer: 0
-  m_Name: M8FragmentB
+  m_Name: FragmentB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1934,7 +1934,7 @@ GameObject:
   - component: {fileID: 8173090141461059491}
   - component: {fileID: 1962651800345840585}
   m_Layer: 0
-  m_Name: M8TrussPlasmaNode
+  m_Name: TrussPlasmaNode
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2075,7 +2075,7 @@ GameObject:
   - component: {fileID: 7479503225126133120}
   - component: {fileID: 5471771639979668582}
   m_Layer: 0
-  m_Name: M8Smoke
+  m_Name: DamageSmoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2576,7 +2576,7 @@ GameObject:
   - component: {fileID: 5411176396167301600}
   - component: {fileID: 109661771315749822}
   m_Layer: 0
-  m_Name: M8PhaseCue
+  m_Name: PhaseFeedback
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2810,7 +2810,7 @@ GameObject:
   - component: {fileID: 6901093202938883996}
   - component: {fileID: 3477238182657969654}
   m_Layer: 0
-  m_Name: M8Impact
+  m_Name: ImpactFeedback
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3030,7 +3030,7 @@ GameObject:
   - component: {fileID: 7478792516578564595}
   - component: {fileID: 7756788754800570844}
   m_Layer: 0
-  m_Name: M8PhaseCue
+  m_Name: PhaseFeedback
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3122,7 +3122,7 @@ GameObject:
   - component: {fileID: 2397979178928766921}
   - component: {fileID: 4965015641585600970}
   m_Layer: 0
-  m_Name: M8Art
+  m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3214,7 +3214,7 @@ GameObject:
   - component: {fileID: 3504737388007179702}
   - component: {fileID: 8971790019965488660}
   m_Layer: 0
-  m_Name: M8Art
+  m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3398,7 +3398,7 @@ GameObject:
   - component: {fileID: 4459067190899135217}
   - component: {fileID: 3213986081023437366}
   m_Layer: 0
-  m_Name: M8PhaseCue
+  m_Name: PhaseFeedback
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3632,7 +3632,7 @@ GameObject:
   - component: {fileID: 5962979732240526921}
   - component: {fileID: 5488729805525882205}
   m_Layer: 0
-  m_Name: M8TrussDroneNode
+  m_Name: TrussDroneNode
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4301,7 +4301,7 @@ GameObject:
   - component: {fileID: 264566968438523674}
   - component: {fileID: 3319815838914300614}
   m_Layer: 0
-  m_Name: M8ArmorWing1
+  m_Name: ArmorWing1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4393,7 +4393,7 @@ GameObject:
   - component: {fileID: 8386184710766866209}
   - component: {fileID: 1647550551111903223}
   m_Layer: 0
-  m_Name: M8TrussBeamNodeAttack
+  m_Name: TrussBeamNodeAttack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4577,7 +4577,7 @@ GameObject:
   - component: {fileID: 7364191654169744135}
   - component: {fileID: 5502138238510538940}
   m_Layer: 0
-  m_Name: M8BlastA
+  m_Name: BlastA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4748,7 +4748,7 @@ GameObject:
   - component: {fileID: 3085278434837951072}
   - component: {fileID: 6396965224680719415}
   m_Layer: 0
-  m_Name: M8Core
+  m_Name: CoreVisual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4859,7 +4859,7 @@ GameObject:
   - component: {fileID: 678172101910328428}
   - component: {fileID: 343175594017462006}
   m_Layer: 0
-  m_Name: M8PhaseCue
+  m_Name: PhaseFeedback
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6483,7 +6483,7 @@ GameObject:
   - component: {fileID: 3961262803370099061}
   - component: {fileID: 7959176973626308838}
   m_Layer: 0
-  m_Name: M8ArmorWing-1
+  m_Name: ArmorWing-1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6575,7 +6575,7 @@ GameObject:
   - component: {fileID: 521768596712681925}
   - component: {fileID: 6130729362070620882}
   m_Layer: 0
-  m_Name: M8FragmentA
+  m_Name: FragmentA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6716,7 +6716,7 @@ GameObject:
   - component: {fileID: 8951273894442517354}
   - component: {fileID: 2635658602304195658}
   m_Layer: 0
-  m_Name: M8PhaseCue
+  m_Name: PhaseFeedback
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7352,7 +7352,7 @@ GameObject:
   - component: {fileID: 7224806637399521949}
   - component: {fileID: 4197373110388699389}
   m_Layer: 0
-  m_Name: M8PhaseCue
+  m_Name: PhaseFeedback
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7556,7 +7556,7 @@ GameObject:
   - component: {fileID: 5140726184208193836}
   - component: {fileID: 8496292155117176763}
   m_Layer: 0
-  m_Name: M8BlastB
+  m_Name: BlastB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7648,7 +7648,7 @@ GameObject:
   - component: {fileID: 2949371451655034913}
   - component: {fileID: 7404695123713896930}
   m_Layer: 0
-  m_Name: M8PhaseCue
+  m_Name: PhaseFeedback
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7740,7 +7740,7 @@ GameObject:
   - component: {fileID: 1204238693473463548}
   - component: {fileID: 693167159976635459}
   m_Layer: 0
-  m_Name: M8Hit
+  m_Name: HitFlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

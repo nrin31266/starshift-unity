@@ -9,7 +9,7 @@ namespace StarShift.Audio
         HostileShot, InterceptorCharge, InterceptorDash, SniperCharge, SniperFire, HeavyCharge, HeavyShot,
         BossEnter, BossCannonWarning, BossBeamWarning, BossCurtainWarning, BossShelterWarning, BossEscortWarning,
         ArmorBreak, EnemyDeath, HeavyDeath, AsteroidBreak, BossBurst, BossFinal, Coin, PowerUp, ExtraLife,
-        Confirm, Back, Error, WarpStart, WarpPass, WarpArrival, Victory, GameOver
+        Confirm, Back, Error, WarpStart, WarpPass, WarpArrival, Victory, GameOver, TransitionWind
     }
 
     [CreateAssetMenu(menuName = "StarShift/Audio/Palette")]

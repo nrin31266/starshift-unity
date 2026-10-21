@@ -16,6 +16,12 @@ cho Combat. Bản sửa tách weapon/pickup khỏi common budget, sửa các tra
 choreography. Automated QA ghi bên dưới; final subjective mix chưa được xác nhận.
 Không Android/FPS/device/full Campaign trong phase này.
 
+Follow-up 2026-10-22: Pulse giảm khoảng 5.2 dB so với mix trước; Homing thay bằng
+soft air launch .22 s, không ignition crack/fly loop. Coin dùng resonant glass tail
+.55 s và gain lớn hơn; Back dùng minimize cue đủ tail thay click .09 s. Enemy/asteroid
+explosion tăng độ rõ/gain. Một wind one-shot nối các đoạn bay, không continuous loop.
+Sửa trigger launch trước tap và launch lặp sau boss/Continue; không đổi BGM selection.
+
 ## Music selection
 
 | Event / state | Selected clip / original title | Group | Gain / voices | Transition |
@@ -33,11 +39,11 @@ hoặc phân phối nhạc riêng. [Source/reproduction](../../tools/audio/READM
 [clip provenance + hashes](../../tools/audio/sources.json).
 Không ship cả pack. WAV source được peak/RMS-normalize bằng static gain, nối loop
 20 ms; Unity import Vorbis streaming, preload off. SFX mono PCM, decompress on load.
-Selected exports gồm đúng ba BGM và 40 SFX/stingers, không có audition intermediate
-trong Assets. 39 SFX/stinger dùng Kenney Sci-Fi/Digital/Interface và Little Robot Sound Factory,
+Selected exports gồm đúng ba BGM và 41 SFX/stingers, không có audition intermediate
+trong Assets. 38 SFX/stinger dùng Kenney Sci-Fi/Digital/Interface và Little Robot Sound Factory,
 trim/EQ/compression/reverse/fade theo family. Vent là original broadband pressure-release
-noise, có seed cố định, high-pass 1.1 kHz/low-pass 10 kHz và decay .58 s; không dùng engine
-hoặc tonal oscillator. MAX dùng cue cảnh báo ngắn .20 s trước vent, không chồng growl.
+noise, có seed cố định, high-pass 1.1 kHz/low-pass 10 kHz và decay .58 s. Homing và
+TransitionWind là hai original filtered pink-noise cues; không dùng engine hoặc tonal oscillator. MAX dùng cue cảnh báo ngắn .20 s trước vent, không chồng growl.
 
 ## Runtime mix và lifecycle
 
@@ -47,8 +53,9 @@ Player/Enemy/Game audio presentation dùng events và đọc state. Cannon phase
 được bắt bằng event để không bỏ qua Attack trong cùng physics tick. Pool disable
 unsubscribe events; enable reset phase/heat/death-beat tracking.
 
-Music dùng hai sources, linear crossfade .85 s theo unscaled time. Khi Start Game,
-Hub fade .85 s → warp start → Combat bắt đầu fade in ở 1.35 s; không trì hoãn gameplay.
+Music dùng hai sources, linear crossfade .85 s theo unscaled time. Briefing giữ Hub và không phát launch. Tap bắt đầu Approach phát một WarpStart + wind,
+Hub fade .85 s rồi Combat fade in; không trì hoãn gameplay. Không có timer phát
+ignition khi rời Menu; Continue checkpoint và Pause/Resume không phát launch.
 Death còn lives không đổi track/cursor. Pause target music .30; Resume về 1.
 Travel target .55, boss post-death .15, Game Over .12. Danger cue target .45.
 Những duck đồng thời dùng mức nhỏ nhất; attack 5 gain/s, release 1.6 gain/s.
@@ -65,7 +72,7 @@ Homing impact dùng common pool, không chiếm weapon slot. Vent, boss enter v�
 được bảo vệ trong critical pool.
 
 Aggregate nominal gain budgets lần lượt: danger .60, critical .65, weapon .65,
-common .50, pickup .40, UI .35. Chỉ scale trong từng pool khi tổng nominal vượt budget;
+common .65, pickup .55, UI .35. Chỉ scale trong từng pool khi tổng nominal vượt budget;
 giảm ngay, phục hồi 2 gain/s. Khi danger phát, weapon × .55, common × .30, pickup × .65;
 critical/UI giữ rõ. Pause/Game Over: weapon/common/pickup × .12. Bản cũ gom tất cả vào
 common budget .20 và danger duck .25, gây mất độ rõ ngay cả khi BGM tắt.
@@ -74,9 +81,11 @@ Music/SFX settings giữ nguyên schema; UI dùng SFX preference.
 
 Warp start là swell reverse .70 s, pass là energy flyby 1.20 s, arrival là brake/settle
 .75 s. Mission Approach/Travel/Brake và region Accelerate/Decelerate đều có cue;
-region tiếp cận sau tap còn phát Start/Pass/Arrival theo Approach/Travel/Brake.
+region departure có đúng một Start. Tap tiếp cận vùng mới chỉ nối wind/pass/arrival,
+không kích hỏa lại. Minor encounter handoff chỉ có wind khi IsHandoffTravel mở,
+không phát trong stationary clear pause. Same-region mission travel có arrival khi handoff xong.
 Không thêm loop/travel song, không đổi duration hoặc choreography hình ảnh.
-Homing launch có ignition click ngắn + jet body; impact/heavy/boss thêm một body/crack
+Homing launch là air puff mềm .22 s, không metallic ignition hoặc sustained fly sound; impact/heavy/boss thêm một body/crack
 layer trong chính export, không tăng số runtime voices. Common enemy explosion vẫn
 ngắn/nhỏ hơn heavy, boss có hai staged bursts rồi một final 1.05 s, không explosion spam.
 
@@ -93,9 +102,9 @@ pitch/gain ổn định trước mix envelope. UI dùng source pool riêng nhưn
 
 | Event / cue ID | Clip | Role / tier | Group | Gain | Max voices / interval | Variation |
 |---|---|---|---|---|---|---|
-| `Pulse` | `pulse.wav` | Player weapon / 2 | SFX | 0.4 | 2 / 0.085 s | ±3.5% pitch/volume |
+| `Pulse` | `pulse.wav` | Player weapon / 2 | SFX | 0.22 | 2 / 0.085 s | ±3.5% pitch/volume |
 | `Plasma` | `plasma.wav` | Player weapon / 2 | SFX | 0.52 | 2 / 0.12 s | ±3.5% pitch/volume |
-| `Homing` | `homing.wav` | Player weapon / 2 | SFX | 0.48 | 2 / 0.08 s | ±3.5% pitch/volume |
+| `Homing` | `homing.wav` | Player weapon / 2 | SFX | 0.34 | 2 / 0.08 s | ±3.5% pitch/volume |
 | `HomingImpact` | `homing-impact.wav` | Action / impact / 3 | SFX | 0.36 | 2 / 0.08 s | ±3.5% pitch/volume |
 | `PlayerHit` | `player-hit.wav` | Critical / stinger / 1 | SFX | 0.55 | 1 / 0.08 s | Stable |
 | `ShieldAbsorb` | `shield-absorb.wav` | Critical / stinger / 1 | SFX | 0.55 | 1 / 0.08 s | Stable |
@@ -117,22 +126,23 @@ pitch/gain ổn định trước mix envelope. UI dùng source pool riêng nhưn
 | `BossShelterWarning` | `boss-shelter-warning.wav` | Danger / 0 | SFX | 0.55 | 1 / 0.15 s | Stable |
 | `BossEscortWarning` | `boss-escort-warning.wav` | Danger / 0 | SFX | 0.55 | 1 / 0.15 s | Stable |
 | `ArmorBreak` | `armor-break.wav` | Action / impact / 3 | SFX | 0.36 | 2 / 0.08 s | ±3.5% pitch/volume |
-| `EnemyDeath` | `enemy-death.wav` | Action / impact / 3 | SFX | 0.27 | 2 / 0.08 s | ±3.5% pitch/volume |
-| `HeavyDeath` | `heavy-death.wav` | Action / impact / 3 | SFX | 0.42 | 2 / 0.08 s | ±3.5% pitch/volume |
-| `AsteroidBreak` | `asteroid-break.wav` | Action / impact / 3 | SFX | 0.22 | 2 / 0.08 s | ±3.5% pitch/volume |
+| `EnemyDeath` | `enemy-death.wav` | Action / impact / 3 | SFX | 0.42 | 2 / 0.08 s | ±3.5% pitch/volume |
+| `HeavyDeath` | `heavy-death.wav` | Action / impact / 3 | SFX | 0.5 | 2 / 0.08 s | ±3.5% pitch/volume |
+| `AsteroidBreak` | `asteroid-break.wav` | Action / impact / 3 | SFX | 0.38 | 2 / 0.08 s | ±3.5% pitch/volume |
 | `BossBurst` | `boss-burst.wav` | Action / impact / 3 | SFX | 0.36 | 2 / 0.08 s | ±3.5% pitch/volume |
 | `BossFinal` | `boss-final.wav` | Critical / stinger / 1 | SFX | 0.65 | 1 / 0.08 s | Stable |
-| `Coin` | `coin.wav` | Pickup / UI / 4 | SFX | 0.36 | 1 / 0.12 s | ±3.5% pitch/volume |
+| `Coin` | `coin.wav` | Pickup / UI / 4 | SFX | 0.48 | 1 / 0.12 s | ±3.5% pitch/volume |
 | `PowerUp` | `power-up.wav` | Pickup / UI / 4 | SFX | 0.36 | 2 / 0.08 s | ±3.5% pitch/volume |
 | `ExtraLife` | `extra-life.wav` | Critical / stinger / 1 | SFX | 0.55 | 1 / 0.08 s | Stable |
 | `Confirm` | `confirm.wav` | Pickup / UI / 4 | UI | 0.3 | 1 / 0.08 s | ±3.5% pitch/volume |
 | `Back` | `back.wav` | Pickup / UI / 4 | UI | 0.3 | 1 / 0.08 s | ±3.5% pitch/volume |
 | `Error` | `error.wav` | Pickup / UI / 4 | UI | 0.3 | 1 / 0.08 s | ±3.5% pitch/volume |
-| `WarpStart` | `warp-start.wav` | Action / impact / 3 | SFX | 0.48 | 1 / 0.08 s | Stable |
-| `WarpPass` | `warp-pass.wav` | Action / impact / 3 | SFX | 0.48 | 1 / 0.08 s | Stable |
-| `WarpArrival` | `warp-arrival.wav` | Action / impact / 3 | SFX | 0.48 | 1 / 0.08 s | Stable |
+| `WarpStart` | `warp-start.wav` | Action / impact / 3 | SFX | 0.42 | 1 / 0.08 s | Stable |
+| `WarpPass` | `warp-pass.wav` | Action / impact / 3 | SFX | 0.32 | 1 / 0.08 s | Stable |
+| `WarpArrival` | `warp-arrival.wav` | Action / impact / 3 | SFX | 0.38 | 1 / 0.08 s | Stable |
 | `Victory` | `victory.wav` | Critical / stinger / 1 | SFX | 0.55 | 1 / 0.08 s | Stable |
 | `GameOver` | `game-over.wav` | Critical / stinger / 1 | SFX | 0.55 | 1 / 0.08 s | Stable |
+| `TransitionWind` | `transition-wind.wav` | Action / impact / 3 | SFX | 0.16 | 1 / 0.6 s | Stable |
 
 Player shots phát theo volley quan sát `ShotsFired`, không theo từng projectile.
 Homing impact đọc `EnemyHealth.HitPresented`; reserve missile dùng Fired/Detonated.
@@ -155,8 +165,8 @@ hai burst ở start/.30, final ở .79, Victory qua completion event (không pol
   CC BY 3.0; [source/attribution](../../tools/audio/licenses/little-robot-sound-factory.txt),
   [license text](../../tools/audio/licenses/cc-by-3.0.txt). Credits trong game ghi tác giả,
   author URL, license URL và modifications.
-- [Exporter](../../tools/audio/prepare.py) xử lý selected library files và một original
-  pressure-release vent; không gen BGM. Vent không có third-party sample/license dependency.
+- [Exporter](../../tools/audio/prepare.py) xử lý selected library files và ba original
+  air cues (vent, missile launch, travel wind); không gen BGM. Ba air cues không có third-party sample/license dependency.
 - Per-file source, original filename, edits, parameters và hashes chỉ nằm trong
   [source manifest](../../tools/audio/sources.json), không duplicate detailed provenance ở đây.
 
@@ -169,11 +179,19 @@ travel song, boss explosion layers không giới hạn. Không tạo âm chỉ v
 
 ## Verification
 
-Evidence local ignored: `.design/audio-final/revision-final.json` và per-scope receipts.
+Evidence follow-up: `.design/audio-followup/`; phase checkpoint trước: `.design/audio-final/`.
 Automated check không thay listening.
 
-- Export checks: decode/hash/peak/DC/SFX tails trên 43 clips.
-- Edit checks: 40 cue bindings, warning priority/variation, prefab coverage, mixer groups.
+- Export checks: decode/hash/peak/DC/SFX tails trên 44 clips.
+- Follow-up `VerifyAudioTransitions`: PASS không ignition trước tap; đúng một sau tap;
+  Pause/Resume/Continue không ignition lại; minor handoff wind chỉ khi thực sự bay;
+  same-region có một Start/Arrival và giữ music source; Vanguard → region journey →
+  tap tiếp cận → L5 chỉ một ignition cho cả lượt bay. Production save guard PASS.
+- Hierarchy cleanup: 96 GameObjects trong 13 prefabs + scene đổi sang role names,
+  không còn prefix `M8*` trong authored hoặc runtime hierarchy. Prefab data ngoài
+  `m_Name`, file IDs và references giữ nguyên. Scene giữ riêng local DevFastStart
+  selections của user ngoài commit; không đưa chúng vào production defaults.
+- Edit checks: 41 cue bindings, warning priority/variation, prefab coverage, mixer groups.
 - Runtime flow: Menu → Hangar/Shop/Settings → New Game → combat → Pause/Resume →
   death/respawn → Game Over → Retry → Menu; test storage và production byte guard.
 - Final grouped Editor pass: PASS `flow`, `player`, `enemies`, `travel`, `boss`.
@@ -183,8 +201,8 @@ Automated check không thay listening.
 - Console: 0 errors, 0 warnings sau final pass. Production save guard PASS cho
   từng isolated probe; không thao tác campaign/profile thật để seed test.
 - Native data/collider contract snapshot trước/sau: PASS, byte-identical.
-- Revision mix pressure (BGM muted): Plasma nominal output ~.51, coin ~.36 khi
-  common pool đầy; warning vẫn phát, vent không bị duck. DSP stress peak .585 < .98.
+- Latest mix pressure (BGM muted): Plasma nominal output ~.53, coin ~.47 khi
+  common pool đầy; warning vẫn phát, vent không bị duck. sampled DSP stress peak .364 < .98.
   Boss replay PASS cả completion event khi cố ý bỏ frame cuối; không còn phụ thuộc
   polling .96 để phát Victory. Flow harness restore/unlock player trước artificial
   hit để không nhầm cinematic protection thành lỗi audio.

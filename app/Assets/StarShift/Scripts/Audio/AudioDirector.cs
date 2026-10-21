@@ -121,7 +121,7 @@ namespace StarShift.Audio
             {
                 if (!voices[i].isPlaying || playing[i] == null) continue;
                 int group = VoiceGroup(i);
-                float budget = group == 0 ? .6f : group == 1 ? .65f : group == 2 ? .65f : group == 3 ? .5f : group == 4 ? .4f : .35f;
+                float budget = group == 0 ? .6f : group == 1 ? .65f : group == 2 ? .65f : group == 3 ? .65f : group == 4 ? .55f : .35f;
                 float multiplier = group < 2 || group == 5 ? 1 : IsPaused ? .12f : Time.unscaledTime < dangerUntil ? (group == 2 ? .55f : group == 3 ? .3f : .65f) : 1;
                 float target = levels[i] * sfxSetting * multiplier * Mathf.Min(1, budget / totals[group]);
                 // Weapon và pickup có budget riêng để tiếng nổ không kéo mất transient.

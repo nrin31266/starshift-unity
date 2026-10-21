@@ -25,7 +25,7 @@ public static class VerifyTravelPresentation
         bool oldPointer=pointer.enabled,oldDamage=damage.enabled;
         var temp=Path.Combine(Path.GetTempPath(),"starshift-bg-"+Guid.NewGuid().ToString("N"),"save.json");
         var camera=Camera.main; var view=camera.GetComponent<GameplayViewController>(); var oldView=view.TargetView;
-        var bg=camera.transform.Find("M8Environment"); var worldSize=bg.GetComponent<SpriteRenderer>().bounds.size;
+        var bg=camera.transform.Find("SpaceEnvironment"); var worldSize=bg.GetComponent<SpriteRenderer>().bounds.size;
         var output="../.design/presentation-polish/screenshots/"; Directory.CreateDirectory(output);
         object result=null;
         try

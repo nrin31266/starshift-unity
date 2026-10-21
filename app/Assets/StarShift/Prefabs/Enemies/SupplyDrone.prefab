@@ -420,7 +420,7 @@ GameObject:
   - component: {fileID: 5228519311475964524}
   - component: {fileID: 3893107885609880092}
   m_Layer: 0
-  m_Name: M8Charge
+  m_Name: ChargeFeedback
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -17,5 +17,5 @@ for row in rows:
     if '/SFX/' in str(path): assert abs(samples[-1])<.025,f'Hard tail: {path}'
     channels=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_entries','stream=channels','-of','json',str(path)]))['streams'][0]['channels']
     results.append(dict(clip=row['clip'],seconds=round(len(samples)/44100/channels,3),peak=round(peak,4),rms=round(rms,4),seamDelta=round(max(abs(samples[-channels+c]-samples[c]) for c in range(channels)),4)))
-assert len(results)==43
+assert len(results)==44
 print(json.dumps(dict(status='PASS',clips=results),indent=2))
