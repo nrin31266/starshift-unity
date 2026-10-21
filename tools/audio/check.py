@@ -12,6 +12,7 @@ for row in rows:
     assert samples and all(math.isfinite(x) for x in samples),f'Invalid samples: {path}'
     peak=max(abs(x) for x in samples); rms=math.sqrt(sum(x*x for x in samples)/len(samples));dc=sum(samples)/len(samples)
     assert 0.02<peak<.9 and rms>.001,f'Silent/clipped export: {path} {peak}'
+    if row["clip"] in {"plasma","coin","vent"}: assert rms>.08,f'Weak feedback body: {path} {rms}'
     assert abs(dc)<.03,f'DC offset: {path}'
     if '/SFX/' in str(path): assert abs(samples[-1])<.025,f'Hard tail: {path}'
     channels=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_entries','stream=channels','-of','json',str(path)]))['streams'][0]['channels']

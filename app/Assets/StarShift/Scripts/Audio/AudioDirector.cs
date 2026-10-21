@@ -13,7 +13,7 @@ namespace StarShift.Audio
         private readonly float[] weights = new float[2];
         private readonly AudioSource[] voices = new AudioSource[16];
         private readonly AudioPalette.Cue[] playing = new AudioPalette.Cue[16];
-        private readonly float[] totals = new float[4];
+        private readonly float[] totals = new float[6];
         private readonly float[] levels = new float[16];
         private AudioPalette.Cue[] cues;
         private float[] nextAllowed;
@@ -69,8 +69,8 @@ namespace StarShift.Audio
             var cue = cues[(int)id]; var now = Time.unscaledTime;
             if (cue == null || now < nextAllowed[(int)id]) return false;
             bool ui = id == AudioCue.Confirm || id == AudioCue.Back || id == AudioCue.Error;
-            int start = ui ? 14 : cue.Tier == 0 ? 0 : cue.Tier == 1 ? 4 : 6;
-            int end = ui ? 16 : cue.Tier == 0 ? 4 : cue.Tier == 1 ? 6 : 14;
+            int start = ui ? 14 : cue.Tier == 0 ? 0 : cue.Tier == 1 ? 4 : cue.Tier == 2 ? 6 : cue.Tier == 4 ? 12 : 8;
+            int end = ui ? 16 : cue.Tier == 0 ? 4 : cue.Tier == 1 ? 6 : cue.Tier == 2 ? 8 : cue.Tier == 4 ? 14 : 12;
             int active = 0, available = -1;
             for (int i = start; i < end; i++)
             {
@@ -103,25 +103,28 @@ namespace StarShift.Audio
             for (int i = 0; i < music.Length; i++)
             {
                 weights[i] = Mathf.MoveTowards(weights[i], i == targetChannel ? 1 : 0, Time.unscaledDeltaTime / .85f);
-                music[i].volume = weights[i] * palette.MusicLevel * musicSetting * duck;
+                float level = music[i].clip == palette.Hub ? palette.MusicLevel : palette.GameplayMusicLevel;
+                music[i].volume = weights[i] * level * musicSetting * duck;
                 if (i != targetChannel && weights[i] <= 0 && music[i].isPlaying) music[i].Stop();
             }
             RefreshVoices(false);
         }
 
+        private static int VoiceGroup(int slot) => slot < 4 ? 0 : slot < 6 ? 1 : slot < 8 ? 2 : slot < 12 ? 3 : slot < 14 ? 4 : 5;
+
         private void RefreshVoices(bool immediate)
         {
             System.Array.Clear(totals, 0, totals.Length);
             for (int i = 0; i < voices.Length; i++)
-                if (voices[i].isPlaying && playing[i] != null) totals[i >= 14 ? 3 : playing[i].Tier <= 1 ? playing[i].Tier : 2] += levels[i];
+                if (voices[i].isPlaying && playing[i] != null) totals[VoiceGroup(i)] += levels[i];
             for (int i = 0; i < voices.Length; i++)
             {
                 if (!voices[i].isPlaying || playing[i] == null) continue;
-                var cue = playing[i]; int group = i >= 14 ? 3 : cue.Tier <= 1 ? cue.Tier : 2;
-                float budget = group == 0 ? .5f : group == 1 ? .35f : group == 2 ? .2f : .12f;
-                float multiplier = group != 2 ? 1 : IsPaused ? .12f : Time.unscaledTime < dangerUntil ? .25f : 1;
+                int group = VoiceGroup(i);
+                float budget = group == 0 ? .6f : group == 1 ? .65f : group == 2 ? .65f : group == 3 ? .5f : group == 4 ? .4f : .35f;
+                float multiplier = group < 2 || group == 5 ? 1 : IsPaused ? .12f : Time.unscaledTime < dangerUntil ? (group == 2 ? .55f : group == 3 ? .3f : .65f) : 1;
                 float target = levels[i] * sfxSetting * multiplier * Mathf.Min(1, budget / totals[group]);
-                // Hạ gain ngay để giữ headroom; phục hồi mượt sau warning/pause.
+                // Weapon và pickup có budget riêng để tiếng nổ không kéo mất transient.
                 voices[i].volume = immediate || target < voices[i].volume ? target : Mathf.MoveTowards(voices[i].volume, target, Time.unscaledDeltaTime * 2);
             }
         }

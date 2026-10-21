@@ -14,6 +14,7 @@ namespace StarShift.Enemies
         private Action completed;
         private GameplayViewController view;
         public bool IsPlaying { get; private set; }
+        public event Action Completed;
         public float Progress => IsPlaying ? Mathf.Clamp01(elapsed / duration) : 0;
         public void Begin(Action onCompleted)
         {
@@ -41,7 +42,9 @@ namespace StarShift.Enemies
             if (elapsed < duration) return;
             IsPlaying = false;
             view.TriggerReserveImpact();
-            var callback = completed; completed = null; callback?.Invoke();
+            var callback = completed; completed = null;
+            try { Completed?.Invoke(); }
+            finally { callback?.Invoke(); }
         }
         private void OnDisable() { IsPlaying = false; completed = null; foreach (var explosion in explosions) explosion.enabled = false; }
     }

@@ -27,7 +27,8 @@ namespace StarShift.Audio
             [Range(0, .1f)] public float Variation = .035f;
         }
         public AudioClip Hub, Combat, Boss;
-        [Range(0, 1)] public float MusicLevel = .28f;
+        [Range(0, 1)] public float MusicLevel = .2f;
+        [Range(0, 1)] public float GameplayMusicLevel = .12f;
         public Cue[] Cues = Array.Empty<Cue>();
     }
 }

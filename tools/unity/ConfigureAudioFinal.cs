@@ -41,16 +41,17 @@ public static class ConfigureAudioFinal
         palette.Hub = AssetDatabase.LoadAssetAtPath<AudioClip>(Root + "Music/bgm-hub.wav");
         palette.Combat = AssetDatabase.LoadAssetAtPath<AudioClip>(Root + "Music/bgm-combat.wav");
         palette.Boss = AssetDatabase.LoadAssetAtPath<AudioClip>(Root + "Music/bgm-boss.wav");
-        palette.MusicLevel = .2f;
+        palette.MusicLevel = .2f; palette.GameplayMusicLevel = .12f;
         palette.Cues = Enum.GetValues(typeof(AudioCue)).Cast<AudioCue>().Select(id => {
             bool warning = id == AudioCue.Overheat || id.ToString().Contains("Warning") || id == AudioCue.InterceptorCharge || id == AudioCue.SniperCharge;
-            bool player = id == AudioCue.PlayerHit || id == AudioCue.PlayerDeath || id == AudioCue.ShieldAbsorb || id == AudioCue.ShieldBreak || id == AudioCue.Victory || id == AudioCue.GameOver || id == AudioCue.BossFinal;
+            bool player = id == AudioCue.PlayerHit || id == AudioCue.PlayerDeath || id == AudioCue.ShieldAbsorb || id == AudioCue.ShieldBreak || id == AudioCue.Victory || id == AudioCue.GameOver || id == AudioCue.BossFinal || id == AudioCue.Vent || id == AudioCue.BossEnter || id == AudioCue.ExtraLife;
             bool ui = id == AudioCue.Confirm || id == AudioCue.Back || id == AudioCue.Error;
-            int tier = warning ? 0 : player ? 1 : id <= AudioCue.HomingImpact ? 2 : ui || id == AudioCue.Coin || id == AudioCue.PowerUp ? 4 : 3;
+            bool travel = id == AudioCue.WarpStart || id == AudioCue.WarpPass || id == AudioCue.WarpArrival;
+            int tier = warning ? 0 : player ? 1 : id <= AudioCue.Homing ? 2 : ui || id == AudioCue.Coin || id == AudioCue.PowerUp ? 4 : 3;
             float interval = id == AudioCue.Coin ? .12f : id == AudioCue.Pulse ? .085f : id == AudioCue.Plasma ? .12f : id == AudioCue.HostileShot ? .16f : warning ? .15f : .08f;
             return new AudioPalette.Cue {Id = id, Clip = AssetDatabase.LoadAssetAtPath<AudioClip>(Root + "SFX/" + Slug(id.ToString()) + ".wav"),
-                Tier = tier, Volume = warning ? .48f : player ? .45f : id == AudioCue.EnemyDeath ? .13f : id == AudioCue.AsteroidBreak ? .1f : id == AudioCue.HostileShot ? .065f : id == AudioCue.Coin ? .11f : ui ? .22f : tier == 2 ? .19f : .24f,
-                Interval = interval, MaxVoices = warning || ui || player ? 1 : 2, Variation = warning || player ? 0 : .035f};
+                Tier = tier, Volume = warning ? .55f : id == AudioCue.BossFinal ? .65f : id == AudioCue.Vent ? .52f : player ? .55f : id == AudioCue.Plasma ? .52f : id == AudioCue.Homing ? .48f : tier == 2 ? .4f : id == AudioCue.EnemyDeath ? .27f : id == AudioCue.AsteroidBreak ? .22f : id == AudioCue.HostileShot ? .065f : id == AudioCue.Coin ? .36f : ui ? .3f : travel ? .48f : id == AudioCue.HeavyDeath ? .42f : .36f,
+                Interval = interval, MaxVoices = warning || ui || player || travel || id == AudioCue.Coin ? 1 : 2, Variation = warning || player || travel ? 0 : .035f};
         }).ToArray();
         if (palette.Hub == null || palette.Combat == null || palette.Boss == null || palette.Cues.Any(c => c.Clip == null))
             throw new Exception("Missing audio files: " + string.Join(",", palette.Cues.Where(c => c.Clip == null).Select(c => c.Id)));

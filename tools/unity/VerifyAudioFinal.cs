@@ -114,7 +114,7 @@ public static class VerifyAudioFinal
             Check(audio.CurrentMusic.name=="bgm-combat","Combat BGM");
             var session=runner.GetComponent<GameplaySession>();musicTime=Music.time;clip=audio.CurrentMusic;musicSource=Music;
             session.Pause();await Task.Delay(500);Check(Music.time>musicTime&&Music.volume<.08f,"Pause stopped/restarted music or failed duck");
-            session.Resume();await Task.Delay(700);Check(audio.CurrentMusic==clip&&Music==musicSource&&Music.volume>.12f,"Resume music restoration");
+            session.Resume();await Task.Delay(700);Check(audio.CurrentMusic==clip&&Music==musicSource&&Music.volume>Field<AudioPalette>(audio,"palette").GameplayMusicLevel*.85f,"Resume music restoration");
             audio.ClearGameplay();int accepted=audio.AcceptedCues;for(int i=0;i<100;i++)audio.Play(AudioCue.Coin);Check(audio.AcceptedCues==accepted+1,"Coin spam");
             audio.ClearGameplay();for(int i=0;i<2;i++){audio.Play(AudioCue.Pulse);audio.Play(AudioCue.Plasma);audio.Play(AudioCue.HeavyDeath);audio.Play(AudioCue.HomingImpact);}
             Check(audio.Play(AudioCue.InterceptorCharge),"Interceptor starved by common SFX");Check(audio.Play(AudioCue.BossBeamWarning),"Boss warning starved");
@@ -123,15 +123,15 @@ public static class VerifyAudioFinal
             Check(Voices.Length==16&&Voices.All(s=>!s.loop),"Unbounded/looping SFX sources");
             Evidence("pressure",new{status="PASS",reservedWarningVoices=warnings.Length,voicePool=Voices.Length});
             await Task.Delay(1000);musicTime=Music.time;clip=audio.CurrentMusic;
-            var lives=gate.GetComponent<PlayerLives>();var damage=gate.GetComponent<PlayerDamageLifecycle>();gate.GetComponent<PlayerTemporaryEffects>().Clear();gate.SetState(PlayerGameplayState.Active);
-            Check(damage.TryReceiveHit(null),"Life loss");await Task.Delay(150);Check(audio.CurrentMusic==clip&&Music.time>musicTime,"Life loss restarted music");
+            var lives=gate.GetComponent<PlayerLives>();var damage=gate.GetComponent<PlayerDamageLifecycle>();gate.GetComponent<PlayerTemporaryEffects>().Clear();damage.RestoreCheckpoint(3);gate.SetCinematicLock(false);
+            Check(damage.TryReceiveHit(null),"Life loss: state="+gate.State+", canDamage="+gate.CanTakeDamage+", lives="+lives.CurrentLives+", scale="+Time.timeScale);await Task.Delay(150);Check(audio.CurrentMusic==clip&&Music.time>musicTime,"Life loss restarted music");
             await Until(()=>gate.State==PlayerGameplayState.PostEntryInvincibility,5000,"Respawn");
             lives.RestoreCheckpoint(1);gate.SetState(PlayerGameplayState.Active);Check(damage.TryReceiveHit(null),"Fatal death");
             await Until(()=>session.IsTerminal&&shell.Screen==ShellScreen.Results,2000,"Game Over");await Task.Delay(500);
             Check(audio.CurrentMusic==clip&&Music.isPlaying&&Music.volume<.04f,"Game Over continuity/duck");
             Check(Voices.Any(s=>s.isPlaying&&s.clip.name=="game-over"),"Game Over stinger");
             view.GameOverRetry.onClick.Invoke();await Until(()=>!shell.IsBusy&&!session.IsTerminal,5000,"Retry");await Task.Delay(1000);
-            Check(audio.CurrentMusic.name=="bgm-combat"&&Music.volume>.12f,"Retry music recovery");
+            Check(audio.CurrentMusic.name=="bgm-combat"&&Music.volume>Field<AudioPalette>(audio,"palette").GameplayMusicLevel*.85f,"Retry music recovery");
             shell.Boot();await Task.Delay(1000);Check(audio.CurrentMusic.name=="bgm-hub","Return to Hub");
             Check(!Voices.Take(14).Any(s=>s.isPlaying),"Stuck gameplay audio after Menu");
             Evidence("flow",new{status="PASS",hubNavigation=true,settings=true,pauseResume=true,deathRespawn=true,gameOverRetry=true,menuCleanup=true});
@@ -158,8 +158,37 @@ public static class VerifyAudioFinal
         runner.StartRun(point,true,true,null,null);gate.SetCinematicLock(false);gate.GetComponent<PlayerDamageLifecycle>().GrantBriefProtection(1000);
         view.Show(ShellScreen.Playing);Time.timeScale=1;UnityEngine.Object.FindAnyObjectByType<EnemyFireGate>().ResumeAfter(0);await Task.Delay(70);
     }
+    static async Task MixPressure()
+    {
+        audio.ClearGameplay(); audio.IsPaused=false;
+        audio.Apply(new SettingsData{MusicVolume=0,SfxVolume=1});
+        try
+        {
+            foreach(var cue in new[]{AudioCue.HeavyDeath,AudioCue.EnemyDeath,AudioCue.AsteroidBreak,AudioCue.HomingImpact})Check(audio.Play(cue),"Common pressure "+cue);
+            Check(audio.Play(AudioCue.Plasma),"Plasma starved by explosions");
+            Check(audio.Play(AudioCue.Coin),"Coin starved by explosions");
+            var plasma=Voices.Single(v=>v.isPlaying&&v.clip.name=="plasma");
+            var coin=Voices.Single(v=>v.isPlaying&&v.clip.name=="coin");
+            float plasmaNormal=plasma.volume,coinNormal=coin.volume;
+            Check(plasmaNormal>=.48f&&coinNormal>=.34f,"Weapon/pickup gain collapsed under common pressure");
+            Check(audio.Play(AudioCue.Overheat)&&audio.Play(AudioCue.Vent),"Heat cues starved");
+            Check(plasma.volume>=.26f&&coin.volume>=.22f,"Warning over-ducked weapon/pickup");
+            Check(Voices.Single(v=>v.isPlaying&&v.clip.name=="vent").volume>=.5f,"Vent lost under warning");
+            var data=new float[1024];float peak=0;double energy=0;int samples=0;
+            for(int i=0;i<40;i++)
+            {
+                AudioListener.GetOutputData(data,0);
+                foreach(float value in data){peak=Mathf.Max(peak,Mathf.Abs(value));energy+=value*value;samples++;}
+                await Task.Delay(10);
+            }
+            Check(peak>.03f&&peak<.98f,"Stress mix silent/clipped "+peak);
+            Evidence("mix",new{status="PASS",plasmaNormal,coinNormal,stressPeak=peak,stressRms=Math.Sqrt(energy/samples),musicMuted=true,reservedWeaponAndPickup=true,listening="NOT VERIFIED"});
+        }
+        finally{audio.ClearGameplay();audio.Apply(SettingsData.Defaults());}
+    }
     static async Task Combat(string scope)
     {
+        if(scope=="mix") await MixPressure();
         if(scope=="all"||scope=="player")
         {
         await Start("L1");var weapon=gate.GetComponent<PulseLaserWeapon>();var loadout=gate.GetComponent<WeaponLoadout>();
@@ -249,9 +278,15 @@ public static class VerifyAudioFinal
             }
             driver.CancelModules();audio.ClearGameplay();boss.SetDamageBlocked(false);boss.ReceivePlayerHit(boss.MaxHp,gate.gameObject);
             await Until(()=>Hearing("boss-final"),3500,"Staged boss final "+mission);
+            if(mission=="L4")
+            {
+                var sequence=boss.GetComponent<BossDeathSequence>();
+                // Ép bỏ qua cửa sổ LateUpdate cuối để kiểm completion cue không phụ thuộc frame.
+                typeof(BossDeathSequence).GetField("elapsed",Fields).SetValue(sequence,Field<float>(sequence,"duration")-.001f);
+            }
             await Until(()=>Hearing("victory"),1800,"Victory stinger "+mission);
         }
-        Evidence("boss",new{status="PASS",skillsAndStagedVictory=true});
+        Evidence("boss",new{status="PASS",skillsAndStagedVictory=true,completionEventAndSkippedLastFrame=true});
         }
         var data=new float[2048];float peak=0;
         for(int i=0;i<35;i++){AudioListener.GetOutputData(data,0);peak=Mathf.Max(peak,data.Max(x=>Mathf.Abs(x)));await Task.Delay(15);}

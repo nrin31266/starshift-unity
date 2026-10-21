@@ -14,26 +14,38 @@
     "pack": "Kenney Sci-Fi Sounds",
     "url": "https://kenney.nl/assets/sci-fi-sounds",
     "license": "CC0",
-    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, atrim=duration=0.28, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.24500000000000002:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
-    "sha256": "b1a1ff0a8e5ecba29341f7fb268248a2a199313a99e5f951c5c7c367becf2c1c"
+    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, equalizer=f=1800:t=q:w=0.8:g=5,acompressor=threshold=0.16:ratio=3:attack=1:release=55, atrim=duration=0.34, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.30500000000000005:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
+    "sha256": "a5913048212c8183047b5b71a0884376979672ae489d55d2cfddba64044dc89a"
   },
   {
     "clip": "homing",
     "source": "kenney/Audio/thrusterFire_000.ogg",
+    "layer": {
+      "source": "kenney/Audio/impactMetal_000.ogg",
+      "gain": 0.14,
+      "seconds": 0.1,
+      "highpass": 120
+    },
     "pack": "Kenney Sci-Fi Sounds",
     "url": "https://kenney.nl/assets/sci-fi-sounds",
     "license": "CC0",
-    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, atrim=duration=0.3, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.265:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
-    "sha256": "85b280480d5e8ff395e127b4574a234d1f8ddbd691f7090524c3261003c48260"
+    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, highpass=f=110,equalizer=f=600:t=q:w=0.8:g=3,acompressor=threshold=0.16:ratio=2:attack=2:release=60, atrim=duration=0.48, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.44499999999999995:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
+    "sha256": "623aee9750189de906b7e297f374aa0f85947162890a65411be3b7086dc8322d"
   },
   {
     "clip": "homing-impact",
     "source": "kenney/Audio/explosionCrunch_001.ogg",
+    "layer": {
+      "source": "kenney/Audio/lowFrequency_explosion_001.ogg",
+      "gain": 0.35,
+      "seconds": 0.5,
+      "highpass": 120
+    },
     "pack": "Kenney Sci-Fi Sounds",
     "url": "https://kenney.nl/assets/sci-fi-sounds",
     "license": "CC0",
-    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, atrim=duration=0.45, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.41500000000000004:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
-    "sha256": "fd352dd87754d5a47346c22c4146ccf6ff46882590235e0d207a81337d421123"
+    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, highpass=f=90,equalizer=f=1700:t=q:w=1:g=3, atrim=duration=0.6, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.565:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
+    "sha256": "ad28b0cf7a8781f6c36499844ccfefd93ce85b8a71e3e65426fc491b6e684cbf"
   },
   {
     "clip": "player-hit",
@@ -190,21 +202,21 @@
   },
   {
     "clip": "overheat",
-    "source": "lrsf/Alarm_Loop_01.wav",
-    "pack": "Little Robot Sound Factory \u2014 Sci-Fi Sound Effects Library",
-    "url": "https://opengameart.org/content/sci-fi-sound-effects-library",
-    "license": "CC BY 3.0",
-    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, atrim=duration=0.65, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.615:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
-    "sha256": "f06ec0166d60ad6a707d77afeb3736d0d2c64caa0e521bf3fa35f4dac575c726"
+    "source": "interface/Audio/error_006.ogg",
+    "pack": "Kenney Interface Sounds",
+    "url": "https://kenney.nl/assets/interface-sounds",
+    "license": "CC0",
+    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, highpass=f=1000, atrim=duration=0.2, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.165:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
+    "sha256": "465b3eea326e2fe0281f3056981329b78c357c100ef380176623c7ee4dc6e8f5"
   },
   {
     "clip": "vent",
-    "source": "kenney/Audio/engineCircular_002.ogg",
-    "pack": "Kenney Sci-Fi Sounds",
-    "url": "https://kenney.nl/assets/sci-fi-sounds",
-    "license": "CC0",
-    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, highpass=f=2400, atrim=duration=0.28, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.24500000000000002:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
-    "sha256": "2936be01d4c363508abbaf15218ea244dc9c3518a17c9de6b41c305620f8d54e"
+    "source": "generated/pressure-release",
+    "pack": "StarShift original sound design",
+    "url": "tools/audio/prepare.py",
+    "license": "Project original; no third-party sample",
+    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, highpass=f=1100,lowpass=f=10000,aeval=val(0)*exp(-5*t), atrim=duration=0.58, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.5449999999999999:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
+    "sha256": "f0a8b915cb5769198b94bee9dba33ab5d21eb908952ce946f5e8f4e980e9f9c2"
   },
   {
     "clip": "armor-break",
@@ -221,17 +233,23 @@
     "pack": "Kenney Sci-Fi Sounds",
     "url": "https://kenney.nl/assets/sci-fi-sounds",
     "license": "CC0",
-    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, atrim=duration=0.22, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.185:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
-    "sha256": "953a61b90c3e00fd8e3aea3462eda090cded255934d793cdbe89e13047adc16a"
+    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, highpass=f=140,equalizer=f=1900:t=q:w=0.8:g=4,acompressor=threshold=0.16:ratio=2.5:attack=2:release=60, atrim=duration=0.34, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.30500000000000005:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
+    "sha256": "bc5d559bff7e715e523b4fa0458b84681fa3cd20f9362cde721f7da6d51b4c6d"
   },
   {
     "clip": "heavy-death",
     "source": "kenney/Audio/explosionCrunch_002.ogg",
+    "layer": {
+      "source": "kenney/Audio/lowFrequency_explosion_000.ogg",
+      "gain": 0.25,
+      "seconds": 0.55,
+      "highpass": 120
+    },
     "pack": "Kenney Sci-Fi Sounds",
     "url": "https://kenney.nl/assets/sci-fi-sounds",
     "license": "CC0",
-    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, atrim=duration=0.48, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.44499999999999995:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
-    "sha256": "e4b1c0c939dfbbd4c21a57fc9c5c9c68007a3f40d6e4f048bd995681af379a6d"
+    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, equalizer=f=1600:t=q:w=0.8:g=3,acompressor=threshold=0.16:ratio=2.5:attack=2:release=60, atrim=duration=0.62, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.585:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
+    "sha256": "088328d8aec6b06a14fb82763db0ad7589b959bf0ab6958da4b066a4d1300ce8"
   },
   {
     "clip": "asteroid-break",
@@ -239,26 +257,38 @@
     "pack": "Kenney Sci-Fi Sounds",
     "url": "https://kenney.nl/assets/sci-fi-sounds",
     "license": "CC0",
-    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, highpass=f=300,lowpass=f=1700, atrim=duration=0.24, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.205:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
-    "sha256": "3ef839cfee2fbde07cd0dd639c6318a2f71d2d67e77d1e217ed633b67e56529a"
+    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, highpass=f=350,lowpass=f=6500,equalizer=f=2500:t=q:w=1:g=3, atrim=duration=0.3, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.265:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
+    "sha256": "03e02cfd6940d5bdf2ebea22607aeeae8d358b1092bedca6e11052ac00157c0d"
   },
   {
     "clip": "boss-burst",
     "source": "kenney/Audio/explosionCrunch_003.ogg",
+    "layer": {
+      "source": "kenney/Audio/lowFrequency_explosion_000.ogg",
+      "gain": 0.3,
+      "seconds": 0.4,
+      "highpass": 120
+    },
     "pack": "Kenney Sci-Fi Sounds",
     "url": "https://kenney.nl/assets/sci-fi-sounds",
     "license": "CC0",
-    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, atrim=duration=0.4, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.365:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
-    "sha256": "201625080ce4eb9889a838e58491a182b9f6011c51592e1644041edaec1d4d6e"
+    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, highpass=f=80, atrim=duration=0.5, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.46499999999999997:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
+    "sha256": "73e813a34b93f53beede13a3a932fa34009d62d34044d9c6b51aa8c3b94f45d6"
   },
   {
     "clip": "boss-final",
     "source": "kenney/Audio/lowFrequency_explosion_001.ogg",
+    "layer": {
+      "source": "kenney/Audio/explosionCrunch_002.ogg",
+      "gain": 0.55,
+      "seconds": 0.4,
+      "highpass": 120
+    },
     "pack": "Kenney Sci-Fi Sounds",
     "url": "https://kenney.nl/assets/sci-fi-sounds",
     "license": "CC0",
-    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, atrim=duration=0.8, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.765:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
-    "sha256": "ac6977091218b133a161f8a8b845ef89bad5a4eba092c46dcfb743afb4f55db1"
+    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, highpass=f=75,equalizer=f=220:t=q:w=0.8:g=4,acompressor=threshold=0.18:ratio=2:attack=4:release=90, atrim=duration=1.05, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=1.0150000000000001:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
+    "sha256": "52172aacf2596ba870c16a02d04ee7db5878f7a1a6117d67712f36a1ec4fb949"
   },
   {
     "clip": "coin",
@@ -266,8 +296,8 @@
     "pack": "Kenney Interface Sounds",
     "url": "https://kenney.nl/assets/interface-sounds",
     "license": "CC0",
-    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, atrim=duration=0.1, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.065:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
-    "sha256": "dc20be1a7faeb6138c3089af046e1c1db3835087da06f64dca3f0e436b794f30"
+    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, highpass=f=900,equalizer=f=3000:t=q:w=1:g=4, atrim=duration=0.2, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.165:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
+    "sha256": "fe9100174f2d39359b5f75f3a979d6c3800ac23fd702e4aff07c7ff219c85ffa"
   },
   {
     "clip": "power-up",
@@ -320,8 +350,8 @@
     "pack": "Little Robot Sound Factory \u2014 Sci-Fi Sound Effects Library",
     "url": "https://opengameart.org/content/sci-fi-sound-effects-library",
     "license": "CC BY 3.0",
-    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, atrim=duration=0.65, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.615:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
-    "sha256": "3309b2288512ab872d323fc1533e32c57f89d417750c8d5e3209b117eabe0509"
+    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, atrim=duration=0.7,areverse,highpass=f=200, atrim=duration=0.7, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.6649999999999999:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
+    "sha256": "3eb5dd234ad677649797efcb8e803875df1b523ee64d501640bc952d168fe055"
   },
   {
     "clip": "warp-pass",
@@ -329,8 +359,8 @@
     "pack": "Little Robot Sound Factory \u2014 Sci-Fi Sound Effects Library",
     "url": "https://opengameart.org/content/sci-fi-sound-effects-library",
     "license": "CC BY 3.0",
-    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, atrim=duration=0.85, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.815:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
-    "sha256": "24bcc28de1aef962b563bc0ebe9d9213f44f6b9f34004f5f7542112a450aedc7"
+    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, atempo=1.8,highpass=f=300,equalizer=f=2000:t=q:w=0.8:g=3, atrim=duration=1.2, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=1.165:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
+    "sha256": "1115f1ab088de00263d37a19966dda7eceb99703891c8249b99eda2ddf696518"
   },
   {
     "clip": "warp-arrival",
@@ -338,8 +368,8 @@
     "pack": "Little Robot Sound Factory \u2014 Sci-Fi Sound Effects Library",
     "url": "https://opengameart.org/content/sci-fi-sound-effects-library",
     "license": "CC BY 3.0",
-    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, atrim=duration=0.55, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.515:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
-    "sha256": "0835757345a1ec3bb7346d903017132ab60de7d66ac5cc0aab3a20748a98e79b"
+    "edit": "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.003, highpass=f=130,equalizer=f=1200:t=q:w=1:g=3, atrim=duration=0.75, asetpts=PTS-STARTPTS, highpass=f=65, afade=t=in:d=0.003, afade=t=out:st=0.715:d=0.035; final tail fade 20ms; mono; static peak -3.35 dBFS",
+    "sha256": "b641ca54daddf0c26a435a6ba4776ff97afd91ba2563acb6539ce518d7222cdb"
   },
   {
     "clip": "victory",
@@ -369,11 +399,11 @@
   },
   {
     "clip": "bgm-combat",
-    "source": "EDM Loop #1.wav",
-    "pack": "Andrew Sitkov / Music Loops Mini Set",
+    "source": "Short Space Casual Loop #3.wav",
+    "pack": "Andrew Sitkov / Music Loops Mini Set 2",
     "license": "Andrew Sitkov Royalty-Free Music License",
     "edit": "static RMS target -19.17 dBFS, peak <= -3.35 dBFS; 20ms tail/head loop splice; PCM source, Unity Vorbis streaming",
-    "sha256": "b2a830bbf8b04698bbf819f7b9582a06a4f60be6e4ce564db392aae70beeac01"
+    "sha256": "cd54ead9263ae993cb7f17f0005f5e135a175675f705b9dab151f0fa8bc60ccf"
   },
   {
     "clip": "bgm-boss",

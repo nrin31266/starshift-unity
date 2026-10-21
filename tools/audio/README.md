@@ -8,7 +8,7 @@ Không import whole pack hoặc audition intermediates vào Unity.
 
 - Andrew Sitkov: [Mini Set](https://store.godotengine.org/asset/andrew-sitkov-music/music-loops-mini-set/)
   và [Mini Set 2](https://store.godotengine.org/asset/andrew-sitkov-music/music-loops-mini-set-2/).
-  Giữ `Short Space Casual Loop #1.wav`, `EDM Loop #1.wav`, `Drive With Me.wav`
+  Giữ `Short Space Casual Loop #1.wav`, `Short Space Casual Loop #3.wav`, `Drive With Me.wav`
   ở thư mục staging ngoài repo/Assets. Chỉ ba file được chọn được xuất sang Unity.
 - Kenney: [Sci-Fi Sounds](https://kenney.nl/assets/sci-fi-sounds),
   [Digital Audio](https://kenney.nl/assets/digital-audio),
@@ -21,8 +21,9 @@ Không import whole pack hoặc audition intermediates vào Unity.
   và phân phối kèm project; không claim authorship, bán/register hoặc phân phối
   nhạc riêng. Kenney CC0. Little Robot Sound Factory CC BY 3.0: credit author,
   source/author URL, license và ghi modifications; Credits trong game chứa attribution.
-- Không giữ original procedural tone sweep/stinger sau user feedback. Cả 40 cue
-  đều chọn từ thư viện; trim/reverse/EQ/fade và normalize bằng ffmpeg/Python.
+- Không giữ original procedural tone sweep/stinger sau user feedback. 39 cue chọn từ thư viện; trim/reverse/EQ/compression/fade và normalize bằng ffmpeg/Python.
+  Vent là original noise pressure release (ffmpeg white noise seed 745, EQ/decay),
+  không dùng engine hoặc tonal sweep. Không cần tải source cho vent; recipe trong exporter.
 
 Yêu cầu Python 3 và `ffmpeg`/`ffprobe`; không cần pip dependency:
 

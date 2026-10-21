@@ -64,6 +64,7 @@ namespace StarShift.Audio
             var nextIntro = runner.Flow != null ? runner.Flow.IntroPhase : MissionIntroPhase.None;
             if (nextIntro != intro)
             {
+                if (nextIntro == MissionIntroPhase.Approach && Time.unscaledTime >= launchUntil) audio.Play(AudioCue.WarpStart);
                 if (nextIntro == MissionIntroPhase.Travel) audio.Play(AudioCue.WarpPass);
                 if (nextIntro == MissionIntroPhase.Brake) audio.Play(AudioCue.WarpArrival);
                 intro = nextIntro;
@@ -71,8 +72,9 @@ namespace StarShift.Audio
             var nextJourney = journey != null ? journey.Phase : PlanetJourneyPhase.None;
             if (nextJourney != journeyPhase)
             {
-                if (nextJourney == PlanetJourneyPhase.Accelerate) audio.Play(AudioCue.WarpPass);
-                if (nextJourney == PlanetJourneyPhase.Decelerate) audio.Play(AudioCue.WarpArrival);
+                if (nextJourney == PlanetJourneyPhase.Accelerate || nextJourney == PlanetJourneyPhase.Travel) audio.Play(AudioCue.WarpPass);
+                if (nextJourney == PlanetJourneyPhase.Approach) audio.Play(AudioCue.WarpStart);
+                if (nextJourney == PlanetJourneyPhase.Decelerate || nextJourney == PlanetJourneyPhase.Brake) audio.Play(AudioCue.WarpArrival);
                 journeyPhase = nextJourney;
             }
             audio.MusicDuck = gameOver ? .12f : runner.Stage == EncounterStage.BossPostDeath ? .15f : travel ? .55f : 1;

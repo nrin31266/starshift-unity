@@ -30,6 +30,7 @@ namespace StarShift.Audio
         {
             previousPhase = AttackPhase.Idle; charging = dying = warned = false; deathBeat = 0;
             if (single != null) single.VolleyFired += OnVolley;
+            if (death != null) death.Completed += OnBossCompleted;
             // Cannon có thể kết thúc Attack ngay trong cùng tick, nên phải bắt event.
             if (directed != null) directed.PhaseChanged += OnPhase;
             if (module != null) module.PhaseChanged += OnPhase;
@@ -38,6 +39,7 @@ namespace StarShift.Audio
         }
         private void OnHit(EnemyHitInfo hit) { if (hit.Branch == WeaponBranch.Homing) audio.Play(AudioCue.HomingImpact); }
         private void OnVolley() => audio.Play(attackCue);
+        private void OnBossCompleted() => audio?.Play(AudioCue.Victory);
         private void LateUpdate()
         {
             if (audio == null || Time.timeScale <= 0) return;
@@ -46,7 +48,6 @@ namespace StarShift.Audio
                 if (!dying) { dying = true; audio.Play(AudioCue.BossBurst); }
                 if (deathBeat == 0 && death.Progress >= .3f) { deathBeat = 1; audio.Play(AudioCue.BossBurst); }
                 if (deathBeat == 1 && death.Progress >= .79f) { deathBeat = 2; audio.Play(AudioCue.BossFinal); }
-                if (deathBeat == 2 && death.Progress >= .96f) { deathBeat = 3; audio.Play(AudioCue.Victory); }
                 return;
             }
             if (health == null || !health.IsAlive) return;
@@ -73,6 +74,7 @@ namespace StarShift.Audio
         private void OnDisable()
         {
             if (single != null) single.VolleyFired -= OnVolley;
+            if (death != null) death.Completed -= OnBossCompleted;
             if (directed != null) directed.PhaseChanged -= OnPhase;
             if (module != null) module.PhaseChanged -= OnPhase;
             if (barrage != null) barrage.PhaseChanged -= OnPhase;
