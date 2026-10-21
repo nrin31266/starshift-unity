@@ -78,9 +78,46 @@ MonoBehaviour:
     HoldDuration: 3
     ExitAnchor: {x: 1.18, y: 0.3}
     ExitDuration: 3
-  OptionalEvents: []
+  OptionalEvents:
+  - Id: STORM_SUPPLY
+    Kind: 0
+    TimeOffset: 4
+    Condition: 0
+    UsePressureWindow: 0
+    MaximumActiveEnemies: 2
+    FallbackTime: 4
+    Group:
+      EntryBeat: 0
+      SpawnScale: 1
+      VisualSpin: 0
+      ContinuousTransit: 0
+      Count: 1
+      StartTime: 0
+      Stagger: 0.24
+      EnemyPrefab: {fileID: 2027060936374800042, guid: 837e4d72d27b32aada7e68b065e5c13a, type: 3}
+      EnemyDefinition: {fileID: 11400000, guid: 1bd9a719821aaacbab35e7767f4f5659, type: 2}
+      RewardOverride: {fileID: 11400000, guid: f22d75d4b02bcfa0b85bbd87d7a2c4af, type: 2}
+      Elite: {fileID: 0}
+      Required: 0
+      GrantsRewards: 1
+      Formation: 1
+      Anchor: {x: 0, y: 0}
+      SlotStep: {x: 0.115, y: 0.075}
+      FormationRise: 0.035
+      Sequence: {fileID: 11400000, guid: bff155a6c3d01f474a99ee9e1a413b5a, type: 2}
+      Plan: {fileID: 0}
+      FirstSlot: 0
+      HpOverride: 0
+      EntryAnchor: {x: 0.5, y: 1.12}
+      HoldAnchor: {x: 0.5, y: 0.78}
+      EntryCurve: {x: 0, y: 0}
+      EntryDuration: 1.2
+      HoldDuration: 3
+      ExitAnchor: {x: 1.18, y: 0.3}
+      ExitDuration: 3
   CameraOverride: {fileID: 11400000, guid: a94b2b300543f2007a58bb8734481676, type: 2}
   GuaranteedMajorCount: 0
+  GuaranteedMajorByKill: 0
   GuaranteeTable: {fileID: 0}
   ActiveShooterLimit: 1
   ShotSpacing: 0.65

@@ -499,8 +499,9 @@ cue thuộc [presentation owner](../presentation/audio-vfx.md#reserve-missile-im
 ## M5 authored reward usage `[PROVISIONAL]`
 
 Normal/Elite random odds được tăng nhẹ như policy phía trên; quota bên dưới bổ sung floor progression cho
-combat quan trọng thay vì gắn guaranteed Core lên một SpawnAction. M3 Supply và M4
-preboss Supply dùng MajorCrate table để eject pair; resource asteroid giữ Shard path; Vanguard eject
+combat quan trọng thay vì gắn guaranteed Core lên một SpawnAction. Scripted Supply
+dùng MajorCrate table để eject pair; placement thuộc [level owner](levels-encounters.md#m5-region-a-authored-content-provisional).
+Resource asteroid giữ Shard path; Vanguard eject
 một defeat pair sau staged death, kèm 28 Shards rải lateral .07–.93, depth .58–.85
 trong combat viewport (xoay theo Up/Right).
 Chỉ enemy được classify Boss mới dùng `BossShardCount`; supply không rải vàng. Boss

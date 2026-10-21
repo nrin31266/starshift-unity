@@ -581,7 +581,7 @@ Encounter B — `Survive`
 - diagonal asteroid storm;
 - 10–14 s;
 - có 1–2 golden asteroid;
-- chưa cần Supply Drone.
+- Supply Drone giữa lượt, theo [authored placement](#m5-region-a-authored-content-provisional).
 
 Encounter C — `Eliminate`
 
@@ -590,8 +590,8 @@ Encounter C — `Eliminate`
 
 ### Level 3 — Spearhead
 
-L3 hướng tới khoảng 2 phút, ghép formation nhiều hướng với lần đầu giới thiệu
-Supply Drone và Elite; supply xuất hiện lúc pressure thấp để reward còn đọc được.
+L3 hướng tới khoảng 2 phút, ghép formation nhiều hướng với Elite và thêm cơ hội
+Supply Drone; supply xuất hiện lúc pressure thấp để reward còn đọc được.
 
 Encounter A — `Timeline`
 
@@ -607,7 +607,7 @@ Encounter B — `Timeline`
 
 Optional Event:
 
-- scripted hoặc forced Supply Drone đầu tiên;
+- scripted hoặc forced Supply Drone;
 - xuất hiện giữa encounter hoặc ngay sau pressure thấp.
 
 Encounter C — `Eliminate`
@@ -940,8 +940,8 @@ weapon, core và supply/drop contract ở [weapons/items/drops](weapons-items-dr
 
 ## Authored reward pacing `[TUNABLE]`
 
-L1–L8 dùng existing enemy-drop quota, không tạo thêm enemy/supply hoặc thay combat
-formation. Mỗi dòng có một major opportunity, cần bắn hạ eligible enemy và tự nhặt.
+Combat floor L1–L8 dùng existing enemy-drop quota trên đội hình hiện có, độc lập với
+scripted Supply. Mỗi dòng có một major opportunity, cần bắn hạ eligible enemy và tự nhặt.
 Mốc là **chậm nhất ở kill N trong encounter**; matching random drop có thể ra sớm hơn.
 Không phải kill N của cả mission, không gắn reward lên mọi enemy. Policy capacity,
 seed/Retry, fallback và clutter thuộc [item owner](weapons-items-drops.md#encounter-reward-floor-provisional).
@@ -1023,6 +1023,12 @@ stagger .06 s/subgroup, settled anchor (.5,.61), timed combat 18 s và exit 2.8 
 chu kỳ 7 s, clock encounter đồng bộ giữa các slot sau blend-in .6 s. Phase lifetime
 vẫn 18 s hoặc hold-until-resolved; không rút timed phase để tăng tốc idle.
 Không lắc từng unit ngẫu nhiên hoặc đổi pose writer khi đã vào đội hình.
+M2 Raider Bomber giữ làn giữa, slot offset y = .13 thay .19; cách hàng Scout phía
+trên .15 viewport trước idle motion `[TUNABLE]` để silhouette không chạm nhau.
+M2 Storm giữ 14 s và hai resource asteroid T2/T7; thêm một optional Supply T4,
+reuse `SupplyWindow`, không chờ pressure và không required `[TUNABLE]`. Bắn hạ eject
+Core từ nhánh còn upgrade + support theo [Supply policy](weapons-items-drops.md#supply-drone-và-supply-crate).
+
 Không thêm reinforcement chiếm lại anchor. M3 Pincer vẫn có optional Supply theo
 pressure window M5, không tạo kill gate mới.
 
