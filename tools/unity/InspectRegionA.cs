@@ -20,7 +20,7 @@ public static class InspectRegionA
    var it=new SerializedObject(c).GetIterator();while(it.NextVisible(true))if(it.propertyType==SerializedPropertyType.ObjectReference&&it.objectReferenceValue==null&&it.objectReferenceEntityIdValue!=default)references++;
   }
   if(missing!=0||references!=0)throw new InvalidOperationException("Missing scripts/references: "+missing+"/"+references);
-  var fixture=StarShift.Editor.RegionAAssetPaths.Load<LevelDefinition>("Assets/StarShift/Data/Fixtures/Levels/M4SystemTestbed.asset");
+  var fixture=StarShift.Editor.RegionAAssetPaths.Load<LevelDefinition>("Assets/StarShift/Data/Fixtures/Levels/EncounterSystemsFixture.asset");
   return new{pass=true,missions=levels.Length,encounters=levels.Sum(l=>l.Encounters.Length),missingScripts=missing,missingReferences=references,fixtureId=fixture.Id,fixtureEncounters=fixture.Encounters.Length,devMode=new SerializedObject(UnityEngine.Object.FindAnyObjectByType<StarShift.Dev.DevFastStart>()).FindProperty("devModeEnabled").boolValue};
  }
 }

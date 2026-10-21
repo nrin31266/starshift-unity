@@ -1,0 +1,777 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f1d586d44955cc0fa3b4b57b2d5444f, type: 3}
+  m_Name: Mission06Corridor
+  m_EditorClassIdentifier: Assembly-CSharp::StarShift.Encounters.EncounterDefinition
+  Id: ENCOUNTER_2
+  Completion: 2
+  CompleteWhenScheduleExhausted: 0
+  EntryBeats: []
+  EntryLeadSeconds: 0.5
+  TitleSeconds: 1.3
+  HazardStream: {fileID: 0}
+  ScoutPrefab: {fileID: 0}
+  Duration: 19
+  Groups:
+  - EntryBeat: 0
+    SpawnScale: 2.1
+    VisualSpin: 18
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 0
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 6
+    EntryAnchor: {x: 0.08, y: 1.15}
+    HoldAnchor: {x: 0.08, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 0
+    ExitAnchor: {x: 0.08, y: -0.2}
+    ExitDuration: 4.9
+  - EntryBeat: 0
+    SpawnScale: 1.5
+    VisualSpin: 18
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 0
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 4
+    EntryAnchor: {x: 0.248, y: 1.15}
+    HoldAnchor: {x: 0.248, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 0
+    ExitAnchor: {x: 0.248, y: -0.2}
+    ExitDuration: 4.9
+  - EntryBeat: 0
+    SpawnScale: 1.5
+    VisualSpin: 18
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 0
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 4
+    EntryAnchor: {x: 0.416, y: 1.15}
+    HoldAnchor: {x: 0.416, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 0
+    ExitAnchor: {x: 0.416, y: -0.2}
+    ExitDuration: 4.9
+  - EntryBeat: 0
+    SpawnScale: 2.1
+    VisualSpin: -18
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 3.6
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 6
+    EntryAnchor: {x: 0.08, y: 1.15}
+    HoldAnchor: {x: 0.08, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 0
+    ExitAnchor: {x: 0.08, y: -0.2}
+    ExitDuration: 4.9
+  - EntryBeat: 0
+    SpawnScale: 1.5
+    VisualSpin: -18
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 3.6
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 4
+    EntryAnchor: {x: 0.248, y: 1.15}
+    HoldAnchor: {x: 0.248, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 0
+    ExitAnchor: {x: 0.248, y: -0.2}
+    ExitDuration: 4.9
+  - EntryBeat: 0
+    SpawnScale: 1.5
+    VisualSpin: -18
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 3.6
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 4
+    EntryAnchor: {x: 0.752, y: 1.15}
+    HoldAnchor: {x: 0.752, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 0
+    ExitAnchor: {x: 0.752, y: -0.2}
+    ExitDuration: 4.9
+  - EntryBeat: 0
+    SpawnScale: 2.1
+    VisualSpin: -18
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 3.6
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 6
+    EntryAnchor: {x: 0.91999996, y: 1.15}
+    HoldAnchor: {x: 0.91999996, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 0
+    ExitAnchor: {x: 0.91999996, y: -0.2}
+    ExitDuration: 4.9
+  - EntryBeat: 0
+    SpawnScale: 1.5
+    VisualSpin: 18
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 7.2
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 4
+    EntryAnchor: {x: 0.584, y: 1.15}
+    HoldAnchor: {x: 0.584, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 0
+    ExitAnchor: {x: 0.584, y: -0.2}
+    ExitDuration: 4.9
+  - EntryBeat: 0
+    SpawnScale: 1.5
+    VisualSpin: 18
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 7.2
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 4
+    EntryAnchor: {x: 0.752, y: 1.15}
+    HoldAnchor: {x: 0.752, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 0
+    ExitAnchor: {x: 0.752, y: -0.2}
+    ExitDuration: 4.9
+  - EntryBeat: 0
+    SpawnScale: 2.1
+    VisualSpin: 18
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 7.2
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 6
+    EntryAnchor: {x: 0.91999996, y: 1.15}
+    HoldAnchor: {x: 0.91999996, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 0
+    ExitAnchor: {x: 0.91999996, y: -0.2}
+    ExitDuration: 4.9
+  - EntryBeat: 0
+    SpawnScale: 2.1
+    VisualSpin: -18
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 10.799999
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 6
+    EntryAnchor: {x: 0.08, y: 1.15}
+    HoldAnchor: {x: 0.08, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 0
+    ExitAnchor: {x: 0.08, y: -0.2}
+    ExitDuration: 4.9
+  - EntryBeat: 0
+    SpawnScale: 1.5
+    VisualSpin: -18
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 10.799999
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 4
+    EntryAnchor: {x: 0.248, y: 1.15}
+    HoldAnchor: {x: 0.248, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 0
+    ExitAnchor: {x: 0.248, y: -0.2}
+    ExitDuration: 4.9
+  - EntryBeat: 0
+    SpawnScale: 1.5
+    VisualSpin: -18
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 10.799999
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 4
+    EntryAnchor: {x: 0.752, y: 1.15}
+    HoldAnchor: {x: 0.752, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 0
+    ExitAnchor: {x: 0.752, y: -0.2}
+    ExitDuration: 4.9
+  - EntryBeat: 0
+    SpawnScale: 2.1
+    VisualSpin: -18
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 10.799999
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 6
+    EntryAnchor: {x: 0.91999996, y: 1.15}
+    HoldAnchor: {x: 0.91999996, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 0
+    ExitAnchor: {x: 0.91999996, y: -0.2}
+    ExitDuration: 4.9
+  - EntryBeat: 0
+    SpawnScale: 2.1
+    VisualSpin: 18
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 14.4
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 6
+    EntryAnchor: {x: 0.08, y: 1.15}
+    HoldAnchor: {x: 0.08, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 0
+    ExitAnchor: {x: 0.08, y: -0.2}
+    ExitDuration: 4.9
+  - EntryBeat: 0
+    SpawnScale: 1.5
+    VisualSpin: 18
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 14.4
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 4
+    EntryAnchor: {x: 0.248, y: 1.15}
+    HoldAnchor: {x: 0.248, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 0
+    ExitAnchor: {x: 0.248, y: -0.2}
+    ExitDuration: 4.9
+  - EntryBeat: 0
+    SpawnScale: 1.5
+    VisualSpin: 18
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 14.4
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 4
+    EntryAnchor: {x: 0.416, y: 1.15}
+    HoldAnchor: {x: 0.416, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 0
+    ExitAnchor: {x: 0.416, y: -0.2}
+    ExitDuration: 4.9
+  - EntryBeat: 0
+    SpawnScale: 0.7
+    VisualSpin: 35
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 1.3
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 1
+    EntryAnchor: {x: 0.08, y: 1.15}
+    HoldAnchor: {x: 0.08, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1
+    HoldDuration: 0
+    ExitAnchor: {x: 0.08, y: -0.2}
+    ExitDuration: 3.8
+  - EntryBeat: 0
+    SpawnScale: 0.7
+    VisualSpin: 35
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 4.8999996
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 1
+    EntryAnchor: {x: 0.08, y: 1.15}
+    HoldAnchor: {x: 0.08, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1
+    HoldDuration: 0
+    ExitAnchor: {x: 0.08, y: -0.2}
+    ExitDuration: 3.8
+  - EntryBeat: 0
+    SpawnScale: 1.05
+    VisualSpin: 35
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 4.8999996
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 2
+    EntryAnchor: {x: 0.92, y: 1.15}
+    HoldAnchor: {x: 0.92, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1
+    HoldDuration: 0
+    ExitAnchor: {x: 0.92, y: -0.2}
+    ExitDuration: 3.8
+  - EntryBeat: 0
+    SpawnScale: 1.05
+    VisualSpin: 35
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 8.5
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 2
+    EntryAnchor: {x: 0.92, y: 1.15}
+    HoldAnchor: {x: 0.92, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1
+    HoldDuration: 0
+    ExitAnchor: {x: 0.92, y: -0.2}
+    ExitDuration: 3.8
+  - EntryBeat: 0
+    SpawnScale: 0.7
+    VisualSpin: 35
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 12.099999
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 1
+    EntryAnchor: {x: 0.08, y: 1.15}
+    HoldAnchor: {x: 0.08, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1
+    HoldDuration: 0
+    ExitAnchor: {x: 0.08, y: -0.2}
+    ExitDuration: 3.8
+  - EntryBeat: 0
+    SpawnScale: 1.05
+    VisualSpin: 35
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 12.099999
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 2
+    EntryAnchor: {x: 0.92, y: 1.15}
+    HoldAnchor: {x: 0.92, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1
+    HoldDuration: 0
+    ExitAnchor: {x: 0.92, y: -0.2}
+    ExitDuration: 3.8
+  - EntryBeat: 0
+    SpawnScale: 0.7
+    VisualSpin: 35
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 15.7
+    Stagger: 0
+    EnemyPrefab: {fileID: 5862653447010771224, guid: 0cec35dbdcc89f716819bb1323e481e1, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 0}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 1
+    EntryAnchor: {x: 0.08, y: 1.15}
+    HoldAnchor: {x: 0.08, y: 1.15}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1
+    HoldDuration: 0
+    ExitAnchor: {x: 0.08, y: -0.2}
+    ExitDuration: 3.8
+  - EntryBeat: 0
+    SpawnScale: 0.85
+    VisualSpin: 0
+    ContinuousTransit: 1
+    Count: 1
+    StartTime: 7.6
+    Stagger: 0.35
+    EnemyPrefab: {fileID: 1863935525804757048, guid: cef18b7c2480ba7b083fc4938730cfcb, type: 3}
+    EnemyDefinition: {fileID: 0}
+    RewardOverride: {fileID: 11400000, guid: 4bef1defd37ed76e2a3bcb1144caff3f, type: 2}
+    Elite: {fileID: 0}
+    Required: 0
+    GrantsRewards: 1
+    Formation: 0
+    Anchor: {x: 0, y: 0}
+    SlotStep: {x: 0.18, y: 0}
+    FormationRise: 0
+    Sequence: {fileID: 0}
+    Plan: {fileID: 0}
+    FirstSlot: 0
+    HpOverride: 0
+    EntryAnchor: {x: 0.14, y: 1.16}
+    HoldAnchor: {x: 0.14, y: 1.16}
+    EntryCurve: {x: 0, y: 0}
+    EntryDuration: 1.2
+    HoldDuration: 0
+    ExitAnchor: {x: 0.14, y: -0.2}
+    ExitDuration: 4.9
+  OptionalEvents:
+  - Id: SUPPLY
+    Kind: 0
+    TimeOffset: 9
+    Condition: 0
+    UsePressureWindow: 0
+    MaximumActiveEnemies: 2
+    FallbackTime: 12
+    Group:
+      EntryBeat: 0
+      SpawnScale: 1
+      VisualSpin: 0
+      ContinuousTransit: 0
+      Count: 1
+      StartTime: 0
+      Stagger: 0
+      EnemyPrefab: {fileID: 2027060936374800042, guid: 837e4d72d27b32aada7e68b065e5c13a, type: 3}
+      EnemyDefinition: {fileID: 0}
+      RewardOverride: {fileID: 11400000, guid: f22d75d4b02bcfa0b85bbd87d7a2c4af, type: 2}
+      Elite: {fileID: 0}
+      Required: 0
+      GrantsRewards: 1
+      Formation: 0
+      Anchor: {x: 0, y: 0}
+      SlotStep: {x: 0.18, y: 0}
+      FormationRise: 0
+      Sequence: {fileID: 11400000, guid: 0c575817612b154f89f66828dae0ee54, type: 2}
+      Plan: {fileID: 0}
+      FirstSlot: 0
+      HpOverride: 0
+      EntryAnchor: {x: 0.5, y: 1.12}
+      HoldAnchor: {x: 0.5, y: 0.78}
+      EntryCurve: {x: 0, y: 0}
+      EntryDuration: 1.2
+      HoldDuration: 3
+      ExitAnchor: {x: 1.18, y: 0.3}
+      ExitDuration: 3
+  CameraOverride: {fileID: 11400000, guid: e50231e09d513794aa5b9527be11071a, type: 2}
+  GuaranteedMajorCount: 0
+  GuaranteeTable: {fileID: 11400000, guid: 3f21893fa1f0805d69ff96a39947511f, type: 2}
+  ActiveShooterLimit: 1
+  ShotSpacing: 0.5
+  ShotsPerVolley: 2
+  VolleyPause: 3
+  ClearPauseSeconds: 0.7
+  HandoffTravelSeconds: 0.85
+  HandoffDelay: 2
+  ProjectileGraceSeconds: 0.45
+  ProjectileFadeSeconds: 0.25
+  TransitionTitle: 
+  TransitionDescription: 
+  RewardGraceSeconds: 2.5
+  BossPostDeathSeconds: 1

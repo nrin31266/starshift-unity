@@ -11,7 +11,7 @@ namespace StarShift.Gameplay
     [DisallowMultipleComponent]
     public sealed class LevelFlow : MonoBehaviour
     {
-        [SerializeField, Tooltip("Level đang chạy. Production dùng Data/RegionA/Missions/Mission01; Data/Fixtures/Levels/M4SystemTestbed chỉ là M4 fixture.")] private LevelDefinition level;
+        [SerializeField, Tooltip("Level đang chạy. Production dùng Data/RegionA/Missions/Mission01; Data/Fixtures/Levels/EncounterSystemsFixture chỉ phục vụ kiểm thử encounter.")] private LevelDefinition level;
         [SerializeField] private GameplayViewController view;
         [SerializeField] private PlayerGameplayGate player;
         [SerializeField] private EnemyFireGate enemyFireGate;

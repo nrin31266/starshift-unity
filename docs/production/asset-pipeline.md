@@ -4,6 +4,15 @@
 
 Owner của asset sources, generation/import/slicing/naming/licensing/tooling và reproducibility. Visual target do [art direction](../presentation/art-direction.md) quyết; feedback do [audio/VFX](../presentation/audio-vfx.md) quyết.
 
+## Content asset filenames
+
+Production data dùng `MissionNN` khi tên cần chỉ nhiệm vụ, ví dụ
+`Mission08Fortress.asset`; không dùng mã phase/task như `M8` trong filename.
+Shared flight assets dùng vai trò như `FormationHold`, `SupplyFlyby`; fixture nằm
+trong `Data/Fixtures` và có tên rõ như `EncounterSystemsFixture`. Đổi tên qua
+Unity AssetDatabase, giữ `.meta`/GUID và stable gameplay/save IDs. Historical phase
+labels trong docs và offline verification tools không là runtime content names.
+
 ## Canonical production workflow
 
 `Gameplay placeholder` → `Visual reference pack` → `Style approval`

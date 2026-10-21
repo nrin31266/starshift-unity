@@ -480,7 +480,7 @@ Encounter B — `Timeline`
 
 #### M4-A Mission 01 system testbed `[PROVISIONAL]`
 
-Fixture lịch sử M4 giữ tại `Data/Fixtures/Levels/M4SystemTestbed.asset`, ID `M4_FIXTURE`; không còn là
+Fixture lịch sử M4 giữ tại `Data/Fixtures/Levels/EncounterSystemsFixture.asset`, ID `M4_FIXTURE`; không còn là
 campaign production. L1 production nằm tại `Data/RegionA/Missions/Mission01.asset`. M3
 data-driven foundation tiếp tục sở hữu mọi schedule/path/completion.
 

@@ -638,7 +638,7 @@ public static class VerifyM4Testbed
             Require(Application.isPlaying, "Play Mode required.");
             Session.enabled = false; Runner.StopRun(); Time.timeScale = 1; AudioListener.pause = false; Session.enabled = true;
             previousLevel = Runner.Flow.Level;
-            Runner.Flow.LoadLevel(AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Fixtures/Levels/M4SystemTestbed.asset"));
+            Runner.Flow.LoadLevel(AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Fixtures/Levels/EncounterSystemsFixture.asset"));
             Gate = Player.GetComponent<PlayerGameplayGate>(); Lives = Player.GetComponent<PlayerLives>(); Input = Player.GetComponent<InputSystemPointerInput>();
             var life = Player.GetComponent<PlayerDamageLifecycle>(); life.enabled = false; life.enabled = true;
             Place(new Vector2(0, -3.8f)); Protect();

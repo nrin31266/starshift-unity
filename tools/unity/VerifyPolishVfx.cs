@@ -125,7 +125,7 @@ public static class VerifyPolishVfx
         var oldLevel=runner.Flow.Level;var original=save.SavePath;
         var bytes=new[]{"",".bak",".invalid"}.ToDictionary(s=>s,s=>File.Exists(original+s)?File.ReadAllBytes(original+s):null);
         var temp=Path.Combine(Path.GetTempPath(),"starshift-death-"+Guid.NewGuid().ToString("N"),"save.json");
-        var level=UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Fixtures/Levels/M4SystemTestbed.asset"));
+        var level=UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Fixtures/Levels/EncounterSystemsFixture.asset"));
         var encounter=UnityEngine.Object.Instantiate(level.Encounters[0]);level.Encounters=new[]{encounter};level.AdditionalStarts=Array.Empty<LevelStartPoint>();
         encounter.Completion=EncounterCompletion.Eliminate;encounter.EntryLeadSeconds=0;encounter.OptionalEvents=Array.Empty<OptionalEvent>();encounter.EntryBeats=Array.Empty<EntryBeatRule>();
         var player=UnityEngine.Object.FindAnyObjectByType<PlayerDamageLifecycle>();var pointer=player.GetComponent<InputSystemPointerInput>();bool oldPointer=pointer.enabled,oldDamage=player.enabled;

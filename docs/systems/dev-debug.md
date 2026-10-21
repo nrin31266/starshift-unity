@@ -5,6 +5,15 @@ migration một lần và ba probe dư; lệnh hiện dùng theo
 [Unity tools](../../tools/unity/README.md). Không chạy lại builder từ Git history
 lên tuning hiện tại.
 
+## Content filename cleanup — 2026-10-21
+
+100 content assets được rename qua Unity, giữ GUID và serialized data ngoài object
+name. Production Mission 01–08, shared flights và encounter fixture theo
+[naming policy](../production/asset-pipeline.md#content-asset-filenames).
+Native validation toàn bộ LevelDefinitions PASS, compile và persistence Core PASS;
+không đổi mission/encounter IDs, seed, gameplay values hoặc save schema.
+Migration script một lần đã bỏ; paths trong probes/docs đang dùng được cập nhật.
+
 ## Fixed clear pause grouped verification — 2026-10-19
 
 User điều chỉnh khoảng nghỉ cố định mặc định thành 1.0 s đứng im hoàn toàn sau khi xong địch (bắn hạ, tên lửa, hoặc tàu tự rời đi), rồi mới bay cuộn nhẹ 1.5 s chuyển sang encounter tiếp theo.
@@ -1370,7 +1379,7 @@ measurements trước khi giảm HP; không coi chúng là số đo tuning hiệ
 
 Scene production: `02_Gameplay → L1Encounters → LevelFlow → Level` trỏ tới
 `Data/RegionA/Missions/Mission01.asset`. Trong asset đó, mở **Intro → Enabled** và bỏ chọn để
-bỏ establishing intro khi Play từ `LEVEL_START`. `Data/Fixtures/Levels/M4SystemTestbed.asset`, ID
+bỏ establishing intro khi Play từ `LEVEL_START`. `Data/Fixtures/Levels/EncounterSystemsFixture.asset`, ID
 `M4_FIXTURE`, chỉ điều khiển system testbed, không điều khiển production Mission01.
 Tooltip trên LevelFlow/Level và Intro/Enabled nhắc rõ ranh giới này.
 

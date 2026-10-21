@@ -124,7 +124,7 @@ public static class VerifyPersistence
     static LevelDefinition LegacyLevel()
     {
         if (legacyLevel != null) return legacyLevel;
-        legacyLevel = UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Fixtures/Levels/M4SystemTestbed.asset"));
+        legacyLevel = UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Fixtures/Levels/EncounterSystemsFixture.asset"));
         legacyLevel.Id = "L1"; legacyLevel.hideFlags = HideFlags.DontSave; return legacyLevel;
     }
     static string UseFixture(int index)

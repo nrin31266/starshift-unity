@@ -69,7 +69,7 @@ public static class VerifyVerticalSlice
         var level=Runner.Flow.Level;
         try
         {
-            save.UseTestStorage(temp);shell.Boot();Runner.Flow.LoadLevel(AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Fixtures/Levels/M4SystemTestbed.asset"));
+            save.UseTestStorage(temp);shell.Boot();Runner.Flow.LoadLevel(AssetDatabase.LoadAssetAtPath<LevelDefinition>("Assets/StarShift/Data/Fixtures/Levels/EncounterSystemsFixture.asset"));
             var result=await MinorProjectileCleanup();
             System.IO.File.WriteAllText("../.design/presentation-polish/projectile-drain.json",Newtonsoft.Json.JsonConvert.SerializeObject(result,Newtonsoft.Json.Formatting.Indented));return result;
         }
