@@ -142,10 +142,36 @@ namespace StarShift.Editor
             { "showContentLabels", "Hiện nhãn nội dung" },
         };
 
+        private static readonly Dictionary<string, string> Hints = new Dictionary<string, string>(System.StringComparer.OrdinalIgnoreCase)
+        {
+            { "Completion", "Eliminate = hạ các mục tiêu bắt buộc; Timeline = đợt theo lịch; Survive = sống sót đủ thời gian; Boss = đợt trùm. Điều kiện chi tiết do EncounterRunner xử lý." },
+            { "Formation", "Line = hàng ngang; Column = hàng dọc; V = chữ V; Wedge = mũi nêm; Ring = vòng tròn. Nếu có Plan, vị trí trong Plan được ưu tiên." },
+            { "Plan", "Danh sách vị trí của các địch trong đội hình. Khi được gán, dùng các vị trí này thay cho công thức Formation." },
+            { "Sequence", "Tài nguyên mô tả lần lượt các bước bay: vào màn hình, di chuyển, giữ vị trí, giao chiến và rời màn hình." },
+            { "Required", "Đánh dấu mục tiêu phải xử lý để hoàn thành các đợt yêu cầu tiêu diệt. Không có nghĩa địch nào cũng bắt buộc ở mọi chế độ." },
+            { "Stagger", "Khoảng chờ giữa hai địch trong cùng nhóm. Ví dụ 0.3: các địch xuất hiện cách nhau 0.3 giây." },
+            { "HpOverride", "0: lấy máu từ cấu hình địch. Lớn hơn 0: dùng máu riêng cho nhóm; hệ số của biến thể tinh nhuệ vẫn có thể áp dụng." },
+            { "ActiveShooterLimit", "Giới hạn số địch được phối hợp bắn đồng thời; không phải giới hạn tổng số địch xuất hiện." },
+            { "GuaranteedMajorByKill", "Mốc hạ địch hợp lệ muộn nhất cho vật phẩm lớn bảo đảm đầu tiên. 0: dùng cách chọn seeded thông thường; còn phụ thuộc cấu hình bảo đảm." },
+            { "fireInterval", "Thời gian chờ giữa hai loạt bắn. Số nhỏ hơn thì bắn nhanh hơn; ví dụ 0.2 giây tương đương khoảng 5 loạt mỗi giây." },
+            { "SplashRadius", "Vùng gây sát thương lan quanh mục tiêu trúng đạn. 0: không gây sát thương lan." },
+            { "projectileScale", "Chỉ thay kích thước hình viên đạn; không tự thay kích thước vùng va chạm." },
+            { "footprintSize", "Kích thước dùng để giữ toàn bộ tàu trong vùng chơi. Không phải vùng nhận sát thương của tàu." },
+            { "sensitivity", "1: tàu đi theo cùng số pixel được kéo. Tăng để tàu đi xa hơn với cùng một đoạn kéo." },
+            { "telegraphDuration", "Thời gian địch báo trước đòn đánh để người chơi có cơ hội né; không phải thời gian đạn bay." },
+            { "cooldown", "Khoảng nghỉ để địch chuẩn bị đòn tiếp theo; khác với thời gian báo đòn." },
+            { "rewardSeed", "Cùng mã và cùng chuỗi xử lý ngẫu nhiên giúp tái hiện kết quả vật phẩm khi thử lỗi. Không phải xác suất rơi vật phẩm." },
+            { "invincibilityDuration", "Sau khi tàu bay vào lại, tạm chặn sát thương nhưng vẫn cho điều khiển và bắn." },
+            { "enemyFireGrace", "Sau hồi sinh, địch chờ trước khi được bắn đòn mới. Đây là thời gian riêng, khác với thời gian tàu bất tử." },
+            { "capacity", "Nhiệt chạm mức này sẽ khóa bắn. Tàu vẫn di chuyển; súng mở lại sau khi nguội về 0." },
+            { "branch", "Pulse = súng xung; Plasma = súng xòe; Homing = tên lửa bám địch." },
+            { "projectileLifetime", "Đạn hết thời gian này sẽ kết thúc và được thu hồi. Thời gian sống dài hơn không làm đạn bay nhanh hơn." },
+        };
+
         internal static GUIContent Label(SerializedProperty property)
         {
             var text = Fields.TryGetValue(property.name, out var translated) ? translated : property.displayName;
-            string hint = property.tooltip;
+            string hint = Hints.TryGetValue(property.name, out var explanation) ? explanation + "\n" + property.tooltip : property.tooltip;
             if (property.serializedObject.targetObject is PulseLaserDefinition && property.depth == 0 &&
                 (property.name == "fireInterval" || property.name == "damage"))
             {

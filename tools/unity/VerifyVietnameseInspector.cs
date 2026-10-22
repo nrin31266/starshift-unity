@@ -5,6 +5,7 @@ public static class VerifyVietnameseInspector
 {
     public static object Edit()
     {
+        bool sceneWasDirty = UnityEngine.SceneManagement.SceneManager.GetActiveScene().isDirty;
         var editorAssembly = typeof(StarShift.Editor.DevFastStartEditor).Assembly;
         var labels = editorAssembly.GetType("StarShift.Editor.VietnameseInspectorLabels");
         var labelMethod = labels.GetMethod("Label", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
@@ -46,7 +47,7 @@ public static class VerifyVietnameseInspector
             if (clone.HeatPerSecond != original + 1) throw new System.Exception("Serialized editing broken");
         }
         finally { UnityEngine.Object.DestroyImmediate(clone); }
-        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().isDirty) throw new System.Exception("Scene dirty");
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().isDirty != sceneWasDirty) throw new System.Exception("Scene dirty state changed");
 
         var weaponAsset = UnityEditor.AssetDatabase.LoadMainAssetAtPath("Assets/StarShift/Data/Weapons/PulseLaser.asset");
         var weaponSo = new UnityEditor.SerializedObject(weaponAsset);
@@ -64,6 +65,11 @@ public static class VerifyVietnameseInspector
             if (UnityEditor.AssetDatabase.LoadMainAssetAtPath("Assets/StarShift/" + relativePath) == null) throw new System.Exception("Broken lookup link");
         UnityEditor.Selection.activeObject = weaponAsset;
         UnityEditor.EditorApplication.RepaintProjectWindow();
+        var splashLabel = (UnityEngine.GUIContent)labelMethod.Invoke(null, new object[] { weaponSo.FindProperty("levels").GetArrayElementAtIndex(0).FindPropertyRelative("SplashRadius") });
+        if (!splashLabel.tooltip.Contains("0: không gây sát thương lan")) throw new System.Exception("Splash tooltip missing");
+        var encounter = new UnityEditor.SerializedObject(UnityEditor.AssetDatabase.LoadMainAssetAtPath("Assets/StarShift/Data/RegionA/Encounters/Mission01Foundation.asset"));
+        var completionLabel = (UnityEngine.GUIContent)labelMethod.Invoke(null, new object[] { encounter.FindProperty("Completion") });
+        if (!completionLabel.tooltip.Contains("Survive = sống sót")) throw new System.Exception("Completion glossary missing");
         var cameraAsset = UnityEditor.AssetDatabase.LoadAssetAtPath<StarShift.Gameplay.CameraProfile>("Assets/StarShift/Data/Cameras/Normal.asset");
         var cameraSo = new UnityEditor.SerializedObject(cameraAsset);
         var drawer = new StarShift.Editor.GameplayViewSettingsDrawer();
