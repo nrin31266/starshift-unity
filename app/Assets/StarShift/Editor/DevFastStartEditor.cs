@@ -13,7 +13,6 @@ namespace StarShift.Editor
     public sealed class DevFastStartEditor : UnityEditor.Editor
     {
         private bool advanced;
-        private bool showReference;
 
         internal static List<KeyValuePair<string, string>> Routes(LevelDefinition level, bool hasNext)
         {
@@ -34,7 +33,6 @@ namespace StarShift.Editor
         {
             serializedObject.Update();
             var dev = (DevFastStart)target;
-            VietnameseInspectorReference.Draw(ref showReference);
             EditorGUILayout.HelpBox("DevTest tách CampaignSave/Profile. Tắt chế độ thử nghiệm để Play vào Menu bình thường.", MessageType.Info);
             VietnameseInspectorLabels.Field(serializedObject.FindProperty("devModeEnabled"));
             VietnameseInspectorLabels.Field(serializedObject.FindProperty("startLevel"));

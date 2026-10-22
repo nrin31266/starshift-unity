@@ -185,61 +185,8 @@ namespace StarShift.Editor
             => EditorGUILayout.PropertyField(property, Label(property), true);
     }
 
-    internal static class VietnameseInspectorReference
-    {
-        internal static void Draw(ref bool expanded)
-        {
-            expanded = EditorGUILayout.Foldout(expanded, "Tra cứu nhanh: cô hỏi gì → tìm ở đâu", true);
-            if (!expanded) return;
-            EditorGUILayout.HelpBox("Hierarchy: đối tượng đang có trong scene. Project: tài nguyên gốc. Inspector: component và thông số.\n" +
-                "Prefab = mẫu đối tượng; Definition/Profile = cấu hình; HP = máu; Collider/Hitbox = vùng va chạm; " +
-                "Pool = tái sử dụng đối tượng; Seed = mã để tái hiện ngẫu nhiên.\n" +
-                "Muốn xem thuật toán: mở trường Script. Muốn xem cấu hình được liên kết: bấm tên asset ở ô tham chiếu.\n" +
-                "Các nút dưới chỉ chọn đối tượng hoặc tài nguyên, không bật chế độ dev và không đổi thông số.", MessageType.Info);
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                SceneButton("Tàu: kéo / bắn / hồi sinh", "Player");
-                SceneButton("Dev: chọn màn / boss", "EncounterSystems");
-            }
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                AssetButton("Súng: cấp / sát thương", "Data/Weapons/PulseLaser.asset");
-                AssetButton("Nhiệt: nóng / nguội", "Data/Weapons/PulseLaserThermal.asset");
-            }
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                AssetButton("Địch: máu / điểm", "Data/Enemies/Scout.asset");
-                AssetButton("Đợt: số địch / lịch sinh", "Data/RegionA/Encounters/Mission01Foundation.asset");
-            }
-            if (GUILayout.Button("Đạn: mẫu đối tượng / vùng va chạm"))
-                Select(AssetDatabase.LoadMainAssetAtPath("Assets/StarShift/Prefabs/Projectiles/PlayerPulseProjectile.prefab"));
-        }
-
-        private static void AssetButton(string label, string path)
-        {
-            if (GUILayout.Button(label)) Select(AssetDatabase.LoadMainAssetAtPath("Assets/StarShift/" + path));
-        }
-
-        private static void SceneButton(string label, string name)
-        {
-            if (!GUILayout.Button(label)) return;
-            var obj = GameObject.Find(name);
-            if (obj != null) Select(obj);
-            else Debug.LogWarning("Không tìm thấy " + name + "; hãy mở scene 02_Gameplay.");
-        }
-
-        private static void Select(Object obj)
-        {
-            if (obj == null) return;
-            Selection.activeObject = obj;
-            EditorGUIUtility.PingObject(obj);
-        }
-    }
-
     public abstract class VietnameseInspector : UnityEditor.Editor
     {
-        private bool showReference;
-
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
@@ -252,7 +199,6 @@ namespace StarShift.Editor
                 EditorGUILayout.HelpBox("Asset này chứa cấu hình toàn bộ cấp súng xung. " +
                     "Mỗi mục Cấp 1, Cấp 2… bên dưới là một cấp súng. Pulse = xung; Plasma = xòe; Homing = bám đích. " +
                     "Tốc độ bắn và sát thương ưu tiên cấu hình từng cấp; hai ô dự phòng ở cuối chỉ dùng khi cấp đó chưa có cấu hình.", MessageType.Info);
-            VietnameseInspectorReference.Draw(ref showReference);
             var property = serializedObject.GetIterator();
             bool enterChildren = true;
             while (property.NextVisible(enterChildren))
