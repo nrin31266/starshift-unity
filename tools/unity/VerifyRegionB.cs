@@ -613,7 +613,7 @@ public static class VerifyRegionB
                     var replacement=Field<EnemyHealth>(probe,"trackingTarget");replacement.ReceivePlayerHit(replacement.CurrentHp,rig.Player);await Task.Delay(60);
                     Check(Field<EnemyHealth>(probe,"trackingTarget")!=replacement,"Dead target was followed");
                     probe.ResetForPool();Check(Field<float>(probe,"launchRemaining")==0&&Field<float>(probe,"launchTurnRate")==0,"Pooled arc state leaked");
-                    var pulse=AssetDatabase.LoadAssetAtPath<PulseLaserDefinition>("Assets/StarShift/Data/Weapons/PulseLaserLv1.asset");
+                    var pulse=AssetDatabase.LoadAssetAtPath<PulseLaserDefinition>("Assets/StarShift/Data/Weapons/PulseLaser.asset");
                     Check(pulse!=null,"Pulse fixture missing");probe.Launch(pulse,At(.5f,.17f),PlayDirectionSpace.Offset(Vector2.up,Runner.Flow.Direction),1,0,rig.Player,p=>p.ResetForPool());
                     Check(Field<EnemyHealth>(probe,"trackingTarget")==null&&Field<float>(probe,"launchRemaining")==0,"Homing state leaked into Pulse");
                 }

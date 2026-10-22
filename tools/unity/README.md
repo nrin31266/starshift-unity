@@ -11,6 +11,8 @@ Play và foldout camera/hướng/seed. Saved Dev Mode và mọi flag EncounterDe
 mặc định OFF. Mission04 TRANSITION chạy handoff Astra→Crimson thật; DevTest tách save.
 
 `VerifyDevTools.Edit` kiểm 48 route trên tám mission trong Edit Mode.
+`VerifyVietnameseInspector.Edit` kiểm nhãn, cấp súng, đường dẫn tra cứu và trường
+camera nhập trễ trong Edit Mode; không sửa asset gốc hoặc chạy gameplay.
 `VerifyM8ProductionLayout.Edit` kiểm importer/frame count và prefab proxy.
 `InspectM8Production.References` kiểm serialized references; `.FinalState` kiểm
 Edit Mode, scene sạch, dev/debug OFF. `.Contracts` xuất collider/gameplay snapshot

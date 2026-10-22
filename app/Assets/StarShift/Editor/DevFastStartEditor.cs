@@ -13,6 +13,7 @@ namespace StarShift.Editor
     public sealed class DevFastStartEditor : UnityEditor.Editor
     {
         private bool advanced;
+        private bool showReference;
 
         internal static List<KeyValuePair<string, string>> Routes(LevelDefinition level, bool hasNext)
         {
@@ -33,9 +34,10 @@ namespace StarShift.Editor
         {
             serializedObject.Update();
             var dev = (DevFastStart)target;
-            EditorGUILayout.HelpBox("DevTest tách CampaignSave/Profile. Tắt Dev Mode để Play vào Menu bình thường.", MessageType.Info);
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("devModeEnabled"));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("startLevel"));
+            VietnameseInspectorReference.Draw(ref showReference);
+            EditorGUILayout.HelpBox("DevTest tách CampaignSave/Profile. Tắt chế độ thử nghiệm để Play vào Menu bình thường.", MessageType.Info);
+            VietnameseInspectorLabels.Field(serializedObject.FindProperty("devModeEnabled"));
+            VietnameseInspectorLabels.Field(serializedObject.FindProperty("startLevel"));
             var level = (LevelDefinition)serializedObject.FindProperty("startLevel").objectReferenceValue;
             if (level == null) level = dev.GetComponent<LevelFlow>()?.Level;
             var missions = dev.GetComponent<RegionCampaignFlow>()?.Missions;
@@ -50,20 +52,20 @@ namespace StarShift.Editor
                 selected = 0;
             }
             EditorGUI.BeginChangeCheck();
-            int next = EditorGUILayout.Popup("Start Point", selected, routes.Select(p => p.Value).ToArray());
+            int next = EditorGUILayout.Popup("Điểm bắt đầu", selected, routes.Select(p => p.Value).ToArray());
             if (EditorGUI.EndChangeCheck()) property.stringValue = routes[next].Key;
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("standalone"));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("skipIntro"));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("startingWeaponLevel"));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("unlockAllWeapons"));
-            advanced = EditorGUILayout.Foldout(advanced, "Camera / hướng / reward seed", true);
+            VietnameseInspectorLabels.Field(serializedObject.FindProperty("standalone"));
+            VietnameseInspectorLabels.Field(serializedObject.FindProperty("skipIntro"));
+            VietnameseInspectorLabels.Field(serializedObject.FindProperty("startingWeaponLevel"));
+            VietnameseInspectorLabels.Field(serializedObject.FindProperty("unlockAllWeapons"));
+            advanced = EditorGUILayout.Foldout(advanced, "Nâng cao: camera / hướng / ngẫu nhiên", true);
             if (advanced)
             {
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("overrideDirection"));
-                if (serializedObject.FindProperty("overrideDirection").boolValue) EditorGUILayout.PropertyField(serializedObject.FindProperty("direction"));
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("cameraOverride"));
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("deterministicRewards"));
-                if (serializedObject.FindProperty("deterministicRewards").boolValue) EditorGUILayout.PropertyField(serializedObject.FindProperty("rewardSeed"));
+                VietnameseInspectorLabels.Field(serializedObject.FindProperty("overrideDirection"));
+                if (serializedObject.FindProperty("overrideDirection").boolValue) VietnameseInspectorLabels.Field(serializedObject.FindProperty("direction"));
+                VietnameseInspectorLabels.Field(serializedObject.FindProperty("cameraOverride"));
+                VietnameseInspectorLabels.Field(serializedObject.FindProperty("deterministicRewards"));
+                if (serializedObject.FindProperty("deterministicRewards").boolValue) VietnameseInspectorLabels.Field(serializedObject.FindProperty("rewardSeed"));
             }
             serializedObject.ApplyModifiedProperties();
             var shell = dev.GetComponent<GameShell>();

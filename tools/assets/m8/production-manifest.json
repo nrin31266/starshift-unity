@@ -1111,7 +1111,7 @@
       "guid": "2c332e1ed1ff13f3a91895f93abdd45b",
       "sha256": "a67e4b8f004cff6987fc9bec3fde24afdda21e426086a3b3d026737ca197f452",
       "serialized_references": [
-        "app/Assets/StarShift/Data/Weapons/PulseLaserLv1.asset"
+        "app/Assets/StarShift/Data/Weapons/PulseLaser.asset"
       ]
     },
     {

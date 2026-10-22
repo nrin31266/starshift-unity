@@ -101,7 +101,7 @@ M2 Pulse Laser Lv1 seed `[TUNABLE]`, phục vụ VS-010/011 và chưa phải bal
 Pulse placeholder dùng capsule cyan có lõi sáng, branch visual scale (.25,.52) nhân base sprite; collider width
 .08 world units giữ hitbox rõ `[TUNABLE]`. Visual size không tự đổi damage hitbox.
 
-Static asset ở `app/Assets/StarShift/Data/Weapons/PulseLaserLv1.asset` giữ các seed
+Static asset ở `app/Assets/StarShift/Data/Weapons/PulseLaser.asset` giữ các seed
 và projectile prefab reference. Runtime snapshot damage/speed/lifetime khi launch;
 không mutate definition để giữ cooldown hoặc current projectile state.
 Continuous shooting bắn shot đầu ở physics step đầu tiên khi cả gate lẫn held
