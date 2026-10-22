@@ -1,3 +1,4 @@
+// RelativeDragMovement — Di chuyển tàu bằng độ kéo; đổi tọa độ màn hình sang thế giới và giới hạn vùng chơi.
 using UnityEngine;
 using StarShift.Gameplay;
 
@@ -16,6 +17,7 @@ namespace StarShift.Player
         private Camera movementCamera;
 
         [SerializeField, Min(0), Tooltip("1 = tàu dịch chuyển cùng số pixel với drag. Seed để test feel.")]
+        // Độ nhạy kéo: cùng độ lệch tay, giá trị lớn hơn làm tàu dịch chuyển xa hơn.
         private float sensitivity = 1f;
 
         private Rigidbody2D body;
@@ -23,6 +25,7 @@ namespace StarShift.Player
         private PlayerGameplayGate gameplayGate;
         private GameplayViewController gameplayView;
         private PlayerRespawnEntrance respawnEntrance;
+        // Gom độ kéo từ khung hình để bước vật lý dùng một lần, tránh mất input giữa các nhịp cập nhật.
         private Vector2 pendingPointerDelta;
         private Vector2 travelBias, appliedTravelBias;
         public Vector2 BoundaryPressure { get; private set; }
@@ -76,6 +79,7 @@ namespace StarShift.Player
             pendingPointerDelta += pointerInput.ReadDelta();
         }
 
+        // Áp dụng độ kéo ở bước vật lý; khi hồi sinh dùng vị trí đường bay thay cho input.
         private void FixedUpdate()
         {
             if (respawnEntrance != null && respawnEntrance.IsEntering)
@@ -95,6 +99,7 @@ namespace StarShift.Player
                 ResetInput();
                 return;
             }
+            // Quy đổi theo kích thước camera để cùng độ kéo trên màn hình giữ cảm giác tương đương khi đổi zoom.
             var worldHeight = 2f * movementCamera.orthographicSize;
             var horizontal = pendingPointerDelta.x / movementCamera.pixelWidth * worldHeight * movementCamera.aspect;
             var vertical = pendingPointerDelta.y / movementCamera.pixelHeight * worldHeight;
@@ -102,6 +107,7 @@ namespace StarShift.Player
             var biasDelta = travelBias - appliedTravelBias;
             appliedTravelBias = travelBias;
             var travelDelta = new Vector2(biasDelta.x * worldHeight * movementCamera.aspect, biasDelta.y * worldHeight);
+            // Tính vị trí muốn tới trước; ClampPosition bên dưới cắt phần vượt vùng thay vì cho tàu ra ngoài.
             var proposedPosition = body.position + (Vector2)worldDelta * sensitivity + travelDelta;
             body.position = movementBounds.isActiveAndEnabled
                 ? movementBounds.ClampPosition(proposedPosition, movementCamera, PlayableViewport)
@@ -122,9 +128,11 @@ namespace StarShift.Player
             pendingPointerDelta = Vector2.zero;
         }
 
+        // Lấy vùng đang cho phép từ camera; chỉ dùng toàn màn hình khi không có view controller.
         private Rect PlayableViewport => gameplayView != null
             ? gameplayView.CurrentPlayableViewport : new Rect(0, 0, 1, 1);
 
+        // Kẹp lại sau thay đổi camera/vùng bay trong khung hình, kể cả lúc không nhận input.
         private void LateUpdate()
         {
             if (body == null || movementCamera == null || !movementCamera.isActiveAndEnabled ||
@@ -135,6 +143,7 @@ namespace StarShift.Player
                 return;
             }
             // Framing có thể co trong render frame hoặc khi gate khóa input; movement vẫn là writer duy nhất.
+            // Vùng vừa co lại có thể bao ngoài vị trí cũ của tàu; cập nhật về vị trí hợp lệ ngay.
             var clamped = movementBounds.ClampPosition(body.position, movementCamera, PlayableViewport);
             if (clamped != body.position) body.position = clamped;
         }
@@ -152,6 +161,7 @@ namespace StarShift.Player
             return movementBounds.ClampPosition(movementCamera.ViewportToWorldPoint(
                 new Vector3(normalized.x, normalized.y, depth)), movementCamera, PlayableViewport);
         }
+        // Xóa vận tốc và input cũ trước khi đặt tàu về vị trí bắt đầu lại đợt.
         public void ResetForCheckpoint(PlayDirection direction)
         {
             travelBias = appliedTravelBias = Vector2.zero;

@@ -1,3 +1,4 @@
+// PlayerProjectile — Đạn người chơi; bay, bám mục tiêu, phát hiện va chạm và gửi sát thương cho mục tiêu.
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,12 +21,14 @@ namespace StarShift.Combat
         private float remainingLifetime;
         private int damage;
         private WeaponBranch branch;
+        // Cờ viên đạn đang hoạt động; khóa trước callback để một viên không xử lý hit lặp.
         private bool flying;
         private EnemyHealth trackingTarget;
         private float turnRate;
         private float trackingRange;
         private float launchRemaining;
         private float launchTurnRate;
+        // Tìm địch nhận được sát thương gần nhất ở phía trước, trong tầm và cùng scene.
         internal static EnemyHealth SelectTrackingTarget(Vector2 position, Vector2 forward, float range, Scene scene,
             List<EnemyHealth> assigned = null)
         {
@@ -45,7 +48,9 @@ namespace StarShift.Combat
             trackingTarget = SelectTrackingTarget(position, direction, trackingRange, gameObject.scene);
             trackingVersion = trackingTarget != null ? trackingTarget.SpawnVersion : 0;
         }
+        // Mã lần sinh của mục tiêu; tránh bám nhầm đối tượng đã được pool tái sử dụng.
         private int trackingVersion;
+        // Bán kính gây sát thương lan quanh mục tiêu trúng trực tiếp; 0 là không lan.
         private float splashRadius;
         private SpriteRenderer visual;
         private Vector3 normalVisualScale;
@@ -67,6 +72,7 @@ namespace StarShift.Combat
         public void Launch(PulseLaserDefinition definition, Transform muzzle, GameObject owner, Action<PlayerProjectile> release)
             => Launch(definition, muzzle.position, muzzle.up, definition.Damage, 0, owner, release);
 
+        // Khởi tạo mỗi lần bắn: gán hướng, sát thương, mục tiêu và đặt lại trạng thái vật lý/hình ảnh.
         public void Launch(PulseLaserDefinition definition, Vector3 position, Vector2 forward, int hitDamage,
             float splash, GameObject owner, Action<PlayerProjectile> release, EnemyHealth preferredTarget = null,
             float launchLane = 0)
@@ -112,6 +118,7 @@ namespace StarShift.Combat
             }
         }
 
+        // Cập nhật hướng bám, quét đoạn sắp bay và kết thúc khi trúng hoặc hết thời gian sống.
         private void FixedUpdate()
         {
             if (!flying) return;
@@ -132,6 +139,7 @@ namespace StarShift.Combat
             if (turnRate > 0) transform.rotation = Quaternion.FromToRotation(Vector3.up, direction);
             var distance = speed * step;
             var filter = new ContactFilter2D { useTriggers = true };
+            // Quét cả đoạn sắp bay để hạn chế đạn nhanh xuyên qua mục tiêu giữa hai bước vật lý.
             body.Cast(direction, filter, sweepHits, distance);
             Collider2D nearestTarget = null;
             var nearestDistance = float.PositiveInfinity;
@@ -161,6 +169,7 @@ namespace StarShift.Combat
             if (target != null) FinishFlight(target, other.ClosestPoint(body.position));
         }
 
+        // Bỏ qua chủ viên đạn; lấy component nhận hit ở mục tiêu hoặc object cha.
         private IPlayerProjectileTarget FindTarget(Collider2D other)
         {
             if (other == null || (Owner != null && other.transform.IsChildOf(Owner.transform))) return null;
@@ -168,6 +177,7 @@ namespace StarShift.Combat
             return target is EnemyHealth enemy && !enemy.CanReceiveDamage && !enemy.BlocksPlayerProjectiles ? null : target;
         }
 
+        // Khóa viên đạn, gửi hit và luôn thu hồi qua finally dù callback mục tiêu có lỗi.
         private void FinishFlight(IPlayerProjectileTarget target = null, Vector2? contact = null)
         {
             if (!flying) return;
@@ -187,6 +197,7 @@ namespace StarShift.Combat
                         if (enemy.IsAlive && enemy.gameObject.scene == gameObject.scene && !ReferenceEquals(enemy, target) &&
                             ((Vector2)enemy.transform.position - impact).sqrMagnitude <= splashRadius * splashRadius)
                             splashTargets.Add(enemy);
+                // Đạn gửi sát thương; EnemyHealth tự xét quyền nhận hit, trừ HP và xử lý chết.
                 if (target is EnemyHealth enemyTarget)
                     enemyTarget.ReceivePlayerHit(damage, Owner, ImpactInfo(enemyTarget, impactPosition));
                 else target?.ReceivePlayerHit(damage, Owner);
@@ -212,6 +223,7 @@ namespace StarShift.Combat
 
         public void Release() => FinishFlight();
 
+        // Xóa dữ liệu lần bắn trước và tắt vật lý trước khi cất viên đạn vào pool.
         public void ResetForPool()
         {
             flying = false;

@@ -13,11 +13,15 @@ namespace StarShift.Encounters
     [CreateAssetMenu(menuName = "StarShift/Encounters/Hazard Stream")]
     public sealed class HazardStreamDefinition : ScriptableObject
     {
+        // Mẫu thiên thạch dùng để sinh; thuật toán lịch không tự tạo một loại prefab mới.
         public GameObject Prefab;
         public int Seed = 521;
+        // Hướng bay chủ đạo; độ lệch góc tạo biến thiên quanh hướng này.
         public Vector2 DominantDirection = new Vector2(.42f,-1);
         [Range(0,8)] public float AngularVariance = 3;
+        // Số lượng tối đa theo lịch; lịch cũng dừng khi gần hết thời lượng đợt.
         [Min(1)] public int Count = 22;
+        // Khoảng ngẫu nhiên giữa hai cụm thiên thạch, tính bằng giây.
         public Vector2 Interval = new Vector2(.5f,.9f);
         public Vector2 Scale = new Vector2(.65f,1.4f);
         public Vector2 TransitSeconds = new Vector2(2.8f,4.2f);

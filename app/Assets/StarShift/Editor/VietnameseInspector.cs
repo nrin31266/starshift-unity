@@ -5,6 +5,7 @@ using StarShift.Encounters;
 using StarShift.Enemies;
 using StarShift.Gameplay;
 using StarShift.Player;
+using StarShift.Rewards;
 using UnityEditor;
 using UnityEngine;
 
@@ -14,6 +15,39 @@ namespace StarShift.Editor
     {
         private static readonly Dictionary<string, string> Fields = new Dictionary<string, string>(System.StringComparer.OrdinalIgnoreCase)
         {
+            { "Kind", "Loại vật phẩm" },
+            { "ShortCode", "Mã hiển thị ngắn" },
+            { "Color", "Màu hiển thị" },
+            { "Sprite", "Hình ảnh" },
+            { "AnimationFrames", "Các khung hình chuyển động" },
+            { "VisualScale", "Tỉ lệ hình vật phẩm" },
+            { "Amount", "Số lượng nhận" },
+            { "Lifetime", "Thời gian tồn tại (giây)" },
+            { "DriftSpeed", "Tốc độ trôi" },
+            { "FireRateMultiplier", "Hệ số tăng tốc độ bắn" },
+            { "FallAcceleration", "Gia tốc rơi của Shard" },
+            { "MaximumFallSpeed", "Tốc độ rơi tối đa của Shard" },
+            { "ShardBounceHeight", "Độ cao nảy của Shard (tỉ lệ màn hình)" },
+            { "Source", "Nguồn phần thưởng" },
+            { "MajorChance", "Xác suất rơi vật phẩm lớn (0–1)" },
+            { "ShardChance", "Xác suất rơi Shard (0–1)" },
+            { "Shard", "Vật phẩm Shard" },
+            { "BossShardCount", "Số Shard rải khi hạ boss" },
+            { "GuaranteedPickup", "Vật phẩm ưu tiên / bảo đảm" },
+            { "MajorItems", "Danh sách vật phẩm lớn" },
+            { "Item", "Vật phẩm" },
+            { "Weight", "Trọng số lựa chọn" },
+            { "Prefab", "Mẫu thiên thạch" },
+            { "Seed", "Mã tái hiện ngẫu nhiên" },
+            { "DominantDirection", "Hướng bay chính" },
+            { "AngularVariance", "Độ lệch hướng bay (độ)" },
+            { "Interval", "Khoảng giữa cụm (nhỏ nhất / lớn nhất, giây)" },
+            { "Scale", "Tỉ lệ kích thước" },
+            { "TransitSeconds", "Thời gian bay (nhỏ nhất / lớn nhất, giây)" },
+            { "Variants", "Các biến thể thiên thạch" },
+            { "Size", "Nhóm kích thước" },
+            { "Hp", "Máu biến thể" },
+            { "TransitMultiplier", "Hệ số thời gian bay" },
             { "targetView", "Khung nhìn mục tiêu" },
             { "transitionDuration", "Thời gian đổi khung nhìn (giây)" },
             { "reserveImpactDuration", "Thời gian rung tên lửa (giây)" },
@@ -144,6 +178,18 @@ namespace StarShift.Editor
 
         private static readonly Dictionary<string, string> Hints = new Dictionary<string, string>(System.StringComparer.OrdinalIgnoreCase)
         {
+            { "Kind", "Shard = tiền; WeaponCore = lõi súng; Shield = khiên; Overdrive = tăng nhịp bắn; SupportDrone = tàu hỗ trợ; MissileAmmo = tên lửa; ExtraLife = thêm mạng." },
+            { "FireRateMultiplier", "Chỉ tăng nhịp bắn, không tăng tốc di chuyển. 1.6 nghĩa là chia khoảng giữa hai loạt cho 1.6; chỉ hiệu lực khi Overdrive còn thời gian." },
+            { "Lifetime", "Hết thời gian tồn tại thì vật phẩm bị thu hồi; khác Duration là thời gian hiệu lực sau khi nhặt." },
+            { "DriftSpeed", "Tốc độ vật phẩm trôi ngược hướng tiến của màn; Shard còn áp dụng gia tốc và nảy." },
+            { "Weight", "Trọng số tương đối, không phải phần trăm. Hai item trọng số 1 và 3 có tỷ lệ chọn 1:3 nếu đều hợp lệ; còn phụ thuộc bộ lọc và quy tắc thưởng." },
+            { "MajorChance", "0.1 tương đương 10% ở bước chọn vật phẩm lớn thông thường. Bảng bảo đảm, nguồn tài nguyên và quota có quy tắc riêng." },
+            { "ShardChance", "Được xét sau khi không chọn vật phẩm lớn trong nhánh rơi thông thường; không phải luôn là xác suất tổng cuối cùng." },
+            { "GuaranteedPickup", "Vật phẩm chỉ định ưu tiên; cách dùng còn phụ thuộc rơi trực tiếp, thùng tiếp tế và khả năng nhận của người chơi." },
+            { "Seed", "Cùng cấu hình và mã seed sẽ tạo cùng lịch thiên thạch, giúp tái hiện khi kiểm thử." },
+            { "Interval", "X = khoảng nhỏ nhất, Y = lớn nhất giữa các cụm; mỗi cụm có thể gồm nhiều thiên thạch." },
+            { "TransitMultiplier", "Nhân thời gian bay của biến thể. Giá trị lớn hơn làm thời gian bay dài hơn, không phải tăng tốc." },
+            { "ShardBounceHeight", "Độ cao nảy đầu theo tỉ lệ chiều cao camera; lần nảy thứ hai thấp hơn." },
             { "Completion", "Eliminate = hạ các mục tiêu bắt buộc; Timeline = đợt theo lịch; Survive = sống sót đủ thời gian; Boss = đợt trùm. Điều kiện chi tiết do EncounterRunner xử lý." },
             { "Formation", "Line = hàng ngang; Column = hàng dọc; V = chữ V; Wedge = mũi nêm; Ring = vòng tròn. Nếu có Plan, vị trí trong Plan được ưu tiên." },
             { "Plan", "Danh sách vị trí của các địch trong đội hình. Khi được gán, dùng các vị trí này thay cho công thức Formation." },
@@ -177,6 +223,16 @@ namespace StarShift.Editor
             {
                 text += " (dự phòng)";
                 hint = "Chỉ dùng khi không có cấu hình cho cấp súng hiện tại. Thường hãy chỉnh bên trong Thông số từng cấp súng.";
+            }
+            if (property.serializedObject.targetObject is PickupDefinition && property.name == "Duration")
+            {
+                text = "Thời gian hiệu lực buff (giây)";
+                hint = "Dùng cho Overdrive và tàu hỗ trợ sau khi nhặt; khác thời gian tồn tại của vật phẩm trên màn hình.";
+            }
+            if (property.serializedObject.targetObject is HazardStreamDefinition && property.name == "Count")
+            {
+                text = "Số thiên thạch tối đa";
+                hint = "Lịch cũng dừng khi gần hết thời lượng đợt, nên không bảo đảm sinh đủ số này.";
             }
             return new GUIContent(text, text + "\n" + property.displayName + " (" + property.name + ")\n" + hint);
         }
@@ -243,6 +299,8 @@ namespace StarShift.Editor
             var row = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
             if (this is WeaponLevelPatternVietnameseDrawer) label = IndexedLabel(property, "Cấp", label);
             else if (this is SpawnActionVietnameseDrawer) label = IndexedLabel(property, "Nhóm địch", label);
+            else if (this is WeightedPickupVietnameseDrawer) label = IndexedLabel(property, "Vật phẩm", label);
+            else if (this is AsteroidVariantVietnameseDrawer) label = IndexedLabel(property, "Biến thể", label);
             property.isExpanded = EditorGUI.Foldout(row, property.isExpanded, label, true);
             if (property.isExpanded)
             {
@@ -264,6 +322,16 @@ namespace StarShift.Editor
         }
     }
 
+    [CustomPropertyDrawer(typeof(WeightedPickup))]
+    public sealed class WeightedPickupVietnameseDrawer : VietnameseFieldsDrawer { }
+    [CustomPropertyDrawer(typeof(AsteroidVariant))]
+    public sealed class AsteroidVariantVietnameseDrawer : VietnameseFieldsDrawer { }
+    [CustomEditor(typeof(PickupDefinition)), CanEditMultipleObjects]
+    public sealed class PickupDefinitionVietnameseEditor : VietnameseInspector { }
+    [CustomEditor(typeof(RewardDropTable)), CanEditMultipleObjects]
+    public sealed class RewardDropTableVietnameseEditor : VietnameseInspector { }
+    [CustomEditor(typeof(HazardStreamDefinition)), CanEditMultipleObjects]
+    public sealed class HazardStreamDefinitionVietnameseEditor : VietnameseInspector { }
     [CustomPropertyDrawer(typeof(WeaponLevelPattern))]
     public sealed class WeaponLevelPatternVietnameseDrawer : VietnameseFieldsDrawer { }
     [CustomPropertyDrawer(typeof(SpawnAction), true)]

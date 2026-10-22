@@ -83,4 +83,63 @@ public static class VerifyVietnameseInspector
         }
         return new { status = "PASS", assets = 4, levels = 5, fallbackLabels = 2, cameraDelayedFields = fields.Count, sceneDirty = UnityEngine.SceneManagement.SceneManager.GetActiveScene().isDirty };
     }
+
+    public static object Data()
+    {
+        bool sceneWasDirty = UnityEngine.SceneManagement.SceneManager.GetActiveScene().isDirty;
+        var assembly = typeof(StarShift.Editor.DevFastStartEditor).Assembly;
+        var labelMethod = assembly.GetType("StarShift.Editor.VietnameseInspectorLabels").GetMethod("Label", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+        var translate = assembly.GetType("StarShift.Editor.VietnameseEditorLabels").GetMethod("Translate", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+        int assetCount = 0, fieldCount = 0;
+        foreach (var assetType in new[] { "PickupDefinition", "RewardDropTable", "HazardStreamDefinition" })
+        {
+            var guids = UnityEditor.AssetDatabase.FindAssets("t:" + assetType, new[] { "Assets/StarShift/Data" });
+            if (guids.Length == 0) throw new System.Exception("Missing data type: " + assetType);
+            foreach (var guid in guids)
+            {
+                var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
+                var asset = UnityEditor.AssetDatabase.LoadMainAssetAtPath(path);
+                string before = UnityEditor.EditorJsonUtility.ToJson(asset);
+                var editor = UnityEditor.Editor.CreateEditor(asset);
+                try { if (!(editor is StarShift.Editor.VietnameseInspector)) throw new System.Exception("Wrong inspector: " + path); }
+                finally { UnityEngine.Object.DestroyImmediate(editor); }
+                var property = new UnityEditor.SerializedObject(asset).GetIterator();
+                bool enter = true;
+                while (property.NextVisible(enter))
+                {
+                    enter = false;
+                    if (property.name == "m_Script") continue;
+                    var label = (UnityEngine.GUIContent)labelMethod.Invoke(null, new object[] { property });
+                    if (label.text == property.displayName || !label.tooltip.Contains(property.name))
+                        throw new System.Exception("Untranslated field: " + path + ":" + property.propertyPath);
+                    fieldCount++;
+                }
+                if (before != UnityEditor.EditorJsonUtility.ToJson(asset)) throw new System.Exception("Data mutated: " + path);
+                assetCount++;
+            }
+        }
+        var inputs = new[] {
+            new[] { "Assets/StarShift/Data/Rewards/Overdrive.asset", "FireRateMultiplier", "Hệ số tăng tốc độ bắn" },
+            new[] { "Assets/StarShift/Data/Rewards/Overdrive.asset", "Duration", "Thời gian hiệu lực buff (giây)" },
+            new[] { "Assets/StarShift/Data/Rewards/NormalDrops.asset", "MajorItems.Array.data[0].Weight", "Trọng số lựa chọn" },
+            new[] { "Assets/StarShift/Data/RegionA/Hazards/Mission02StormStream.asset", "Count", "Số thiên thạch tối đa" },
+            new[] { "Assets/StarShift/Data/RegionA/Hazards/Mission02StormStream.asset", "Variants.Array.data[0].Hp", "Máu biến thể" }
+        };
+        foreach (var input in inputs)
+        {
+            var so = new UnityEditor.SerializedObject(UnityEditor.AssetDatabase.LoadMainAssetAtPath(input[0]));
+            var property = so.FindProperty(input[1]);
+            if (property == null) throw new System.Exception("Missing field: " + input[1]);
+            var label = (UnityEngine.GUIContent)labelMethod.Invoke(null, new object[] { property });
+            if (label.text != input[2]) throw new System.Exception("Wrong field label: " + input[1]);
+        }
+        foreach (var name in new[] { "Overdrive", "NormalDrops", "Mission02StormStream", "PickupDefinition", "RewardDropTable" })
+            if ((string)translate.Invoke(null, new object[] { name }) == name) throw new System.Exception("Missing Project label: " + name);
+        foreach (var drawerType in new[] { typeof(StarShift.Editor.WeightedPickupVietnameseDrawer), typeof(StarShift.Editor.AsteroidVariantVietnameseDrawer) })
+            if (drawerType.GetCustomAttributes(typeof(UnityEditor.CustomPropertyDrawer), false).Length != 1)
+                throw new System.Exception("Missing nested drawer: " + drawerType.Name);
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().isDirty != sceneWasDirty) throw new System.Exception("Scene state changed");
+        UnityEditor.EditorApplication.RepaintProjectWindow();
+        return new { status = "PASS", assets = assetCount, fields = fieldCount, nestedChecks = inputs.Length, drawers = 2 };
+    }
 }

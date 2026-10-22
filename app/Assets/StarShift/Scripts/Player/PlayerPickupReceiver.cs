@@ -1,3 +1,4 @@
+// PlayerPickupReceiver — Nhận vật phẩm; chuyển từng loại cho hệ thống mạng, súng, tên lửa hoặc hiệu ứng sở hữu nó.
 using System;
 using StarShift.Rewards;
 using UnityEngine;
@@ -21,6 +22,7 @@ namespace StarShift.Player
             missiles = GetComponent<EmergencyMissileReserve>();
         }
         public bool CanCollect => isActiveAndEnabled && gate.CanInput;
+        // Xét vật phẩm có thể dùng không, như súng chưa tối đa hoặc kho tên lửa chưa đầy.
         public bool CanUse(PickupDefinition item)
         {
             if (item == null) return false;
@@ -29,8 +31,10 @@ namespace StarShift.Player
             if (item.Kind == PickupKind.ExtraLife) return lives.CurrentLives < lives.MaximumLives;
             return true;
         }
+        // Phân loại vật phẩm rồi giao đúng owner: mạng, lõi súng, tên lửa, Shard hoặc hiệu ứng.
         public bool TryCollect(PickupDefinition item)
         {
+            // Từ chối khi tàu chưa được điều khiển hoặc vật phẩm không thể dùng, trước khi cấp thưởng.
             if (!CanCollect || !CanUse(item)) return false;
             switch (item.Kind)
             {

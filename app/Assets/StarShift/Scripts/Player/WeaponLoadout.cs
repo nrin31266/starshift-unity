@@ -1,3 +1,4 @@
+// WeaponLoadout — Quản lý loại và cấp súng; nâng cấp bằng lõi, đổi súng và hạ cấp khi chết.
 using System;
 using StarShift.Combat;
 using UnityEngine;
@@ -7,9 +8,12 @@ namespace StarShift.Player
     [DisallowMultipleComponent]
     public sealed class WeaponLoadout : MonoBehaviour
     {
+        // Giới hạn cấp súng; chỉ nâng khi có cấu hình cho cấp kế tiếp.
         public const int MaximumLevel = 5;
         [SerializeField] private PulseLaserDefinition[] weapons;
+        // Cấp riêng từng nhánh: Pulse mở cấp 1, hai nhánh còn lại ở 0 nghĩa là chưa mở.
         private readonly int[] levels = { 1, 0, 0 };
+        // Loại súng đang được dùng để bắn; mỗi loại vẫn giữ cấp riêng khi chuyển đi.
         public WeaponBranch ActiveBranch { get; private set; }
         public int ActiveLevel => Level(ActiveBranch);
         public PulseLaserDefinition ActiveDefinition => Definition(ActiveBranch);
@@ -20,11 +24,13 @@ namespace StarShift.Player
             if (weapons != null) foreach (var item in weapons) if (item != null && item.Branch == branch) return item;
             return null;
         }
+        // Kiểm tra chưa đạt cấp tối đa và asset có dữ liệu cấp tiếp theo.
         public bool CanUpgrade(WeaponBranch branch)
         {
             var definition = Definition(branch);
             return definition != null && Level(branch) < MaximumLevel && definition.Pattern(Level(branch) + 1) != null;
         }
+        // Nhận lõi: tăng một cấp đúng nhánh, có thể chuyển sang nhánh đó ngay khi nhặt.
         public bool ApplyCore(WeaponBranch branch, bool activate = false)
         {
             if (!CanUpgrade(branch)) return false;
@@ -33,6 +39,7 @@ namespace StarShift.Player
             Changed?.Invoke();
             return true;
         }
+        // Đổi sang nhánh đã mở tiếp theo; bỏ qua nhánh cấp 0 hoặc thiếu cấu hình.
         public bool Cycle()
         {
             for (var step = 1; step < levels.Length; step++)
@@ -45,12 +52,14 @@ namespace StarShift.Player
             }
             return false;
         }
+        // Chỉ súng đang dùng bị giảm cấp; giữ tối thiểu cấp 1, các súng khác giữ nguyên.
         public void ApplyDeathDowngrade()
         {
             levels[(int)ActiveBranch] = Mathf.Max(1, ActiveLevel - 1);
             Changed?.Invoke();
         }
         public int[] CaptureLevels() => (int[])levels.Clone();
+        // Kiểm tra toàn bộ cấp và nhánh trước khi khôi phục, tránh nhận checkpoint súng không hợp lệ.
         public void Restore(WeaponBranch active, int[] restored)
         {
             if (restored == null || restored.Length != levels.Length || !Enum.IsDefined(typeof(WeaponBranch), active))

@@ -1,3 +1,4 @@
+// GameplayHud — Hiển thị mạng, súng, điểm và nút chơi.
 using System.Collections.Generic;
 using StarShift.Gameplay;
 using StarShift.Player;
@@ -117,6 +118,7 @@ namespace StarShift.UI
             if (!session.HasActiveRun || session.IsTerminal) announcement.Hide();
         }
 
+        // Đọc trạng thái từ gameplay để hiển thị mạng, cấp súng và điểm; HUD không tự trừ mạng.
         private void Update()
         {
             var visible = shell == null || shell.GameplayVisible;
@@ -168,8 +170,10 @@ namespace StarShift.UI
             RefreshHeat();
         }
 
+        // Nút tên lửa gửi ý định; kho tên lửa tự kiểm tra số lượng và hồi chiêu.
         private void UseMissile() => missileReserve.TryUse();
 
+        // Nút đổi súng chỉ gửi yêu cầu khi đang chơi; WeaponLoadout chọn nhánh đã mở tiếp theo.
         private void CycleWeapon()
         {
             if (!session.IsPaused && !session.IsTerminal && playerGate.CanInput) loadout.Cycle();
@@ -185,6 +189,7 @@ namespace StarShift.UI
             cueRemaining = 1.2f;
         }
 
+        // Vẽ chỉ báo từ nhiệt thực của súng; màu và thanh hiển thị không quyết định quyền bắn.
         private void RefreshHeat()
         {
             if (heatFill == null || heatFrame == null) return;

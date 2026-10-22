@@ -1,3 +1,4 @@
+// PlayerDamageLifecycle — Nhận sát thương, mất mạng và hồi sinh; điều phối qua PlayerLives và trạng thái tàu.
 using System;
 using StarShift.Gameplay;
 using UnityEngine;
@@ -12,8 +13,11 @@ namespace StarShift.Player
     public sealed class PlayerDamageLifecycle : MonoBehaviour
     {
         [SerializeField] private EnemyFireGate enemyFireGate;
+        // Thời gian chờ của pha chết trước khi xét hồi sinh hoặc hết mạng.
         [SerializeField, Min(.02f)] private float deathDuration = .6f;
+        // Thời gian bất tử sau khi tàu đã bay vào lại; lúc này được điều khiển và bắn.
         [SerializeField, Min(.02f)] private float invincibilityDuration = 2.5f;
+        // Khoảng địch chờ trước khi được mở bắn lại sau đường bay hồi sinh.
         [SerializeField, Min(0)] private float enemyFireGrace = 1f;
         [SerializeField, Min(.02f)] private float shieldBreakInvincibilityDuration = .7f;
         private PlayerGameplayGate gate;
@@ -57,6 +61,7 @@ namespace StarShift.Player
             enemyFireGate.ResumeAfter(0);
         }
 
+        // Bảo vệ ngắn sau khiên hoặc tên lửa; không rút ngắn khoảng bảo vệ đang còn.
         public void GrantBriefProtection(float seconds)
         {
             if (gate.State != PlayerGameplayState.Active && gate.State != PlayerGameplayState.PostEntryInvincibility) return;
@@ -64,9 +69,11 @@ namespace StarShift.Player
             gate.SetState(PlayerGameplayState.PostEntryInvincibility);
         }
 
+        // Cửa xét hit hợp lệ: kiểm tra bảo vệ và khiên trước khi trừ mạng, hạ cấp súng.
         public bool TryReceiveHit(GameObject owner)
         {
             if (!isActiveAndEnabled || !gate.CanTakeDamage || lives.CurrentLives <= 0) return false;
+            // Khiên hấp thụ hit trước bước mất mạng nên không hạ cấp súng.
             if (effects != null && effects.TryAbsorb())
             {
                 GrantBriefProtection(shieldBreakInvincibilityDuration);
@@ -100,6 +107,7 @@ namespace StarShift.Player
                 gate.SetState(PlayerGameplayState.Active);
                 return;
             }
+            // Hết pha chết: còn mạng thì bay vào lại, hết mạng thì báo kết thúc game.
             if (lives.CurrentLives > 0)
             {
                 BeginEntrance();
@@ -118,6 +126,7 @@ namespace StarShift.Player
             movement.ApplyEntrancePosition();
         }
 
+        // Chỉ mở lại điều khiển và bắt đầu bất tử sau khi đường bay hồi sinh hoàn tất.
         private void LateUpdate()
         {
             if (Time.timeScale <= 0 || !gate.isActiveAndEnabled || gate.State != PlayerGameplayState.Respawning || !entrance.IsComplete) return;

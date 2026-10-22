@@ -1,3 +1,4 @@
+// EnemyProjectile — Đạn địch; phát hiện tàu rồi gửi hit qua bộ nhận, không tự trừ mạng người chơi.
 using System;
 using System.Collections.Generic;
 using StarShift.Enemies;
@@ -112,6 +113,7 @@ namespace StarShift.Combat
             else if (enteredView || remainingLifetime <= 0) FinishFlight();
         }
 
+        // Chỉ collider thuộc tàu mục tiêu mới hợp lệ; bỏ qua collider của chủ viên đạn.
         private bool IsTarget(Collider2D other)
             => other != null && target != null && other.transform.IsChildOf(target.transform) &&
                 (Owner == null || !other.transform.IsChildOf(Owner.transform));
@@ -122,6 +124,7 @@ namespace StarShift.Combat
                 FinishFlight(other.GetComponentInParent<IEnemyProjectileTarget>());
         }
 
+        // Gửi hit tới bộ nhận của tàu rồi thu hồi; số mạng do lifecycle của tàu quyết định.
         private void FinishFlight(IEnemyProjectileTarget receiver = null)
         {
             if (!flying) return;
@@ -140,6 +143,7 @@ namespace StarShift.Combat
 
         public void Release() => FinishFlight();
 
+        // Dọn trạng thái và tắt viên đạn để lần lấy lại không mang hit hoặc thời gian cũ.
         public void ResetForPool()
         {
             flying = false;

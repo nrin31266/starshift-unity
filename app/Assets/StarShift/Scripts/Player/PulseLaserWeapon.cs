@@ -1,3 +1,4 @@
+// PulseLaserWeapon — Bắn vũ khí chính; dùng cấu hình của súng đang chọn, nhịp bắn và kho đạn tái sử dụng.
 using StarShift.Combat;
 using StarShift.Enemies;
 using System.Collections.Generic;
@@ -21,9 +22,11 @@ namespace StarShift.Player
         private PlayerGameplayGate gameplayGate;
         private ObjectPool<PlayerProjectile> projectiles;
         private Transform projectileRoot;
+        // Mốc được bắn loạt tiếp theo; dùng thời gian thay vì đếm khung hình.
         private double nextShotTime;
         private bool wasAllowed;
         private bool shuttingDown;
+        // Một trạng thái nhiệt dùng chung giữa các nhánh; đổi súng không tự xóa nhiệt.
         private readonly WeaponHeatState heat = new WeaponHeatState();
         private WeaponLoadout loadout;
         private PlayerTemporaryEffects effects;
@@ -37,8 +40,10 @@ namespace StarShift.Player
         public float Heat => heat.Heat;
         public float HeatFraction => ActiveDefinition != null && ActiveDefinition.ThermalProfile != null ? heat.Heat / ActiveDefinition.ThermalProfile.Capacity : 0;
         public bool IsOverheated => heat.IsOverheated;
+        // Quyền bắn tổng hợp: trạng thái tàu cho phép và súng chưa quá nhiệt.
         public bool CanFire => gameplayGate != null && gameplayGate.CanFire && !heat.IsOverheated;
 
+        // Khi mất mạng, hạ cấp súng đang dùng rồi xóa nhiệt và nhịp bắn cũ.
         public void ApplyDeathDowngrade()
         {
             loadout?.ApplyDeathDowngrade();
@@ -69,6 +74,7 @@ namespace StarShift.Player
             EnsurePool();
         }
 
+        // Tạo kho đạn khi cần; đạn trả về được reset để lần bắn mới không mang trạng thái cũ.
         private void EnsurePool()
         {
             if (projectiles != null && projectileRoot != null) return;
@@ -106,6 +112,7 @@ namespace StarShift.Player
             ResetCadence();
         }
 
+        // Cập nhật nhiệt, xét giữ bắn và nhịp; sau đó tạo loạt theo cấu hình cấp súng.
         private void FixedUpdate()
         {
             if (Time.timeScale <= 0) return;
@@ -124,9 +131,11 @@ namespace StarShift.Player
                 wasAllowed = true;
                 nextShotTime = now;
             }
+            // Chờ đúng thời điểm phát tiếp theo để nhịp bắn không phụ thuộc số khung hình.
             if (now + .000001 < nextShotTime) return;
             EnsurePool();
             var config = ActiveDefinition;
+            // Ưu tiên thông số của cấp súng hiện tại; chỉ dùng giá trị dự phòng khi không có cấu hình cấp.
             var pattern = config.Pattern(CurrentLevel);
             var count = pattern != null ? pattern.ProjectileCount : 1;
             volleyTargets.Clear();
@@ -154,6 +163,7 @@ namespace StarShift.Player
                         ? (count == 1 && target != null ? (alternateLaunch ? -.65f : .65f) : 0)
                         : -slot / ((count - 1) * .5f);
                 }
+                // Lấy đạn từ pool để tái sử dụng; Launch gán dữ liệu cho lần bắn mới.
                 var projectile = projectiles.Get();
                 projectile.Launch(config, position, Quaternion.AngleAxis(angle, Vector3.forward) * muzzle.up,
                     damage, pattern != null ? pattern.SplashRadius : 0, gameObject, ReleaseProjectile, target, launchLane);
@@ -185,6 +195,7 @@ namespace StarShift.Player
             if (!gameplayGate.CanFire) ResetCadence();
         }
 
+        // Bỏ lịch bắn cũ khi ngừng bắn hoặc đổi súng, tránh bắn bù các phát đã trễ.
         private void ResetCadence()
         {
             wasAllowed = false;

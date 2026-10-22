@@ -12,12 +12,14 @@ namespace StarShift.Gameplay
 
         [SerializeField, Min(MinimumSize)] private float orthographicSize;
         [SerializeField, Tooltip("Normalized viewport: full = (0, 0, 1, 1); lower 70% = (0, 0, 1, 0.7).")]
+        // Vùng được bay theo tỷ lệ màn hình; (0,0,1,0.7) chỉ cho dùng 70% phía dưới.
         private Rect playableViewport;
 
         public float OrthographicSize => orthographicSize;
         public Rect PlayableViewport => playableViewport;
         public static GameplayViewSettings Baseline => new GameplayViewSettings(BaselineSize, new Rect(0, 0, 1, 1));
 
+        // Kiểm tra vùng cấu hình và cắt về khoảng 0..1; vùng rỗng hoặc sai dùng toàn màn hình.
         public GameplayViewSettings(float size, Rect viewport)
         {
             orthographicSize = IsFinite(size) && size > 0 ? Mathf.Max(MinimumSize, size) : BaselineSize;

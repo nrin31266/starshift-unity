@@ -1,3 +1,4 @@
+// EntryHoldFlight — Đường bay và đội hình địch.
 using UnityEngine;
 using StarShift.Encounters;
 using StarShift.Gameplay;
@@ -67,6 +68,7 @@ namespace StarShift.Enemies
         public bool IsHolding => sequence != null ? !sequenceFinished && (sequence.Phases[phaseIndex].Kind == FlightPhaseKind.Hold || sequence.Phases[phaseIndex].Kind == FlightPhaseKind.Combat) : elapsed >= entryDuration && (exitDuration <= 0 || elapsed < entryDuration + holdDuration);
         public bool IsExiting => sequence != null ? sequence.Phases[phaseIndex].Kind == FlightPhaseKind.Exit : exitDuration > 0 && elapsed >= entryDuration + holdDuration;
         public bool HasExited => sequence != null ? sequenceFinished : exitDuration > 0 && elapsed >= entryDuration + holdDuration + exitDuration;
+        // Đường bay phải cho phép và địch phải nằm trong vùng nhìn mới được bắn.
         public bool CanShoot => (sequence != null ? !sequenceFinished && sequence.Phases[phaseIndex].CanShoot : elapsed >= entryDuration && !HasExited) && IsPointVisible(transform.position);
         public bool IsOutsideView
         {
@@ -86,6 +88,7 @@ namespace StarShift.Enemies
                 viewport.x >= 0 && viewport.x <= 1 && viewport.y >= 0 && viewport.y <= 1;
         }
 
+        // Gán các mốc vào, giữ và ra; thiên thạch có thể dùng chế độ bay xuyên liên tục.
         public void Configure(Vector2 entry, Vector2 hold, Vector2 curve, float entrySeconds,
             Vector2 exit, float holdSeconds, float exitSeconds, bool continuous = false)
         {
@@ -101,6 +104,7 @@ namespace StarShift.Enemies
             exitDuration = Mathf.Max(0, exitSeconds);
         }
 
+        // Nhận chuỗi pha bay cùng độ lệch vị trí đội hình; không sửa asset đường bay dùng chung.
         public void ConfigureSequence(FlightSequence config, Vector2 offset, PlayDirection playDirection, float encounterTime = 0)
         {
             sequence = config;
@@ -155,6 +159,7 @@ namespace StarShift.Enemies
             if (health.IsAlive) ApplyPosition();
         }
 
+        // Tính vị trí theo pha bay hiện tại; luồng thiên thạch liên tục không dừng tại mốc giữa.
         private void ApplyPosition()
         {
             if (flightCamera == null || !flightCamera.isActiveAndEnabled) return;

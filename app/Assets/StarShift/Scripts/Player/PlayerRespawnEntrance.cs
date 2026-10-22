@@ -9,6 +9,7 @@ namespace StarShift.Player
     [AddComponentMenu("StarShift/Player/Player Respawn Entrance")]
     public sealed class PlayerRespawnEntrance : MonoBehaviour
     {
+        // Thời lượng tàu bay từ ngoài mép vào điểm hồi sinh; không phải thời gian bất tử.
         [SerializeField, Min(.02f)] private float duration = .55f;
         [SerializeField] private CircleCollider2D collisionShape;
         [SerializeField] private LayerMask blockingLayers;
@@ -22,6 +23,7 @@ namespace StarShift.Player
         private bool entering;
         public PlayDirection Direction { get; set; }
         public bool IsEntering => isActiveAndEnabled && entering;
+        // Chỉ hoàn tất khi bay đủ thời gian và tìm được vị trí đích an toàn.
         public bool IsComplete => IsEntering && elapsed >= duration && SafeTargetFound;
         public bool SafeTargetFound { get; private set; }
 
@@ -52,6 +54,7 @@ namespace StarShift.Player
             if (entering) elapsed = Mathf.Min(duration, elapsed + Time.fixedDeltaTime);
         }
 
+        // Thử các điểm an toàn rồi tính đường bay vào; tránh mở điều khiển tại chỗ đang bị chặn.
         public Vector2 GetPosition(Camera camera, PlayerMovementBounds bounds, Rect region)
         {
             var depth = Vector3.Dot(transform.position - camera.transform.position, camera.transform.forward);

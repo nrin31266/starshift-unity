@@ -1,3 +1,4 @@
+// EncounterDefinition — Cấu hình một đợt: điều kiện hoàn thành, nhóm địch và nhịp tấn công; EncounterRunner đọc để chạy.
 using System;
 using UnityEngine;
 using StarShift.Gameplay;
@@ -36,6 +37,7 @@ namespace StarShift.Encounters
     public sealed class EncounterDefinition : ScriptableObject
     {
         public string Id = "ENCOUNTER_1";
+        // Luật kết thúc đợt: tiêu diệt mục tiêu, chạy theo thời gian, sống sót hoặc hạ boss.
         public EncounterCompletion Completion;
         [Tooltip("Timeline kết thúc sớm khi đã chạy hết lịch spawn/events và không còn địch.")]
         public bool CompleteWhenScheduleExhausted;
@@ -46,6 +48,7 @@ namespace StarShift.Encounters
         [Tooltip("Fallback prefab cho các spawn action dùng cùng archetype.")]
         public GameObject ScoutPrefab;
         [Min(.01f)] public float Duration = 16f;
+        // Các nhóm sinh địch của đợt; mỗi nhóm giữ số lượng, lịch và đội hình riêng.
         public SpawnAction[] Groups = { new ScoutSpawnGroup() };
         public OptionalEvent[] OptionalEvents = Array.Empty<OptionalEvent>();
         public CameraProfile CameraOverride;
@@ -53,6 +56,7 @@ namespace StarShift.Encounters
         [Min(0), Tooltip("Mốc kill eligible muộn nhất cho floor đầu tiên; 0 giữ lựa chọn seeded thông thường.")]
         public int GuaranteedMajorByKill;
         public RewardDropTable GuaranteeTable;
+        // Ngân sách nguồn tấn công đồng thời; tránh cho mọi địch cùng mở đòn.
         [Range(1, 4)] public int ActiveShooterLimit = 1;
         [Min(.02f)] public float ShotSpacing = 1f;
         [Min(1)] public int ShotsPerVolley = 1;

@@ -1,3 +1,4 @@
+// BossHud — Hiển thị máu và giai đoạn boss.
 using StarShift.Encounters;
 using StarShift.Enemies;
 using UnityEngine;
@@ -13,6 +14,7 @@ namespace StarShift.UI
         [SerializeField] private Text percentage;
         private BossPhaseRunner boss;
         private int generation = -1;
+        // Đọc HP khiên hoặc lõi để vẽ thanh máu; UI không quyết định sát thương hay chuyển pha.
         private void Update()
         {
             if (generation != runner.Generation) { generation = runner.Generation; boss = null; }

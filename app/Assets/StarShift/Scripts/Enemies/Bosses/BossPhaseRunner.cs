@@ -1,3 +1,4 @@
+// BossPhaseRunner — Điều phối giai đoạn và thứ tự đòn của boss; từng module thực hiện đòn đánh.
 using StarShift.Gameplay;
 using StarShift.Encounters;
 using UnityEngine;
@@ -19,6 +20,7 @@ namespace StarShift.Enemies
         private BossAttackModule current;
         private EncounterFireCoordinator coordinator;
         public bool IsAttacking => current != null && current.IsBusy;
+        // Ghi nhớ boss đã chuyển giai đoạn để không lặp bước chuyển mỗi khung hình.
         public bool IsPhaseB { get; private set; }
         public BossPhaseDefinition Definition => definition;
         public EnemyHealth Health => health;
@@ -27,10 +29,12 @@ namespace StarShift.Enemies
                 throw new System.InvalidOperationException("Invalid Boss composition.");
         }
         private void OnEnable() { IsPhaseB = false; next = 0; remaining = 1.5f; current = null; phaseCue.enabled = false; }
+        // Xét điều kiện chuyển pha rồi chọn module theo thứ tự cấu hình, có nhịp nghỉ giữa các đòn.
         private void FixedUpdate()
         {
             if (Time.timeScale <= 0) return;
             if (!health.IsAlive) { CancelModules(); return; }
+            // Chuyển giai đoạn theo mạng khiên nếu có; boss thường dùng ngưỡng tỷ lệ HP trong cấu hình.
             if (!IsPhaseB && (shields != null ? shields.IsExposed : health.CurrentHp <= health.MaxHp * definition.PhaseBThreshold))
             {
                 IsPhaseB = true; CancelModules(); next = 0; remaining = definition.TransitionSeconds; phaseCue.enabled = true;

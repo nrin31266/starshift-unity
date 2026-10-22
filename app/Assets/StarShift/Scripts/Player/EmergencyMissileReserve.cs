@@ -12,10 +12,13 @@ namespace StarShift.Player
     {
         [SerializeField] private EncounterRunner runner;
         [SerializeField] private PlayerDamageLifecycle lifecycle;
+        // Số tên lửa dự trữ tối đa; nhặt thêm bị từ chối khi đã đầy.
         [SerializeField, Min(1)] private int capacity = 3;
         [SerializeField, Min(0)] private int startingCount = 1;
         [SerializeField, Min(.05f)] private float activationCooldown = .8f;
+        // Tỷ lệ HP tối đa gây lên địch lớn; không phải sát thương cố định.
         [SerializeField, Range(0, 1)] private float largeDamageFraction = .6f;
+        // Tỷ lệ HP tối đa gây lên boss, tách riêng để không dùng mức của địch thường.
         [SerializeField, Range(0, 1)] private float bossDamageFraction = .1f;
         [SerializeField, Min(.02f)] private float protectionSeconds = .7f;
         [SerializeField, Min(.05f)] private float flightSeconds = .32f;
@@ -33,6 +36,7 @@ namespace StarShift.Player
         public bool IsInFlight => flightRemaining > 0;
         public float FlightProgress => IsInFlight ? 1 - flightRemaining / flightDuration : 1;
         public Vector2 LaunchViewport { get; private set; }
+        // Chỉ dùng khi còn đạn, hết hồi chiêu, không có quả đang bay và trạng thái lượt cho phép.
         public bool CanUse => isActiveAndEnabled && gate.CanInput && (runner.Stage == EncounterStage.Running || runner.Stage == EncounterStage.ExitDrain) && Current > 0 && cooldown <= 0 && !IsInFlight;
         public event Action Fired;
         public event Action Detonated;
@@ -61,6 +65,7 @@ namespace StarShift.Player
             if (!CanCollect) return false;
             Current++; return true;
         }
+        // Tiêu một tên lửa và bắt đầu chuyến bay; sát thương chỉ được xử lý lúc phát nổ.
         public bool TryUse()
         {
             if (!CanUse) return false;
@@ -72,6 +77,7 @@ namespace StarShift.Player
             Fired?.Invoke();
             return true;
         }
+        // Dọn đạn địch trong scene rồi gửi sát thương tới địch hợp lệ nhìn thấy trong camera.
         private void Detonate()
         {
             foreach (var shot in FindObjectsByType<EnemyProjectile>())

@@ -1,3 +1,4 @@
+// GameplaySession — Điều phối phiên chơi: tạm dừng, chơi tiếp và kết thúc; quản lý đồng hồ gameplay.
 using System;
 using StarShift.Combat;
 using StarShift.Encounters;
@@ -64,6 +65,7 @@ namespace StarShift.Gameplay
         private void OnPresentationChanged() => Changed?.Invoke();
         public void BeginMission() { if (!IsPaused && Flow != null) Flow.BeginApproach(); }
 
+        // Tạm dừng nếu trạng thái cho phép; Freeze giữ lại đồng hồ cũ để tiếp tục đúng nhịp.
         public void Pause()
         {
             if (IsPaused || IsTerminal) return;
@@ -74,6 +76,7 @@ namespace StarShift.Gameplay
             Changed?.Invoke();
         }
 
+        // Xóa thao tác tay cũ và khôi phục đồng hồ, tránh tàu kéo bù khi vừa tiếp tục.
         public void Resume()
         {
             if (!IsPaused || IsTerminal) return;
@@ -200,6 +203,7 @@ namespace StarShift.Gameplay
                 if (shot.gameObject.scene == gameObject.scene) shot.Release();
         }
 
+        // Đóng băng gameplay và audio; giữ giá trị trước đó để không mặc định khôi phục sai tốc độ.
         private void Freeze()
         {
             pointer.CancelGesture();
@@ -209,6 +213,7 @@ namespace StarShift.Gameplay
                 previousAudioPause = AudioListener.pause;
                 ownsClock = true;
             }
+            // Dừng thời gian gameplay và âm thanh; UI cần dùng thời gian không bị scale để tiếp tục phản hồi.
             Time.timeScale = 0;
             AudioListener.pause = true;
         }

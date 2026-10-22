@@ -1,3 +1,4 @@
+// DevFastStart — Chạy thử nhanh theo màn hoặc boss đã chọn; đường thử chỉ mở trong Editor hoặc development build.
 using StarShift.Combat;
 using StarShift.Encounters;
 using StarShift.Player;
@@ -50,6 +51,7 @@ namespace StarShift.Dev
             }
 #endif
         }
+        // Chỉ nhận route thử khi Dev Mode bật và đang ở Editor hoặc development build.
         public bool TryStart()
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -63,6 +65,7 @@ namespace StarShift.Dev
         [ContextMenu("Replay Configured Start")]
         public void Replay() => ReplayConfiguredStart();
 
+        // Kiểm tra điểm bắt đầu rồi chạy lại route thử; có thể chuẩn bị cấp súng và seed cố định.
         private bool ReplayConfiguredStart()
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -91,6 +94,7 @@ namespace StarShift.Dev
             pendingVictory = victory;
             pendingBossPhaseB = startPoint == "BOSS_PHASE_B";
             runner.StartRun(route, pendingVictory ? false : standalone, skipIntro, overrideDirection ? direction : (PlayDirection?)null, cameraOverride);
+            // Ghi mã lượt chạy để thao tác thử đang chờ không tác động nhầm lượt mới.
             pendingGeneration = runner.Generation;
             if (transition) { runner.StopRun(); GetComponent<RegionCampaignFlow>().QueueAdvance(); }
             if (deterministicRewards) GetComponent<StarShift.Rewards.RewardDirector>()?.SetTestSeed(rewardSeed);

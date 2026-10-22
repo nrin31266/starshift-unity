@@ -1,3 +1,4 @@
+// RewardPickup — Vật phẩm rơi và phát hiện nhặt.
 using System;
 using StarShift.Encounters;
 using StarShift.Gameplay;
@@ -46,6 +47,7 @@ namespace StarShift.Rewards
         public EncounterObjectCategory Category => EncounterObjectCategory.Reward;
         public bool IsActive => active && isActiveAndEnabled;
         public event Action Collected;
+        // Đặt dữ liệu và quỹ đạo cho lần thả vật phẩm mới; đăng ký vào phạm vi dọn của đợt.
         public void Launch(PickupDefinition item, RewardDropTable crate, Vector3 position, EncounterCleanup scope,
             PlayerPickupReceiver player, Func<RewardPickup, bool> onCollect, Action<RewardPickup> onRelease,
             PlayDirection playDirection = PlayDirection.Up)
@@ -140,6 +142,7 @@ namespace StarShift.Rewards
             var t = delta.sqrMagnitude > .000001f ? Mathf.Clamp01(Vector3.Dot(point - from, delta) / delta.sqrMagnitude) : 0;
             return (point - (from + delta * t)).sqrMagnitude;
         }
+        // Chỉ thu vật phẩm khi callback cấp thưởng thành công; khóa trước sự kiện để tránh nhặt trùng.
         public bool TryCollect()
         {
             if (!active || cleanup.RewardToken != token || !receiver.CanCollect) return false;
@@ -155,6 +158,7 @@ namespace StarShift.Rewards
             remaining = seconds;
             graceRemaining = seconds;
         }
+        // Xóa liên kết và sự kiện trước khi trả pool để vật phẩm dùng lại không gọi callback cũ.
         public void Release()
         {
             active = false;

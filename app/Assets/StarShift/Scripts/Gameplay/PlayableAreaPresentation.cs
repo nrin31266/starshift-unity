@@ -25,6 +25,7 @@ namespace StarShift.Gameplay
             hint = child.AddComponent<SpriteRenderer>(); hint.sprite = rectangle; hint.sortingOrder = -5; hint.enabled = false;
         }
 
+        // Chỉ vẽ gợi ý khi giữ kéo vào mép trên/phải bị hạn chế; việc chặn tàu thuộc PlayerMovementBounds.
         private void LateUpdate()
         {
             if (hint == null || Time.timeScale <= 0) return;

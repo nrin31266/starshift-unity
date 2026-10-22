@@ -1,3 +1,4 @@
+// InputSystemPointerInput — Đọc chuột hoặc cảm ứng; cung cấp độ kéo tương đối và ý định giữ bắn.
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,6 +14,7 @@ namespace StarShift.Player
     [AddComponentMenu("StarShift/Player/Input System Pointer Input")]
     public sealed class InputSystemPointerInput : PlayerPointerInput
     {
+        // Giữ đúng ngón tay bắt đầu thao tác; ngón thứ hai không giành quyền kéo tàu.
         private Finger activeFinger;
         private int activeTouchId;
         private Mouse activeMouse;
@@ -21,6 +23,7 @@ namespace StarShift.Player
         private bool movementTracking;
         private bool pointerHeld;
 
+        // Ý định giữ bắn từ chuột hoặc cảm ứng; súng vẫn phải xét quyền bắn và nhiệt.
         public override bool FireHeld => isActiveAndEnabled && pointerHeld;
 
         private void OnEnable()
@@ -103,6 +106,7 @@ namespace StarShift.Player
             return DeltaFrom(mouse.position.ReadValue());
         }
 
+        // Xóa độ kéo cũ nhưng không hủy ý định giữ bắn; lần kéo tiếp lấy lại mốc.
         public override void ResetDrag()
         {
             frameDelta = Vector2.zero;
@@ -110,6 +114,7 @@ namespace StarShift.Player
             previousPosition = Vector2.zero;
         }
 
+        // Hủy cả kéo và giữ bắn khi nhả tay, mất focus hoặc đổi trạng thái cần ngắt input.
         public void CancelGesture()
         {
             activeFinger = null;
@@ -121,6 +126,7 @@ namespace StarShift.Player
 
         private readonly List<RaycastResult> uiHits = new List<RaycastResult>();
 
+        // Chạm bắt đầu trên UI không được đồng thời điều khiển tàu hoặc kích hoạt bắn.
         private bool StartsOnUi(Vector2 position)
         {
             var events = EventSystem.current;
@@ -137,6 +143,7 @@ namespace StarShift.Player
             NotifyFireIntentChanged();
         }
 
+        // Lấy độ lệch so với mốc trước; lần đặt mốc không làm tàu nhảy tới vị trí tay.
         private Vector2 DeltaFrom(Vector2 position)
         {
             if (!movementTracking)

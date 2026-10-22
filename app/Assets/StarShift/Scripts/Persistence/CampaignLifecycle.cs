@@ -1,3 +1,4 @@
+// CampaignLifecycle — Điều phối lưu và khôi phục checkpoint; tách quyền ghi Campaign khỏi Replay và DevTest.
 using System;
 using System.IO;
 using StarShift.Encounters;
@@ -161,6 +162,7 @@ namespace StarShift.Persistence
                 Stats = rewards.Capture()
             };
         }
+        // Bắt đầu Campaign mới qua đường khởi tạo chung; UI xử lý xác nhận ghi đè trước khi gọi.
         public bool NewGame() => StartNewGame(false);
         public bool CanResetAll => Mode != SessionMode.Replay && Mode != SessionMode.DevTest && progress.Snapshot != null;
         public bool ResetAll()
@@ -174,6 +176,7 @@ namespace StarShift.Persistence
             return true;
         }
         public bool RecoverNewGame() => StartNewGame(true);
+        // Nạp màn đầu, tạo checkpoint ban đầu rồi cấp quyền chạy Campaign.
         private bool StartNewGame(bool recover)
         {
             if (recover ? LoadStatus != SaveLoadStatus.Invalid : progress.Snapshot == null) return false;
@@ -192,6 +195,7 @@ namespace StarShift.Persistence
             Launch("LEVEL_START", initial, false);
             return true;
         }
+        // Đọc save, nạp đúng màn và khôi phục checkpoint hoặc trạng thái chuyển vùng đã lưu.
         public bool Continue()
         {
             if (Mode == SessionMode.Campaign && !Flush()) return false;
@@ -264,6 +268,7 @@ namespace StarShift.Persistence
             isolatedShardBalance = 0;
             checkpoint = null;
         }
+        // Chơi lại từ checkpoint đầu đợt; không phục dựng vị trí từng viên đạn giữa trận.
         public bool RetryEncounter()
         {
             if (!CanRetry) return false;
@@ -305,8 +310,10 @@ namespace StarShift.Persistence
             if (restoring && checkpoint != null && definition.Id == checkpoint.EncounterId) return;
             // Không ghi checkpoint vô hiệu nếu handoff trùng frame death/GameOver.
             if (lives.CurrentLives <= 0) return;
+            // Chụp trạng thái đầu đợt để chơi lại từ checkpoint, không chụp toàn bộ thế giới giữa đợt.
             checkpoint = Capture(definition.Id);
             if (Mode != SessionMode.Campaign) return;
+            // Chỉ đường Campaign đi tới bước ghi này; Replay và DevTest đã bị chặn ở trên.
             progress.Capture(checkpoint);
             Flush();
         }
@@ -400,6 +407,7 @@ namespace StarShift.Persistence
             }
             else if (pendingRegionTransition) CompleteRegionTravel();
         }
+        // Đẩy trạng thái cần ghi xuống kho lưu; trả kết quả để caller không bỏ qua lỗi lưu.
         public bool Flush()
         {
             if (Mode != SessionMode.Campaign) return true;

@@ -1,3 +1,4 @@
+// EnemyHealth — Máu và nhận sát thương của địch; quản lý HP riêng cho mỗi đối tượng đang chơi.
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,6 +20,7 @@ namespace StarShift.Enemies
 
         public EnemyDefinition Definition => definition;
         public int SpawnVersion { get; private set; }
+        // Máu riêng của con địch này; không trừ trực tiếp vào asset cấu hình dùng chung.
         public int CurrentHp { get; private set; }
         public EnemyModifierDefinition Modifier { get; private set; }
         private int spawnHp;
@@ -31,6 +33,7 @@ namespace StarShift.Enemies
         public event Action BlockedHit;
         // Presentation thuần: point/normal/kind đi kèm hit, damage/splash không đổi.
         public event Action<EnemyHitInfo> HitPresented;
+        // Quyền nhận sát thương có xét còn sống, bảo vệ lúc vào màn và khóa sát thương.
         public bool CanReceiveDamage
         {
             get
@@ -48,6 +51,7 @@ namespace StarShift.Enemies
         {
             if (flight != null && !flight.IsOutsideView) visibleSeconds += Time.fixedDeltaTime;
         }
+        // Máu tối đa tính từ HP ghi đè của nhóm nếu có, nếu không dùng definition, rồi áp hệ số modifier.
         public int MaxHp => definition != null ? Mathf.CeilToInt((spawnHp > 0 ? spawnHp : definition.MaxHp) * (Modifier != null ? Modifier.HpMultiplier : 1)) : 0;
         public void ConfigureModifier(EnemyModifierDefinition modifier, int hpOverride = 0) { Modifier = modifier; spawnHp = Mathf.Max(0, hpOverride); }
         public bool IsAlive => isActiveAndEnabled && CurrentHp > 0;
@@ -65,6 +69,7 @@ namespace StarShift.Enemies
             SpawnVersion++;
             damageBlocked = false;
             visibleSeconds = 0;
+            // Khởi tạo lại HP khi địch được bật, kể cả lần lấy lại từ pool.
             CurrentHp = MaxHp;
             if (!active.Contains(this)) active.Add(this);
         }
@@ -72,6 +77,7 @@ namespace StarShift.Enemies
         public void ReceivePlayerHit(int damage, GameObject owner)
             => ReceivePlayerHit(damage, owner, EnemyHitInfo.AtCenter(transform, EnemyHitKind.Hull, damage));
 
+        // Đầu vào sát thương của địch; xét khiên và bảo vệ trước khi cập nhật HP.
         public void ReceivePlayerHit(int damage, GameObject owner, EnemyHitInfo hit)
         {
             if (damage <= 0) return;
@@ -82,6 +88,7 @@ namespace StarShift.Enemies
                 return;
             }
             if (!CanReceiveDamage) return;
+            // Chỉ hit hợp lệ mới trừ HP; chặn số âm để xác định chết đúng tại 0.
             CurrentHp = Mathf.Max(0, CurrentHp - damage);
             var lethal = CurrentHp == 0;
             try
@@ -92,6 +99,7 @@ namespace StarShift.Enemies
             finally { if (lethal) ResolveDeath(); }
         }
 
+        // Báo chết rồi tắt địch thường; boss có chuỗi chết riêng nên chưa tắt ngay tại đây.
         private void ResolveDeath()
         {
             // HP đã khóa damage trước callback; release không phụ thuộc presentation.

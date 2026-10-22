@@ -1,3 +1,4 @@
+// GameShell — Menu và điều hướng trò chơi.
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -48,6 +49,7 @@ namespace StarShift.UI
             view.Show(ShellScreen.Playing);
             view.Confirmation.SetActive(false); view.Error.SetActive(false); view.Loading.SetActive(false);
         }
+        // Gắn nút menu với hành động owner: chơi mới, tiếp tục, chơi lại và cài đặt.
         private void OnEnable()
         {
             session.RequireMissionResults = true;
@@ -55,6 +57,7 @@ namespace StarShift.UI
             Bind(view.Continue, () => StartGame(save.Continue));
             Bind(view.ReloadSave, () => { save.ReloadStorage(); Navigate(ShellScreen.Menu); });
             Bind(view.RecoverSave, () => Confirm(ShellCopy.ConfirmRecovery, () => StartGame(save.RecoverNewGame)));
+            // Nếu đã có Campaign, hỏi xác nhận trong UI trước khi gọi đường chơi mới ghi đè tiến trình.
             Bind(view.NewGame, () => {
                 if (save.PersistentSnapshot?.HasCampaign == true) Confirm(ShellCopy.ConfirmNew, () => StartGame(save.NewGame));
                 else StartGame(save.NewGame);

@@ -1,3 +1,4 @@
+// LevelFlow — Luồng màn, hướng chơi và camera.
 using System;
 using StarShift.Encounters;
 using StarShift.Player;
@@ -182,6 +183,7 @@ namespace StarShift.Gameplay
             presentation.Hide();
             PresentationChanged?.Invoke();
         }
+        // Dùng camera riêng của đợt nếu có, nếu không dùng baseline; vùng bay thay đổi theo profile này.
         public void ApplyEncounter(EncounterDefinition encounter)
         {
             var profile = encounter.CameraOverride != null ? encounter.CameraOverride : Baseline;

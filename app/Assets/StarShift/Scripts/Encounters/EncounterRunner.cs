@@ -1,3 +1,4 @@
+// EncounterRunner — Chạy đợt địch: đọc lịch sinh, theo dõi mục tiêu và điều phối hoàn thành đợt.
 using System;
 using System.Collections.Generic;
 using StarShift.Enemies;
@@ -151,6 +152,7 @@ namespace StarShift.Encounters
             }
             BeginEncounter(index);
         }
+        // Chuẩn bị lịch và trạng thái đợt mới; báo sự kiện để các owner khởi tạo theo đợt.
         private void BeginEncounter(int index, bool fromMissionTitle = false)
         {
             generation++;
@@ -166,6 +168,7 @@ namespace StarShift.Encounters
             beatStarts[0] = 0; entryLeadRemaining = fromMissionTitle ? 0 : Current.EntryLeadSeconds; cleanupOverlap = 0; optionalResolvedAt = -1;
             foreach (var action in Current.Groups) schedule.Add(new ScheduledGroup { Action = action, Start = action.StartTime, Started = action.EntryBeat == 0 });
             if (Current.HazardStream != null)
+                // Ghép lịch thiên thạch vào lịch chung của đợt; cùng dùng đường Spawn và thu hồi của runner.
                 foreach (var action in HazardStreamSchedule.Build(Current.HazardStream, Current.Duration)) schedule.Add(new ScheduledGroup { Action = action, Start = action.StartTime, Started = true });
             optionalFired = new bool[Current.OptionalEvents.Length];
             bossDefeated = completionSent = false;
@@ -243,6 +246,7 @@ namespace StarShift.Encounters
                 if (safetyGate.VisibleProjectileTimeLimit <= 0 || remaining <= 0) CompleteEncounter();
                 return;
             }
+            // Đợt theo thời gian bắt đầu quy trình kết thúc khi đủ thời lượng cấu hình.
             if ((Current.Completion == EncounterCompletion.Timeline || Current.Completion == EncounterCompletion.Survive) && Elapsed >= Current.Duration)
             {
                 ResolveEncounter();
@@ -279,6 +283,7 @@ namespace StarShift.Encounters
             ResolveDepartedSlots();
             if (Current.Completion == EncounterCompletion.Timeline && Current.CompleteWhenScheduleExhausted &&
                 ScheduleExhausted() && !HasLiveEnemies()) ResolveEncounter();
+            // Đợt tiêu diệt xét mục tiêu bắt buộc; địch tùy chọn không chặn điều kiện này.
             else if (Current.Completion == EncounterCompletion.Eliminate && requiredKilled == Current.RequiredCount) ResolveEncounter();
             else if (Current.Completion == EncounterCompletion.Boss && Current.RequiredCount > 0 && requiredKilled == Current.RequiredCount)
                 NotifyBossDefeated(token);
@@ -348,8 +353,10 @@ namespace StarShift.Encounters
                 !group.IsValid(null, EncounterCompletion.Timeline, float.MaxValue, out _)) return null;
             return Spawn(group, 0, false, true);
         }
+        // Lấy địch, gán dữ liệu nhóm và đăng ký theo dõi để thu hồi, tính hạ địch đúng phạm vi.
         private EnemyHealth Spawn(SpawnAction group, int index, bool required, bool optional = false)
         {
+            // Điểm sinh chung cho địch và thiên thạch: ưu tiên prefab của nhóm, nếu trống dùng prefab đợt.
             var root = pool.Rent(group.EnemyPrefab != null ? group.EnemyPrefab : Current.ScoutPrefab);
             var slot = new EnemySlot { Health = root.GetComponent<EnemyHealth>(), Flight = root.GetComponent<EntryHoldFlight>(),
                 Attack = root.GetComponent<SingleFireAttack>(), Required = required, GrantsRewards = group.GrantsRewards, Beat = group.EntryBeat, Optional = optional };
@@ -460,6 +467,7 @@ namespace StarShift.Encounters
             if (token != generation || Stage != EncounterStage.BossPostDeath || (playerLives != null && playerLives.CurrentLives == 0)) return false;
             CompleteEncounter(); return true;
         }
+        // Chốt hoàn thành sau các bước dọn và thời gian chờ; sau đó xử lý chuyển đợt hoặc kết thúc màn.
         private void CompleteEncounter()
         {
             if (completionSent) return;
@@ -503,6 +511,7 @@ namespace StarShift.Encounters
                 if (!standalone) MissionCompleted?.Invoke();
             }
         }
+        // Hủy lượt đang chạy và thu hồi đối tượng; mã lượt giúp callback cũ không tác động lượt mới.
         public void StopRun()
         {
             generation++;

@@ -1,3 +1,4 @@
+// RunRewards — Điểm và thống kê lượt chơi; việc ghi tiến trình lâu dài thuộc hệ thống lưu riêng.
 using UnityEngine;
 using StarShift.Persistence;
 using System;
@@ -16,12 +17,14 @@ namespace StarShift.Rewards
         public int EnemiesDestroyed { get; private set; }
         public int CoresCollected { get; private set; }
         public int SupplyCaptured { get; private set; }
+        // Cộng điểm và chỉ tăng số địch tiêu diệt khi mục tiêu được tính là enemy.
         public void AddKill(int score, bool countsAsEnemy = true)
         {
             Score += Mathf.Max(0, score);
             if (countsAsEnemy) EnemiesDestroyed++;
         }
         public event Action<int> ShardsChanged;
+        // Cộng Shard rồi báo phần tăng; checked chặn tràn số thay vì âm thầm làm sai số dư.
         public void AddShards(int amount)
         {
             amount = Mathf.Max(0, amount);

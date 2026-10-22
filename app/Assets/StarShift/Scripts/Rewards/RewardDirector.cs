@@ -1,3 +1,4 @@
+// RewardDirector — Sinh và phân phối phần thưởng.
 using System;
 using StarShift.Encounters;
 using StarShift.Enemies;
@@ -80,6 +81,7 @@ namespace StarShift.Rewards
             if (runner.HasActiveRun) BeginEncounter(runner.Current, runner.Generation);
 #endif
         }
+        // Nhận sự kiện hạ địch để cộng điểm rồi chọn phần thưởng từ bảng của mục tiêu.
         private void OnEnemyDefeated(EnemyHealth enemy, RewardDropTable table, Vector3 position)
         {
             rewards.AddKill(enemy.Definition.Score * (enemy.Modifier != null ? 2 : 1),
@@ -141,6 +143,7 @@ namespace StarShift.Rewards
             if (support != null) roller.RecordCrate(support, lives.CurrentLives);
         }
         public RewardPickup Spawn(PickupDefinition item, RewardDropTable crate, Vector3 position) => Spawn(item, crate, position, false);
+        // Sinh vật phẩm từ pool; kiểm tra giới hạn số lượng và đưa vị trí rơi vào vùng nhìn thấy.
         private RewardPickup Spawn(PickupDefinition item, RewardDropTable crate, Vector3 position, bool guaranteed)
         {
             if ((item == null && crate == null) || !runner.HasActiveRun || runner.Stage == EncounterStage.Intro ||
@@ -159,6 +162,7 @@ namespace StarShift.Rewards
             DropSpawned?.Invoke(item, crate);
             return pickup;
         }
+        // Chỉ xác nhận đã nhặt sau khi PlayerPickupReceiver áp dụng vật phẩm thành công.
         private bool Collect(RewardPickup pickup)
         {
             var item = pickup.Item;

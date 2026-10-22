@@ -30,6 +30,7 @@ namespace StarShift.Gameplay
         private float elapsed;
         private float duration;
 
+        // Vùng bay có hiệu lực hiện tại; movement đọc vùng này thay vì tự đặt giới hạn riêng.
         public Rect CurrentPlayableViewport { get; private set; } = new Rect(0, 0, 1, 1);
         public GameplayViewSettings TargetView => targetView;
         public bool IsTransitioning { get; private set; }
@@ -87,6 +88,7 @@ namespace StarShift.Gameplay
 
         public void RequestView(GameplayViewSettings settings) => RequestView(settings, transitionDuration);
 
+        // Nhận yêu cầu đổi zoom/vùng bay và chuyển dần từ khung hiện tại sang cấu hình mới.
         public void RequestView(GameplayViewSettings settings, float seconds)
         {
             settings = settings.Validated();
@@ -128,6 +130,7 @@ namespace StarShift.Gameplay
             IsTransitioning = elapsed < duration;
         }
 
+        // Nội suy cả zoom lẫn mép vùng bay; giới hạn di chuyển phải theo vùng đang chuyển, không chỉ vùng đích.
         private void Apply(float t)
         {
             gameplayCamera.orthographicSize = Mathf.Max(GameplayViewSettings.MinimumSize,

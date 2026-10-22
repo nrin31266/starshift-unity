@@ -1,3 +1,4 @@
+// EncounterFireCoordinator — Phối hợp nhịp bắn của địch.
 using System.Collections.Generic;
 using StarShift.Enemies;
 using StarShift.Gameplay;
@@ -16,6 +17,7 @@ namespace StarShift.Encounters
         private int volleyShots;
         private float remaining;
         private BossPhaseRunner boss;
+        // Đếm nguồn đang chiếm lượt tấn công; boss đang đánh cũng tính một nguồn.
         public int BusyCount => selected.Count + (boss != null && boss.IsAttacking ? 1 : 0);
         public bool CanStartBossAttack => definition != null && safetyGate.CanFire &&
             remaining <= 0 && volleyShots < definition.ShotsPerVolley && BusyCount < Mathf.Min(4, definition.ActiveShooterLimit);
@@ -26,6 +28,7 @@ namespace StarShift.Encounters
             remaining = volleyShots >= definition.ShotsPerVolley ? definition.VolleyPause : definition.ShotSpacing;
         }
 
+        // Bắt đầu nhịp bắn của đợt với ngân sách và thời gian nghỉ lấy từ cấu hình.
         public void Begin(EncounterDefinition config, EnemyFireGate gate)
         {
             Stop();
@@ -61,6 +64,7 @@ namespace StarShift.Encounters
             boss = null;
         }
 
+        // Điều phối lượt tấn công và khoảng nghỉ để địch không đồng loạt bắn không giới hạn.
         private void FixedUpdate()
         {
             if (Time.timeScale <= 0) return;

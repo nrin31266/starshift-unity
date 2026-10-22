@@ -7,17 +7,21 @@ namespace StarShift.Player
     public sealed class PlayerMovementBounds : MonoBehaviour
     {
         [SerializeField, Tooltip("Envelope gameplay quanh root, đơn vị local. Bao đủ thân tàu; độc lập artwork và damage hitbox.")]
+        // Kích thước bao thân dùng để chặn mép; độc lập hình vẽ và hitbox nhận sát thương.
         private Vector2 footprintSize = new Vector2(.8f, 1f);
 
         public Vector2 ClampPosition(Vector2 proposedPosition, Camera gameplayCamera)
             => ClampPosition(proposedPosition, gameplayCamera, new Rect(0, 0, 1, 1));
 
+        // Giới hạn cả kích thước tàu trong vùng chơi, không chỉ chặn điểm tâm tàu.
         public Vector2 ClampPosition(Vector2 proposedPosition, Camera gameplayCamera, Rect playableViewport)
         {
             var worldPosition = new Vector3(proposedPosition.x, proposedPosition.y, transform.position.z);
+            // Đổi sang tọa độ màn hình chuẩn hóa: góc dưới trái là (0,0), góc trên phải là (1,1).
             var viewportPosition = gameplayCamera.WorldToViewportPoint(worldPosition);
             var minimumOffset = new Vector2(float.PositiveInfinity, float.PositiveInfinity);
             var maximumOffset = new Vector2(float.NegativeInfinity, float.NegativeInfinity);
+            // Chiếu bốn góc thân tàu để chặn cả mũi/cánh, kể cả khi tàu xoay hoặc đổi scale.
             var halfSize = footprintSize * .5f;
             for (int x = -1; x <= 1; x += 2)
             for (int y = -1; y <= 1; y += 2)
@@ -27,8 +31,11 @@ namespace StarShift.Player
                 minimumOffset = Vector2.Min(minimumOffset, projectedOffset);
                 maximumOffset = Vector2.Max(maximumOffset, projectedOffset);
             }
+            // Chặn trái/phải theo vùng được bay và kích thước thân; không mặc định được bay hết màn hình.
             viewportPosition.x = ClampAxis(viewportPosition.x, playableViewport.xMin - minimumOffset.x, playableViewport.xMax - maximumOffset.x);
+            // Chặn dưới/trên theo vùng được bay; yMax thấp hơn 1 sẽ giữ tàu ngoài dải phía trên bị cấm.
             viewportPosition.y = ClampAxis(viewportPosition.y, playableViewport.yMin - minimumOffset.y, playableViewport.yMax - maximumOffset.y);
+            // Đổi vị trí đã chặn về thế giới để movement áp vào Rigidbody2D.
             return gameplayCamera.ViewportToWorldPoint(viewportPosition);
         }
 
@@ -43,6 +50,7 @@ namespace StarShift.Player
             footprintSize = Vector2.Max(footprintSize, Vector2.zero);
         }
 
+        // Vẽ khung bao khi chọn tàu trong Editor để kiểm tra kích thước chặn mép.
         private void OnDrawGizmosSelected()
         {
             var previousMatrix = Gizmos.matrix;

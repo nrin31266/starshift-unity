@@ -1,3 +1,4 @@
+// ScenePrefabPool — Kho tái sử dụng địch và vật phẩm.
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,6 +21,7 @@ namespace StarShift.Gameplay
             EnsureStorage();
             foreach (var e in entries) if (e.Root != null && !e.Root.activeSelf) e.Root.transform.SetParent(storage, false);
         }
+        // Tìm đối tượng đang cất đúng prefab; chỉ Instantiate khi kho chưa có đối tượng phù hợp.
         public GameObject Rent(GameObject prefab)
         {
             EnsureStorage();
@@ -30,6 +32,7 @@ namespace StarShift.Gameplay
             entries.Add((root, prefab));
             return root;
         }
+        // Tắt và cất đối tượng để tái sử dụng; không Destroy sau mỗi lần dùng.
         public void Return(GameObject root)
         {
             if (root == null) return;

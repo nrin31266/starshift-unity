@@ -33,6 +33,7 @@ namespace StarShift.Enemies
         public bool AwaitingFirstDirectedAttack => directed != null && directed.AttacksFired == 0;
         public bool IsTelegraphing => directed != null ? directed.IsBusy : telegraphing;
         private bool CanRequestAttack => isActiveAndEnabled && fireGate != null && fireGate.CanFire && Eligible && !IsTelegraphing && remaining <= .000001f;
+        // Chỉ tấn công khi địch còn sống, đường bay cho phép và nòng súng đang trong vùng nhìn.
         private bool Eligible => fireGate != null && fireGate.CanContinueAttack && health.IsAlive &&
             flight.isActiveAndEnabled && flight.CanShoot && flight.IsPointVisible(muzzle.position) &&
             target != null && target.gameObject.activeInHierarchy;
@@ -43,6 +44,7 @@ namespace StarShift.Enemies
             ResetSequence();
         }
 
+        // Xin bắt đầu đòn: chạy thời gian báo trước rồi mới phóng các loạt đạn.
         public bool TryRequestAttack()
         {
             if (directed != null) return isActiveAndEnabled && directed.TryRequestAttack();
@@ -91,6 +93,7 @@ namespace StarShift.Enemies
             ResetSequence();
         }
 
+        // Đếm thời gian báo trước, bắn theo loạt và chờ hồi chiêu; dùng pool cho đạn địch.
         private void FixedUpdate()
         {
             if (Time.timeScale <= 0) return;

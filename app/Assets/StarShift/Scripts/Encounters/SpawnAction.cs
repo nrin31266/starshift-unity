@@ -1,3 +1,4 @@
+// SpawnAction — Cấu hình một nhóm sinh địch: số lượng, lịch xuất hiện, đội hình và đường bay.
 using System;
 using StarShift.Enemies;
 using StarShift.Rewards;
@@ -14,13 +15,17 @@ namespace StarShift.Encounters
         [Min(.1f)] public float SpawnScale = 1;
         public float VisualSpin;
         public bool ContinuousTransit;
+        // Số địch của nhóm này; không phải tổng số địch của cả màn.
         [Min(1)] public int Count = 3;
+        // Độ trễ nhóm tính từ mốc beat được gán; runner kết hợp với lịch beat để sinh địch.
         [Min(0)] public float StartTime;
+        // Khoảng thời gian giữa hai địch liên tiếp trong cùng nhóm.
         [Min(0)] public float Stagger = .35f;
         public GameObject EnemyPrefab;
         public EnemyDefinition EnemyDefinition;
         public RewardDropTable RewardOverride;
         public EnemyModifierDefinition Elite;
+        // Đánh dấu mục tiêu bắt buộc cho điều kiện tiêu diệt hoặc boss của đợt.
         public bool Required = true;
         public bool GrantsRewards = true;
         public FormationLayout Formation;
@@ -30,6 +35,7 @@ namespace StarShift.Encounters
         public FlightSequence Sequence;
         public FormationPlan Plan;
         [Min(0)] public int FirstSlot;
+        // HP gốc ghi đè cho nhóm; 0 nghĩa là dùng máu từ EnemyDefinition.
         [Min(0)] public int HpOverride;
 
         // Transit trực tiếp cho hazard stream; formation phức tạp dùng Sequence.
@@ -41,6 +47,7 @@ namespace StarShift.Encounters
         [HideInInspector] public Vector2 ExitAnchor = new Vector2(1.18f, .3f);
         [HideInInspector] public float ExitDuration = 3f;
 
+        // Ưu tiên vị trí do FormationPlan định sẵn; nếu không có thì tính từ kiểu đội hình.
         public Vector2 SlotOffset(int index)
         {
             if (Plan != null) return Plan.Slots[FirstSlot + index];
