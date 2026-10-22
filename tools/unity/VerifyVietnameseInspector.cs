@@ -47,7 +47,7 @@ public static class VerifyVietnameseInspector
         }
         finally { UnityEngine.Object.DestroyImmediate(clone); }
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().isDirty) throw new System.Exception("Scene dirty");
-        
+
         var weaponAsset = UnityEditor.AssetDatabase.LoadMainAssetAtPath("Assets/StarShift/Data/Weapons/PulseLaser.asset");
         var weaponSo = new UnityEditor.SerializedObject(weaponAsset);
         var indexed = typeof(StarShift.Editor.VietnameseFieldsDrawer).GetMethod("IndexedLabel", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
