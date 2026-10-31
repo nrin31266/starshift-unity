@@ -1,3 +1,4 @@
+// EnemyDamagePresentation — Đổi màu hoặc khung hình thân địch theo mức máu còn lại.
 using UnityEngine;
 
 namespace StarShift.Enemies
@@ -71,6 +72,7 @@ namespace StarShift.Enemies
             Refresh();
         }
 
+        // Chọn hình và màu từ tỉ lệ HP; không sửa máu hoặc logic nhận sát thương.
         private void Refresh()
         {
             var stage = DamageStage;

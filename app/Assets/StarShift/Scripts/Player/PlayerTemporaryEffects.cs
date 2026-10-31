@@ -19,6 +19,7 @@ namespace StarShift.Player
         private void Awake() => gate = GetComponent<PlayerGameplayGate>();
         private void OnEnable() => gate.StateChanged += OnStateChanged;
         private void OnDisable() { gate.StateChanged -= OnStateChanged; Clear(); }
+        // Khi tàu chết hoặc lượt kết thúc, xóa hiệu ứng tạm để không kéo quyền lợi sang trạng thái mới.
         private void OnStateChanged()
         {
             if (gate.State == PlayerGameplayState.Dying || gate.State == PlayerGameplayState.GameOver || gate.State == PlayerGameplayState.Result) Clear();

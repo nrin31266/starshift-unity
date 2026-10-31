@@ -1,3 +1,4 @@
+// BossSkillPhasePresentation — Hiện từng bước chuẩn bị, khóa, đánh và hồi của kỹ năng boss; không quyết sát thương.
 using UnityEngine;
 
 namespace StarShift.Enemies
@@ -53,6 +54,7 @@ namespace StarShift.Enemies
             if (cue != null) cue.enabled = false;
         }
 
+        // Đổi hình báo theo bước kỹ năng được phát từ module; hiệu ứng không kéo dài thời gian gây sát thương.
         private void OnPhase(AttackPhase next)
         {
             observedPhase = next;

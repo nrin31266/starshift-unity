@@ -47,6 +47,7 @@ namespace StarShift.Gameplay
             level = definition;
         }
 
+        // Thiết lập hướng chơi và camera trước khi mở intro hoặc đợt được chọn.
         public void Begin(bool withIntro, PlayDirection? directionOverride = null, CameraProfile cameraOverride = null, int encounterIndex = 0, bool missionArrival = false, bool suppressTitle = false)
         {
             startingEncounterIndex = encounterIndex;
@@ -217,6 +218,7 @@ namespace StarShift.Gameplay
             player.GetComponent<RelativeDragMovement>().ResetForCheckpoint(Direction);
             player.transform.rotation=Quaternion.Euler(0,0,PlayDirectionSpace.Rotation(Direction));
         }
+        // Kết thúc hành trình và trả quyền điều khiển theo khung nhìn đích, có thể giữ tư thế tàu khi nối màn.
         public void FinishRegionTravel(bool preservePose = false, LevelDefinition destination = null)
         {
             Direction = PlayDirection.Right;
@@ -230,6 +232,7 @@ namespace StarShift.Gameplay
             presentation.Hide();
             PresentationChanged?.Invoke();
         }
+        // Hủy luồng và hiệu ứng chuyển cảnh để Retry không tiếp tục hành trình cũ.
         public void Cancel()
         {
             IntroPhase = MissionIntroPhase.None;

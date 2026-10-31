@@ -1,3 +1,4 @@
+// RewardDropTable — Cấu hình xác suất, trọng số và vật phẩm bảo đảm khi chọn phần thưởng rơi.
 using System;
 using UnityEngine;
 

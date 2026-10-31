@@ -1,3 +1,4 @@
+// DirectedAttackDefinition — Cấu hình đòn lao hoặc tia: thời gian báo trước, bám hướng, kích thước và thời gian hoạt động.
 using StarShift.Encounters;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ namespace StarShift.Enemies
     {
         public DirectedAttackKind Kind;
         [Min(.1f)] public float ChargeSeconds = 1.25f;
+        // Chỉ bám tàu trong khoảng đầu của charge; thời gian còn lại giữ hướng để người chơi né.
         [Min(0)] public float TrackingSeconds = .35f;
         [Min(.05f)] public float ActiveSeconds = .55f;
         [Min(.1f)] public float CooldownSeconds = 3.5f;

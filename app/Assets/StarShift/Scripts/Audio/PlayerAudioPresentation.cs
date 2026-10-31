@@ -1,3 +1,4 @@
+// PlayerAudioPresentation — Phát âm thanh súng, nhặt vật phẩm, mất mạng và tên lửa của người chơi.
 using StarShift.Combat;
 using StarShift.Player;
 using StarShift.Rewards;
@@ -37,6 +38,7 @@ namespace StarShift.Audio
         {
             if (gate.State == PlayerGameplayState.Dying) { audio.Play(AudioCue.PlayerHit); audio.Play(AudioCue.PlayerDeath); ventAt = -1; }
         }
+        // So sánh trạng thái súng và nhiệt giữa các frame để chỉ phát tiếng ở thời điểm thay đổi.
         private void LateUpdate()
         {
             if (weapon.ShotsFired > shots) audio.Play(weapon.CurrentBranch == WeaponBranch.Pulse ? AudioCue.Pulse : weapon.CurrentBranch == WeaponBranch.Plasma ? AudioCue.Plasma : AudioCue.Homing);

@@ -1,3 +1,4 @@
+// PickupDefinition — Cấu hình loại vật phẩm, hình hiển thị, thời gian tồn tại và tác dụng khi nhặt.
 using StarShift.Combat;
 using UnityEngine;
 

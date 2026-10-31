@@ -47,6 +47,7 @@ namespace StarShift.Player
 
         public override Vector2 ReadDelta() => frameDelta;
 
+        // Chọn nguồn chuột hoặc chạm, giữ đúng pointer đang kéo và loại thao tác bắt đầu trên giao diện.
         private Vector2 SamplePointer()
         {
             if (!isActiveAndEnabled) return Vector2.zero;

@@ -87,6 +87,7 @@ namespace StarShift.Gameplay
             if (Flow != null) Flow.RefreshMissionTitle();
         }
 
+        // Dọn đạn, hiệu ứng, nhiệt và đồng hồ qua từng owner để Retry không mang trạng thái lượt cũ.
         public void ResetRuntime(bool preserveInput = false)
         {
             region?.Cancel();
@@ -153,6 +154,7 @@ namespace StarShift.Gameplay
 
         private void OnApplicationFocus(bool focused) { if (!focused) PauseForBackground(); }
         private void OnApplicationPause(bool paused) { if (paused) PauseForBackground(); }
+        // Mất focus cũng phải khóa thao tác và xử lý pause theo trạng thái chuyển cảnh hiện tại.
         private void PauseForBackground()
         {
             if (transitionHeld) transitionBackgrounded = true;
@@ -185,6 +187,7 @@ namespace StarShift.Gameplay
             Changed?.Invoke();
         }
 
+        // Dừng nguồn bắn và thu hồi đạn trước khi đóng băng để đối tượng nguy hiểm không còn tồn tại ngầm.
         private void EndCombat()
         {
             runner.StopRun();

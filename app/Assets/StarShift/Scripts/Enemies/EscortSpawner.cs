@@ -1,3 +1,4 @@
+// EscortSpawner — Sinh và theo dõi quân hộ tống qua EncounterRunner; không tạo luồng thưởng riêng.
 using System.Collections.Generic;
 using StarShift.Encounters;
 using StarShift.Gameplay;
@@ -39,6 +40,7 @@ namespace StarShift.Enemies
                 throw new System.InvalidOperationException("Invalid escort spawner: " + name);
         }
         private void OnEnable() { generation = runner.Generation; remaining = intervalSeconds; ordinal = 0; SpawnCount = 0; escorts.Clear(); }
+        // Chỉ sinh trong đúng lượt và giới hạn quân còn sống; đăng ký qua runner để dùng chung dọn đợt.
         public bool SpawnEscort()
         {
             if (!isActiveAndEnabled || !health.IsAlive || !flight.IsHolding || !gate.CanFire || runner.Generation != generation || runner.Stage != EncounterStage.Running || LiveCount >= capacity) return false;
@@ -59,6 +61,7 @@ namespace StarShift.Enemies
             if (remaining > 0) return;
             remaining = intervalSeconds; SpawnEscort();
         }
+        // Yêu cầu quân còn lại rút lui; runner vẫn chịu trách nhiệm thu hồi từng đối tượng.
         private void OnDisable()
         {
             foreach (var e in escorts)

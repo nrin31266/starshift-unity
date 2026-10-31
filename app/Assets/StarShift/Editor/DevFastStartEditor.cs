@@ -1,3 +1,4 @@
+// DevFastStartEditor — Giao diện chọn nhiệm vụ, điểm bắt đầu và tùy chọn chạy thử trong Unity Editor.
 using System.Collections.Generic;
 using System.Linq;
 using StarShift.Dev;

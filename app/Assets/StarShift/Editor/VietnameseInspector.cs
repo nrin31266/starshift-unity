@@ -1,3 +1,4 @@
+// VietnameseInspector — Nhãn và gợi ý tiếng Việt cho các Inspector cấu hình và component được hỗ trợ.
 using System.Collections.Generic;
 using StarShift.Combat;
 using StarShift.Dev;

@@ -1,3 +1,4 @@
+// BossAttackModule — Thực hiện một đòn của boss hoặc chuyển cho bộ xử lý đòn tương ứng; BossPhaseRunner chọn lúc đánh.
 using StarShift.Combat;
 using StarShift.Gameplay;
 using StarShift.Player;
@@ -73,6 +74,7 @@ namespace StarShift.Enemies
             }, null, shot => shot.ResetForPool(), shot => { if (shot != null) Destroy(shot.gameObject); }, true, 8, 32);
         }
         private void OnEnable() { ShotsFired = 0; }
+        // Kiểm tra quyền tấn công rồi chạy đúng loại đòn; module không tự chọn thứ tự kỹ năng của boss.
         public bool BeginAttack()
         {
             if (!isActiveAndEnabled || IsBusy || !health.IsAlive || !gate.CanFire) return false;
@@ -87,6 +89,7 @@ namespace StarShift.Enemies
             }
             return true;
         }
+        // Dừng đòn ủy quyền và nhả trạng thái chuyển động trước khi boss đổi pha hoặc bị thu hồi.
         public void CancelAttack()
         {
             beamDamage?.Reset();
@@ -98,6 +101,7 @@ namespace StarShift.Enemies
             if (extraIdleColors != null) for (int i = 0; i < extraTelegraphs.Length; i++) extraTelegraphs[i].color = extraIdleColors[i];
             if (beam != null) { beam.Hide(); flight?.SetMotionPaused(false); }
         }
+        // Chỉ đòn đã bắt đầu mới tiến đồng hồ; báo trước xong mới bật vùng gây sát thương hoặc phóng đạn.
         private void FixedUpdate()
         {
             if (Time.timeScale <= 0) return;

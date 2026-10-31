@@ -1,3 +1,4 @@
+// RewardRoller — Chọn vật phẩm theo trọng số, trạng thái người chơi và cơ chế hỗ trợ khi thiếu phòng thủ.
 using System;
 using StarShift.Player;
 
@@ -16,6 +17,7 @@ namespace StarShift.Rewards
             if (random.NextDouble() < table.MajorChance) return SelectMajor(table, receiver, lives, loadout, false);
             return random.NextDouble() < table.ShardChance ? table.Shard : null;
         }
+        // Chỉ quay trong nhóm vật phẩm dùng được; hỗ trợ phòng thủ có thể loại các lựa chọn khác khi đủ điều kiện.
         public PickupDefinition SelectMajor(RewardDropTable table, PlayerPickupReceiver receiver, PlayerLives lives, WeaponLoadout loadout, bool crate, bool? weaponCore = null)
         {
             if (table.GuaranteedPickup != null && receiver.CanUse(table.GuaranteedPickup) &&
@@ -33,6 +35,7 @@ namespace StarShift.Rewards
             }
             return null;
         }
+        // Bỏ món không dùng được, rồi tăng trọng số phòng thủ khi còn một mạng và lõi súng chưa mở.
         private static float Weight(WeightedPickup entry, PlayerPickupReceiver receiver, PlayerLives lives, WeaponLoadout loadout, bool pity, bool? weaponCore)
         {
             if (entry == null || entry.Item == null || entry.Weight <= 0 || !receiver.CanUse(entry.Item)) return 0;
@@ -44,6 +47,7 @@ namespace StarShift.Rewards
             if (entry.Item.Kind == PickupKind.WeaponCore && loadout.Level(entry.Item.Branch) == 0) weight *= 2;
             return weight;
         }
+        // Đếm chuỗi thùng thiếu phòng thủ lúc ít mạng; nhận đồ phòng thủ hoặc hồi nhiều mạng thì xóa chuỗi.
         public void RecordCrate(PickupDefinition item, int livesBeforeCollection)
         {
             if (IsDefensive(item) || livesBeforeCollection > 1) lowLifeCratesWithoutDefense = 0;

@@ -1,3 +1,4 @@
+// EmergencyMissileReserve — Quản lý số tên lửa dự trữ, hồi chiêu, thời gian bay và sát thương khi nổ.
 using System;
 using System.Collections.Generic;
 using StarShift.Combat;
@@ -43,6 +44,7 @@ namespace StarShift.Player
         private void Awake() { gate = GetComponent<PlayerGameplayGate>(); ResetForSession(); }
         private void OnEnable() => runner.RunStarted += ResetForSession;
         private void OnDisable() { runner.RunStarted -= ResetForSession; cooldown = 0; CancelPending(); }
+        // Đếm hồi chiêu và thời gian bay bằng đồng hồ gameplay để pause dừng cả tên lửa chờ nổ.
         private void FixedUpdate()
         {
             cooldown = Mathf.Max(0, cooldown - Time.fixedDeltaTime);

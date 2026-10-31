@@ -1,3 +1,4 @@
+// SaveData — Các cấu trúc dữ liệu lưu: chiến dịch, hồ sơ, cài đặt và thống kê; không chứa đối tượng scene.
 using System;
 using StarShift.Combat;
 
@@ -31,7 +32,9 @@ namespace StarShift.Persistence
         public string MissionId;
         public CampaignStatus Status;
         public CheckpointData Checkpoint;
+        // Mốc Shard đã cộng trong đợt để chơi lại checkpoint không nhận tiền trùng.
         public int EncounterShardHighWater;
+        // Điểm các nhiệm vụ trước, tách khỏi thống kê của nhiệm vụ đang chạy.
         public long ScoreBeforeMission;
     }
 

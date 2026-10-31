@@ -1,3 +1,4 @@
+// BossArmorBreakPresentation — Hiện giáp boss nứt vỡ theo máu và phát âm thanh khi vỡ giáp.
 using UnityEngine;
 
 namespace StarShift.Enemies
@@ -21,6 +22,7 @@ namespace StarShift.Enemies
         private void Awake() { health = GetComponent<EnemyHealth>(); audio = FindAnyObjectByType<StarShift.Audio.AudioDirector>(); }
         private void OnEnable() { Clear(); health.Damaged += OnDamaged; }
         private void OnDisable() { health.Damaged -= OnDamaged; Clear(); }
+        // So ngưỡng máu để chỉ phát nhịp vỡ giáp khi vừa vượt mốc, tránh lặp theo mỗi hit.
         private void OnDamaged()
         {
             for (int i = 0; i < 2; i++)

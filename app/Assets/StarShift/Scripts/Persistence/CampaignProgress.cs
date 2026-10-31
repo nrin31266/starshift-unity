@@ -1,3 +1,4 @@
+// CampaignProgress — Xử lý tiến trình, kỷ lục và phần thưởng trên dữ liệu lưu; không điều khiển scene.
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,6 +23,7 @@ namespace StarShift.Persistence
             this.store = store; this.validate = validate;
             Reload();
         }
+        // Không đọc đè khi còn thay đổi chưa ghi; chỉ tạo dữ liệu mặc định khi chưa có file lưu.
         public bool Reload()
         {
             if (Dirty) return false;
@@ -75,6 +77,7 @@ namespace StarShift.Persistence
             data.Campaign.EncounterShardHighWater = 0;
             Dirty = true;
         }
+        // Chỉ cộng phần vượt mốc đã nhận trong đợt để Retry không nhân đôi tiền.
         public void CreditEncounterShards(int cumulative)
         {
             var campaign = data.Campaign;
@@ -107,6 +110,7 @@ namespace StarShift.Persistence
                 ScoreBeforeMission = checked(data.Campaign.ScoreBeforeMission + completedMissionScore) };
             Dirty = true;
         }
+        // Gộp kết quả và checkpoint kế tiếp trước khi ghi để bản lưu không rơi vào trạng thái chuyển màn dở.
         public bool TryCommitClear(int score, float seconds, CheckpointData resolved,
             string nextMission, CheckpointData nextCheckpoint, CampaignStatus status)
         {
@@ -118,6 +122,7 @@ namespace StarShift.Persistence
             return CommitOrRestore(previous, wasDirty);
         }
 
+        // Ghi thất bại thì phục hồi cả dữ liệu và cờ chưa lưu, tránh UI coi giao dịch đã thành công.
         private bool CommitOrRestore(SaveEnvelope previous, bool wasDirty)
         {
             if (Flush()) return true;
@@ -143,6 +148,7 @@ namespace StarShift.Persistence
             Dirty = true;
             return CommitOrRestore(previous, wasDirty);
         }
+        // Trừ tiền và đổi trang bị trong cùng giao dịch; lỗi ghi phải trả lại tiền và lựa chọn trước.
         public bool EquipCosmetic(string id, int cost, int slot, string[] defaults)
         {
             if (data == null || string.IsNullOrWhiteSpace(id) || cost < 0 || slot < 0 || slot >= 3 || defaults == null || defaults.Length != 3) return false;

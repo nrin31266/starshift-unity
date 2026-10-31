@@ -75,6 +75,7 @@ namespace StarShift.Rewards
             active = cleanup.Register(this, scope.Token);
             gameObject.SetActive(active);
         }
+        // Cập nhật trôi, nảy và thời gian sống; kiểm tra cả đoạn di chuyển để không bỏ lỡ tàu kéo nhanh.
         private void FixedUpdate()
         {
             if (!active) return;

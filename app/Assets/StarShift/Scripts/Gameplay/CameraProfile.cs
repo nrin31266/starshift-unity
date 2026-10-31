@@ -1,3 +1,4 @@
+// CameraProfile — Cấu hình khung nhìn và vùng tàu được di chuyển cho nhiệm vụ hoặc đợt.
 using UnityEngine;
 
 namespace StarShift.Gameplay

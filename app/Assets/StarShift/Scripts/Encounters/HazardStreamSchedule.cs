@@ -1,3 +1,4 @@
+// HazardStreamSchedule — Lập lịch thiên thạch theo cấu hình và seed để tái hiện; EncounterRunner mới sinh đối tượng.
 using System.Collections.Generic;
 using UnityEngine;
 namespace StarShift.Encounters

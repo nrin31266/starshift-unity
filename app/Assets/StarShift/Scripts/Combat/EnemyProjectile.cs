@@ -57,6 +57,7 @@ namespace StarShift.Combat
             launchSprite = visual.sprite;
         }
 
+        // Gán lại chủ, mục tiêu và thời gian sống mỗi lần lấy đạn từ pool trước khi bật vật lý.
         public void Launch(SingleFireDefinition definition, Transform muzzle, GameObject owner,
             GameObject player, Action<EnemyProjectile> release, float aimOffset = 0, Vector2? forward = null)
         {
@@ -87,6 +88,7 @@ namespace StarShift.Combat
             gameObject.SetActive(true);
         }
 
+        // Kiểm tra đường đạn trong bước vật lý để bắt va chạm cả khi đạn bay nhanh.
         private void FixedUpdate()
         {
             if (!flying || Time.timeScale <= 0) return;

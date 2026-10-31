@@ -9,6 +9,7 @@ namespace StarShift.Gameplay
     {
         private Transform storage;
         private readonly List<(GameObject Root, GameObject Prefab)> entries = new List<(GameObject, GameObject)>();
+        // Kho bị tắt để prefab mới tạo không chạy gameplay trước khi caller gán cấu hình.
         private void EnsureStorage()
         {
             if (storage != null) return;
@@ -16,6 +17,7 @@ namespace StarShift.Gameplay
             storage.SetParent(transform, false);
             storage.gameObject.SetActive(false);
         }
+        // Gom lại đối tượng đã tắt nhưng chưa đổi cha được lúc Unity đang tắt cây đối tượng.
         public void ReclaimInactive()
         {
             EnsureStorage();

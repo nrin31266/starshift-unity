@@ -1,3 +1,4 @@
+// BossBarrageDefinition — Cấu hình màn đạn và vùng nguy hiểm của boss; trạng thái đòn đang chạy nằm ở BossBarrage.
 using StarShift.Encounters;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ namespace StarShift.Enemies
     public sealed class BossBarrageDefinition : ScriptableObject
     {
         public BossBarrageKind Kind;
+        // Độ rộng khe an toàn theo tỉ lệ vùng nhìn, không phải số pixel.
         [Range(.18f, .35f)] public float OpeningWidth = .24f;
         [Min(.8f)] public float ChargeSeconds = 1.15f;
         [Range(2, 4)] public int PulseCount = 3;

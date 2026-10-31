@@ -1,3 +1,4 @@
+// TravelBackdrop — Cuộn nền lặp và hòa hai lớp cảnh trong hành trình; giữ kích thước hình nguồn.
 using UnityEngine;
 
 namespace StarShift.UI
@@ -39,6 +40,7 @@ namespace StarShift.UI
             return tile;
         }
 
+        // Lặp ô nền theo kích thước sprite rồi hòa lớp đi và đến; không kéo giãn ảnh theo toàn màn.
         public void Tick(Sprite from, Sprite to, float blend, Vector2 velocity, float delta)
         {
             if (from == null || to == null) return;
@@ -63,6 +65,7 @@ namespace StarShift.UI
         }
 
         public void Reset() => offset = Vector2.zero;
+        // Trả trạng thái renderer nguồn và dọn các ô tạm khi owner bị hủy.
         public void Dispose()
         {
             if (source != null) source.enabled = sourceWasEnabled;

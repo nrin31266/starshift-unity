@@ -106,6 +106,7 @@ namespace StarShift.UI
             };
             button.onClick.AddListener(withAudio); bindings.Add((button, withAudio));
         }
+        // Đọc trạng thái lưu để chọn màn menu hoặc lỗi; không tự ghi đè dữ liệu không đọc được.
         public void Boot()
         {
             initialized = true;
@@ -236,6 +237,7 @@ namespace StarShift.UI
             view.CosmeticAction.GetComponentInChildren<Text>().text = inStore ? (owned ? ShellCopy.Owned : profile.StellarShardBalance >= selected.ShardCost ? ShellCopy.Purchase(selected.ShardCost) : ShellCopy.NeedShards(selected.ShardCost - profile.StellarShardBalance)) : equipped ? ShellCopy.Equipped : ShellCopy.Equip;
             view.CosmeticAction.interactable = inStore ? !owned && profile.StellarShardBalance >= selected.ShardCost : !equipped;
         }
+        // Chờ giao dịch lưu thành công rồi mới áp ngoại hình và cập nhật ví trên giao diện.
         private void EquipCosmetic()
         {
             var selected = SlotOptions()[selectedCosmetic];
@@ -305,6 +307,7 @@ namespace StarShift.UI
             view.VibrationState.text = view.Vibration.isOn ? "BẬT" : "TẮT";
             view.ShakeState.text = view.Shake.isOn ? "BẬT" : "TẮT";
         }
+        // Chỉ áp lựa chọn sau khi lưu thành công để giao diện và cài đặt lâu dài không lệch nhau.
         private void ApplySettings()
         {
             var settings = new SettingsData { MusicVolume = view.Music.value, SfxVolume = view.Sfx.value,
@@ -347,6 +350,7 @@ namespace StarShift.UI
             view.GameOverRetry.interactable = session.CanRetry;
             previousPending = save.HasPendingClear; previousDirty = save.Dirty;
         }
+        // Rời phiên riêng, khóa gameplay và chuyển về frontend trước khi hiện menu.
         private void ReturnToShell(ShellScreen destination)
         {
             RunOperation(() => { save.ExitIsolated(); session.HoldForShell(); save.EnterFrontend(); return true; }, () => Navigate(destination), ShellCopy.SaveFailed);
@@ -356,6 +360,7 @@ namespace StarShift.UI
         {
             if (!busy) StartCoroutine(Transition(action, success, failure, returnOnFailure));
         }
+        // Khóa thao tác và hòa màn trước khi chạy yêu cầu; thất bại phải mở đường thử lại thay vì báo thành công.
         private IEnumerator Transition(Func<bool> action, Action success, string failure, bool returnOnFailure)
         {
             busy = true;

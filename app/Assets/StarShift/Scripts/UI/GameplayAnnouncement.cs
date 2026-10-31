@@ -1,3 +1,4 @@
+// GameplayAnnouncement — Hiện thông báo lớn hoặc nhỏ khi chơi, giữ theo thời lượng rồi ẩn.
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -38,6 +39,7 @@ namespace StarShift.UI
             showing = true;
             group.alpha = 0;
         }
+        // Giữ thông báo tới khi luồng gọi ẩn; không phụ thuộc đếm ngược của thông báo thường.
         public void ShowPersistent(string copy, string detail = "")
         {
             SetLayout(true);

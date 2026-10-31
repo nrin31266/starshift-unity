@@ -1,3 +1,4 @@
+// EnemyFireGate — Cho phép hoặc khóa địch bắn, chờ an toàn và thu hồi đạn khi luồng chơi yêu cầu.
 using System;
 using StarShift.Combat;
 using UnityEngine;
@@ -26,6 +27,7 @@ namespace StarShift.Gameplay
             }
         }
 
+        // Có thể chặn đòn mới nhưng giữ đòn đang chạy để đạn thoát tự nhiên khi chuyển đợt.
         public void Block(bool preserveActiveAttacks = false)
         {
             blocked = true;
@@ -34,6 +36,7 @@ namespace StarShift.Gameplay
             if (!preserveActiveAttacks) PermissionChanged?.Invoke();
         }
 
+        // Mở lại quyền bắn sau khoảng an toàn; không cho địch bắn ngay khi vừa chuyển trạng thái.
         public void ResumeAfter(float seconds)
         {
             bool preserved = preserveActiveAttacks;

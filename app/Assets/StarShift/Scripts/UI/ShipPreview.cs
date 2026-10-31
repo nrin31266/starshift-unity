@@ -1,3 +1,4 @@
+// ShipPreview — Hiện tàu, sơn, động cơ và vệt xem trước trong menu hoặc cửa hàng.
 using StarShift.Player;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +14,7 @@ namespace StarShift.UI
         private CosmeticOption chassis, trail;
         private float age;
         private Vector2 restPosition;
+        // Bố trí thân, động cơ và vệt theo tàu được chọn; dùng riêng cho ảnh xem trước giao diện.
         public void Apply(CosmeticCatalog source, CosmeticOption ship, CosmeticOption skin, CosmeticOption exhaust)
         {
             catalog = source; chassis = ship; trail = exhaust;

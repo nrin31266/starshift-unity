@@ -1,3 +1,4 @@
+// EnemyModifierDefinition — Cấu hình biến thể địch như Elite: hệ số máu, nhịp bắn, kích thước và màu nhấn.
 using UnityEngine;
 
 namespace StarShift.Enemies

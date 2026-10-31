@@ -1,3 +1,4 @@
+// GameAudioPresentation — Đổi nhạc và phát âm thanh theo lượt chơi, hạ địch, hành trình và kết quả.
 using StarShift.Encounters;
 using StarShift.Enemies;
 using StarShift.Gameplay;
@@ -35,6 +36,7 @@ namespace StarShift.Audio
             audio.Play(enemy.GetComponent<AsteroidVisualMotion>() != null ? AudioCue.AsteroidBreak :
                 enemy.Definition.MissileTier == MissileDamageTier.Large ? AudioCue.HeavyDeath : AudioCue.EnemyDeath);
         }
+        // Theo dõi chuyển trạng thái để đổi nhạc và phát âm chuyển cảnh một lần, tránh lặp mỗi frame.
         private void LateUpdate()
         {
             bool frontend = !session.HasActiveRun && !session.IsTerminal && shell.Screen != ShellScreen.Playing;

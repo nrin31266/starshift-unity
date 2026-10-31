@@ -1,3 +1,4 @@
+// AudioPalette — Cấu hình nhạc, clip hiệu ứng và giới hạn phát; trạng thái đang phát do AudioDirector giữ.
 using System;
 using UnityEngine;
 
@@ -21,7 +22,9 @@ namespace StarShift.Audio
             public AudioCue Id;
             public AudioClip Clip;
             [Range(0, 1)] public float Volume = .3f;
+            // Nhóm ưu tiên quyết định kênh phát riêng; số nhỏ được ưu tiên hơn.
             [Range(0, 4)] public int Tier = 3;
+            // Giới hạn số tiếng cùng cue phát chồng, không phải tổng số tiếng của cả game.
             [Range(1, 4)] public int MaxVoices = 2;
             [Min(0)] public float Interval = .1f;
             [Range(0, .1f)] public float Variation = .035f;

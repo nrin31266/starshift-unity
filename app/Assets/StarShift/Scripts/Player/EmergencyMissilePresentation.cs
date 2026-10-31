@@ -1,3 +1,4 @@
+// EmergencyMissilePresentation — Hiện tên lửa dự trữ bay và nổ theo sự kiện; sát thương do EmergencyMissileReserve xử lý.
 using UnityEngine;
 
 namespace StarShift.Player
@@ -21,6 +22,7 @@ namespace StarShift.Player
             ResetForSession();
             if (rocket != null) rocket.enabled = true;
         }
+        // Chỉ phát nổ và rung khi reserve báo đã nổ; hình bay tới đích không tự gây sát thương.
         private void OnDetonated()
         {
             if (rocket != null) rocket.enabled = false;

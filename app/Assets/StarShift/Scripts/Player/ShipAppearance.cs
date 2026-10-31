@@ -1,3 +1,4 @@
+// ShipAppearance — Áp tàu, sơn và vệt đã trang bị; bố trí và phát hiệu ứng động cơ khi chơi.
 using StarShift.Persistence;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -22,6 +23,7 @@ namespace StarShift.Player
         public CosmeticOption Chassis => chassis;
         private void Awake() { gate = GetComponent<PlayerGameplayGate>(); previousPosition = transform.position; }
         private void Start() => Apply(persistence.PersistentSnapshot?.Profile);
+        // Tra ngoại hình từ hồ sơ rồi cập nhật thân, động cơ và vệt; không đổi chỉ số chiến đấu.
         public void Apply(PlayerProfile profile)
         {
             chassis = catalog.Equipped(profile, CosmeticSlot.Chassis);
@@ -122,6 +124,7 @@ namespace StarShift.Player
             if (movementTrail != null)
                 movementTrail.transform.position = hull.transform.TransformPoint(chassis.MovementTrailSocket);
         }
+        // Xóa vệt cũ khi đổi vị trí tức thời để không vẽ đường nối từ checkpoint hoặc điểm chết.
         public void ResetTrail()
         {
             if (movementTrail == null) return;

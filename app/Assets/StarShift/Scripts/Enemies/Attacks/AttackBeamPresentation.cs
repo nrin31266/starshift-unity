@@ -1,3 +1,4 @@
+// AttackBeamPresentation — Vẽ vùng báo trước, tia và hướng quét; phần gây sát thương do hệ thống tấn công xử lý.
 using UnityEngine;
 
 namespace StarShift.Enemies
@@ -9,6 +10,7 @@ namespace StarShift.Enemies
         [SerializeField] private SpriteRenderer sweepArrow;
         private Camera gameplayCamera;
         private void Awake() => gameplayCamera = Camera.main;
+        // Đặt vùng báo và lõi tia theo hai điểm world; cờ active chỉ đổi hình, không gây sát thương.
         public void ShowSegment(Vector3 from, Vector3 to, float width, bool active, bool locked = true)
         {
             column.enabled = true;

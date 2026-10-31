@@ -1,3 +1,4 @@
+// HazardStreamDefinition — Cấu hình dòng thiên thạch: mẫu, mật độ, kích thước, hướng và tốc độ bay.
 using UnityEngine;
 namespace StarShift.Encounters
 {

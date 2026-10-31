@@ -1,3 +1,4 @@
+// SaveValidation — Kiểm tra cấu trúc, giá trị và checkpoint trước khi dữ liệu lưu được sử dụng.
 using System;
 using System.Collections.Generic;
 using StarShift.Combat;
@@ -8,6 +9,7 @@ namespace StarShift.Persistence
     public static class SaveValidation
     {
         public const int CurrentVersion = 2;
+        // Từ chối dữ liệu lưu có giá trị hoặc liên kết không hợp lệ trước khi phục hồi vào gameplay.
         public static bool IsValid(SaveEnvelope data, Func<string, string, bool> checkpointExists, int maximumLives)
         {
             if (data == null || data.SchemaVersion != CurrentVersion || !IsValid(data.Settings)) return false;

@@ -1,3 +1,4 @@
+// ShellCopy — Nội dung chữ, thông báo lỗi và định dạng số liệu của menu, kết quả và cửa hàng.
 using System;
 using StarShift.Persistence;
 

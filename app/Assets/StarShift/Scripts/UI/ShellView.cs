@@ -1,3 +1,4 @@
+// ShellView — Giữ liên kết các nút và màn giao diện; hiện màn và chuyển điểm chọn theo yêu cầu GameShell.
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -38,6 +39,7 @@ namespace StarShift.UI
         public ShellScreen Screen { get; private set; }
         private Button previousSelection;
 
+        // Đổi màn hiện và điểm chọn bàn phím; logic lưu hoặc khởi chạy vẫn thuộc GameShell.
         public void Show(ShellScreen screen)
         {
             Screen = screen;

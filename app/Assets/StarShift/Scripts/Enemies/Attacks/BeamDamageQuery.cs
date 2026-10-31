@@ -1,3 +1,4 @@
+// BeamDamageQuery — Kiểm tra tàu trong vùng tia và chuyển va chạm sang bộ nhận sát thương người chơi.
 using StarShift.Player;
 using UnityEngine;
 
@@ -21,6 +22,7 @@ namespace StarShift.Enemies
 
         public void Reset() => continuous = false;
 
+        // Quét vùng tia và đoạn giữa hai lần kiểm tra để giảm bỏ sót tàu đang kéo nhanh; hit vẫn qua PlayerContactReceiver.
         public void Apply(Vector2 center, Vector2 size, float angle, GameObject owner)
         {
             int count = Physics2D.OverlapBox(center, size, angle, filter, overlaps);

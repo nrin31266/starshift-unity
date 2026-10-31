@@ -1,3 +1,4 @@
+// PlanetJourney — Điều phối hành trình sang hành tinh: tăng tốc, đổi hướng, chờ chạm và tiếp cận.
 using System;
 using StarShift.Encounters;
 using StarShift.Player;
@@ -32,12 +33,14 @@ namespace StarShift.Gameplay
         public float HudOpacity => Phase == PlanetJourneyPhase.Brake ? Mathf.Clamp01(elapsed/.8f) : IsActive ? 0 : 1;
         public float TravelSeconds => glideSeconds+accelerationSeconds+turnSeconds+decelerationSeconds+revealSeconds;
         private void Awake(){flow=GetComponent<LevelFlow>();runner=GetComponent<EncounterRunner>();movement=player.GetComponent<RelativeDragMovement>();}
+        // Giữ nhiệm vụ đích và mã lượt, khóa điều khiển rồi bắt đầu các bước hành trình.
         public void Begin(LevelDefinition next, Action onCompleted)
         {
             Cancel(); destination=next; completed=onCompleted;generation=runner.Generation;departure=player.transform.position;
             player.SetCinematicLock(true);player.SetState(PlayerGameplayState.Transition);player.GetComponent<InputSystemPointerInput>().CancelGesture();
             Enter(PlanetJourneyPhase.Glide);
         }
+        // Chỉ nhận chạm ở bước đang chờ; xóa cử chỉ cũ để chạm tiếp tục không kéo tàu ngoài ý muốn.
         public bool AcceptTap()
         {
             if(!IsAwaitingTap)return false;
@@ -60,6 +63,7 @@ namespace StarShift.Gameplay
             flow.NotifyPresentationChanged();
             if(phase==PlanetJourneyPhase.AwaitingTap)flow.Announce("HÀNH TINH TIẾP THEO","Hành trình tiếp tục về phía trước.",0);
         }
+        // Mã lượt đổi thì hủy hành trình; nếu còn hợp lệ mới cập nhật tàu, camera và chuyển bước.
         private void FixedUpdate()
         {
             if(!IsActive)return;

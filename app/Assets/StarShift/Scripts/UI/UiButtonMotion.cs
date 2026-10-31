@@ -1,3 +1,4 @@
+// UiButtonMotion — Phóng nhẹ nút khi rê chuột hoặc được chọn và thu nhỏ khi nhấn, kể cả lúc tạm dừng.
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -11,6 +12,7 @@ namespace StarShift.UI
         private Vector3 rest;
         private bool hovered, focused, pressed;
         private void Awake() { control = GetComponent<Selectable>(); rest = transform.localScale; }
+        // Dùng thời gian thực để nút vẫn phản hồi khi pause; nội suy về kích thước gốc thay vì nhân dồn.
         private void Update()
         {
             var scale = control.IsInteractable() ? pressed ? .98f : hovered || focused ? 1.012f : 1 : 1;

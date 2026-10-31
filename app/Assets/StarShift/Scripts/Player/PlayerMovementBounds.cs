@@ -1,3 +1,4 @@
+// PlayerMovementBounds — Giới hạn toàn bộ thân tàu trong vùng được bay, kể cả khi xoay hoặc đổi kích thước.
 using UnityEngine;
 
 namespace StarShift.Player

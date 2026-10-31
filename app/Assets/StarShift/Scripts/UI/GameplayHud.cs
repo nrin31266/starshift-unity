@@ -226,6 +226,7 @@ namespace StarShift.UI
 
         public void OnDrag(PointerEventData data) => tapStarts.Remove(data.pointerId);
 
+        // Chỉ coi là chạm tiếp tục khi pointer kết thúc hợp lệ; thao tác kéo không được kích hoạt chuyển cảnh.
         public void OnPointerClick(PointerEventData data)
         {
             if (!tapStarts.TryGetValue(data.pointerId, out var started)) return;

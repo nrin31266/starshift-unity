@@ -1,3 +1,4 @@
+// EnemyEntryTelegraph — Hiện dấu báo địch sắp vào vùng chơi theo đường bay.
 using UnityEngine;
 namespace StarShift.Enemies
 {
@@ -8,6 +9,7 @@ namespace StarShift.Enemies
         private EntryHoldFlight flight;
         private Camera view;
         private void Awake() { flight = GetComponent<EntryHoldFlight>(); view = Camera.main; }
+        // Giữ dấu báo ở mép nhìn thấy khi địch còn ở ngoài màn để người chơi đọc được hướng vào.
         private void LateUpdate()
         {
             cue.enabled = flight.PhaseIndex == 0;

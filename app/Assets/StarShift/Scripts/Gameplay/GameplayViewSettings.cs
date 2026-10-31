@@ -1,3 +1,4 @@
+// GameplayViewSettings — Bộ thông số độ thu phóng và vùng di chuyển chuẩn hóa dùng chung cho camera.
 using System;
 using UnityEngine;
 

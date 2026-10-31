@@ -1,3 +1,4 @@
+// EncounterDebugView — Hiện thông tin đợt giao chiến và hình hỗ trợ kiểm tra trong Editor hoặc bản development.
 using System.Text;
 using StarShift.Encounters;
 using StarShift.Gameplay;

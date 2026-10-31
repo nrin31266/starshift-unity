@@ -116,6 +116,7 @@ namespace StarShift.Encounters
         public void StartRun(string startPoint, bool singleEncounter)
             => StartRun(startPoint, singleEncounter, false, null, null);
 
+        // Thu hồi lượt cũ rồi tăng mã lượt; các callback cũ phải mất hiệu lực trước khi khởi tạo lượt mới.
         public void StartRun(string startPoint, bool singleEncounter, bool skipIntro,
             PlayDirection? directionOverride, CameraProfile cameraOverride, Action restoreState = null, bool missionArrival = false, bool preservePlayerInput = false)
         {
@@ -313,6 +314,7 @@ namespace StarShift.Encounters
                 if (!slot.Resolved && !slot.Optional && (beat < 0 || slot.Beat == beat) && slot.Health != null && slot.Health.IsAlive && !slot.Flight.HasExited) count++;
             return count;
         }
+        // Chỉ mở nhịp sinh tiếp khi thời gian và áp lực địch cho phép, tránh dồn cả đội hình một lúc.
         private void ActivateEntryBeats()
         {
             for (int beat = 1; beat < beatStarts.Length; beat++)
@@ -347,6 +349,7 @@ namespace StarShift.Encounters
             foreach (var e in spawned) if (!e.Resolved && e.Health != null && e.Health.IsAlive) return true;
             return false;
         }
+        // Quân hộ tống phải đúng mã đợt và đi qua cùng đường sinh, đăng ký và thu hồi như địch thường.
         public EnemyHealth SpawnReinforcement(SpawnAction group, int token)
         {
             if (token != generation || Stage != EncounterStage.Running || group == null ||
@@ -410,6 +413,7 @@ namespace StarShift.Encounters
             spawned.Add(slot);
             return slot.Health;
         }
+        // Gỡ sự kiện và nhịp bắn trước khi trả enemy vào pool để lần dùng sau không nhận callback cũ.
         private void Release(EnemySlot slot)
         {
             slot.Resolved = true;
@@ -437,6 +441,7 @@ namespace StarShift.Encounters
             }
             BeginProjectileDrain();
         }
+        // Chặn nguồn sinh đạn rồi chờ đạn còn lại thoát trước khi chuyển sang bước kết thúc đợt.
         private void BeginProjectileDrain()
         {
             var token = generation;
@@ -452,6 +457,7 @@ namespace StarShift.Encounters
             }
             else CompleteEncounter();
         }
+        // Xác nhận boss chết đúng đợt; dừng nguồn nguy hiểm ngay dù hiệu ứng chết vẫn còn chạy.
         public bool NotifyBossDefeated(int token)
         {
             if (token != generation || Stage != EncounterStage.Running || Current.Completion != EncounterCompletion.Boss || bossDefeated || (playerLives != null && playerLives.CurrentLives == 0)) return false;

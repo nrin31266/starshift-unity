@@ -1,3 +1,4 @@
+// GameplayCopy — Nội dung chữ và định dạng hiển thị dùng chung cho HUD khi chơi.
 using StarShift.Combat;
 
 namespace StarShift.UI

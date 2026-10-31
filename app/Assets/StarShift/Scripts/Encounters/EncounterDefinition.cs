@@ -81,6 +81,7 @@ namespace StarShift.Encounters
         {
             get { int count = 0; if (Groups != null) foreach (var g in Groups) if (g != null && g.Required) count += g.Count; return count; }
         }
+        // Chặn dữ liệu đợt thiếu hoặc sai trước khi runner dùng để lập lịch và sinh địch.
         public bool IsValid(out string error)
         {
             error = "Invalid encounter config: " + name;

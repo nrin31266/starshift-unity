@@ -1,3 +1,4 @@
+// PlayableAreaPresentation — Hiện phản hồi khi người chơi kéo tàu sát giới hạn vùng di chuyển.
 using StarShift.Player;
 using UnityEngine;
 

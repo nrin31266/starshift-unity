@@ -52,6 +52,7 @@ namespace StarShift.Player
             finally { gate.SetState(PlayerGameplayState.Active); }
         }
 
+        // Hủy chuỗi chết hoặc bay vào còn dở trước khi phục hồi mạng và quyền điều khiển.
         public void RestoreCheckpoint(int restoredLives)
         {
             remaining = 0;

@@ -1,3 +1,4 @@
+// EnemyAudioPresentation — Phát âm báo đòn, tấn công và diễn biến boss theo sự kiện chiến đấu.
 using StarShift.Enemies;
 using StarShift.Combat;
 using UnityEngine;
@@ -26,6 +27,7 @@ namespace StarShift.Audio
             single = GetComponent<SingleFireAttack>(); health = GetComponentInParent<EnemyHealth>();
             death = GetComponent<BossDeathSequence>();
         }
+        // Đăng ký lại sự kiện và xóa trạng thái âm báo vì enemy có thể vừa được lấy lại từ pool.
         private void OnEnable()
         {
             previousPhase = AttackPhase.Idle; charging = dying = warned = false; deathBeat = 0;
@@ -63,6 +65,7 @@ namespace StarShift.Audio
                 charging = next;
             }
         }
+        // Phát âm theo bước của đòn; chỉ đọc trạng thái, không khởi động tấn công.
         private void OnPhase(AttackPhase phase)
         {
             if (phase == previousPhase) return;

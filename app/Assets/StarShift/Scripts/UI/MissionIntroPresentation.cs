@@ -1,3 +1,4 @@
+// MissionIntroPresentation — Hiện nền, vệt tốc độ và chuyển cảnh lúc vào nhiệm vụ hoặc di chuyển giữa các màn.
 using StarShift.Gameplay;
 using UnityEngine;
 
@@ -193,6 +194,7 @@ namespace StarShift.UI
             journeyHeading=heading;journeySpeed=speed;journeyPalette=palette;journeyReveal=reveal;
             stars.gameObject.SetActive(true);ship.gameObject.SetActive(false);
         }
+        // Ghép tốc độ, hướng và màu của hành trình thành nền và vệt; không quyết bước gameplay.
         private void ApplyJourneyVisuals(float delta)
         {
             starDistance += journeySpeed*delta;
@@ -251,6 +253,7 @@ namespace StarShift.UI
             var depth = Vector3.Dot(-gameplayCamera.transform.position,gameplayCamera.transform.forward);
             return gameplayCamera.ViewportToWorldPoint(new Vector3(viewport.x,viewport.y,depth));
         }
+        // Ẩn hiệu ứng và trả nền về trạng thái thích hợp để Retry không giữ hình chuyển cảnh cũ.
         public void Hide()
         {
             journeyVisible=false; gameplayApproach=false;

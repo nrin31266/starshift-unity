@@ -1,3 +1,4 @@
+// AudioDirector — Phát nhạc và hiệu ứng âm thanh; quản lý kênh phát, âm lượng và giới hạn tiếng chồng nhau.
 using StarShift.Persistence;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -24,6 +25,7 @@ namespace StarShift.Audio
         public bool IsPaused { get; set; }
         public int AcceptedCues { get; private set; }
 
+        // Tạo sẵn các kênh âm thanh và tra cue theo mã; dừng component nếu cấu hình thiếu hoặc trùng.
         private void Awake()
         {
             int count = System.Enum.GetValues(typeof(AudioCue)).Length;
@@ -52,6 +54,7 @@ namespace StarShift.Audio
         public void Apply(SettingsData settings)
         { musicSetting = settings.MusicVolume; sfxSetting = settings.SfxVolume; }
 
+        // Hòa nhạc bằng hai kênh để đổi bài không cắt đột ngột; bài đang phát được tái sử dụng.
         public void SetMusic(AudioClip clip)
         {
             if (CurrentMusic == clip) return;
@@ -63,6 +66,7 @@ namespace StarShift.Audio
         public void Hub() => SetMusic(palette.Hub);
         public void Combat(bool boss) => SetMusic(boss ? palette.Boss : palette.Combat);
 
+        // Chỉ phát khi còn kênh và qua thời gian chờ; âm ưu tiên cao có thể thay tiếng cũ trong nhóm.
         public bool Play(AudioCue id)
         {
             if (!isActiveAndEnabled || cues == null || (int)id < 0 || (int)id >= cues.Length) return false;
@@ -96,6 +100,7 @@ namespace StarShift.Audio
             return true;
         }
 
+        // Dùng thời gian thực để nhạc vẫn hòa và giảm âm khi gameplay tạm dừng.
         private void Update()
         {
             float desired = Mathf.Min(MusicDuck, Mathf.Min(IsPaused ? .3f : 1, Time.unscaledTime < dangerUntil ? .45f : 1));
@@ -112,6 +117,7 @@ namespace StarShift.Audio
 
         private static int VoiceGroup(int slot) => slot < 4 ? 0 : slot < 6 ? 1 : slot < 8 ? 2 : slot < 12 ? 3 : slot < 14 ? 4 : 5;
 
+        // Chia giới hạn âm lượng theo nhóm để nhiều tiếng cùng lúc không lấn hết âm báo quan trọng.
         private void RefreshVoices(bool immediate)
         {
             System.Array.Clear(totals, 0, totals.Length);
@@ -129,6 +135,7 @@ namespace StarShift.Audio
             }
         }
 
+        // Dừng tiếng chiến đấu của lượt cũ nhưng chừa các kênh giao diện.
         public void ClearGameplay()
         {
             for (int i = 0; i < 14; i++) voices[i].Stop();

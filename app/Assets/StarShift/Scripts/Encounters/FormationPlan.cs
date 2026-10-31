@@ -1,3 +1,4 @@
+// FormationPlan — Cấu hình vị trí các ô đội hình; đường bay dùng các ô này để bố trí địch.
 using UnityEngine;
 
 namespace StarShift.Encounters

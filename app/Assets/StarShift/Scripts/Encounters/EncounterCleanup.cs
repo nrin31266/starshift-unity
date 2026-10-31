@@ -1,3 +1,4 @@
+// EncounterCleanup — Đăng ký và thu hồi đối tượng theo đợt; cho vật phẩm khoảng chờ nhặt trước khi dọn.
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,6 +24,7 @@ namespace StarShift.Encounters
         }
         public int Token { get; private set; }
         public int RewardToken { get; private set; }
+        // Đổi mã phạm vi đợt và dọn đối tượng cũ; tùy luồng có thể giữ vật phẩm sang khoảng chờ.
         public void BeginScope(int token, bool preserveRewards = false)
         {
             if (preserveRewards) CloseHostiles();
@@ -33,6 +35,7 @@ namespace StarShift.Encounters
             }
             Token = token;
         }
+        // Chỉ nhận đối tượng đúng mã đợt để callback cũ không đăng ký vào đợt mới.
         public bool Register(IEncounterBoundaryObject item, int token)
         {
             if (token != Token || item == null) return false;
@@ -40,6 +43,7 @@ namespace StarShift.Encounters
             return true;
         }
         public void Unregister(IEncounterBoundaryObject item) => objects.Remove(item);
+        // Ngừng nguồn nguy hiểm trước; vật phẩm còn có thể được giữ cho người chơi nhặt.
         public void CloseHostiles()
         {
             // Reverse traversal cho phép participant tự unregister trong Release.
@@ -56,6 +60,7 @@ namespace StarShift.Encounters
             for (int i = objects.Count-1; i >= 0; i--)
                 if (objects[i].Category == EncounterObjectCategory.Reward && objects[i].IsActive) objects[i].PreserveForGrace(seconds);
         }
+        // Thu hồi theo chiều ngược vì mỗi đối tượng có thể tự gỡ khỏi danh sách khi được trả pool.
         public void ReleaseAll()
         {
             while (objects.Count > 0)

@@ -1,3 +1,4 @@
+// JsonSaveStore — Đọc và ghi bản lưu JSON, giữ bản dự phòng và xử lý dữ liệu lỗi để tránh mất tiến độ.
 using System;
 using System.IO;
 using System.Text;
@@ -11,6 +12,7 @@ namespace StarShift.Persistence
         public string Path { get; }
         public string Diagnostic { get; private set; }
         public JsonSaveStore(string path) { Path = path ?? throw new ArgumentNullException(nameof(path)); }
+        // Ưu tiên bản chính; chỉ thử backup khi bản chính không dùng được và không thuộc phiên bản khác.
         public SaveLoadStatus Load(Func<SaveEnvelope, bool> validate, out SaveEnvelope data)
         {
             data = null;
@@ -27,6 +29,7 @@ namespace StarShift.Persistence
             catch (Exception e) when (e is IOException || e is UnauthorizedAccessException)
             { Diagnostic = e.Message; return SaveLoadStatus.IoFailure; }
         }
+        // Chỉ trả dữ liệu sau khi đọc JSON, kiểm tra phiên bản và xác thực nội dung thành công.
         private static SaveLoadStatus Read(string path, Func<SaveEnvelope, bool> validate, out SaveEnvelope data)
         {
             data = null;
@@ -58,6 +61,7 @@ namespace StarShift.Persistence
             catch (Exception e) when (e is IOException || e is UnauthorizedAccessException || e is ArgumentException)
             { Diagnostic = e.Message; return null; }
         }
+        // Ghi và kiểm tra file tạm trước khi thay bản chính để lỗi giữa chừng không làm mất bản lưu đang dùng.
         public bool Write(SaveEnvelope data, Func<SaveEnvelope, bool> validate, bool resetHistory = false)
         {
             if (!validate(data)) { Diagnostic = "Refused invalid state."; return false; }

@@ -1,3 +1,4 @@
+// GameplayViewSettingsDrawer — Vẽ ô chỉnh độ thu phóng và vùng di chuyển; chỉ áp giá trị khi nhập xong.
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;

@@ -1,3 +1,4 @@
+// BossPhaseDefinition — Cấu hình giai đoạn boss, ngưỡng máu và thứ tự các đòn đánh.
 using UnityEngine;
 namespace StarShift.Enemies
 {
@@ -16,6 +17,7 @@ namespace StarShift.Enemies
             bool OrderValid(int[] order) => order != null && order.Length > 0 && System.Array.TrueForAll(order, i => i >= 0 && i < moduleCount);
             return StarShift.Encounters.ConfigValue.Finite(PhaseBOffset) && StarShift.Encounters.ConfigValue.Positive(PhaseBMotionMultiplier) && PhaseBThreshold > 0 && PhaseBThreshold < 1 && PhaseARestSeconds > 0 && PhaseBRestSeconds > 0 && TransitionSeconds > 0 && OrderValid(PhaseAOrder) && OrderValid(PhaseBOrder);
         }
+        // Mỗi số là chỉ số module trên boss, không phải mã đòn hay số thứ tự hiển thị.
         public int[] PhaseAOrder = { 0, 0, 1 };
         public int[] PhaseBOrder = { 0, 1, 2, 0 };
     }

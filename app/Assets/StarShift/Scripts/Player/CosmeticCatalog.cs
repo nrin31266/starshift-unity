@@ -1,3 +1,4 @@
+// CosmeticCatalog — Danh mục tàu, sơn và vệt; tra ngoại hình mặc định, đã sở hữu và đang trang bị.
 using System;
 using StarShift.Persistence;
 using UnityEngine;
@@ -34,6 +35,7 @@ namespace StarShift.Player
         public CosmeticOption Default(CosmeticSlot slot) => Array.Find(Options, o => o.Slot == slot && o.IsDefault);
         public string[] Defaults => new[] { Default(CosmeticSlot.Chassis).Id, Default(CosmeticSlot.Skin).Id, Default(CosmeticSlot.Trail).Id };
         public bool Owns(PlayerProfile profile, CosmeticOption option) => option.IsDefault || Array.IndexOf(profile?.OwnedCosmetics ?? Array.Empty<string>(), option.Id) >= 0;
+        // Chỉ trả ngoại hình hợp lệ và đã sở hữu; lựa chọn thiếu hoặc sai thì dùng mặc định của nhóm.
         public CosmeticOption Equipped(PlayerProfile profile, CosmeticSlot slot)
         {
             var ids = profile?.EquippedCosmetics;

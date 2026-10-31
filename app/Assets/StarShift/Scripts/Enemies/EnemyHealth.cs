@@ -58,6 +58,7 @@ namespace StarShift.Enemies
         public event Action Damaged;
         public event Action Died;
 
+        // Tạo mã lần sinh mới và nạp lại HP để mục tiêu bám đạn phân biệt được enemy vừa tái sử dụng.
         private void OnEnable()
         {
             if (definition == null)

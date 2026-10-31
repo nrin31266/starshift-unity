@@ -1,3 +1,4 @@
+// RegionAAssetPaths — Tra đường dẫn dữ liệu RegionA cũ sang thư mục hiện tại cho công cụ Editor.
 using System;
 using System.IO;
 using UnityEditor;

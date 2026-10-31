@@ -1001,7 +1001,7 @@ là target; bảng dưới là authored runtime seed `[TUNABLE]` hiện tại.
 
 | Encounter | Composition / silhouette | Role placement |
 |---|---|---|
-| M1 Foundation | 7 Scout, chevron nhỏ | Giữ onboarding M5 |
+| M1 Foundation | 14 Scout, hai chevron 7 tàu giống nhau | Dàn sao chép nằm dưới dàn gốc, offset Y -0.22; giữ đường vào và HP của từng nhóm |
 | M1 Formation | 18 Scout, hai diamond 9 slot | Hai diamond kín, tips/center đối xứng |
 | M2 Raider | 2 Bulwark + 1 Bomber + 2 Interceptor + 4 Raider + 8 Scout, spearhead | Guard trước, Bomber sau; Interceptor hai cánh |
 | M2 Bomber | 2 Bulwark + 2 Bomber + 2 Raider + 7 Scout, shield escort | Guard cùng lane phía trước Bomber; Raider hai sườn |
@@ -1017,7 +1017,8 @@ không tự rút khi hết giờ. Giữ encounter IDs/checkpoint, không tạo w
 
 M6 giữ Foundation và mission structure của Region A.
 Các formation còn lại dùng shared `FormationPlan`, slots được gom theo archetype/side;
-subgroup sở hữu các dải liên tiếp không trùng. Entry arcs hội tụ trong 2.6 s,
+subgroup sở hữu các dải liên tiếp không trùng. Foundation dùng 14 slot riêng cho hai
+chevron để nhóm sao chép không chiếm lại slot gốc. Entry arcs hội tụ trong 2.6 s,
 stagger .06 s/subgroup, settled anchor (.5,.61), timed combat 18 s và exit 2.8 s
 `[TUNABLE]`. Các combat/hold groups dùng shared sine idle curve (.025,.008),
 chu kỳ 7 s, clock encounter đồng bộ giữa các slot sau blend-in .6 s. Phase lifetime

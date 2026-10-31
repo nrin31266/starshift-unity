@@ -18,21 +18,44 @@ Project-owned assets nằm trong `app/Assets/StarShift/`: Art, Audio, Data, Pref
 Scenes, Scripts, UI và VFX. Không move asset user chỉ để ép namespace; nếu reorganize
 phải giữ `.meta`/GUID và cập nhật references an toàn.
 
-Scripts có thể tổ chức theo baseline sau, chỉ tạo folder khi có file thật;
-không tạo hàng chục assembly/package hoặc placeholder C# để lấp scaffold.
+Scripts hiện được chia theo trách nhiệm; chỉ tạo folder khi có file thật,
+không thêm assembly/package hoặc placeholder C# để lấp scaffold.
 
 ```text
 Scripts/
-├── Core/
+├── Audio/
 ├── Player/
 ├── Combat/
 ├── Enemies/
 ├── Encounters/
 ├── Rewards/
-├── Systems/
+├── Gameplay/
+├── Persistence/
 ├── UI/
 └── Dev/
 ```
+
+### Tìm file để chỉnh nhanh
+
+| Muốn chỉnh | Mở ở đâu trong `app/Assets/StarShift/` |
+|---|---|
+| Thông số súng, đạn và nhiệt | `Data/Weapons/`; logic bắn ở `Scripts/Player/`, xử lý đạn ở `Scripts/Combat/` |
+| Nội dung nhiệm vụ đang chơi | `Data/RegionA/` hoặc `Data/RegionB/`: bắt đầu ở `Missions/`, theo reference sang `Encounters/`, `Flights/`, `Formations/` |
+| Cấu hình dùng chung | Các thư mục trực tiếp trong `Data/` như `Weapons/`, `Enemies/`, `Flights/`, `Cameras/`, `Rewards/` |
+| Dữ liệu chỉ dùng để thử | `Data/Fixtures/`; phân biệt với nội dung nhiệm vụ thật trong hai vùng |
+| Tàu, địch, đạn hoặc vật phẩm mẫu | `Prefabs/Player/`, `Enemies/`, `Projectiles/`, `Rewards/`; chỉnh thông số qua asset mà prefab tham chiếu |
+| Đòn đánh, kỹ năng boss, hiệu ứng địch | `Scripts/Enemies/Attacks/`, `Bosses/`, `Presentation/` |
+| Sinh địch và dọn đợt | `Scripts/Encounters/`; kho tái sử dụng ở `Scripts/Gameplay/ScenePrefabPool.cs` |
+| Luồng màn, camera và pause | `Scripts/Gameplay/` |
+| Checkpoint, hồ sơ và file lưu | `Scripts/Persistence/`; contract ở [save/profile](save-profile.md) |
+| HUD, menu và nội dung chữ | `Scripts/UI/`; `Prefabs/UI/` giữ mẫu giao diện, `UI/Fonts/` giữ phông |
+| Hình ảnh, âm thanh và ngoại hình | `Art/`, `Audio/`, `VFX/`, `Data/Cosmetics/` |
+| Chạy thử nhanh và công cụ Inspector | `Scripts/Dev/`, `Editor/`; cách dùng ở [dev/debug](dev-debug.md) |
+
+Nhãn tiếng Việt bên cạnh tên trong Project là chú thích của `VietnameseEditorLabels`,
+không đổi tên file. Nhãn riêng được ưu tiên; asset cấu hình chưa có nhãn riêng dùng
+mô tả loại dữ liệu. Chú thích cạnh hàm và đoạn xử lý giải thích luồng hoặc ràng buộc
+khó thấy từ tên; contract chi tiết vẫn thuộc canonical owner trong [router](../README.md).
 
 Python synth, spritesheet helper, slicing/checking, batch rename và asset validation
 là offline utilities ở `tools/`. Chỉ khi tool thực sự cần chạy trong Editor mới đưa

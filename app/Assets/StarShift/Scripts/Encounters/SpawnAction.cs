@@ -78,6 +78,7 @@ namespace StarShift.Encounters
             }
         }
 
+        // Kiểm tra mẫu địch, số lượng, lịch và đội hình theo kiểu hoàn thành của đợt.
         public bool IsValid(GameObject fallback, EncounterCompletion mode, float duration, out string error)
         {
             error = "Invalid spawn action.";

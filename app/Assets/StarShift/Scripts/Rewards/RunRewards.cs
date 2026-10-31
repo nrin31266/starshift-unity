@@ -33,6 +33,7 @@ namespace StarShift.Rewards
         }
         public RunStatsData Capture() => new RunStatsData { Score = Score, Shards = Shards,
             EnemiesDestroyed = EnemiesDestroyed, CoresCollected = CoresCollected, SupplyCaptured = SupplyCaptured, LivesLost = LivesLost, PlaySeconds = PlaySeconds };
+        // Phục hồi thống kê từ checkpoint để Retry không cộng dồn kết quả của lần chơi bị hủy.
         public void Restore(RunStatsData stats)
         {
             Score = stats.Score; Shards = stats.Shards; EnemiesDestroyed = stats.EnemiesDestroyed;

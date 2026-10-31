@@ -1,3 +1,4 @@
+// PlayDirection — Hướng chơi và phép đổi tọa độ để đường bay hoạt động theo trục màn hình.
 using UnityEngine;
 
 namespace StarShift.Gameplay

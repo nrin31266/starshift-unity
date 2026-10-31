@@ -148,6 +148,7 @@ namespace StarShift.Player
             if (clamped != body.position) body.position = clamped;
         }
 
+        // Chuyển vị trí qua owner movement để hành trình không tranh quyền ghi với Rigidbody2D.
         public void SetCinematicPosition(Vector3 position)
         {
             travelBias = appliedTravelBias = Vector2.zero;

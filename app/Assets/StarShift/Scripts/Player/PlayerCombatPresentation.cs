@@ -1,3 +1,4 @@
+// PlayerCombatPresentation — Hiện hiệu ứng chiến đấu của tàu theo bắn súng, nhặt vật phẩm và trạng thái bảo vệ.
 using StarShift.Combat;
 using StarShift.Rewards;
 using UnityEngine;
@@ -47,6 +48,7 @@ namespace StarShift.Player
             reward.color = item.Kind == PickupKind.ExtraLife ? new Color(.75f, 1, .8f) : Color.white;
         }
 
+        // Đọc thay đổi lượt bắn để phát chớp nòng; cập nhật hình thưởng và bảo vệ theo đồng hồ gameplay.
         private void LateUpdate()
         {
             if (weapon.ShotsFired != previousShots) { previousShots = weapon.ShotsFired; muzzleRemaining = .1f; }

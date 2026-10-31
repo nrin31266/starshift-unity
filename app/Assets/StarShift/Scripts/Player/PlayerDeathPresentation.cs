@@ -1,3 +1,4 @@
+// PlayerDeathPresentation — Hiện nổ và mảnh vỡ khi mất mạng; không điều khiển số mạng hoặc hồi sinh.
 using UnityEngine;
 
 namespace StarShift.Player
@@ -23,6 +24,7 @@ namespace StarShift.Player
             gate.StateChanged += OnStateChanged;
             Clear();
         }
+        // Chỉ phát hiệu ứng khi vừa chuyển sang chết; giữ điểm nổ độc lập vị trí tàu hồi sinh.
         private void OnStateChanged()
         {
             if (gate.State == PlayerGameplayState.Dying && previousState != PlayerGameplayState.Dying)

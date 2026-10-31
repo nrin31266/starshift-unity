@@ -37,6 +37,7 @@ namespace StarShift.Enemies
         private Vector2 strikeFrom, strikeTarget;
         private float strikeElapsed, strikeSeconds, returnSeconds;
         public bool IsStriking { get; private set; }
+        // Chốt đích lao và thời gian quay về; mọi thay đổi vị trí vẫn đi qua owner đường bay này.
         public void BeginStrike(Vector2 target, float seconds, float returnDuration)
         {
             strikeFrom = flightCamera.WorldToViewportPoint(transform.position);
@@ -53,6 +54,7 @@ namespace StarShift.Enemies
         private float motionMultiplier = 1;
         public bool MotionPaused { get; private set; }
         public void SetMotionPaused(bool paused) => MotionPaused = paused;
+        // Nội suy độ lệch đội hình để boss đổi chỗ mà không giật tức thời.
         public void Reposition(Vector2 offset, float seconds, float motionScale = 1)
         { offsetFrom = combatOffset; offsetTarget = offset; offsetElapsed = 0; offsetSeconds = Mathf.Max(.01f, seconds); motionMultiplier = motionScale; }
         public void BeginRetreat(float seconds = 1.1f)
@@ -126,6 +128,7 @@ namespace StarShift.Enemies
             enabled = false;
         }
 
+        // Xóa tiến độ và khóa chuyển động của lần dùng cũ trước khi enemy bắt đầu bay lại.
         private void OnEnable()
         {
             elapsed = 0;
@@ -200,6 +203,7 @@ namespace StarShift.Enemies
             transform.position = position;
         }
 
+        // Ghép tiến độ chặng, ô đội hình và hướng chơi thành vị trí; giữ vùng hiển thị theo camera hiện tại.
         private void ApplySequencePosition()
         {
             float clock = elapsed;

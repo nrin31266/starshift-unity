@@ -13,6 +13,8 @@ mặc định OFF. Mission04 TRANSITION chạy handoff Astra→Crimson thật; D
 `VerifyDevTools.Edit` kiểm 48 route trên tám mission trong Edit Mode.
 `VerifyVietnameseInspector.Edit` kiểm nhãn, cấp súng và trường
 camera nhập trễ trong Edit Mode; không sửa asset gốc hoặc chạy gameplay.
+`VerifyVietnameseInspector.ProjectNotes` kiểm nhãn thư mục, script, prefab và asset
+cấu hình, gồm nhãn dự phòng theo loại dữ liệu.
 `VerifyM8ProductionLayout.Edit` kiểm importer/frame count và prefab proxy.
 `InspectM8Production.References` kiểm serialized references; `.FinalState` kiểm
 Edit Mode, scene sạch, dev/debug OFF. `.Contracts` xuất collider/gameplay snapshot

@@ -1,3 +1,4 @@
+// EnemyHitPresentation — Hiện chớp trúng đạn và hiệu ứng va chạm dựa trên thông tin cú đánh.
 using UnityEngine;
 using StarShift.Combat;
 
@@ -69,6 +70,7 @@ namespace StarShift.Enemies
             PlaceImpact(hit);
         }
 
+        // Đổi điểm và hướng trúng sang vị trí hiệu ứng để tia lửa nằm tại chỗ đạn chạm thân.
         private void PlaceImpact(EnemyHitInfo hit)
         {
             if (impact == null || activeFrames == null || activeFrames.Length == 0) return;
@@ -118,6 +120,7 @@ namespace StarShift.Enemies
             }
         }
 
+        // Gỡ đăng ký và xóa hiệu ứng còn dở trước khi enemy được cất vào pool.
         private void OnDisable()
         {
             if (health != null)

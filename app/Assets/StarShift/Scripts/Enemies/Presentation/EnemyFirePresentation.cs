@@ -1,3 +1,4 @@
+// EnemyFirePresentation — Hiện báo bắn và chớp nòng theo trạng thái tấn công của địch.
 using UnityEngine;
 
 namespace StarShift.Enemies
@@ -41,6 +42,7 @@ namespace StarShift.Enemies
             if (chargeCue != null) chargeCue.enabled = false;
         }
 
+        // Đọc nhịp báo và bắn từ attack để vẽ chớp nòng, không tự phát đạn.
         private void LateUpdate()
         {
             bool charging = attack.isActiveAndEnabled && attack.IsTelegraphing;

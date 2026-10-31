@@ -1,3 +1,4 @@
+// BossDeathSequence — Chạy các nhịp nổ khi boss bị hạ và báo hoàn tất để luồng đợt tiếp tục.
 using System;
 using StarShift.Gameplay;
 using UnityEngine;
@@ -16,6 +17,7 @@ namespace StarShift.Enemies
         public bool IsPlaying { get; private set; }
         public event Action Completed;
         public float Progress => IsPlaying ? Mathf.Clamp01(elapsed / duration) : 0;
+        // Nhận callback kết thúc và chạy chuỗi nổ; runner giữ quyền hoàn thành đợt.
         public void Begin(Action onCompleted)
         {
             if (IsPlaying) return;
@@ -46,6 +48,7 @@ namespace StarShift.Enemies
             try { Completed?.Invoke(); }
             finally { callback?.Invoke(); }
         }
+        // Hủy callback khi boss bị thu hồi để chuỗi chết cũ không hoàn thành đợt mới.
         private void OnDisable() { IsPlaying = false; completed = null; foreach (var explosion in explosions) explosion.enabled = false; }
     }
 }

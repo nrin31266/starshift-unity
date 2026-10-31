@@ -1,3 +1,4 @@
+// CarrierBayPresentation — Hiện cửa khoang và hiệu ứng phóng quân của tàu mẹ theo chu kỳ hộ tống.
 using UnityEngine;
 
 namespace StarShift.Enemies
@@ -21,6 +22,7 @@ namespace StarShift.Enemies
         private void Awake() => spawner = GetComponent<EscortSpawner>();
         private void OnEnable() { previousCount = 0; remaining = 0; LaunchCues = 0; }
 
+        // Chỉ mở cửa theo số quân đã sinh thật; animation không có quyền quyết định sinh quân.
         private void LateUpdate()
         {
             if (spawner.SpawnCount != previousCount)

@@ -1,3 +1,4 @@
+// FrameRateLimit — Áp giới hạn tốc độ khung hình của game theo cấu hình.
 using UnityEngine;
 
 namespace StarShift.Gameplay

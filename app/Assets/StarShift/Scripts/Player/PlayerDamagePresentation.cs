@@ -1,3 +1,4 @@
+// PlayerDamagePresentation — Hiện chớp trúng đòn và trạng thái bảo vệ của thân tàu.
 using UnityEngine;
 
 namespace StarShift.Player
@@ -21,6 +22,7 @@ namespace StarShift.Player
             normalEnabled = hull.enabled;
         }
 
+        // Hiện nháy hoặc trong suốt từ trạng thái bảo vệ; việc chặn sát thương vẫn thuộc lifecycle.
         private void LateUpdate()
         {
             var dying = gate.State == PlayerGameplayState.Dying;

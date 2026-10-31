@@ -1,3 +1,4 @@
+// LevelDefinition — Cấu hình nhiệm vụ, danh sách đợt, camera và điểm bắt đầu để chơi hoặc thử nhanh.
 using System;
 using System.Collections.Generic;
 using StarShift.Gameplay;
@@ -61,6 +62,7 @@ namespace StarShift.Encounters
         public EncounterDefinition[] Encounters = Array.Empty<EncounterDefinition>();
         public LevelStartPoint[] AdditionalStarts = Array.Empty<LevelStartPoint>();
 
+        // Đổi mã điểm thử nhanh thành chỉ số đợt; trả về không hợp lệ nếu nhiệm vụ không có điểm đó.
         public int ResolveStart(string id)
         {
             if (id == "LEVEL_START") return 0;
@@ -71,6 +73,7 @@ namespace StarShift.Encounters
             return -1;
         }
 
+        // Kiểm tra liên kết và thứ tự đợt để tránh khởi chạy nhiệm vụ có cấu hình thiếu.
         public bool IsValid(out string error)
         {
             error = "Invalid level config: " + name;

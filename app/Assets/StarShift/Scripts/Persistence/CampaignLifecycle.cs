@@ -139,6 +139,7 @@ namespace StarShift.Persistence
             checkpoint = null;
             pendingRegionTransition = false;
         }
+        // Chụp dữ liệu đầu đợt qua từng owner; không lưu vị trí enemy hay đạn đang bay.
         private CheckpointData Capture(string encounterId = null)
         {
             string id = encounterId;
@@ -232,6 +233,7 @@ namespace StarShift.Persistence
             Launch(checkpoint.EncounterId, checkpoint, true);
             return true;
         }
+        // Chạy Replay bằng trạng thái riêng để không ghi đè checkpoint Campaign đang có.
         public bool BeginReplay()
         {
             var profile = progress.Snapshot?.Profile;
@@ -283,6 +285,7 @@ namespace StarShift.Persistence
             Launch(checkpoint.EncounterId, checkpoint, true);
             return true;
         }
+        // Khôi phục qua callback sau RunStarted để các bước reset không xóa trạng thái checkpoint vừa nạp.
         private void Launch(string start, CheckpointData state, bool skipIntro, bool missionArrival = false, bool preservePoseAndInput = false)
         {
             launching = true;
@@ -305,6 +308,7 @@ namespace StarShift.Persistence
             }
             finally { launching = restoring = false; }
         }
+        // Chỉ phiên có quyền ghi Campaign mới chụp và lưu checkpoint đầu đợt.
         private void OnEncounterStarted(EncounterDefinition definition, int token)
         {
             if (restoring && checkpoint != null && definition.Id == checkpoint.EncounterId) return;
@@ -333,6 +337,7 @@ namespace StarShift.Persistence
             HasPendingClear = true;
             TryCommitMissionClear();
         }
+        // Gộp hoàn thành, kỷ lục và điểm đến thành giao dịch lưu; chỉ tiếp tục khi ghi thành công.
         private bool TryCommitMissionClear()
         {
             var previous = Array.Find(progress.Snapshot.Profile.Records, r => r.MissionId == runner.Flow.Level.Id);
@@ -428,6 +433,7 @@ namespace StarShift.Persistence
                 throw new InvalidOperationException("Exit and save the current run before entering frontend.");
             Mode = SessionMode.Frontend;
         }
+        // Kiểm tra danh mục và quyền ghi trước khi chuyển yêu cầu mua hoặc trang bị sang owner dữ liệu.
         public bool EquipCosmetic(CosmeticCatalog catalog, string id)
         {
             if (Mode != SessionMode.Frontend || runner.HasActiveRun || catalog == null) return false;

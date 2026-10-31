@@ -1,3 +1,4 @@
+// EncounterRewardQuota — Theo dõi mức thưởng tối thiểu của đợt qua số địch bị hạ hoặc thoát; không sinh vật phẩm.
 using System;
 
 namespace StarShift.Rewards
@@ -17,6 +18,7 @@ namespace StarShift.Rewards
             Remaining = quota; kills = 0; firstDeadline = firstByKill;
         }
 
+        // Nếu lượt rơi thường chưa đủ mức thưởng, chọn bù theo số địch còn lại hoặc hạn nhận thưởng đầu tiên.
         public bool ResolveKill(bool satisfiesFloor)
         {
             if (remainingEnemies <= 0) return false;
@@ -29,6 +31,7 @@ namespace StarShift.Rewards
         }
 
         public void ResolveEscape() => remainingEnemies = Math.Max(0, remainingEnemies - 1);
+        // Trừ một suất bù cuối đợt để cùng mức thưởng không được phát lại nhiều lần.
         public bool ResolveFallback()
         {
             if (Remaining <= 0) return false;
@@ -36,6 +39,7 @@ namespace StarShift.Rewards
             return true;
         }
 
+        // Ghép mã nhiệm vụ và đợt bằng phép băm ổn định để cùng seed tái hiện cùng lịch thưởng.
         public static int Seed(string mission, string encounter, int seed)
         {
             unchecked

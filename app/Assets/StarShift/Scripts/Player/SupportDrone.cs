@@ -1,3 +1,4 @@
+// SupportDrone — Hiện tàu hỗ trợ và tự bắn khi hiệu ứng còn hạn; dùng pool đạn riêng.
 using StarShift.Combat;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -27,6 +28,7 @@ namespace StarShift.Player
                 p => p.ResetForPool(), p => { if (p != null) Destroy(p.gameObject); }, true, 8, 32);
         }
         private void LateUpdate() => visual.enabled = effects.DroneRemaining > 0 && gate.CanInput;
+        // Chỉ bắn khi hiệu ứng hỗ trợ còn hạn và tàu được phép bắn; lấy đạn từ pool riêng.
         private void FixedUpdate()
         {
             if (effects.DroneRemaining <= 0) { remaining = 0; return; }

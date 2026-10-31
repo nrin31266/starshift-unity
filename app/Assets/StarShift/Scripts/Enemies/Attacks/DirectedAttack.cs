@@ -1,3 +1,4 @@
+// DirectedAttack — Chạy đòn lao hoặc tia có hướng; quản lý ngắm, khóa mục tiêu và thời gian gây sát thương.
 using StarShift.Gameplay;
 using StarShift.Player;
 using UnityEngine;
@@ -47,6 +48,7 @@ namespace StarShift.Enemies
             beamDamage = new BeamDamageQuery(player);
         }
         private bool Eligible => isActiveAndEnabled && health.IsAlive && gate.CanFire && flight.CanShoot && flight.IsHolding && !flight.IsStriking && flight.IsPointVisible(muzzle.position);
+        // Chỉ nhận đòn khi trạng thái cho phép; chụp hướng và bắt đầu báo trước thay vì gây sát thương ngay.
         public bool TryRequestAttack()
         {
             if (IsBusy || recovery > 0 || cooldown > 0 || !Eligible) return false;
@@ -67,6 +69,7 @@ namespace StarShift.Enemies
         }
         [SerializeField, Min(0)] private float recoverySeconds = .18f;
         private float recovery;
+        // Xóa đòn đang chờ, ẩn tia và nhả khóa đường bay để disable hoặc Retry không để lại trạng thái tấn công.
         public void CancelAttack()
         {
             beamDamage?.Reset();
@@ -75,6 +78,7 @@ namespace StarShift.Enemies
             cooldown = definition != null ? (AttacksFired == 0 ? Mathf.Min(.35f, definition.CooldownSeconds) : definition.CooldownSeconds) : 1;
             if (presentation != null) presentation.Hide();
         }
+        // Đi qua chuẩn bị, khóa hướng và ra đòn theo đồng hồ vật lý; chỉ cửa sổ active mới được gây sát thương.
         private void FixedUpdate()
         {
             if (Time.timeScale <= 0) return;

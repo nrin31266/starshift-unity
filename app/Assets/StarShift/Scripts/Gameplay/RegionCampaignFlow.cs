@@ -1,3 +1,4 @@
+// RegionCampaignFlow — Nối các nhiệm vụ và chọn chuyển màn trong vùng hoặc hành trình sang vùng mới.
 using StarShift.Encounters;
 using StarShift.Persistence;
 using StarShift.Player;
@@ -33,6 +34,7 @@ namespace StarShift.Gameplay
         }
         private void OnEnable() => runner.RunStarted += Cancel;
         private void OnDisable() { runner.RunStarted -= Cancel; Cancel(); }
+        // Chọn chuyển nhiệm vụ trong cùng vùng hoặc hành trình sang vùng mới trước khi lưu bước tiếp.
         public bool QueueAdvance()
         {
             if(persistence.Mode==SessionMode.Replay || System.Array.IndexOf(missions,runner.Flow.Level)<0 || NextMission == null)return false;
@@ -56,6 +58,7 @@ namespace StarShift.Gameplay
             if(elapsed<missionClearSeconds)return;
             IsTravelling=false;runner.Flow.EndMissionTravel();persistence.AdvanceMission(next,true);
         }
+        // Khôi phục điểm đến của hành trình đã lưu qua owner tiến trình, không dựng lại cảnh giữa chuyến.
         public void RestoreDestination()
         {
             IsTravelling=false;DestinationReady=true;runner.Flow.FinishRegionTravel();persistence.CompleteRegionTravel();

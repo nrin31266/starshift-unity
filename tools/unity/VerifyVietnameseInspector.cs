@@ -3,6 +3,43 @@ using System.Linq;
 
 public static class VerifyVietnameseInspector
 {
+    // Kiểm tra nhãn trên dữ liệu thật, gồm cả asset dùng mô tả loại thay vì tên riêng.
+    public static object ProjectNotes()
+    {
+        var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+        bool wasDirty = scene.isDirty;
+        var assembly = typeof(StarShift.Editor.DevFastStartEditor).Assembly;
+        var labels = assembly.GetType("StarShift.Editor.VietnameseEditorLabels");
+        var method = labels.GetMethod("ProjectLabel", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+        int folders = 0, scripts = 0, configs = 0, prefabs = 0;
+        foreach (var path in UnityEditor.AssetDatabase.GetAllAssetPaths())
+        {
+            if (!path.StartsWith("Assets/StarShift/", StringComparison.Ordinal)) continue;
+            bool folder = UnityEditor.AssetDatabase.IsValidFolder(path);
+            bool script = path.EndsWith(".cs", StringComparison.Ordinal);
+            bool prefab = path.EndsWith(".prefab", StringComparison.Ordinal);
+            var type = UnityEditor.AssetDatabase.GetMainAssetTypeAtPath(path);
+            bool config = type != null && typeof(UnityEngine.ScriptableObject).IsAssignableFrom(type);
+            if (!folder && !script && !prefab && !config) continue;
+            var label = (string)method.Invoke(null, new object[] { path });
+            if (string.IsNullOrWhiteSpace(label) || label == System.IO.Path.GetFileNameWithoutExtension(path))
+                throw new Exception("Missing Vietnamese Project note: " + path);
+            if (folder) folders++;
+            else if (script) scripts++;
+            else if (prefab) prefabs++;
+            else configs++;
+        }
+        var fallback = (string)method.Invoke(null, new object[] { "Assets/StarShift/Data/RegionB/Missions/Mission08.asset" });
+        if (fallback != "Cấu hình nhiệm vụ, danh sách đợt, camera và điểm bắt đầu để chơi hoặc thử nhanh")
+            throw new Exception("Config type fallback missing");
+        if (method.Invoke(null, new object[] { "Assets/StarShift/UnknownNote.txt" }) != null)
+            throw new Exception("Unknown file received an unrelated note");
+        if (folders == 0 || scripts == 0 || configs == 0 || prefabs == 0) throw new Exception("Project scan was empty");
+        if (scene.isDirty != wasDirty) throw new Exception("Scene dirty state changed");
+        UnityEditor.EditorApplication.RepaintProjectWindow();
+        return new { status = "PASS", folders, scripts, configs, prefabs, sceneDirty = scene.isDirty };
+    }
+
     public static object Edit()
     {
         bool sceneWasDirty = UnityEngine.SceneManagement.SceneManager.GetActiveScene().isDirty;

@@ -1,3 +1,4 @@
+// StagedDestructionPresentation — Hiện nổ từng cụm và mảnh văng cho địch lớn; không quyết thời điểm chết hay phần thưởng.
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -44,6 +45,7 @@ namespace StarShift.Enemies
             ResetVisuals();
         }
 
+        // Chạy nổ từng cụm theo độ trễ riêng; chỉ thay renderer, không gọi chết hay phát thưởng.
         private void Update()
         {
             if (!playing) return;
@@ -85,6 +87,7 @@ namespace StarShift.Enemies
             if (elapsed >= totalSeconds) playing = false;
         }
 
+        // Khôi phục module và ẩn mảnh vỡ để lần dùng lại không giữ hình đã bị phá.
         private void ResetVisuals()
         {
             if (stages != null)

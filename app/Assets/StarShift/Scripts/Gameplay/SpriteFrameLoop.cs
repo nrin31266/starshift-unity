@@ -1,3 +1,4 @@
+// SpriteFrameLoop — Phát lặp các khung hình sprite và đặt lại khi đối tượng được tái sử dụng.
 using UnityEngine;
 
 namespace StarShift.Gameplay
@@ -13,6 +14,7 @@ namespace StarShift.Gameplay
         public int FrameIndex { get; private set; }
         private void Awake() => visual = GetComponent<SpriteRenderer>();
         private void OnEnable() { age = 0; FrameIndex = 0; Apply(); }
+        // Đồng bộ độ hiện với renderer nguồn rồi chọn frame theo thời gian gameplay, nên pause cũng dừng ảnh động.
         private void LateUpdate()
         {
             if (visibilitySource != null) visual.enabled = visibilitySource.enabled;

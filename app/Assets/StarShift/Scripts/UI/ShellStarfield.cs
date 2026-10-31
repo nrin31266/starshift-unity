@@ -1,3 +1,4 @@
+// ShellStarfield — Cuộn nền sao của menu bằng thời gian thực để vẫn chạy khi game tạm dừng.
 using UnityEngine;
 
 namespace StarShift.UI

@@ -1,3 +1,4 @@
+// SafeAreaLayout — Đặt giao diện trong vùng an toàn màn hình để tránh tai thỏ và mép thiết bị.
 using UnityEngine;
 
 namespace StarShift.UI
@@ -11,6 +12,7 @@ namespace StarShift.UI
         private void Awake() => rect = GetComponent<RectTransform>();
         private void OnEnable() => Apply();
         private void Update() => Apply();
+        // Đổi vùng an toàn pixel thành anchor chuẩn hóa; chỉ cập nhật layout khi vùng thực tế đổi.
         private void Apply()
         {
             if (Screen.width <= 0 || Screen.height <= 0) return;

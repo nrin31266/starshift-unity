@@ -1,3 +1,4 @@
+// EncounterConfigValidation — Kiểm tra cấu hình nhiệm vụ và chặn Play khi dữ liệu đợt giao chiến không hợp lệ.
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +36,7 @@ namespace StarShift.Editor
             EditorApplication.playModeStateChanged -= BeforePlay;
             EditorApplication.playModeStateChanged += BeforePlay;
         }
+        // Hủy vào Play nếu cấu hình lỗi để tránh chạy một nhiệm vụ thiếu dữ liệu.
         private static void BeforePlay(PlayModeStateChange change)
         {
             if (change != PlayModeStateChange.ExitingEditMode) return;

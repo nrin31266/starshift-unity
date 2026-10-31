@@ -1,3 +1,4 @@
+// EnemyHitInfo — Thông tin điểm trúng, hướng va chạm và loại đạn để hiệu ứng hiển thị đúng cú đánh.
 using UnityEngine;
 using StarShift.Combat;
 

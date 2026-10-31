@@ -1,3 +1,4 @@
+// PlayerRespawnEntrance — Đưa tàu từ ngoài màn vào vị trí hồi sinh an toàn trước khi trả quyền điều khiển.
 using System.Collections.Generic;
 using UnityEngine;
 using StarShift.Gameplay;
@@ -34,6 +35,7 @@ namespace StarShift.Player
             enabled = false;
         }
 
+        // Khóa điều khiển và tìm điểm vào an toàn trước khi bắt đầu đường hồi sinh.
         public void Begin()
         {
             elapsed = 0;
@@ -49,6 +51,7 @@ namespace StarShift.Player
             SafeTargetFound = false;
         }
 
+        // Chỉ trả quyền điều khiển sau khi bay xong và vị trí đích vẫn đáp ứng điều kiện an toàn.
         private void FixedUpdate()
         {
             if (entering) elapsed = Mathf.Min(duration, elapsed + Time.fixedDeltaTime);

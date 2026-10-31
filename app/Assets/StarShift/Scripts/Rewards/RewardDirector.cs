@@ -66,6 +66,7 @@ namespace StarShift.Rewards
         // Floor không bị mất khi normal pickup cap đã đầy; chỉ quota đã author được dùng slot này.
         private void DeliverFloor(PickupDefinition item, Vector3 position) => Spawn(item, null, position, true);
         private PickupDefinition SelectGuarantee(RewardDropTable table) => roller.SelectMajor(table, receiver, lives, loadout, false);
+        // Bù phần thưởng tối thiểu còn thiếu khi kết thúc đợt thay vì để enemy thoát làm mất suất.
         private void CompleteQuota(EncounterDefinition encounter)
         {
             // Timeline có thể hết giờ trước kill cuối; chỉ dùng candidate đã bị hạ, không thưởng cho escape.
@@ -175,6 +176,7 @@ namespace StarShift.Rewards
             ItemCollected?.Invoke(item);
             return true;
         }
+        // Gỡ pickup khỏi danh sách đang chạy trước khi cất về pool để giới hạn số vật phẩm đếm đúng.
         private void Release(RewardPickup pickup)
         {
             if (pickup.Remaining <= 0) PickupsExpired++;

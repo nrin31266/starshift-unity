@@ -1,3 +1,4 @@
+// BossShieldNetwork — Bảo vệ lõi boss theo trạng thái các nút khiên và điều khiển hình khiên.
 using UnityEngine;
 
 namespace StarShift.Enemies
@@ -35,6 +36,7 @@ namespace StarShift.Enemies
             foreach (var node in nodes) { node.gameObject.SetActive(true); node.SetDamageBlocked(true); }
             shield.enabled = true;
         }
+        // Đọc các nút khiên còn sống để khóa sát thương lõi và cập nhật hình bảo vệ.
         private void FixedUpdate()
         {
             RemainingNodes = 0;

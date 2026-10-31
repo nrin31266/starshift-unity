@@ -1,3 +1,4 @@
+// SingleFireAttack — Chạy báo trước và các loạt đạn địch; tái sử dụng đạn qua pool.
 using StarShift.Combat;
 using StarShift.Player;
 using StarShift.Gameplay;
@@ -122,6 +123,7 @@ namespace StarShift.Enemies
             remaining = definition.Cooldown * (health.Modifier != null ? health.Modifier.FireIntervalMultiplier : 1);
         }
 
+        // Xóa loạt đang chờ và báo đòn để địch lấy lại từ pool không bắn tiếp chuỗi cũ.
         private void ResetSequence()
         {
             directed?.CancelAttack();
@@ -137,6 +139,7 @@ namespace StarShift.Enemies
             return projectile;
         }
 
+        // Lúc chơi thì trả đạn về pool; khi component đang bị hủy thì hủy đạn để không trả vào kho đã đóng.
         private void ReleaseProjectile(EnemyProjectile projectile)
         {
             if (shuttingDown) Destroy(projectile.gameObject);

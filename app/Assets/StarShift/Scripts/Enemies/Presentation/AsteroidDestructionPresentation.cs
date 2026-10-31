@@ -1,3 +1,4 @@
+// AsteroidDestructionPresentation — Phát hiệu ứng vỡ thiên thạch bằng pool khi nhận sự kiện bị phá hủy.
 using System.Collections.Generic;
 using StarShift.Encounters;
 using StarShift.Rewards;
@@ -35,6 +36,7 @@ namespace StarShift.Enemies
         }
         private void OnEnable() { runner.EnemyDestroyed += Show; runner.RunStarted += Clear; }
         private void OnDisable() { runner.EnemyDestroyed -= Show; runner.RunStarted -= Clear; Clear(); }
+        // Chỉ nhận thiên thạch phù hợp rồi lấy hình nổ từ pool của scene, độc lập thân vừa bị thu hồi.
         private void Show(EnemyHealth enemy, RewardDropTable table, Vector3 position)
         {
             bool supply = !enemy.Definition.BodyDamagesPlayer && table != null && table.Source == RewardSource.MajorCrate;
@@ -49,6 +51,7 @@ namespace StarShift.Enemies
             active.Add(new Burst { Visual = visual, Frames = chosen, Seconds = !supply && !asteroid ? .5f : seconds,
                 Scale = supply ? .9f : asteroid ? enemy.transform.localScale.x : Mathf.Clamp(enemy.transform.lossyScale.x * 1.3f, .9f, 2f) });
         }
+        // Phát hết hiệu ứng rồi trả hình về pool để các lần vỡ tiếp theo tái sử dụng.
         private void Update()
         {
             for (int i = active.Count - 1; i >= 0; i--)

@@ -1,3 +1,4 @@
+// GameplayViewController — Chuyển độ thu phóng, vùng di chuyển và rung camera theo trạng thái chơi.
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -62,6 +63,7 @@ namespace StarShift.Gameplay
             if (gameplayCamera != null) gameplayCamera.ResetProjectionMatrix();
             ownsProjection = false;
         }
+        // Chỉ áp rung vào phép chiếu lúc vẽ; vị trí camera dùng tính di chuyển và va chạm vẫn ổn định.
         private void BeginCameraRendering(ScriptableRenderContext context, Camera camera)
         {
             if (camera != gameplayCamera || impactRemaining <= 0 || Time.timeScale <= 0) return;
@@ -73,6 +75,7 @@ namespace StarShift.Gameplay
             camera.projectionMatrix = projection;
             ownsProjection = true;
         }
+        // Trả phép chiếu sau khi vẽ để rung không tích lũy sang frame hoặc camera tiếp theo.
         private void EndCameraRendering(ScriptableRenderContext context, Camera camera)
         {
             if (camera != gameplayCamera || !ownsProjection) return;

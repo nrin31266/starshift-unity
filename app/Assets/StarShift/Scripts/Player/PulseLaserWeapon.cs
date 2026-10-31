@@ -91,6 +91,7 @@ namespace StarShift.Player
                         // Scene teardown có thể hủy projectile root trước weapon.
                         if (projectile != null) Destroy(projectile.gameObject);
                     },
+                    // 8 là dung lượng kho ban đầu, chưa tạo sẵn đạn; 64 giới hạn số viên rảnh được giữ.
                     true, 8, 64);
             }
         }
@@ -176,6 +177,7 @@ namespace StarShift.Player
             if (nextShotTime <= now) nextShotTime = now + interval;
         }
 
+        // Chỉ tạo đạn khi pool chưa có viên rảnh; đặt về trạng thái tắt trước lần Launch đầu tiên.
         private PlayerProjectile CreateProjectile()
         {
             CreatedProjectileCount++;
@@ -184,6 +186,7 @@ namespace StarShift.Player
             return projectile;
         }
 
+        // Trả đạn để dùng lại khi còn chơi; lúc đóng scene thì hủy vì pool đang được giải phóng.
         private void ReleaseProjectile(PlayerProjectile projectile)
         {
             if (shuttingDown) Destroy(projectile.gameObject);

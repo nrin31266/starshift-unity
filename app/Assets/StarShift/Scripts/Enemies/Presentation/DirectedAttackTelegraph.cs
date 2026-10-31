@@ -1,3 +1,4 @@
+// DirectedAttackTelegraph — Vẽ dấu báo ngắm và hướng lao của địch theo trạng thái đòn có hướng.
 using UnityEngine;
 
 namespace StarShift.Enemies
@@ -57,6 +58,7 @@ namespace StarShift.Enemies
             if (strike && next == AttackPhase.Attack) launchOrigin = transform.position;
         }
 
+        // Bám điểm ngắm hoặc điểm khóa của đòn để dấu báo khớp nơi địch sắp đánh.
         private void LateUpdate()
         {
             age += Time.deltaTime;

@@ -1,3 +1,4 @@
+// BossBarrage — Chạy màn đạn hoặc vùng nguy hiểm của boss, gồm báo trước và khe tránh theo cấu hình.
 using StarShift.Combat;
 using StarShift.Gameplay;
 using StarShift.Player;
@@ -58,6 +59,7 @@ namespace StarShift.Enemies
             }, null, shot => shot.ResetForPool(), shot => { if (shot != null) Destroy(shot.gameObject); }, true, 32, 96);
         }
         private void OnEnable() { PulsesFired = ShotsFired = 0; CancelAttack(); }
+        // Khởi tạo chu kỳ báo trước và khe an toàn cho một đợt màn đạn.
         public bool BeginAttack()
         {
             if (!isActiveAndEnabled || IsBusy || !bossHealth.IsAlive || !fireGate.CanFire || !bossFlight.IsHolding) return false;
@@ -95,6 +97,7 @@ namespace StarShift.Enemies
             visual.ShowCurtain(bounds.center - along * length * .5f, bounds.center + along * length * .5f,
                 right ? bounds.size.y : bounds.size.x, IsActive, tint);
         }
+        // Tách thời gian báo trước với thời gian nguy hiểm để vùng đang gây sát thương không đổi khe đột ngột.
         private void FixedUpdate()
         {
             if (!IsBusy || Time.timeScale <= 0) return;
@@ -142,6 +145,7 @@ namespace StarShift.Enemies
             }
             else CancelAttack();
         }
+        // Dùng cùng trục hướng chơi để rải hàng đạn và chừa khe an toàn từ cấu hình.
         private void FireRow()
         {
             var forward = PlayDirectionSpace.Offset(Vector2.down, bossFlight.Direction);

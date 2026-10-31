@@ -1,3 +1,4 @@
+// AsteroidVisualMotion — Xoay hình thiên thạch và đặt lại khi tái sử dụng; không điều khiển đường bay.
 using UnityEngine;
 namespace StarShift.Enemies
 {

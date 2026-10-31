@@ -1,3 +1,4 @@
+// SingleFireDefinition — Cấu hình đạn, nhịp bắn, số loạt và góc xòe của đòn bắn địch.
 using StarShift.Combat;
 using UnityEngine;
 

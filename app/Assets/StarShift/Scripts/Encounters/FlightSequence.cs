@@ -1,3 +1,4 @@
+// FlightSequence — Cấu hình các chặng đường bay của địch và kiểm tra thông số; không giữ tiến độ đang bay.
 using System;
 using UnityEngine;
 
@@ -11,12 +12,14 @@ namespace StarShift.Encounters
     {
         public FlightPhaseKind Kind;
         public FlightPath Path;
+        // Tọa độ theo hướng chơi chuẩn hóa; runtime ghép thêm vị trí ô đội hình.
         public Vector2 From = new Vector2(.5f, 1.12f);
         public Vector2 To = new Vector2(.5f, .78f);
         public Vector2 Curve;
         [Min(.01f)] public float Duration = 1;
         public bool CanShoot;
         public bool ClampToView;
+        // Chỉ chặng cuối được giữ tới khi đợt giải quyết xong, thay vì hết Duration là rời chặng.
         public bool HoldUntilResolved;
         public bool RepeatMotion;
         [Min(0), Tooltip("0 dùng Duration; >0 lặp idle theo clock encounter, không đổi thời gian sống phase.")]
@@ -24,6 +27,7 @@ namespace StarShift.Encounters
         public bool Smooth = true;
         [Min(.01f)] public float Cycles = 1;
 
+        // Đổi tiến độ chặng thành vị trí đường bay; hai điểm đầu cuối được truyền từ đội hình thực tế.
         public Vector2 Evaluate(float progress, Vector2 from, Vector2 to)
         {
             var t = Smooth ? Mathf.SmoothStep(0, 1, progress) : Mathf.Clamp01(progress);
@@ -52,6 +56,7 @@ namespace StarShift.Encounters
             Kind = FlightPhaseKind.Hold, From = new Vector2(.5f,.78f), To = new Vector2(.5f,.78f),
             CanShoot = true, ClampToView = true, HoldUntilResolved = true } };
 
+        // Kiểm tra thời lượng và tọa độ trước khi đường bay được đưa vào lượt chơi.
         public bool IsValid(out string error)
         {
             error = "Invalid flight sequence: " + name;

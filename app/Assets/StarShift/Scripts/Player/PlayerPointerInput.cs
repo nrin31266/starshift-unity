@@ -1,3 +1,4 @@
+// PlayerPointerInput — Giao diện nguồn thao tác kéo và giữ bắn để movement và weapon cùng đọc.
 using System;
 using UnityEngine;
 
